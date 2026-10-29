@@ -232,6 +232,14 @@
       }
 
       await detenerEscaner(true);
+      const modo = new URLSearchParams(location.search).get("modo");
+      if (["precio","carrito","asociar","nuevo"].includes(modo)) {
+        mensaje("Código leído. Abriendo Caja Tienda AX...");
+        const destino = new URL("https://script.google.com/macros/s/AKfycby5EBg6M7Mr-H-G00WKDJASVEckdg9FzWl-UKAiiTcqjq2lj_HDzRXmkxN0ldDlW2ohPA/exec");
+        destino.searchParams.set("codigo", texto);
+        destino.searchParams.set("modo", modo);
+        location.assign(destino.toString());
+      }
     }
 
     async function detenerEscaner(detectado = false) {

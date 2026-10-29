@@ -1,29 +1,286 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Caja Tienda AX - Prueba de cámara</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+  <title>CajaTiendaAX</title>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f2f4f7;
+      color: #222;
+      text-align: center;
+    }
+
+    .contenedor {
+      max-width: 480px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 3px 12px #0002;
+    }
+
+    h1 {
+      color: #146c43;
+      font-size: 27px;
+    }
+
+    #reader {
+      width: 100%;
+      margin-top: 15px;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .iniciar {
+      background: #16834a;
+      color: white;
+    }
+
+    .detener {
+      background: #c0392b;
+      color: white;
+    }
+
+    .copiar {
+      background: #1769aa;
+      color: white;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e8f5e9;
+      border-radius: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    #codigo {
+      font-size: 23px;
+      font-weight: bold;
+      color: #145a32;
+    }
+
+    #estado {
+      font-size: 14px;
+      margin-top: 12px;
+    }
+  </style>
 </head>
+
 <body>
-  <h2>Caja Tienda AX</h2>
-  <p>Prueba de cámara (sin ventas ni acceso a inventario)</p>
-  <button onclick="abrirCamara()">Abrir cámara</button>
-  <br><br>
-  <video id="camara" autoplay playsinline style="width:100%;max-width:500px"></video>
-  <p id="mensaje" role="status"></p>
+
+  <div class="contenedor">
+
+    <h1>CAJA TIENDA AX</h1>
+    <p>Sistema lector de códigos de barras</p>
+
+    <button
+      id="btnIniciar"
+      class="iniciar"
+      onclick="iniciarEscaner()">
+      ESCANEAR CÓDIGO DE BARRAS
+    </button>
+
+    <div id="reader"></div>
+
+    <button
+      id="btnDetener"
+      class="detener"
+      onclick="detenerEscaner()"
+      disabled>
+      DETENER CÁMARA
+    </button>
+
+    <div class="resultado">
+      <p>Código detectado:</p>
+      <div id="codigo">---</div>
+    </div>
+
+    <button
+      class="copiar"
+      onclick="copiarCodigo()">
+      COPIAR CÓDIGO
+    </button>
+
+    <p id="estado">Listo para escanear.</p>
+
+  </div>
+
   <script>
-    async function abrirCamara() {
+    let escaner = null;
+    let activo = false;
+    let iniciando = false;
+    let ultimoCodigo = "";
+
+    const btnIniciar =
+      document.getElementById("btnIniciar");
+
+    const btnDetener =
+      document.getElementById("btnDetener");
+
+    const estado =
+      document.getElementById("estado");
+
+    function mensaje(texto) {
+      estado.textContent = texto;
+    }
+
+    async function iniciarEscaner() {
+
+      if (activo || iniciando) return;
+
+      if (!window.isSecureContext) {
+        mensaje("Abre la página usando HTTPS.");
+        return;
+      }
+
+      if (!navigator.mediaDevices ||
+          !navigator.mediaDevices.getUserMedia) {
+        mensaje("Este navegador no permite usar la cámara.");
+        return;
+      }
+
+      if (typeof Html5Qrcode === "undefined") {
+        mensaje("No se cargó la biblioteca del lector. Revisa Internet.");
+        return;
+      }
+
+      iniciando = true;
+      btnIniciar.disabled = true;
+      mensaje("Solicitando acceso a la cámara...");
+
       try {
-        const video = document.getElementById('camara');
-        video.srcObject = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' }
-        });
-        document.getElementById('mensaje').textContent = 'Cámara funcionando correctamente.';
+
+        escaner = new Html5Qrcode("reader");
+
+        await escaner.start(
+          { facingMode: "environment" },
+          {
+            fps: 10,
+            qrbox: function(ancho, alto) {
+              return {
+                width: Math.min(280, Math.floor(ancho * 0.85)),
+                height: Math.min(140, Math.floor(alto * 0.45))
+              };
+            },
+            aspectRatio: 1.777778
+          },
+          codigoDetectado,
+          function(error) {
+            // Continúa buscando códigos.
+          }
+        );
+
+        activo = true;
+        btnDetener.disabled = false;
+        mensaje("Cámara activa. Apunta al código de barras.");
+
       } catch (error) {
-        document.getElementById('mensaje').textContent = 'Error: ' + error.message;
+
+        console.error(error);
+        mensaje("No se pudo abrir la cámara. Verifica los permisos de Chrome.");
+        escaner = null;
+        btnIniciar.disabled = false;
+
+      } finally {
+        iniciando = false;
       }
     }
+
+    async function codigoDetectado(texto) {
+
+      if (!activo || !texto) return;
+
+      ultimoCodigo = texto;
+
+      document.getElementById("codigo")
+        .textContent = texto;
+
+      mensaje("Código leído correctamente.");
+
+      if (navigator.vibrate) {
+        navigator.vibrate(150);
+      }
+
+      await detenerEscaner(true);
+    }
+
+    async function detenerEscaner(detectado = false) {
+
+      if (iniciando) return;
+
+      btnDetener.disabled = true;
+
+      if (escaner && activo) {
+
+        activo = false;
+
+        try {
+          await escaner.stop();
+        } catch (error) {
+          console.error(error);
+        }
+
+        try {
+          escaner.clear();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      escaner = null;
+      btnIniciar.disabled = false;
+
+      if (!detectado) {
+        mensaje("Cámara detenida.");
+      }
+    }
+
+    async function copiarCodigo() {
+
+      if (!ultimoCodigo) {
+        mensaje("Primero debes escanear un código.");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(ultimoCodigo);
+        mensaje("Código copiado correctamente.");
+      } catch (error) {
+        mensaje("No se pudo copiar automáticamente.");
+      }
+    }
+
   </script>
+
 </body>
 </html>

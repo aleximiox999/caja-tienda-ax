@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caja Tienda AX - Prueba de cámara</title>
+</head>
+<body>
+  <h2>Caja Tienda AX</h2>
+  <p>Prueba de cámara (sin ventas ni acceso a inventario)</p>
+  <button onclick="abrirCamara()">Abrir cámara</button>
+  <br><br>
+  <video id="camara" autoplay playsinline style="width:100%;max-width:500px"></video>
+  <p id="mensaje" role="status"></p>
+  <script>
+    async function abrirCamara() {
+      try {
+        const video = document.getElementById('camara');
+        video.srcObject = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' }
+        });
+        document.getElementById('mensaje').textContent = 'Cámara funcionando correctamente.';
+      } catch (error) {
+        document.getElementById('mensaje').textContent = 'Error: ' + error.message;
+      }
+    }
+  </script>
+</body>
+</html>

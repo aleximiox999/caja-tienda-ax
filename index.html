@@ -1,28 +1,56 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lector Tienda AX</title><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<style>*{box-sizing:border-box}body{margin:0;padding:14px;background:#f2f4f7;font:16px Arial;color:#222}main{max-width:520px;margin:auto;background:#fff;padding:16px;border-radius:14px}h1{font-size:24px;color:#146c43;text-align:center}button{display:block;width:100%;padding:15px;margin:10px 0;border:0;border-radius:9px;font-size:17px;font-weight:bold;color:white;background:#16834a}button:disabled{opacity:.5}.gray{background:#555}.red{background:#ba302b}#reader{width:100%;overflow:hidden}#estado{padding:10px;background:#edf4ee;border-radius:8px;overflow-wrap:anywhere}#lista{padding-left:24px}li{padding:5px 0}small{color:#555}</style></head>
+<style>*{box-sizing:border-box}body{margin:0;padding:14px;background:#f2f4f7;font:16px Arial;color:#222}main{max-width:520px;margin:auto;background:#fff;padding:16px;border-radius:14px}h1{font-size:24px;color:#146c43;text-align:center}button{display:block;width:100%;padding:15px;margin:10px 0;border:0;border-radius:9px;font-size:17px;font-weight:bold;color:white;background:#16834a}button:disabled{opacity:.5}.gray{background:#555}.red{background:#ba302b}#reader{width:100%;overflow:hidden}#estado{padding:10px;background:#edf4ee;border-radius:8px;overflow-wrap:anywhere}#lista{padding-left:24px}li{padding:7px 0}.item{display:flex;align-items:center;gap:8px;justify-content:space-between}.qty{display:flex;gap:6px;align-items:center}.qty button{width:auto;margin:0;padding:9px 13px;font-size:18px}.qty span{min-width:22px;text-align:center}small{color:#555}</style></head>
 <body><main><h1>CAJA TIENDA AX</h1><p id="instruccion">Escaneá los productos uno detrás de otro.</p>
 <button id="iniciar" onclick="iniciarEscaner()">INICIAR CÁMARA</button><div id="reader"></div>
 <button class="red" id="detener" onclick="detenerEscaner()" disabled>DETENER CÁMARA</button>
 <p id="estado" role="status">Listo.</p><h2 id="contador">0 productos escaneados</h2><ol id="lista"></ol>
-<small>Para repetir un producto, retiralo de la cámara y volvé a enfocarlo después de 3 segundos. Revisá la lista antes de regresar.</small>
+<small>El mismo código se registra una sola vez mientras escaneás. Para sumar otra unidad, usá el botón +1 junto al producto. Revisá la lista antes de regresar.</small>
 <button id="volver" onclick="volverACaja()">VOLVER A CAJA CON LOS PRODUCTOS</button>
 <button class="gray" onclick="quitarUltimo()">QUITAR ÚLTIMA LECTURA</button>
 </main><script>
 const APP='https://script.google.com/macros/s/AKfycby5EBg6M7Mr-H-G00WKDJASVEckdg9FzWl-UKAiiTcqjq2lj_HDzRXmkxN0ldDlW2ohPA/exec';
 const modo=new URLSearchParams(location.search).get('modo')||'carrito';
-let escaner=null,activo=false,iniciando=false,codigos=[],ultimo='',ultimoTiempo=0;
+let escaner=null,activo=false,iniciando=false,codigos=[],ultimo='';
 const $=id=>document.getElementById(id);
 function mensaje(t){$('estado').textContent=t;}
-function render(){const cuenta=codigos.length;$('contador').textContent=cuenta+' producto'+(cuenta===1?'':'s')+' escaneado'+(cuenta===1?'':'s');$('lista').replaceChildren();const sum=new Map();codigos.forEach(c=>sum.set(c,(sum.get(c)||0)+1));for(const [c,n] of sum){const li=document.createElement('li');li.textContent=c+' — cantidad '+n;$('lista').appendChild(li);} $('volver').disabled=modo==='carrito'&&!cuenta;}
+function render(){
+ const cuenta=codigos.length;
+ $('contador').textContent=cuenta+' producto'+(cuenta===1?'':'s')+' escaneado'+(cuenta===1?'':'s');
+ $('lista').replaceChildren();
+ const sum=new Map();codigos.forEach(c=>sum.set(c,(sum.get(c)||0)+1));
+ for(const [c,n] of sum){
+  const li=document.createElement('li');li.className='item';
+  const nombre=document.createElement('span');nombre.textContent=c;
+  const controles=document.createElement('div');controles.className='qty';
+  const menos=document.createElement('button');menos.className='gray';menos.textContent='−1';menos.setAttribute('aria-label','Quitar una unidad de '+c);menos.onclick=()=>cambiarCantidad(c,-1);
+  const cantidad=document.createElement('span');cantidad.textContent=n;
+  const mas=document.createElement('button');mas.textContent='+1';mas.setAttribute('aria-label','Agregar una unidad de '+c);mas.onclick=()=>cambiarCantidad(c,1);
+  controles.append(menos,cantidad,mas);li.append(nombre,controles);$('lista').appendChild(li);
+ }
+ $('volver').disabled=modo==='carrito'&&!cuenta;
+}
+function cambiarCantidad(c,delta){
+ if(modo!=='carrito')return;
+ if(delta>0){if(codigos.length>=40){mensaje('Límite de 40 unidades.');return;}codigos.push(c);}
+ else {const i=codigos.lastIndexOf(c);if(i>=0)codigos.splice(i,1);}
+ render();mensaje('Cantidad actualizada para '+c+'.');
+}
 async function iniciarEscaner(){if(activo||iniciando)return;if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){mensaje('Se requiere HTTPS y permiso de cámara.');return;}if(typeof Html5Qrcode==='undefined'){mensaje('No se cargó la biblioteca del lector.');return;}
  iniciando=true;$('iniciar').disabled=true;mensaje('Abriendo cámara...');try{escaner=new Html5Qrcode('reader');await escaner.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.85)),height:Math.min(140,Math.floor(h*.45))})},codigoDetectado,()=>{});activo=true;$('detener').disabled=false;mensaje('Cámara activa. Escaneá los productos.');}catch(e){console.error(e);escaner=null;$('iniciar').disabled=false;mensaje('No se pudo abrir la cámara. Revisá los permisos.');}finally{iniciando=false;}}
-function codigoDetectado(texto){if(!activo||!texto)return;const ahora=Date.now();if(texto===ultimo&&ahora-ultimoTiempo<3000)return;ultimo=texto;ultimoTiempo=ahora;
+function codigoDetectado(texto){
+ if(!activo||!texto)return;
+ // No volver a contar el mismo código aunque la cámara lo detecte muchas veces.
+ // Se desbloquea solamente al leer un código DIFERENTE; cantidades repetidas se suman con +1.
+ if(texto===ultimo)return;
+ ultimo=texto;
  if(modo!=='carrito'){codigos=[texto];render();mensaje('Código leído. Regresando a la caja...');volverACaja();return;}
- if(codigos.length>=40){mensaje('Límite de 40 lecturas. Regresá a la caja.');return;}
- codigos.push(texto);render();if(navigator.vibrate)navigator.vibrate(120);mensaje('Agregado código '+texto+'. Continuá escaneando.');}
-async function detenerEscaner(){if(iniciando)return;$('detener').disabled=true;activo=false;if(escaner){try{await escaner.stop();}catch(e){}try{escaner.clear();}catch(e){}}escaner=null;$('iniciar').disabled=false;mensaje('Cámara detenida.');}
+ if(codigos.length>=40){mensaje('Límite de 40 unidades. Regresá a la caja.');return;}
+ codigos.push(texto);render();if(navigator.vibrate)navigator.vibrate(120);
+ mensaje('Agregado código '+texto+'. Continuá con otro producto o usá +1.');
+}
+async function detenerEscaner(){if(iniciando)return;$('detener').disabled=true;activo=false;ultimo='';if(escaner){try{await escaner.stop();}catch(e){}try{escaner.clear();}catch(e){}}escaner=null;$('iniciar').disabled=false;mensaje('Cámara detenida.');}
 function quitarUltimo(){if(codigos.length){codigos.pop();render();mensaje('Última lectura quitada.');}}
 function volverACaja(){if(modo==='carrito'&&!codigos.length){mensaje('Primero escaneá un producto.');return;}const url=new URL(APP);url.searchParams.set('modo',modo);url.searchParams.set('loteId',String(Date.now())+'-'+Math.random().toString(36).slice(2));if(modo==='carrito')url.searchParams.set('lote',JSON.stringify(codigos));else if(codigos.length)url.searchParams.set('codigo',codigos[0]);location.assign(url.toString());}
 if(modo!=='carrito'){$('instruccion').textContent='Escaneá un código para regresar a la caja.';$('volver').textContent='VOLVER A CAJA';}render();

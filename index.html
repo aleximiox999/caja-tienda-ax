@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lector Tienda AX</title><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<title>Lector Tienda AMPHX</title><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>*{box-sizing:border-box}body{margin:0;padding:14px;background:#f2f4f7;font:16px Arial;color:#222}main{max-width:520px;margin:auto;background:#fff;padding:16px;border-radius:14px}h1{font-size:24px;color:#146c43;text-align:center}button{display:block;width:100%;padding:15px;margin:10px 0;border:0;border-radius:9px;font-size:17px;font-weight:bold;color:white;background:#16834a}button:disabled{opacity:.5}.gray{background:#555}.red{background:#ba302b}#reader{width:100%;overflow:hidden}#estado{padding:10px;background:#edf4ee;border-radius:8px;overflow-wrap:anywhere}#lista{padding-left:24px}li{padding:7px 0}.item{display:flex;align-items:center;gap:8px;justify-content:space-between}.qty{display:flex;gap:6px;align-items:center}.qty button{width:auto;margin:0;padding:9px 13px;font-size:18px}.qty span{min-width:22px;text-align:center}small{color:#555}</style></head>
-<body><main><h1>CAJA TIENDA AX</h1><p id="instruccion">Escaneá los productos uno detrás de otro.</p>
+<body><main><h1>TIENDA AMPHX</h1><p id="instruccion">Escaneá los productos uno detrás de otro.</p>
 <button id="iniciar" onclick="iniciarEscaner()">INICIAR CÁMARA</button><div id="reader"></div>
 <button class="red" id="detener" onclick="detenerEscaner()" disabled>DETENER CÁMARA</button>
 <p id="estado" role="status">Listo.</p><h2 id="contador">0 productos escaneados</h2><ol id="lista"></ol>
@@ -12,7 +12,7 @@
 </main><script>
 const APP='https://script.google.com/macros/s/AKfycby5EBg6M7Mr-H-G00WKDJASVEckdg9FzWl-UKAiiTcqjq2lj_HDzRXmkxN0ldDlW2ohPA/exec';
 const modo=new URLSearchParams(location.search).get('modo')||'carrito';
-let escaner=null,activo=false,iniciando=false,codigos=[],ultimo='';
+let escaner=null,activo=false,iniciando=false,codigos=[],ultimo='',videoNativo=null,flujoNativo=null,animacionNativa=0,detectorNativo=null;
 const $=id=>document.getElementById(id);
 function mensaje(t){$('estado').textContent=t;}
 function render(){
@@ -37,8 +37,54 @@ function cambiarCantidad(c,delta){
  else {const i=codigos.lastIndexOf(c);if(i>=0)codigos.splice(i,1);}
  render();mensaje('Cantidad actualizada para '+c+'.');
 }
-async function iniciarEscaner(){if(activo||iniciando)return;if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){mensaje('Se requiere HTTPS y permiso de cámara.');return;}if(typeof Html5Qrcode==='undefined'){mensaje('No se cargó la biblioteca del lector.');return;}
- iniciando=true;$('iniciar').disabled=true;mensaje('Abriendo cámara...');try{escaner=new Html5Qrcode('reader');await escaner.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.85)),height:Math.min(140,Math.floor(h*.45))})},codigoDetectado,()=>{});activo=true;$('detener').disabled=false;mensaje('Cámara activa. Escaneá los productos.');}catch(e){console.error(e);escaner=null;$('iniciar').disabled=false;mensaje('No se pudo abrir la cámara. Revisá los permisos.');}finally{iniciando=false;}}
+async function iniciarEscaner(){
+ if(activo||iniciando)return;
+ if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){mensaje('Se requiere HTTPS y permiso de cámara.');return;}
+ iniciando=true;$('iniciar').disabled=true;mensaje('Abriendo cámara...');
+ try{
+  let nativo=false;
+  if('BarcodeDetector' in window){
+   try{
+    const disponibles=await BarcodeDetector.getSupportedFormats();
+    const formatos=['ean_13','ean_8','upc_a','upc_e','code_128'].filter(f=>disponibles.includes(f));
+    if(formatos.length){
+     detectorNativo=new BarcodeDetector({formats:formatos});
+     flujoNativo=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
+     videoNativo=document.createElement('video');videoNativo.setAttribute('playsinline','');videoNativo.muted=true;videoNativo.autoplay=true;videoNativo.style.cssText='width:100%;display:block;border-radius:8px';
+     $('reader').replaceChildren(videoNativo);videoNativo.srcObject=flujoNativo;await videoNativo.play();
+     activo=true;nativo=true;
+     let ocupado=false;
+     const analizar=async()=>{
+      if(!activo||!videoNativo)return;
+      if(!ocupado&&videoNativo.readyState>=2){
+       ocupado=true;
+       try{const encontrados=await detectorNativo.detect(videoNativo);if(encontrados.length)codigoDetectado(encontrados[0].rawValue);}catch(e){console.warn('Detector nativo:',e);}
+       ocupado=false;
+      }
+      if(activo)animacionNativa=requestAnimationFrame(analizar);
+     };
+     animacionNativa=requestAnimationFrame(analizar);
+    }
+   }catch(e){
+    console.warn('Se usará lector alternativo:',e);
+    if(flujoNativo)flujoNativo.getTracks().forEach(t=>t.stop());
+    flujoNativo=null;videoNativo=null;detectorNativo=null;activo=false;$('reader').replaceChildren();
+   }
+  }
+  if(!nativo){
+   if(typeof Html5Qrcode==='undefined')throw new Error('No se cargó la biblioteca del lector.');
+   escaner=new Html5Qrcode('reader',{formatsToSupport:[Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.CODE_128],verbose:false});
+   await escaner.start({facingMode:'environment'},{fps:20,qrbox:(w,h)=>({width:Math.max(120,Math.min(Math.floor(w*.94),420)),height:Math.max(100,Math.min(Math.floor(h*.65),240))}),disableFlip:true},codigoDetectado,()=>{});
+   activo=true;
+  }
+  $('detener').disabled=false;mensaje('Cámara activa. Acercá el código y mantenelo nítido.');
+ }catch(e){
+  console.error(e);
+  if(flujoNativo)flujoNativo.getTracks().forEach(t=>t.stop());
+  flujoNativo=null;videoNativo=null;detectorNativo=null;escaner=null;activo=false;
+  $('iniciar').disabled=false;mensaje('No se pudo abrir el lector. Revisá los permisos de cámara.');
+ }finally{iniciando=false;}
+}
 function codigoDetectado(texto){
  if(!activo||!texto)return;
  // No volver a contar el mismo código aunque la cámara lo detecte muchas veces.
@@ -50,7 +96,7 @@ function codigoDetectado(texto){
  codigos.push(texto);render();if(navigator.vibrate)navigator.vibrate(120);
  mensaje('Agregado código '+texto+'. Continuá con otro producto o usá +1.');
 }
-async function detenerEscaner(){if(iniciando)return;$('detener').disabled=true;activo=false;ultimo='';if(escaner){try{await escaner.stop();}catch(e){}try{escaner.clear();}catch(e){}}escaner=null;$('iniciar').disabled=false;mensaje('Cámara detenida.');}
+async function detenerEscaner(){if(iniciando)return;$('detener').disabled=true;activo=false;ultimo='';if(animacionNativa)cancelAnimationFrame(animacionNativa);animacionNativa=0;if(flujoNativo)flujoNativo.getTracks().forEach(t=>t.stop());flujoNativo=null;if(videoNativo){videoNativo.srcObject=null;videoNativo=null;$('reader').replaceChildren();}detectorNativo=null;if(escaner){try{await escaner.stop();}catch(e){}try{escaner.clear();}catch(e){}}escaner=null;$('iniciar').disabled=false;mensaje('Cámara detenida.');}
 function quitarUltimo(){if(codigos.length){codigos.pop();render();mensaje('Última lectura quitada.');}}
 function volverACaja(){if(modo==='carrito'&&!codigos.length){mensaje('Primero escaneá un producto.');return;}const url=new URL(APP);url.searchParams.set('modo',modo);url.searchParams.set('loteId',String(Date.now())+'-'+Math.random().toString(36).slice(2));if(modo==='carrito')url.searchParams.set('lote',JSON.stringify(codigos));else if(codigos.length)url.searchParams.set('codigo',codigos[0]);location.assign(url.toString());}
 if(modo!=='carrito'){$('instruccion').textContent='Escaneá un código para regresar a la caja.';$('volver').textContent='VOLVER A CAJA';}render();

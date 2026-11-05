@@ -38,7 +38,7 @@ let lectorActivo=null,abriendoLector=false;
 let capacidadCamara=null,luzEncendida=false;
 async function aplicarCamara(constraints){if(!lectorActivo)return;try{await lectorActivo.applyVideoConstraints({advanced:[constraints]})}catch(e){$('avisoCamara').textContent='El teléfono no permite este ajuste: '+(e?.message||'no compatible')}}
 $('luzCamara').onclick=async()=>{if(!capacidadCamara?.torch)return;luzEncendida=!luzEncendida;await aplicarCamara({torch:luzEncendida});$('luzCamara').textContent=luzEncendida?'Apagar linterna':'Encender linterna'};
-async function configurarCamara(){const panel=$('controlesCamara');panel.classList.remove('hidden');let cap={};try{cap=lectorActivo.getRunningTrackCapabilities()||{}}catch(e){}capacidadCamara=cap;luzEncendida=false;$('luzCamara').disabled=!cap.torch;$('luzCamara').textContent='Encender linterna';$('avisoCamara').textContent=cap.torch?'Activa la linterna solo si hace falta.':'El control de linterna no está disponible en este navegador.';if(Array.isArray(cap.focusMode)&&cap.focusMode.includes('continuous')){try{await lectorActivo.applyVideoConstraints({advanced:[{focusMode:'continuous'}]})}catch(e){}}}
+async function configurarCamara(){const panel=$('controlesCamara');panel.classList.remove('hidden');let cap={};try{cap=lectorActivo.getRunningTrackCapabilities()||{}}catch(e){}capacidadCamara=cap;luzEncendida=false;$('luzCamara').disabled=!cap.torch;$('luzCamara').textContent='Encender linterna';$('avisoCamara').textContent=cap.torch?'Activa la linterna solo si hace falta.':'El control de linterna no está disponible en este navegador.';}
 
 let lecturaPendiente='',repeticiones=0,ultimaLectura=0,codigoEnRevision='';
 $('aplicarCodigoManualCosto').onclick=async()=>{const c=$('manualCodigoCosto').value.trim();if(!/^\\d{6,32}$/.test(c)){$('mensajeEscaner').textContent='Escribe entre 6 y 32 dígitos del envase.';return}document.querySelector('#productoForm [name="codigo_barras"]').value=c;await detenerLector();estado('Código escrito manualmente: '+c+'. Verifica que coincida con el envase.')};
@@ -65,18 +65,22 @@ $('abrirEscaner').onclick=async()=>{
     $('abrirEscaner').disabled=false;abriendoLector=false;return;
   }
   try{
-    const lector=new Html5Qrcode('lectorCodigo',{verbose:false,useBarCodeDetectorIfSupported:true,formatsToSupport:[Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.CODE_128,Html5QrcodeSupportedFormats.CODE_39,Html5QrcodeSupportedFormats.ITF]});lectorActivo=lector;
+    const lector=new Html5Qrcode('lectorCodigo',{verbose:false,useBarCodeDetectorIfSupported:false,formatsToSupport:[Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.CODE_128]});lectorActivo=lector;
     await lector.start({facingMode:'environment'},{fps:12,qrbox:(w,h)=>({width:Math.min(400,Math.floor(w*.94)),height:Math.min(220,Math.floor(h*.75))})},codigo=>{
-      if(lectorActivo!==lector||codigoEnRevision)return;
+      if(lectorActivo!==lector)return;
       const c=String(codigo).trim();
-      codigoEnRevision=c;lecturaPendiente='';repeticiones=0;
-      $('codigoCandidato').textContent=c;
-      $('avisoCodigoCandidato').textContent=codigoValido(c)?'Lectura detectada. Compara TODOS los dígitos con el envase antes de aceptar.':'Código detectado, pero no pasó la validación del formato o dígito de control. Verifica cuidadosamente y repite si no coincide.';
-      $('confirmarLecturaCosto').classList.remove('hidden');
-      $('mensajeEscaner').textContent='Código detectado: comprueba los números impresos.';
+      if(!codigoValido(c))return;
+      const ahora=Date.now();
+      if(c!==lecturaPendiente||ahora-ultimaLectura>2500){lecturaPendiente=c;repeticiones=1}else{repeticiones++}
+      ultimaLectura=ahora;
+      if(repeticiones<2)return;
+      lecturaPendiente='';repeticiones=0;
+      document.querySelector('#productoForm [name="codigo_barras"]').value=c;
+      $('mensajeEscaner').textContent='Código reconocido: '+c;
+      detenerLector();
     },()=>{});
     try{await configurarCamara()}catch(e){console.warn('Los ajustes de cámara no están disponibles',e)}
-    $('mensajeEscaner').textContent='Apunta a las barras completas. Ahora basta una lectura detectada: tú decides si los números coinciden.';
+    $('mensajeEscaner').textContent='Apunta a las barras completas. Se reconocerá automáticamente cuando la lectura sea válida y consistente.';
   }catch(e){
     $('mensajeEscaner').textContent='No se pudo abrir la cámara. Comprueba el permiso de cámara del navegador. '+(e?.message||String(e));
     if(lectorActivo){try{lectorActivo.clear()}catch(x){}lectorActivo=null}

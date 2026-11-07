@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Caja real · TIENDA AMPHX</title>
+<link rel="manifest" href="./manifest-amphx.webmanifest">
 <meta name="theme-color" content="#101216">
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
@@ -121,6 +122,7 @@ th {color:#FFE3B2; font-size:12px;}
 <div id="mixto" class="fields hidden"><div class="field"><label>Efectivo (Bs)</label><input id="pagoEfectivo" type="number" min="0" step=".01" inputmode="decimal" value="0"></div><div class="field"><label>QR (Bs)</label><input id="pagoQr" type="number" min="0" step=".01" inputmode="decimal" value="0"></div></div>
 <div class="note">El registro de venta es real. Al confirmar, se guarda en Supabase y se descuentan las unidades. Se necesita internet.</div>
 <div id="alertaPendiente" class="note red hidden"></div>
+<div id="colaOffline" class="note hidden" aria-live="polite"></div>
 <button id="btnVender" class="btn primary" style="width:100%">COBRAR Y REGISTRAR VENTA</button>
 </div></div>
 </section>
@@ -138,10 +140,140 @@ const $=(id)=>document.getElementById(id);
 const moneda=(n)=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
 const safe=(s)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let cuenta=null, catalogo=[],cart=[], tab='venta',lector=null,abriendo=false,procesando=false,empleados=[],pending=null;
+let colaOffline=[],offlineMode=false,sincronizando=false;
+const DBLOCAL='amphx-caja-local-v1', DBVERSION=1;
 const PENDKEY='amphx-pendiente-caja-v1';
 function estado(s,t=''){ $('status').textContent=s;$('status').className=t; }
 function show(id,visible){$(id).classList.toggle('hidden',!visible)}
 function online(){return navigator.onLine}
+/* Datos locales por cuenta. No se guardan costos, contraseñas ni tokens. */
+function abrirDB(){
+ return new Promise((resolve,reject)=>{
+  if(!('indexedDB' in window)){reject(new Error('El navegador no permite almacenamiento sin internet'));return;}
+  const req=indexedDB.open(DBLOCAL,DBVERSION);
+  req.onupgradeneeded=()=>{
+   const d=req.result;
+   if(!d.objectStoreNames.contains('catalogos'))d.createObjectStore('catalogos',{keyPath:'usuario'});
+   if(!d.objectStoreNames.contains('perfiles'))d.createObjectStore('perfiles',{keyPath:'usuario'});
+   if(!d.objectStoreNames.contains('pendientes'))d.createObjectStore('pendientes',{keyPath:'key'});
+  };
+  req.onsuccess=()=>resolve(req.result);
+  req.onerror=()=>reject(req.error);
+ });
+}
+async function localOp(store,mode,cb){
+ const d=await abrirDB();
+ return await new Promise((resolve,reject)=>{
+  const tx=d.transaction(store,mode);
+  const req=cb(tx.objectStore(store));
+  req.onsuccess=()=>resolve(req.result);
+  req.onerror=()=>reject(req.error);
+  tx.onabort=()=>reject(tx.error||new Error('No se pudo guardar sin internet'));
+  // cerrar la conexión luego de la transacción
+  tx.oncomplete=()=>d.close();
+ });
+}
+const localGet=(store,key)=>localOp(store,'readonly',s=>s.get(key));
+const localPut=(store,value)=>localOp(store,'readwrite',s=>s.put(value));
+const localDelete=(store,key)=>localOp(store,'readwrite',s=>s.delete(key));
+const localAll=(store)=>localOp(store,'readonly',s=>s.getAll());
+async function cargarColaOffline(){
+ if(!cuenta){colaOffline=[];pintarColaOffline();return}
+ try{
+  colaOffline=(await localAll('pendientes')).filter(x=>x.usuario===cuenta.auth_user_id)
+    .sort((a,b)=>a.fecha.localeCompare(b.fecha));
+ }catch(e){colaOffline=[];estado('El almacenamiento local no está disponible: '+(e.message||e),'error');}
+ pintarColaOffline();
+}
+function unidadesReservadas(id){
+ return colaOffline.reduce((s,v)=>s+(v.items||[]).filter(x=>Number(x.producto_id)===Number(id))
+  .reduce((z,x)=>z+Number(x.cantidad||0),0),0);
+}
+function disponible(p){return Math.max(0,stock(p)-unidadesReservadas(p.id))}
+function pintarColaOffline(){
+ const box=$('colaOffline');
+ if(!box)return;
+ show('colaOffline',colaOffline.length>0);
+ if(!colaOffline.length)return;
+ const errores=colaOffline.filter(x=>x.error).length;
+ box.innerHTML='<strong>VENTAS LOCALES SIN CONFIRMAR: '+colaOffline.length+'</strong>'
+  +(errores?'<p class="mini" style="color:#ffc2c2">'+errores+' operación(es) requieren revisión del inventario o acceso.</p>':'')
+  +'<p class="mini">Todavía NO están descontadas en Supabase. Cada venta conserva su clave única para evitar duplicaciones.</p>'
+  +colaOffline.map(v=>'<div class="item"><div><strong>'+safe(new Date(v.fecha).toLocaleString('es-BO'))+'</strong><p>'+safe(v.pago)+' · '+(v.items||[]).length+' producto(s)'+(v.error?' · ERROR: '+safe(v.error):' · Pendiente de sincronizar')+'</p></div><div class="right"><b>'+moneda(v.total)+'</b></div></div>').join('')
+  +'<button class="btn primary" id="sincronizarCola" style="width:100%" '+(!online()||sincronizando||offlineMode?'disabled':'')+'>SINCRONIZAR VENTAS PENDIENTES</button>';
+ const b=$('sincronizarCola');if(b)b.onclick=sincronizarCola;
+}
+async function cargarCatalogoLocal(){
+ try{
+  const item=await localGet('catalogos',cuenta.auth_user_id);
+  if(!item||!Array.isArray(item.productos))throw new Error('Todavía no hay productos guardados en este dispositivo');
+  catalogo=item.productos;
+  renderResultados();renderPrecio();renderInventario();renderCarrito();
+  estado('SIN INTERNET · Catálogo guardado el '+new Date(item.fecha).toLocaleString('es-BO')+'. Ventas pendientes de sincronizar.','error');
+ }catch(e){
+  catalogo=[];renderResultados();renderPrecio();renderInventario();renderCarrito();
+  estado('Sin conexión: '+(e.message||e)+'. Abre la caja con internet una vez para guardar el catálogo.','error');
+ }
+}
+async function modoSinInternet(user){
+ const perfil=await localGet('perfiles',user.id).catch(()=>null);
+ if(!perfil||!perfil.activo){cuenta=null;mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('Sin conexión: no hay un acceso autorizado previamente guardado.','error');return}
+ cuenta=perfil;offlineMode=true;
+ $('who').textContent=perfil.nombre+' · sin internet';
+ $('roleDesc').textContent='Modo sin internet: los cobros quedan pendientes hasta sincronizar';
+ show('btnSalir',true);
+ show('tabEmpleados',false);show('tabReporte',false);
+ mostrarPantalla('app');selectTab('venta');
+ await cargarColaOffline();await cargarCatalogoLocal();pendingView();
+}
+async function sincronizarCola(){
+ if(sincronizando||!cuenta||!online()||offlineMode)return;
+ const lista=[...colaOffline];
+ if(!lista.length)return;
+ sincronizando=true;pintarColaOffline();
+ let hechas=0,fallidas=0;
+ for(const v of lista){
+  if(v.usuario!==cuenta.auth_user_id)continue;
+  try{
+   const {data,error}=await db.rpc('registrar_venta',{
+    p_items:v.items,p_metodo_pago:v.pago,p_monto_efectivo:v.ef,
+    p_monto_qr:v.qr,p_clave_sincronizacion:v.key
+   });
+   if(error)throw new Error(error.message);
+   if(!data||!data.venta_id)throw new Error('Confirmación inválida del servidor');
+   await localDelete('pendientes',v.key);
+   hechas++;
+  }catch(e){
+   v.error=String(e.message||e);
+   await localPut('pendientes',v).catch(()=>{});
+   fallidas++;
+   if(!online())break;
+  }
+ }
+ sincronizando=false;
+ await cargarColaOffline();
+ if(hechas)await cargarCatalogo();
+ if(fallidas)estado(hechas+' venta(s) sincronizadas y '+fallidas+' pendiente(s) con error. Revisa antes de reintentar.','error');
+ else estado(hechas+' venta(s) locales confirmadas en Supabase; inventario actualizado.','success');
+}
+async function guardarVentaOffline(){
+ if(!cuenta||!cart.length){estado('Necesitas una cuenta autorizada y productos en el carrito.','error');return;}
+ if(pending){estado('Primero resuelve la venta anterior pendiente de confirmación.','error');return;}
+ const faltantes=cart.filter(x=>x.cantidad>disponible(x.producto)||x.cantidad<=0);
+ if(faltantes.length){estado('Stock local insuficiente: '+faltantes.map(x=>x.producto.detalles).join(', '),'error');return;}
+ const pago=$('tipoPago').value,tt=total(),ef=pago==='mixto'?Number($('pagoEfectivo').value):null,qr=pago==='mixto'?Number($('pagoQr').value):null;
+ if(pago==='mixto'&&(!(ef>0&&qr>0)||cent(ef)+cent(qr)!==cent(tt))){estado('Efectivo y QR deben sumar '+moneda(tt),'error');return;}
+ if(!confirm('SIN INTERNET. ¿Guardar esta venta por '+moneda(tt)+' SÓLO EN ESTE DISPOSITIVO? No se descontará en Supabase hasta sincronizar. Si el stock cambió en otro equipo, puede requerir revisión.'))return;
+ const venta={usuario:cuenta.auth_user_id,key:crypto.randomUUID(),fecha:new Date().toISOString(),
+  items:cart.map(x=>({producto_id:x.producto.id,cantidad:x.cantidad})),pago,ef,qr,total:tt,error:''};
+ try{
+  await localPut('pendientes',venta);
+  cart=[];
+  await cargarColaOffline();
+  renderCarrito();renderResultados();
+  estado('VENTA GUARDADA SOLO EN ESTE CELULAR · '+moneda(tt)+' · PENDIENTE DE SINCRONIZAR.','error');
+ }catch(e){estado('NO se guardó la venta en el dispositivo: '+(e.message||e),'error');}
+}
 function limpiarcodigo(s){return String(s??'').trim()}
 function stock(p){return Number(p?.stock??0)}
 function precio(p){return Number(p?.precio_venta??0)}
@@ -151,26 +283,42 @@ function lockCart(){return Boolean(pending)||procesando}
 function mostrarPantalla(n){show('authCard',n==='login');show('app',n==='app');show('pendiente',n==='pendiente');if(n!=='app')void detenerLector()}
 function loadPending(){try{const v=JSON.parse(localStorage.getItem(PENDKEY)||'null');pending=(v&&Array.isArray(v.items)&&v.key)?v:null}catch(e){pending=null} }
 function savePending(){if(pending)localStorage.setItem(PENDKEY,JSON.stringify(pending));else localStorage.removeItem(PENDKEY)}
-function pendingView(){show('alertaPendiente',!!pending);if(pending){$('alertaPendiente').textContent='Hay una venta pendiente de confirmación con Supabase. No cambies el carrito ni crees otra venta. Pulsa «Reintentar comprobación» para usar la MISMA clave y evitar duplicados.';$('btnVender').textContent='REINTENTAR COMPROBACIÓN';}else{$('btnVender').textContent='COBRAR Y REGISTRAR VENTA'}renderCarrito()}
+function pendingView(){show('alertaPendiente',!!pending);if(pending){$('alertaPendiente').textContent='Hay una venta pendiente de confirmación con Supabase. No cambies el carrito ni crees otra venta. Pulsa «Reintentar comprobación» para usar la MISMA clave y evitar duplicados.';$('btnVender').textContent='REINTENTAR COMPROBACIÓN';}else{$('btnVender').textContent=online()&&!offlineMode?'COBRAR Y REGISTRAR VENTA':'GUARDAR VENTA LOCAL · SIN INTERNET'}renderCarrito()}
 async function boot(){
  loadPending();pendingView();
- const {data:{user},error}=await db.auth.getUser();
- if(error||!user){cuenta=null;mostrarPantalla('login');estado('Inicia sesión para consultar productos o vender.');return}
+ const {data:{session}}=await db.auth.getSession();
+ if(!online()){
+  if(session?.user){await modoSinInternet(session.user);return}
+  cuenta=null;mostrarPantalla('login');estado('Sin conexión. Para entrar debes haber iniciado sesión antes en este dispositivo.','error');return;
+ }
+ let user=null,error=null;
+ try{const r=await db.auth.getUser();user=r.data.user;error=r.error}catch(e){error=e}
+ if(error||!user){
+  if(session?.user){await modoSinInternet(session.user);return}
+  cuenta=null;mostrarPantalla('login');estado('Inicia sesión para consultar productos o vender.');return;
+ }
  const {data:rol,error:er}=await db.from('empleados').select('id,nombre,rol,activo,auth_user_id').eq('auth_user_id',user.id).maybeSingle();
  if(er){mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('No se pudo comprobar la cuenta: '+er.message,'error');return}
  if(!rol||!rol.activo){cuenta=null;mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('Tu administrador todavía no ha autorizado tu acceso.');return}
- cuenta=rol;$('who').textContent=rol.nombre+' · '+rol.rol;
+ cuenta=rol;offlineMode=false;
+ try{await localPut('perfiles',{...rol,usuario:user.id})}catch(e){/* El modo en línea continúa sin IndexedDB. */}
+ await cargarColaOffline();
+ $('who').textContent=rol.nombre+' · '+rol.rol;
  $('roleDesc').textContent=rol.rol==='administrador'?'Administrador · Ventas, inventario, personal y reportes':'Empleado · Ventas, consultas e inventario';
  show('btnSalir',true);show('tabEmpleados',rol.rol==='administrador');show('tabReporte',rol.rol==='administrador');
- mostrarPantalla('app');selectTab(tab);await cargarCatalogo();
+ mostrarPantalla('app');selectTab(tab);await cargarCatalogo();pendingView();
  if(rol.rol==='administrador')await cargarEmpleados();
+ if(colaOffline.length)void sincronizarCola();
 }
 async function cargarCatalogo(){
- if(!online()){estado('Sin conexión. No es seguro vender hasta reconectar.','error');return}
+ if(!cuenta)return;
+ if(!online()||offlineMode){await cargarCatalogoLocal();return}
  estado('Consultando el inventario real…');
  const {data,error}=await db.rpc('listar_catalogo_venta');
  if(error){estado('Error al consultar inventario: '+error.message,'error');return}
- catalogo=Array.isArray(data)?data:[];renderResultados();renderPrecio();renderInventario();renderCarrito();
+ catalogo=Array.isArray(data)?data:[];
+ try{await localPut('catalogos',{usuario:cuenta.auth_user_id,productos:catalogo,fecha:new Date().toISOString()})}catch(e){/* No interrumpir una caja en línea. */}
+ renderResultados();renderPrecio();renderInventario();renderCarrito();
  estado(catalogo.length+' productos obtenidos desde Supabase.','success');
 }
 function normalizarBusqueda(s){
@@ -208,12 +356,12 @@ function agregar(id){
  if(lockCart()){estado('Primero confirma la venta pendiente.','error');return}
  const p=catalogo.find(x=>x.id===id);if(!p){estado('Producto no encontrado.','error');return}
  const x=cart.find(y=>y.producto.id===id), nueva=(x?.cantidad||0)+1;
- if(nueva>stock(p)){estado('No quedan suficientes unidades de '+p.detalles,'error');return}
+ if(nueva>disponible(p)){estado('No quedan suficientes unidades disponibles de '+p.detalles+' (incluye ventas sin sincronizar).','error');return}
  if(x)x.cantidad=nueva;else cart.push({producto:p,cantidad:1});
  estado('Agregado: '+p.detalles);renderCarrito();
 }
 function quitar(i){if(lockCart())return;cart.splice(i,1);renderCarrito()}
-function cambiarCantidad(i,v){if(lockCart())return;const x=cart[i];if(!x)return;const n=Number(v);if(!Number.isInteger(n)||n<1||n>stock(x.producto)){estado('Cantidad inválida o supera las existencias.','error');renderCarrito();return}x.cantidad=n;renderCarrito()}
+function cambiarCantidad(i,v){if(lockCart())return;const x=cart[i];if(!x)return;const n=Number(v);if(!Number.isInteger(n)||n<1||n>disponible(x.producto)){estado('Cantidad inválida o supera las existencias.','error');renderCarrito();return}x.cantidad=n;renderCarrito()}
 function renderCarrito(){
  $('carrito').innerHTML=cart.length?cart.map((x,i)=>'<div class="item"><div style="min-width:0"><strong>'+safe(x.producto.detalles)+'</strong><p>'+moneda(x.producto.precio_venta)+' por unidad</p></div><div class="right"><input aria-label="Cantidad" class="qty" data-qty="'+i+'" type="number" min="1" step="1" max="'+stock(x.producto)+'" value="'+x.cantidad+'" '+(lockCart()?'disabled':'')+'><br><button data-remove="'+i+'" class="flat" '+(lockCart()?'disabled':'')+'>Quitar</button></div></div>').join(''):'<p class="empty">Todavía no hay productos en el carrito.</p>';
  $('carrito').querySelectorAll('[data-qty]').forEach(x=>x.onchange=()=>cambiarCantidad(Number(x.dataset.qty),x.value));
@@ -221,6 +369,7 @@ function renderCarrito(){
  $('totalVenta').textContent=moneda(total());
  $('tipoPago').disabled=lockCart();$('pagoEfectivo').disabled=lockCart();$('pagoQr').disabled=lockCart();
  $('btnVender').disabled=procesando||(!pending&&!cart.length);
+ pintarColaOffline();
 }
 function renderPrecio(){
  const q=limpiarcodigo($('buscarPrecio').value).toLocaleLowerCase('es');
@@ -267,7 +416,7 @@ async function iniciarLector(m){
 }
 async function cobrar(){
  if(procesando)return;
- if(!online()){estado('No hay internet. La venta no se ha guardado.','error');return}
+ if(!online()||offlineMode){await guardarVentaOffline();return}
  let payload=pending;
  if(!payload){
   if(!cart.length){estado('Carrito vacío.','error');return}
@@ -329,8 +478,21 @@ $('cerrarCamara').onclick=detenerLector;
 $('tipoPago').onchange=()=>show('mixto',$('tipoPago').value==='mixto');
 $('btnVender').onclick=cobrar;
 $('actualizarCatalogo').onclick=cargarCatalogo;$('actualizarPrecio').onclick=cargarCatalogo;$('actualizarInventario').onclick=cargarCatalogo;
-window.addEventListener('online',()=>{estado('Conexión recuperada. Actualizando productos…');void cargarCatalogo()});
-window.addEventListener('offline',()=>estado('Sin internet: ventas reales deshabilitadas hasta reconectar.','error'));
+window.addEventListener('online',()=>{
+ estado('Conexión recuperada. Comprobando la cuenta y las ventas locales…');
+ void boot();
+});
+window.addEventListener('offline',()=>{
+ offlineMode=true;
+ show('tabEmpleados',false);show('tabReporte',false);
+ pendingView();pintarColaOffline();
+ estado('SIN INTERNET · Las ventas nuevas se guardarán en el celular y se sincronizarán después.','error');
+});
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>{
+  void navigator.serviceWorker.register('./sw-amphx.js',{scope:'./'}).catch(e=>console.warn('Modo instalable no disponible',e));
+ });
+}
 const {data:{session}}=await db.auth.getSession();
 if(!session) {mostrarPantalla('login');estado('Ingresa con tu cuenta de administrador o empleado.')}
 else await boot();

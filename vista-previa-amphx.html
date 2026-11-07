@@ -27,21 +27,63 @@ main{padding:24px 28px 60px;min-width:0;max-width:1700px;width:100%;margin:auto}
 #toast{position:fixed;bottom:26px;right:24px;background:#e7ca91;color:#231a10;padding:13px 16px;border-radius:9px;box-shadow:0 8px 35px #0008;z-index:20;display:none;max-width:330px;font-size:13px}
 @media(max-width:1100px){.grid{grid-template-columns:1fr}.statrow{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:720px){.layout{display:block}aside{display:none}main{padding:15px 13px 80px}.top{margin:15px 0}.top h2{font-size:27px}.top p{font-size:12px}.roles{width:100%;display:flex}.roles button{flex:1}.statrow{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:14px 12px;min-height:91px}.stat .num{font-size:22px}.stat small{font-size:11px}.stat .foot{font-size:10px}.alert{align-items:flex-start;padding:12px}.alert button{width:100%}.panelheader h3{font-size:18px}.desktopTable{display:none}.mobilecards{display:grid;gap:9px;padding:12px}.productcard{border:1px solid #39342d;background:#1e2028;padding:14px;border-radius:9px;display:flex;justify-content:space-between;gap:10px;align-items:center}.productcard strong{font-size:13px}.productcard small{display:block;color:#a5a0a0;margin-top:5px;font-size:11px}.productcard .right{text-align:right;white-space:nowrap}.productcard .right b{display:block;color:#f6d594;font-size:17px;margin-bottom:6px}.onlymobile{display:block}.mobnav{position:sticky;top:0;z-index:3;display:flex;overflow:auto;gap:8px;margin:0 -13px 15px;padding:10px 13px;border-bottom:1px solid #55452f;background:#111218f2}.mobnav button{white-space:nowrap;border:1px solid #544932;background:#211f1c;color:#cfc5ae;border-radius:8px;padding:10px 12px;font-size:12px}.mobnav button.active{background:#d1af71;color:#16100c;font-weight:700}.fields{grid-template-columns:1fr}.grid{gap:12px}.sigil{width:270px;height:270px;right:-100px;opacity:.5}.content{padding:14px}.preview{font-size:11px}.panel{border-radius:10px}}
+
+/* Diseño refinado: alquimia discreta y controles de uso cotidiano claros */
+:root{--bg:#0b0d11;--panel:#16191d;--panel2:#1c2025;--line:#383430;--gold:#cbae78;--gold2:#e6cc9b;--txt:#f6f3ed;--muted:#bcb5a9;--red:#f0787f;--green:#95d0a9}
+body{background:radial-gradient(ellipse at 90% 0%,#231f1b 0,transparent 47%),linear-gradient(130deg,#0a0c10,#13161a 55%,#0a0b0e)}
+.sigil{opacity:.64;border-color:#bb93523d;box-shadow:0 0 0 36px #b08b3a08,0 0 0 84px #b08b3a08}
+.sigil:before{border-color:#bc985530;transform:rotate(45deg)}.sigil:after{border-color:#bb955536}
+aside{background:#101217f5;border-right:1px solid #3c3429}
+.brand{padding-top:8px}.brand h1{letter-spacing:3.2px;font-weight:600}.brand small{font-size:10px;letter-spacing:2px}
+.glyph{width:96px;height:96px;background:radial-gradient(circle,#42321d38,transparent 70%);border:0;box-shadow:none;margin-bottom:6px}
+.glyph svg{filter:drop-shadow(0 0 7px #b18c4940)}
+.nav{gap:4px}.nav button{font-size:14px;letter-spacing:.08px;border-radius:10px;padding:14px 16px;min-height:46px;color:#e0dcd5}
+.nav button.active{background:#28241c;border-color:#79613e;color:#f6dfa9;box-shadow:inset 3px 0 0 var(--gold)}
+.nav button:hover{background:#252421}
+.top h2{font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-weight:680;letter-spacing:-.5px}
+.eyebrow{font-size:11px;letter-spacing:1.7px}
+.panel{background:#16191fe8;border:1px solid #3f3a33;box-shadow:0 12px 40px #0003}
+.panelheader h3{font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-weight:670;font-size:18px}
+.stat{background:#191c21;border:1px solid #393630;padding:18px;border-radius:11px}.stat .num{font-weight:700;font-size:25px}
+.action{font-size:14px;background:#1d2025;border-color:#514a3e;padding:17px;min-height:60px;border-radius:10px}
+.action.primary{background:#d2b47e;color:#17130f}.action:not(.primary):hover{background:#292820;border-color:#b79b68}
+.alert{background:#2a191b;border-color:#774147;border-left-color:#ef737e}.alert button{background:#4a222a}
+.roles button{border-radius:7px}.roles button.selected{background:#d2b47e}
+.preview{background:#1e1b18;border-color:#61523d;color:#dccaa9;letter-spacing:0;line-height:1.45}
+.tag{background:#25221d;border-color:#776244}.pill{font-weight:650}
+.btn,.btn2,.action,.alert button,.roles button,.nav button{transition:background .12s ease,border-color .12s ease}
+.btn{background:#d2b47e}.btn2{background:#201e1b}
+.mobileIdentity{align-items:center;gap:10px;margin:9px 0 12px;color:#efdab0}.mobileIdentity .mini-mark{display:grid;place-items:center;border:1px solid #957b4f;border-radius:50%;width:42px;height:42px;font-size:27px;color:#d4b680}
+.mobileIdentity strong{display:block;font-size:15px;letter-spacing:1.3px}.mobileIdentity small{display:block;color:#a99c8a;font-size:11px;margin-top:3px}
+@media(max-width:720px){
+ .mobileIdentity{display:flex}
+ .mobnav{top:0;padding:9px 13px;background:#111319f8;gap:7px}
+ .mobnav button{font-size:12px;min-height:43px;border-radius:9px;padding:10px 13px}
+ .mobnav button.active{background:#d2b47e}
+ .top h2{font-size:25px}
+ .roles button{padding:12px}
+ .productcard{background:#1b1e23;border-color:#3b3830}
+ .alert strong{font-size:12px}.alert p{font-size:12px;line-height:1.6}
+ .stat .num{font-size:20px}
+ .sigil{opacity:.25}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style></head><body><div class="sigil"></div><div class="layout">
-<aside><div class="brand"><div class="glyph">A✦</div><h1>AMPHX</h1><small>TIENDA · SISTEMA</small></div>
+<aside><div class="brand"><div class="glyph" aria-label="Emblema geométrico de AMPHX"><svg aria-hidden="true" viewBox="0 0 100 100" width="74" height="74" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="1.4"/><circle cx="50" cy="50" r="36" stroke="currentColor" stroke-width=".6" opacity=".65"/><path d="M50 14 19 71h62L50 14ZM50 86 19 29h62L50 86Z" stroke="currentColor" stroke-width="1.3"/><path d="M50 27 37 50l13 23 13-23-13-23Z" fill="#d7b978" fill-opacity=".13" stroke="currentColor" stroke-width="1.5"/><path d="M50 36v28M40 50h20" stroke="currentColor" stroke-width="2"/><circle cx="50" cy="50" r="3.5" fill="#d7b978"/></svg></div><h1>AMPHX</h1><small>CONTROL DE TIENDA</small></div>
 <nav class="nav" id="desktopNav">
-<button data-tab="inicio" class="active">⌂ &nbsp; Panel principal</button>
-<button data-tab="caja">▣ &nbsp; Caja y ventas</button>
-<button data-tab="consulta">⌗ &nbsp; Consultar precio</button>
-<button data-tab="inventario">◫ &nbsp; Inventario</button>
-<button data-tab="costos" data-admin="1">◇ &nbsp; Costos y ganancias</button>
-<button data-tab="reportes" data-admin="1">▤ &nbsp; Reportes</button></nav>
-<div class="asidefoot">✧ &nbsp; Diseño inspirado en alquimia<br>Vista previa independiente<br>No se modifica el sistema real.</div></aside>
+<button data-tab="inicio" class="active">Inicio</button>
+<button data-tab="caja">Registrar venta</button>
+<button data-tab="consulta">Consultar precio</button>
+<button data-tab="inventario">Productos e inventario</button>
+<button data-tab="costos" data-admin="1">Costos y ganancias</button>
+<button data-tab="reportes" data-admin="1">Reportes</button></nav>
+<div class="asidefoot">AMPHX · sigilos y geometría alquímica<br>Interfaz clara y minimalista.<br>Vista previa: no modifica el sistema real.</div></aside>
 <main>
 <div class="preview">✦ PROTOTIPO VISUAL · DATOS DE EJEMPLO · NO CONECTADO A SUPABASE · NO REGISTRA VENTAS ✦</div>
+<div class="onlymobile mobileIdentity"><span class="mini-mark" aria-hidden="true">◇</span><div><strong>TIENDA AMPHX</strong><small>Gestión simple · estética alquímica</small></div></div>
 <div class="onlymobile mobnav" id="mobileNav">
 <button data-tab="inicio" class="active">Inicio</button><button data-tab="caja">Caja</button><button data-tab="consulta">Consultar precio</button><button data-tab="inventario">Inventario</button><button data-tab="costos" data-admin="1">Costos</button><button data-tab="reportes" data-admin="1">Reportes</button></div>
-<div class="top"><div><div class="eyebrow">TIENDA AMPHX · CONTROL</div><h2 id="pageTitle">Panel principal</h2><p id="roleMessage">Vista de administrador · Diseño preliminar</p></div><div class="roles"><button id="adminBtn" class="selected">♛ Administrador</button><button id="empleadoBtn">◈ Empleado</button></div></div>
+<div class="top"><div><div class="eyebrow">TIENDA AMPHX · CONTROL</div><h2 id="pageTitle">Panel principal</h2><p id="roleMessage">Vista de administrador · Diseño preliminar</p></div><div class="roles"><button id="adminBtn" class="selected">Administrador</button><button id="empleadoBtn">Empleado</button></div></div>
 <div class="alert" id="alerta"><div><strong>⚠ REPOSICIÓN URGENTE · 2 PRODUCTOS</strong><p><b>AFOXOPET 10–25 KG:</b> queda 1 unidad. <b>COLLAR ANTIPULGAS:</b> quedan 2. Comprar / reponer.</p></div><button id="alertButton">VER QUÉ REPONER →</button></div>
 <div class="statrow" id="stats">
 <div class="stat"><small>Productos registrados</small><div class="num">4</div><div class="foot">Ejemplo de catálogo</div></div>
@@ -55,18 +97,18 @@ main{padding:24px 28px 60px;min-width:0;max-width:1700px;width:100%;margin:auto}
 <div class="desktopTable tablewrap"><table><thead><tr><th>CÓDIGO</th><th>PRODUCTO</th><th>CATEGORÍA</th><th>PRECIO VENTA</th><th>STOCK</th><th>STOCK MÍN.</th><th>ESTADO</th><th class="admincol">COSTO UNIT.</th><th class="admincol">UTILIDAD UNIT.</th></tr></thead><tbody id="tbody"></tbody></table></div>
 <div class="mobilecards" id="mobileProducts"></div></div>
 <div class="panel"><div class="panelheader"><h3>Accesos rápidos</h3><span class="tag">OPERACIONES</span></div><div class="quick">
-<button class="action primary" data-go="consulta">⌗ Consultar precio <span>→</span></button>
-<button class="action" data-go="caja">▣ Registrar venta <span>→</span></button>
-<button class="action" data-go="inventario">◫ Ver inventario <span>→</span></button>
-<button class="action" data-go="costos" data-admin="1">◇ Costos y compras <span>→</span></button>
+<button class="action primary" data-go="consulta">Consultar precio <span aria-hidden="true">→</span></button>
+<button class="action" data-go="caja">Registrar venta <span aria-hidden="true">→</span></button>
+<button class="action" data-go="inventario">Ver inventario <span aria-hidden="true">→</span></button>
+<button class="action" data-go="costos" data-admin="1">Costos y compras <span aria-hidden="true">→</span></button>
 <p class="hint">Administrador y empleado usan el mismo diseño con opciones diferentes. En la versión real, los permisos se aplicarán también en Supabase.</p>
 </div></div>
 </div></section>
-<section id="consulta" class="view hide"><div class="panel"><div class="panelheader"><h3>⌗ Consultar precio</h3><span class="tag">SIN REGISTRAR VENTA</span></div><div class="content"><p class="sectionnote">Este ejemplo muestra cómo será la consulta desde el celular y PC. En la aplicación real, el botón abrirá el lector de cámara ya recuperado.</p><div class="fields"><div class="field"><label>Código de barras o producto</label><input id="codigoConsulta" autocomplete="off" placeholder="Escribe un nombre o código"></div><div class="field"><label>Lectura de demostración</label><button class="btn" style="width:100%;margin-top:0" id="simular">⌗ Simular escaneo de un producto</button></div></div><div class="btnrow"><button class="btn2" id="buscarConsulta">Buscar precio</button></div><div class="result" id="resultadoConsulta"></div><p class="tiny">Esta consulta no vende, no descuenta stock ni modifica productos. La cámara no está conectada en este prototipo.</p></div></div></section>
-<section id="caja" class="view hide"><div class="panel"><div class="panelheader"><h3>▣ Caja de ventas</h3><span class="tag">VISTA PRELIMINAR</span></div><div class="content"><p class="sectionnote">Diseño de caja con lectura de productos, carrito y pagos separados en efectivo y QR. Aquí no se envían ventas ni se descuenta inventario.</p><div class="fields"><div class="field"><label>Agregar producto (simulación)</label><select id="ventaProducto" class="search" style="width:100%"><option value="0">AFOXOPET 10–25 KG · Bs 110</option><option value="1">ALIMENTO PREMIUM 1 KG · Bs 30</option><option value="2">COLLAR ANTIPULGAS · Bs 45</option><option value="3">AFOXOPET 2–4 KG · Bs 80</option></select></div><div class="field"><label>Forma de pago</label><select id="ventaPago" class="search" style="width:100%"><option>Efectivo</option><option>QR</option></select></div></div><div class="btnrow"><button class="btn" id="agregarDemo">+ Agregar al carrito de ejemplo</button><button class="btn2" id="limpiarDemo">Vaciar ejemplo</button></div><div class="result" id="carritoDemo" style="display:block"><strong>Carrito de ejemplo vacío</strong><p>Total: Bs 0</p></div><div class="warning">MODO DISEÑO: no existe un botón de cobro real en esta vista previa. El sistema actual y los productos de Supabase permanecen sin cambios.</div></div></div></section>
-<section id="inventario" class="view hide"><div class="panel"><div class="panelheader"><h3>◫ Inventario y reposición</h3><span class="tag">2 ALERTAS</span></div><div class="content"><p class="sectionnote">Cuando el stock llegue al mínimo, aparecerá una alerta roja arriba. El stock ideal ayuda a calcular cuántas unidades comprar.</p><div class="desktopTable tablewrap"><table><thead><tr><th>PRODUCTO</th><th>EXISTENCIA</th><th>STOCK MÍNIMO</th><th>STOCK IDEAL</th><th>A REPONER</th><th>ESTADO</th></tr></thead><tbody id="inventarioBody"></tbody></table></div><div class="mobilecards" id="inventarioMobile"></div></div></div></section>
-<section id="costos" class="view hide"><div class="panel"><div class="panelheader"><h3>◇ Costos y ganancias</h3><span class="tag">SOLO ADMINISTRADOR</span></div><div class="content"><p class="sectionnote">La versión del administrador incluye precios de compra, margen y utilidad por producto. En empleados este módulo no aparecerá.</p><div class="tablewrap"><table><thead><tr><th>PRODUCTO</th><th>PRECIO VENTA</th><th>COSTO EJEMPLO</th><th>UTILIDAD EJEMPLO</th></tr></thead><tbody id="costosBody"></tbody></table></div></div></div></section>
-<section id="reportes" class="view hide"><div class="panel"><div class="panelheader"><h3>▤ Reportes del negocio</h3><span class="tag">SOLO ADMINISTRADOR</span></div><div class="content"><p class="sectionnote">Aquí estarán ventas por empleado, efectivo y QR, márgenes, utilidad de los últimos 30 días, rotación y reposición. En el prototipo no se muestran cifras reales.</p><div class="statrow" style="margin:15px 0"><div class="stat"><small>Ventas del periodo</small><div class="num">—</div><div class="foot">Conectar datos reales</div></div><div class="stat"><small>Pagos por QR</small><div class="num">—</div><div class="foot">Separado por turno</div></div><div class="stat"><small>Pagos en efectivo</small><div class="num">—</div><div class="foot">Separado por empleado</div></div><div class="stat"><small>Utilidad neta</small><div class="num">—</div><div class="foot">Solo administrador</div></div></div></div></div></section>
+<section id="consulta" class="view hide"><div class="panel"><div class="panelheader"><h3>Consultar precio</h3><span class="tag">SIN REGISTRAR VENTA</span></div><div class="content"><p class="sectionnote">Este ejemplo muestra cómo será la consulta desde el celular y PC. En la aplicación real, el botón abrirá el lector de cámara ya recuperado.</p><div class="fields"><div class="field"><label>Código de barras o producto</label><input id="codigoConsulta" autocomplete="off" placeholder="Escribe un nombre o código"></div><div class="field"><label>Lectura de demostración</label><button class="btn" style="width:100%;margin-top:0" id="simular">⌗ Simular escaneo de un producto</button></div></div><div class="btnrow"><button class="btn2" id="buscarConsulta">Buscar precio</button></div><div class="result" id="resultadoConsulta"></div><p class="tiny">Esta consulta no vende, no descuenta stock ni modifica productos. La cámara no está conectada en este prototipo.</p></div></div></section>
+<section id="caja" class="view hide"><div class="panel"><div class="panelheader"><h3>Caja de ventas</h3><span class="tag">VISTA PRELIMINAR</span></div><div class="content"><p class="sectionnote">Diseño de caja con lectura de productos, carrito y pagos separados en efectivo y QR. Aquí no se envían ventas ni se descuenta inventario.</p><div class="fields"><div class="field"><label>Agregar producto (simulación)</label><select id="ventaProducto" class="search" style="width:100%"><option value="0">AFOXOPET 10–25 KG · Bs 110</option><option value="1">ALIMENTO PREMIUM 1 KG · Bs 30</option><option value="2">COLLAR ANTIPULGAS · Bs 45</option><option value="3">AFOXOPET 2–4 KG · Bs 80</option></select></div><div class="field"><label>Forma de pago</label><select id="ventaPago" class="search" style="width:100%"><option>Efectivo</option><option>QR</option></select></div></div><div class="btnrow"><button class="btn" id="agregarDemo">+ Agregar al carrito de ejemplo</button><button class="btn2" id="limpiarDemo">Vaciar ejemplo</button></div><div class="result" id="carritoDemo" style="display:block"><strong>Carrito de ejemplo vacío</strong><p>Total: Bs 0</p></div><div class="warning">MODO DISEÑO: no existe un botón de cobro real en esta vista previa. El sistema actual y los productos de Supabase permanecen sin cambios.</div></div></div></section>
+<section id="inventario" class="view hide"><div class="panel"><div class="panelheader"><h3>Inventario y reposición</h3><span class="tag">2 ALERTAS</span></div><div class="content"><p class="sectionnote">Cuando el stock llegue al mínimo, aparecerá una alerta roja arriba. El stock ideal ayuda a calcular cuántas unidades comprar.</p><div class="desktopTable tablewrap"><table><thead><tr><th>PRODUCTO</th><th>EXISTENCIA</th><th>STOCK MÍNIMO</th><th>STOCK IDEAL</th><th>A REPONER</th><th>ESTADO</th></tr></thead><tbody id="inventarioBody"></tbody></table></div><div class="mobilecards" id="inventarioMobile"></div></div></div></section>
+<section id="costos" class="view hide"><div class="panel"><div class="panelheader"><h3>Costos y ganancias</h3><span class="tag">SOLO ADMINISTRADOR</span></div><div class="content"><p class="sectionnote">La versión del administrador incluye precios de compra, margen y utilidad por producto. En empleados este módulo no aparecerá.</p><div class="tablewrap"><table><thead><tr><th>PRODUCTO</th><th>PRECIO VENTA</th><th>COSTO EJEMPLO</th><th>UTILIDAD EJEMPLO</th></tr></thead><tbody id="costosBody"></tbody></table></div></div></div></section>
+<section id="reportes" class="view hide"><div class="panel"><div class="panelheader"><h3>Reportes del negocio</h3><span class="tag">SOLO ADMINISTRADOR</span></div><div class="content"><p class="sectionnote">Aquí estarán ventas por empleado, efectivo y QR, márgenes, utilidad de los últimos 30 días, rotación y reposición. En el prototipo no se muestran cifras reales.</p><div class="statrow" style="margin:15px 0"><div class="stat"><small>Ventas del periodo</small><div class="num">—</div><div class="foot">Conectar datos reales</div></div><div class="stat"><small>Pagos por QR</small><div class="num">—</div><div class="foot">Separado por turno</div></div><div class="stat"><small>Pagos en efectivo</small><div class="num">—</div><div class="foot">Separado por empleado</div></div><div class="stat"><small>Utilidad neta</small><div class="num">—</div><div class="foot">Solo administrador</div></div></div></div></div></section>
 <p class="tiny" style="margin:23px 0;text-align:center">TIENDA AMPHX · PROTOTIPO VISUAL · DATOS FICTICIOS · NO MODIFICA SUPABASE</p>
 </main></div><div id="toast" role="status"></div>
 <script>

@@ -2,7 +2,7 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Caja real · TIENDA AMPHX</title>
 <link rel="manifest" href="./manifest-amphx.webmanifest">
-<meta name="theme-color" content="#101216">
+<meta name="theme-color" content="#f5f6f8">
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
 :root{color-scheme:dark;--bg:#0d0f12;--surface:#171a20;--surface2:#1d2228;--line:#393832;--gold:#d6b87e;--gold2:#edddb6;--text:#f6f3eb;--muted:#b5aca0;--red:#ff8892;--green:#a4e2bc}
@@ -89,10 +89,61 @@ th {color:#FFE3B2; font-size:12px;}
  filter:drop-shadow(0 0 5px rgba(229,237,247,.7));
 }
 @media(max-width:850px){.bgmark{opacity:.15}}
+
+/* TIENDA AMPHX: tema minimalista claro para escritorio y celular */
+:root{color-scheme:light;--bg:#f5f6f8;--surface:#fff;--surface2:#f0f2f5;--line:#d7dde4;--gold:#344456;--gold2:#273240;--text:#202936;--muted:#596675;--red:#aa2932;--green:#176545}
+html{background:#f5f6f8}
+body{background:#f5f6f8;color:var(--text);font-size:16px;line-height:1.55}
+header{background:#fff;border-bottom:1px solid #d8dee5;box-shadow:0 2px 10px rgba(17,24,39,.04)}
+.brand .mark{background:#e8ecf1;color:#344456;border:1px solid #cfd6df;border-radius:11px;font-family:system-ui;font-size:22px;font-weight:800}
+.brand b{color:#202936;letter-spacing:.5px}
+.brand small,.who{color:#5b6472}
+.bgmark{display:none!important}
+h1,h2,h3{color:#202936}
+h2,h3{color:#273240}
+.lead,.muted,.item p,.itemcode,.empty{color:#596675}
+.card{background:#fff;border:1px solid #d9dfe6;border-radius:14px;box-shadow:0 5px 22px rgba(38,51,69,.055)}
+label{color:#334155;font-size:14px;font-weight:700}
+input,select{background:#fff;border:1px solid #b8c2cc;color:#202936;border-radius:9px;min-height:48px}
+input::placeholder{color:#667485;opacity:1}
+input:focus,select:focus{border-color:#344456;outline:2px solid #bbc8d6;outline-offset:1px}
+input[type=checkbox]{accent-color:#344456}
+.btn{background:#eef1f4;border:1px solid #c7d0db;color:#273240;border-radius:9px;min-height:46px;font-size:15px;font-weight:700}
+.btn.primary,.tabs .btn.active{background:#344456;color:#fff;border-color:#344456;font-weight:750}
+.btn.outline{background:#fff;color:#344456;border-color:#c7d0db}
+.btn.danger{background:#fff2f2;border-color:#e4a5aa;color:#9b2632}
+.btn:hover:not(:disabled){filter:brightness(.96)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8ea4bc;outline-offset:2px}
+.tabs{gap:9px}
+.tabs .btn{white-space:nowrap}
+.badge{background:#f0f2f5;border:1px solid #d5dce4;color:#465463;font-size:12px}
+.note{background:#f2f5f8;border:1px solid #d6dfe7;color:#384758;font-size:14px}
+.note.red{background:#fff1f1;border-color:#efc0c4;color:#922734}
+.note.ok{background:#eff9f3;border-color:#addbc0;color:#165c3b}
+#status{color:#465463;font-size:14px}
+#status.error{color:#a32b36}
+#status.success{color:#166441}
+.scanner{background:#f5f7f9;border:1px solid #d9dfe6}
+#camara{background:#111827}
+.bigprice,.total{color:#243347}
+.result{background:#f8fafb;border:1px solid #d5dde5;color:#202936}
+.item{border-bottom:1px solid #e1e6eb}
+.item strong,.result strong,.scanner-title strong{color:#202936;font-size:15px}
+.item .right b{color:#273240}
+.stock{background:#e8f5ed;color:#165d3c;font-size:13px;font-weight:700}
+.stock.low{background:#fff0ef;color:#a22d36}
+.tablewrap{border:1px solid #d9dfe6}
+thead{background:#f0f3f6}
+th{color:#38495b;font-size:12px}
+td{color:#202936}
+th,td{border-bottom:1px solid #e1e6eb}
+.flat,summary,a{color:#304f73}
+details{border-top:1px solid #d7dfe7}
+@media(max-width:850px){body{font-size:16px}.lead,.muted{font-size:14px}.item strong{font-size:15px}.btn{font-size:16px}.card{box-shadow:0 3px 14px rgba(38,51,69,.055)}}
+@media(max-width:440px){.hrow{padding:12px}.card{padding:16px}.actions .btn{width:100%}}
 </style>
 </head><body>
-<svg class="bgmark" aria-hidden="true" viewBox="0 0 320 320" fill="none" stroke="url(#plata)" stroke-width="1.65"><defs><linearGradient id="plata" x1="0%" y1="0%" x2="100%" y2="80%"><stop offset="0%" stop-color="#89919b"/><stop offset="22%" stop-color="#ffffff"/><stop offset="46%" stop-color="#b2bac5"/><stop offset="72%" stop-color="#f5f7fa"/><stop offset="100%" stop-color="#8c98a5"/></linearGradient></defs><circle cx="160" cy="160" r="150"/><circle cx="160" cy="160" r="119"/><path d="M160 21 40 229h240L160 21ZM160 299 40 91h240L160 299Z"/><path d="M160 88c-30-64-91-64-89-6 2 29 26 36 40 23 12-11 2-30-12-21M160 88c30-64 91-64 89-6-2 29-26 36-40 23-12-11-2-30 12-21M111 118c-2 37 6 75 49 111 43-36 51-74 49-111l-49-31-49 31Z"/><path d="M142 156h5m26 0h5m-18 10v43m-37 14 37 25 37-25"/></svg>
-<header><div class="hrow"><div class="brand"><div class="mark">◇</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
+<header><div class="hrow"><div class="brand"><div class="mark">A</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
 <main>
 <div id="status" role="status">Inicializando conexión…</div>
 <section id="authCard" class="card hidden">
@@ -134,7 +185,7 @@ th {color:#FFE3B2; font-size:12px;}
 <div class="actions"><button class="btn primary" type="button" id="escanearEntrada">Escanear código</button><button class="btn" type="button" id="recargarEntrada">Actualizar catálogo</button></div>
 <div class="field"><label for="buscarEntrada">Nombre o código del producto</label><input id="buscarEntrada" autocomplete="off" placeholder="Busca producto o escanea el código" spellcheck="false"></div>
 <div id="resultadosEntrada" class="productResults"></div><div class="note" id="entradaSeleccion">Selecciona el producto para añadir unidades.</div>
-<p class="mini muted">Para un producto nuevo, primero usa <a href="./costos-real.html" style="color:#FFE1AD">COSTOS · Registrar producto y compra</a>.</p>
+<p class="mini muted">Para un producto nuevo, primero usa <a href="./costos-real.html" style="color:#304f73">COSTOS · Registrar producto y compra</a>.</p>
 </div><div class="card"><h2>Registrar compra</h2><form id="formEntrada">
 <input type="hidden" id="entradaProductoId">
 <div class="field"><label for="entradaFecha">Fecha de compra</label><input id="entradaFecha" type="date" required></div>

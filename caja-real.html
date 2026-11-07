@@ -81,9 +81,16 @@ th {color:#FFE3B2; font-size:12px;}
   .btn {font-size:15px;}
 }
 
+
+/* Acabado plateado adiamantado de los sigilos del fondo. No afecta la caja. */
+.bgmark{
+ opacity:.23;
+ filter:drop-shadow(0 0 5px rgba(229,237,247,.7));
+}
+@media(max-width:850px){.bgmark{opacity:.15}}
 </style>
 </head><body>
-<svg class="bgmark" aria-hidden="true" viewBox="0 0 320 320" fill="none" stroke="#dabb80"><circle cx="160" cy="160" r="150"/><circle cx="160" cy="160" r="119"/><path d="M160 21 40 229h240L160 21ZM160 299 40 91h240L160 299Z"/><path d="M160 88c-30-64-91-64-89-6 2 29 26 36 40 23 12-11 2-30-12-21M160 88c30-64 91-64 89-6-2 29-26 36-40 23-12-11-2-30 12-21M111 118c-2 37 6 75 49 111 43-36 51-74 49-111l-49-31-49 31Z"/><path d="M142 156h5m26 0h5m-18 10v43m-37 14 37 25 37-25"/></svg>
+<svg class="bgmark" aria-hidden="true" viewBox="0 0 320 320" fill="none" stroke="url(#plata)" stroke-width="1.65"><defs><linearGradient id="plata" x1="0%" y1="0%" x2="100%" y2="80%"><stop offset="0%" stop-color="#89919b"/><stop offset="22%" stop-color="#ffffff"/><stop offset="46%" stop-color="#b2bac5"/><stop offset="72%" stop-color="#f5f7fa"/><stop offset="100%" stop-color="#8c98a5"/></linearGradient></defs><circle cx="160" cy="160" r="150"/><circle cx="160" cy="160" r="119"/><path d="M160 21 40 229h240L160 21ZM160 299 40 91h240L160 299Z"/><path d="M160 88c-30-64-91-64-89-6 2 29 26 36 40 23 12-11 2-30-12-21M160 88c30-64 91-64 89-6-2 29-26 36-40 23-12-11-2-30 12-21M111 118c-2 37 6 75 49 111 43-36 51-74 49-111l-49-31-49 31Z"/><path d="M142 156h5m26 0h5m-18 10v43m-37 14 37 25 37-25"/></svg>
 <header><div class="hrow"><div class="brand"><div class="mark">◇</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
 <main>
 <div id="status" role="status">Inicializando conexión…</div>

@@ -12,7 +12,7 @@
 </main><script>
 const APP='https://script.google.com/macros/s/AKfycby5EBg6M7Mr-H-G00WKDJASVEckdg9FzWl-UKAiiTcqjq2lj_HDzRXmkxN0ldDlW2ohPA/exec';
 const modo=new URLSearchParams(location.search).get('modo')||'carrito';
-let escaner=null,activo=false,iniciando=false,codigos=[],ultimo='',videoNativo=null,flujoNativo=null,animacionNativa=0,detectorNativo=null;
+let escaner=null,activo=false,iniciando=false,codigos=[],ultimo='',videoNativo=null,flujoNativo=null,animacionNativa=0,detectorNativo=null,temporizadorRespaldo=0,lecturasNativas=0;
 const $=id=>document.getElementById(id);
 function mensaje(t){$('estado').textContent=t;}
 function render(){
@@ -37,6 +37,12 @@ function cambiarCantidad(c,delta){
  else {const i=codigos.lastIndexOf(c);if(i>=0)codigos.splice(i,1);}
  render();mensaje('Cantidad actualizada para '+c+'.');
 }
+async function iniciarAlternativo(){
+ if(typeof Html5Qrcode==='undefined')throw new Error('No se cargó la biblioteca html5-qrcode');
+ escaner=new Html5Qrcode('reader',{formatsToSupport:[Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.CODE_128,Html5QrcodeSupportedFormats.CODE_39,Html5QrcodeSupportedFormats.ITF],verbose:false});
+ await escaner.start({facingMode:'environment'},{fps:15,qrbox:(w,h)=>({width:Math.min(Math.floor(w*.9),400),height:Math.min(Math.floor(h*.5),200)}),disableFlip:true},codigoDetectado,()=>{});
+ activo=true;$('detener').disabled=false;
+}
 async function iniciarEscaner(){
  if(activo||iniciando)return;
  if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){mensaje('Se requiere HTTPS y permiso de cámara.');return;}
@@ -52,13 +58,25 @@ async function iniciarEscaner(){
      flujoNativo=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
      videoNativo=document.createElement('video');videoNativo.setAttribute('playsinline','');videoNativo.muted=true;videoNativo.autoplay=true;videoNativo.style.cssText='width:100%;display:block;border-radius:8px';
      $('reader').replaceChildren(videoNativo);videoNativo.srcObject=flujoNativo;await videoNativo.play();
-     activo=true;nativo=true;
+     activo=true;nativo=true;lecturasNativas=0;
+     // Si el detector nativo no reconoce nada, probar automáticamente otro motor.
+     temporizadorRespaldo=setTimeout(async()=>{
+      if(!activo||!videoNativo||lecturasNativas>0)return;
+      mensaje('Probando lector alternativo...');
+      if(animacionNativa)cancelAnimationFrame(animacionNativa);
+      animacionNativa=0;activo=false;
+      if(flujoNativo)flujoNativo.getTracks().forEach(t=>t.stop());
+      flujoNativo=null;if(videoNativo)videoNativo.srcObject=null;
+      videoNativo=null;detectorNativo=null;$('reader').replaceChildren();
+      try{await iniciarAlternativo();mensaje('Lector alternativo activo. Apuntá al código.');}
+      catch(e){console.error('Lector alternativo:',e);$('iniciar').disabled=false;$('detener').disabled=true;mensaje('No se pudo iniciar el lector alternativo: '+e.message);}
+     },6500);
      let ocupado=false;
      const analizar=async()=>{
       if(!activo||!videoNativo)return;
       if(!ocupado&&videoNativo.readyState>=2){
        ocupado=true;
-       try{const encontrados=await detectorNativo.detect(videoNativo);if(encontrados.length)codigoDetectado(encontrados[0].rawValue);}catch(e){console.warn('Detector nativo:',e);}
+       try{const encontrados=await detectorNativo.detect(videoNativo);if(encontrados.length){lecturasNativas++;clearTimeout(temporizadorRespaldo);codigoDetectado(encontrados[0].rawValue);}}catch(e){console.warn('Detector nativo:',e);}
        ocupado=false;
       }
       if(activo)animacionNativa=requestAnimationFrame(analizar);
@@ -73,9 +91,7 @@ async function iniciarEscaner(){
   }
   if(!nativo){
    if(typeof Html5Qrcode==='undefined')throw new Error('No se cargó la biblioteca del lector.');
-   escaner=new Html5Qrcode('reader',{formatsToSupport:[Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.CODE_128],verbose:false});
-   await escaner.start({facingMode:'environment'},{fps:20,qrbox:(w,h)=>({width:Math.max(120,Math.min(Math.floor(w*.94),420)),height:Math.max(100,Math.min(Math.floor(h*.65),240))}),disableFlip:true},codigoDetectado,()=>{});
-   activo=true;
+   await iniciarAlternativo();
   }
   $('detener').disabled=false;mensaje('Cámara activa. Acercá el código y mantenelo nítido.');
  }catch(e){
@@ -96,7 +112,7 @@ function codigoDetectado(texto){
  codigos.push(texto);render();if(navigator.vibrate)navigator.vibrate(120);
  mensaje('Agregado código '+texto+'. Continuá con otro producto o usá +1.');
 }
-async function detenerEscaner(){if(iniciando)return;$('detener').disabled=true;activo=false;ultimo='';if(animacionNativa)cancelAnimationFrame(animacionNativa);animacionNativa=0;if(flujoNativo)flujoNativo.getTracks().forEach(t=>t.stop());flujoNativo=null;if(videoNativo){videoNativo.srcObject=null;videoNativo=null;$('reader').replaceChildren();}detectorNativo=null;if(escaner){try{await escaner.stop();}catch(e){}try{escaner.clear();}catch(e){}}escaner=null;$('iniciar').disabled=false;mensaje('Cámara detenida.');}
+async function detenerEscaner(){if(iniciando)return;clearTimeout(temporizadorRespaldo);$('detener').disabled=true;activo=false;ultimo='';if(animacionNativa)cancelAnimationFrame(animacionNativa);animacionNativa=0;if(flujoNativo)flujoNativo.getTracks().forEach(t=>t.stop());flujoNativo=null;if(videoNativo){videoNativo.srcObject=null;videoNativo=null;$('reader').replaceChildren();}detectorNativo=null;if(escaner){try{await escaner.stop();}catch(e){}try{escaner.clear();}catch(e){}}escaner=null;$('iniciar').disabled=false;mensaje('Cámara detenida.');}
 function quitarUltimo(){if(codigos.length){codigos.pop();render();mensaje('Última lectura quitada.');}}
 function volverACaja(){if(modo==='carrito'&&!codigos.length){mensaje('Primero escaneá un producto.');return;}const url=new URL(APP);url.searchParams.set('modo',modo);url.searchParams.set('loteId',String(Date.now())+'-'+Math.random().toString(36).slice(2));if(modo==='carrito')url.searchParams.set('lote',JSON.stringify(codigos));else if(codigos.length)url.searchParams.set('codigo',codigos[0]);location.assign(url.toString());}
 if(modo!=='carrito'){$('instruccion').textContent='Escaneá un código para regresar a la caja.';$('volver').textContent='VOLVER A CAJA';}render();

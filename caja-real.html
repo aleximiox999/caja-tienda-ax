@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Caja real · TIENDA AMPHX</title>
+<link rel="manifest" href="./manifest-amphx.webmanifest">
+<meta name="theme-color" content="#101216">
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#0d0f12;--surface:#171a20;--surface2:#1d2228;--line:#393832;--gold:#d6b87e;--gold2:#edddb6;--text:#f6f3eb;--muted:#b5aca0;--red:#ff8892;--green:#a4e2bc}
+*{box-sizing:border-box}body{margin:0;color:var(--text);background:radial-gradient(circle at 95% 10%,#27221b 0,transparent 42%),#0d0f12;font:15px/1.5 system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+header{border-bottom:1px solid #4c3d2d;background:#111318eb;position:sticky;top:0;z-index:8;backdrop-filter:blur(12px)}
+.hrow{max-width:1320px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}.mark{display:grid;place-items:center;width:40px;height:40px;border:1px solid #b99860;border-radius:50%;color:#e8c88e;font-size:24px;font-family:Georgia,serif}.brand b{display:block;color:var(--gold2);letter-spacing:2px;font-size:16px}.brand small{display:block;font-size:10px;letter-spacing:1px;color:#a99c87}
+.headerTools{display:flex;gap:8px;align-items:center}.who{color:#c6b79d;font-size:12px}
+main{position:relative;max-width:1320px;padding:22px 18px 60px;margin:auto}
+.bgmark{pointer-events:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(70vw,500px);height:min(70vw,500px);opacity:.045;z-index:0}
+main>*{position:relative;z-index:1}h1{font-size:28px;line-height:1.2;margin:0 0 8px;font-weight:690;letter-spacing:-.4px}h2{font-size:19px;line-height:1.2;margin:0 0 15px;color:var(--gold2)}h3{font-size:16px;color:var(--gold2);margin:4px 0 12px}
+p{margin:8px 0}.lead{color:var(--muted);font-size:13px;margin-bottom:18px}.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid #5d512f;border-radius:30px;color:#ebcd90;font-size:11px;letter-spacing:.5px}
+.note{background:#211e1a;border:1px solid #665234;color:#eed7a2;padding:12px 14px;border-radius:9px;font-size:13px;line-height:1.5;margin:12px 0}.note.red{background:#331a20;border-color:#8a464c;color:#ffb9bf}.note.ok{background:#1a3228;border-color:#3f7858;color:#b3f3cc}
+.grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.85fr);gap:16px}.card{border:1px solid #494039;border-radius:12px;background:#171a20e8;padding:20px;min-width:0;box-shadow:0 16px 40px #0002}.card+ .card{margin-top:0}
+label{display:block;color:#d4c4a9;font-weight:600;font-size:12px;margin-bottom:7px}
+input,select{background:#0e1116;border:1px solid #615746;color:white;border-radius:8px;padding:13px 12px;width:100%;min-height:47px;font-size:16px}input::placeholder{color:#9a948b}
+input[type="number"]{min-width:0}input[type="checkbox"]{width:auto;min-height:0}
+.field{margin:0 0 14px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.btn{border:1px solid #6a5940;border-radius:9px;padding:12px 16px;min-height:46px;background:#25231f;color:#f4dfb9;font-size:14px;font-weight:650;text-align:center}
+.btn.primary{background:var(--gold);color:#1a140d;border-color:#dfca9b}.btn:hover:not(:disabled){filter:brightness(1.1)}.btn.outline{background:transparent;color:#ddd5c6}
+.btn.danger{border-color:#8b444b;background:#4b222a;color:#ffbfc4}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0}.actions .btn{flex:1}
+.tabs{display:flex;gap:7px;overflow:auto;padding:0 0 12px;margin:0 0 10px}.tabs .btn{white-space:nowrap}.tabs .btn.active{background:var(--gold);color:#17110d;border-color:var(--gold)}
+.hidden{display:none!important}.muted{color:var(--muted)}.mini{font-size:12px}
+#status{min-height:22px;line-height:1.5;font-size:13px;color:#d4c39e;margin:9px 0 18px}#status.error{color:var(--red)}#status.success{color:var(--green)}
+#camara{width:100%;max-width:540px;margin:auto;background:#08090b;border-radius:9px;overflow:hidden}#camara video{max-width:100%;border-radius:7px}
+.scanner{border:1px solid #554836;background:#101215;padding:14px;border-radius:10px;margin:11px 0}.scanner-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 9px}
+.bigprice{font-size:35px;color:#f4d59f;font-weight:700;margin:6px 0}.result{border:1px solid #574a34;background:#222019;border-radius:10px;padding:18px;margin:14px 0}.result strong{font-size:19px}
+.stock{font-size:12px;padding:4px 9px;border-radius:30px;display:inline-block;background:#24362d;color:#ade9c5}.stock.low{background:#4c232b;color:#ffbcc3}
+.item{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #393733}.item:last-child{border-bottom:0}.item strong{font-size:13px}.item p{font-size:12px;color:#afa89c;margin:3px 0}.item .right{text-align:right}.item .right b{color:#ead2a7}
+.tablewrap{overflow:auto;border:1px solid #3e3c34;border-radius:9px}table{width:100%;border-collapse:collapse;min-width:570px;font-size:13px}thead{background:#242420}th{text-align:left;color:#edcf95;letter-spacing:.3px;font-size:11px}th,td{padding:12px;border-bottom:1px solid #373733}tbody tr:last-child td{border:0}td{color:#e6e3d9}.qty{width:85px!important;padding:7px 9px!important;min-height:36px!important;font-size:14px!important}.total{font-size:30px;color:#f7d89c;font-weight:720;text-align:right;margin:12px 0}.itemcode{font-size:11px;color:#aa9d8b}
+.productResults{max-height:290px;overflow:auto;padding:2px 0}.flat{background:transparent;border:0;color:#f4d8a9;text-decoration:underline;padding:7px}.inline{display:inline-block}details{border-top:1px solid #4b4135;padding-top:12px;margin-top:20px}summary{cursor:pointer;color:#e3c690;font-weight:650}
+#authCard{max-width:530px;margin:30px auto}.empty{color:#a7a39a;text-align:center;padding:22px 0}
+@media(max-width:850px){main{padding:16px 12px 40px}.grid{grid-template-columns:1fr}.card{padding:16px}.fields{gap:9px}h1{font-size:25px}.who{display:none}.tabs .btn{padding:10px 13px}.bgmark{opacity:.025}}
+@media(max-width:440px){.fields{grid-template-columns:1fr}.card{padding:15px}.hrow{padding:10px 12px}.brand b{font-size:14px}.actions{flex-direction:column}.actions .btn{width:100%}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* AMPHX — ajuste de legibilidad solicitado: fondo negro intacto.
+   El cambio afecta únicamente tipografía, contraste y controles. */
+:root {
+  --text:#FFFFFF;
+  --muted:#D8D7D3;
+  --gold2:#F6E0B1;
+}
+body { color:var(--text); font-size:16px; line-height:1.55; }
+.lead, .muted {color:#E0DEDA; font-size:14px; line-height:1.58;}
+.mini {font-size:13px;}
+h1 {color:#FFFFFF; font-weight:720;}
+h2,h3 {color:#F6E0B1;}
+label {color:#F5F2EC; font-size:14px; font-weight:650;}
+input,select {color:#FFFFFF; border-color:#8E8475;}
+input::placeholder {color:#C8C5C0; opacity:1;}
+input:focus,select:focus {border-color:#EAC78E;}
+.item strong,.result strong,.scanner-title strong {color:#FFFFFF; font-size:15px;}
+.item p {color:#DEDBD5; font-size:13px;}
+.itemcode {color:#D6D2CA; font-size:12px;}
+.item .right b {color:#FFE0A3;}
+.btn {color:#FAF4E8; font-size:15px; border-color:#89785C;}
+.btn.outline {color:#F6F4F0;}
+.btn.primary,.tabs .btn.active {color:#14110C; font-weight:750;}
+.brand small {color:#E1D3BD; font-size:11px;}
+.who {color:#E7D8C2; font-size:13px;}
+table {font-size:14px;}
+td {color:#FFFFFF;}
+th {color:#FFE3B2; font-size:12px;}
+.badge {color:#F7E4BA; font-size:12px;}
+.note {color:#F5E8CE; font-size:14px;}
+.empty {color:#DBD8D2;}
+#status {color:#EACF9E; font-size:14px;}
+.stock {font-size:13px; font-weight:650;}
+.flat,summary {color:#FFE1AD;}
+@media(max-width:850px) {
+  body {font-size:16px;}
+  .lead,.muted {font-size:14px;}
+  .item strong {font-size:15px;}
+  .btn {font-size:15px;}
+}
+
+
+/* Acabado plateado adiamantado de los sigilos del fondo. No afecta la caja. */
+.bgmark{
+ opacity:.23;
+ filter:drop-shadow(0 0 5px rgba(229,237,247,.7));
+}
+@media(max-width:850px){.bgmark{opacity:.15}}
+</style>
+</head><body>
+<svg class="bgmark" aria-hidden="true" viewBox="0 0 320 320" fill="none" stroke="url(#plata)" stroke-width="1.65"><defs><linearGradient id="plata" x1="0%" y1="0%" x2="100%" y2="80%"><stop offset="0%" stop-color="#89919b"/><stop offset="22%" stop-color="#ffffff"/><stop offset="46%" stop-color="#b2bac5"/><stop offset="72%" stop-color="#f5f7fa"/><stop offset="100%" stop-color="#8c98a5"/></linearGradient></defs><circle cx="160" cy="160" r="150"/><circle cx="160" cy="160" r="119"/><path d="M160 21 40 229h240L160 21ZM160 299 40 91h240L160 299Z"/><path d="M160 88c-30-64-91-64-89-6 2 29 26 36 40 23 12-11 2-30-12-21M160 88c30-64 91-64 89-6-2 29-26 36-40 23-12-11-2-30 12-21M111 118c-2 37 6 75 49 111 43-36 51-74 49-111l-49-31-49 31Z"/><path d="M142 156h5m26 0h5m-18 10v43m-37 14 37 25 37-25"/></svg>
+<header><div class="hrow"><div class="brand"><div class="mark">◇</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
+<main>
+<div id="status" role="status">Inicializando conexión…</div>
+<section id="authCard" class="card hidden">
+<h1>Acceso a Tienda AMPHX</h1><p class="lead">Usa tu cuenta personal. Las operaciones quedan asociadas al empleado.</p>
+<form id="formLogin"><div class="field"><label for="email">Correo electrónico</label><input id="email" type="email" autocomplete="username" required></div><div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" required></div><button class="btn primary" type="submit" style="width:100%">Ingresar</button></form>
+<details><summary>Soy empleado nuevo: crear mi cuenta</summary><p class="mini muted">Crea tu cuenta con tu correo. El administrador debe habilitarte antes de usar la caja.</p><form id="formAlta"><div class="field"><label>Mi correo</label><input id="altaEmail" type="email" required autocomplete="email"></div><div class="field"><label>Contraseña (mínimo 8 caracteres)</label><input id="altaPass" type="password" required minlength="8" autocomplete="new-password"></div><button class="btn" type="submit">Crear cuenta de empleado</button></form></details>
+</section>
+<section id="pendiente" class="card hidden"><h2>Cuenta pendiente de autorización</h2><p>Tu cuenta existe, pero todavía no estás habilitado como empleado. El administrador debe entrar en «Empleados» y asociar tu correo.</p><p class="muted mini" id="pendingEmail"></p><button class="btn" id="btnComprobar">Comprobar acceso</button></section>
+<section id="app" class="hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:13px"><div><h1>Caja de ventas</h1><p class="lead" id="roleDesc">Productos y precios reales desde Supabase.</p></div><span class="badge">● CONEXIÓN REAL</span></div>
+<div class="tabs" role="tablist">
+<button class="btn active" data-tab="venta">Vender</button>
+<button class="btn" data-tab="precio">Consultar precio</button>
+<button class="btn" data-tab="inventario">Inventario</button>
+<button class="btn hidden" data-tab="entradas" id="tabEntradas">Ingresar mercadería</button>
+<button class="btn hidden" data-tab="empleados" id="tabEmpleados">Empleados</button>
+<button class="btn hidden" data-tab="reporte" id="tabReporte">Ventas</button>
+</div>
+<div id="lectorPanel" class="scanner hidden"><div class="scanner-title"><strong>Cámara dentro de la aplicación</strong><button class="btn" id="cerrarCamara">Cerrar cámara</button></div><div id="camara"></div><p class="muted mini" id="camaraInfo">Apunta al código de barras.</p></div>
+<section id="panelVenta">
+<div class="grid">
+<div class="card"><h2>Productos</h2><p class="mini muted">Escanea o busca. Se utiliza el precio registrado en Supabase.</p>
+<div class="actions"><button class="btn primary" id="escanearVenta">Escanear código</button><button class="btn" id="actualizarCatalogo">Actualizar productos</button></div>
+<div class="field"><label for="buscarProducto">Nombre o código de barras</label><input id="buscarProducto" placeholder="Ej.: maní, AFOXOPET o código" autocomplete="off" list="sugerenciasProductos" spellcheck="false"><datalist id="sugerenciasProductos"></datalist><p class="mini muted" style="margin:7px 0 0">Aparecen coincidencias mientras escribes, con o sin tildes.</p></div>
+<div id="busquedaResultados" class="productResults"></div></div>
+<div class="card"><h2>Carrito de venta</h2><div id="carrito"></div><div class="total" id="totalVenta">Bs 0,00</div>
+<div class="field"><label>Método de pago</label><select id="tipoPago"><option value="efectivo">Efectivo</option><option value="qr">QR</option><option value="mixto">Mixto: efectivo y QR</option></select></div>
+<div id="mixto" class="fields hidden"><div class="field"><label>Efectivo (Bs)</label><input id="pagoEfectivo" type="number" min="0" step=".01" inputmode="decimal" value="0"></div><div class="field"><label>QR (Bs)</label><input id="pagoQr" type="number" min="0" step=".01" inputmode="decimal" value="0"></div></div>
+<div class="note">El registro de venta es real. Al confirmar, se guarda en Supabase y se descuentan las unidades. Se necesita internet.</div>
+<div id="alertaPendiente" class="note red hidden"></div>
+<div id="colaOffline" class="note hidden" aria-live="polite"></div>
+<button id="btnVender" class="btn primary" style="width:100%">COBRAR Y REGISTRAR VENTA</button>
+</div></div>
+</section>
+<section id="panelPrecio" class="hidden"><div class="card"><h2>Consultar precio</h2><p class="lead">Esta consulta no registra venta ni modifica existencias.</p><div class="actions"><button class="btn primary" id="escanearPrecio">Escanear código</button><button class="btn" id="actualizarPrecio">Actualizar precios</button></div><div class="field"><label>Nombre o código</label><input id="buscarPrecio" placeholder="Escribe o escanea un producto" autocomplete="off"></div><div id="resultadoPrecio"></div></div></section>
+<section id="panelInventario" class="hidden"><div class="card"><h2>Inventario</h2><p class="lead">Existencias calculadas de entradas y salidas reales. Las alertas indican los productos que alcanzaron su mínimo.</p><div id="alertas"></div><div class="tablewrap"><table><thead><tr><th>CÓDIGO</th><th>PRODUCTO</th><th>PRECIO</th><th>EXISTENCIAS</th><th>MÍNIMO</th><th>ESTADO</th></tr></thead><tbody id="tablaInventario"></tbody></table></div><div class="actions"><button class="btn" id="actualizarInventario">Actualizar existencias</button></div></div></section>
+<section id="panelEntradas" class="hidden"><div class="grid"><div class="card">
+<h2>Ingresar mercadería</h2><p class="lead">Solo administrador. Escanea aquí mismo el código o busca el producto ya registrado.</p>
+<div class="actions"><button class="btn primary" type="button" id="escanearEntrada">Escanear código</button><button class="btn" type="button" id="recargarEntrada">Actualizar catálogo</button></div>
+<div class="field"><label for="buscarEntrada">Nombre o código del producto</label><input id="buscarEntrada" autocomplete="off" placeholder="Busca producto o escanea el código" spellcheck="false"></div>
+<div id="resultadosEntrada" class="productResults"></div><div class="note" id="entradaSeleccion">Selecciona el producto para añadir unidades.</div>
+<p class="mini muted">Para un producto nuevo, primero usa <a href="./costos-real.html" style="color:#FFE1AD">COSTOS · Registrar producto y compra</a>.</p>
+</div><div class="card"><h2>Registrar compra</h2><form id="formEntrada">
+<input type="hidden" id="entradaProductoId">
+<div class="field"><label for="entradaFecha">Fecha de compra</label><input id="entradaFecha" type="date" required></div>
+<div class="field"><label for="entradaUnidades">Unidades que ingresan</label><input id="entradaUnidades" type="number" min="0.001" step="any" inputmode="decimal" required placeholder="Ej. 24"></div>
+<div class="field"><label for="entradaCostoTotal">Precio total del paquete (Bs)</label><input id="entradaCostoTotal" type="number" min="0" step="any" inputmode="decimal" required placeholder="Ej. 120"></div>
+<div class="field"><label for="entradaProveedor">Proveedor (opcional)</label><input id="entradaProveedor" maxlength="150" placeholder="Nombre del proveedor"></div>
+<div id="previoEntrada" class="note">Selecciona producto, unidades y precio para calcular el costo unitario.</div>
+<button class="btn primary" id="guardarEntrada" type="submit" style="width:100%">GUARDAR COMPRA Y SUMAR INVENTARIO</button>
+</form><p class="mini muted">Requiere internet. Si una operación no confirma, comprueba el inventario antes de intentar otra vez.</p></div></div></section>
+<section id="panelEmpleados" class="hidden"><div class="grid"><div class="card"><h2>Agregar empleado</h2><p class="lead">El empleado primero crea su cuenta con su correo desde la pantalla de acceso. Después tú lo habilitas aquí.</p><form id="formEmpleado"><div class="field"><label>Nombre del empleado</label><input id="nombreNuevo" maxlength="100" required></div><div class="field"><label>Correo de su cuenta</label><input id="correoNuevo" type="email" maxlength="320" required></div><button class="btn primary" type="submit">Autorizar empleado</button></form><div class="note">El empleado podrá vender y consultar precios, sin acceso a costos ni ganancias.</div></div><div class="card"><h2>Personal registrado</h2><div id="listaEmpleados"></div></div></div></section>
+<section id="panelReporte" class="hidden"><div class="card"><h2>Ventas registradas</h2><p class="lead">Las ventas quedan asociadas al empleado. Montos en efectivo y QR separados.</p><div id="reporteResumen"></div><div class="tablewrap"><table><thead><tr><th>FECHA</th><th>EMPLEADO</th><th>EFECTIVO</th><th>QR</th><th>TOTAL</th><th>ESTADO</th></tr></thead><tbody id="tablaVentas"></tbody></table></div></div></section>
+</section>
+<footer class="muted mini" style="margin-top:25px;text-align:center">TIENDA AMPHX · Caja de ventas y entradas de mercadería con inventario real.</footer>
+</main>
+<script type="module">
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
+const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh');
+const $=(id)=>document.getElementById(id);
+const moneda=(n)=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
+const safe=(s)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let cuenta=null, catalogo=[],cart=[], tab='venta',lector=null,abriendo=false,procesando=false,empleados=[],pending=null;
+let colaOffline=[],offlineMode=false,sincronizando=false;
+const DBLOCAL='amphx-caja-local-v1', DBVERSION=1;
+const PENDKEY='amphx-pendiente-caja-v1';
+function estado(s,t=''){ $('status').textContent=s;$('status').className=t; }
+function show(id,visible){$(id).classList.toggle('hidden',!visible)}
+function online(){return navigator.onLine}
+/* Datos locales por cuenta. No se guardan costos, contraseñas ni tokens. */
+function abrirDB(){
+ return new Promise((resolve,reject)=>{
+  if(!('indexedDB' in window)){reject(new Error('El navegador no permite almacenamiento sin internet'));return;}
+  const req=indexedDB.open(DBLOCAL,DBVERSION);
+  req.onupgradeneeded=()=>{
+   const d=req.result;
+   if(!d.objectStoreNames.contains('catalogos'))d.createObjectStore('catalogos',{keyPath:'usuario'});
+   if(!d.objectStoreNames.contains('perfiles'))d.createObjectStore('perfiles',{keyPath:'usuario'});
+   if(!d.objectStoreNames.contains('pendientes'))d.createObjectStore('pendientes',{keyPath:'key'});
+  };
+  req.onsuccess=()=>resolve(req.result);
+  req.onerror=()=>reject(req.error);
+ });
+}
+async function localOp(store,mode,cb){
+ const d=await abrirDB();
+ return await new Promise((resolve,reject)=>{
+  const tx=d.transaction(store,mode);
+  let result;
+  const req=cb(tx.objectStore(store));
+  req.onsuccess=()=>{result=req.result};
+  req.onerror=()=>reject(req.error);
+  tx.onerror=()=>reject(tx.error||new Error('Error de almacenamiento local'));
+  tx.onabort=()=>{d.close();reject(tx.error||new Error('No se pudo guardar sin internet'))};
+  // Resolver solo cuando los datos quedaron confirmados en IndexedDB.
+  tx.oncomplete=()=>{d.close();resolve(result)};
+ });
+}
+const localGet=(store,key)=>localOp(store,'readonly',s=>s.get(key));
+const localPut=(store,value)=>localOp(store,'readwrite',s=>s.put(value));
+const localDelete=(store,key)=>localOp(store,'readwrite',s=>s.delete(key));
+const localAll=(store)=>localOp(store,'readonly',s=>s.getAll());
+async function cargarColaOffline(){
+ if(!cuenta){colaOffline=[];pintarColaOffline();return}
+ try{
+  colaOffline=(await localAll('pendientes')).filter(x=>x.usuario===cuenta.auth_user_id)
+    .sort((a,b)=>a.fecha.localeCompare(b.fecha));
+ }catch(e){colaOffline=[];estado('El almacenamiento local no está disponible: '+(e.message||e),'error');}
+ pintarColaOffline();
+}
+function unidadesReservadas(id){
+ return colaOffline.reduce((s,v)=>s+(v.items||[]).filter(x=>Number(x.producto_id)===Number(id))
+  .reduce((z,x)=>z+Number(x.cantidad||0),0),0);
+}
+function disponible(p){return Math.max(0,stock(p)-unidadesReservadas(p.id))}
+function pintarColaOffline(){
+ const box=$('colaOffline');
+ if(!box)return;
+ show('colaOffline',colaOffline.length>0);
+ if(!colaOffline.length)return;
+ const errores=colaOffline.filter(x=>x.error).length;
+ box.innerHTML='<strong>VENTAS LOCALES SIN CONFIRMAR: '+colaOffline.length+'</strong>'
+  +(errores?'<p class="mini" style="color:#ffc2c2">'+errores+' operación(es) requieren revisión del inventario o acceso.</p>':'')
+  +'<p class="mini">Todavía NO están descontadas en Supabase. Cada venta conserva su clave única para evitar duplicaciones.</p>'
+  +colaOffline.map(v=>'<div class="item"><div><strong>'+safe(new Date(v.fecha).toLocaleString('es-BO'))+'</strong><p>'+safe(v.pago)+' · '+(v.items||[]).length+' producto(s)'+(v.error?' · ERROR: '+safe(v.error):' · Pendiente de sincronizar')+'</p></div><div class="right"><b>'+moneda(v.total)+'</b></div></div>').join('')
+  +'<button class="btn primary" id="sincronizarCola" style="width:100%" '+(!online()||sincronizando||offlineMode?'disabled':'')+'>SINCRONIZAR VENTAS PENDIENTES</button>';
+ const b=$('sincronizarCola');if(b)b.onclick=sincronizarCola;
+}
+async function cargarCatalogoLocal(){
+ try{
+  const item=await localGet('catalogos',cuenta.auth_user_id);
+  if(!item||!Array.isArray(item.productos))throw new Error('Todavía no hay productos guardados en este dispositivo');
+  catalogo=item.productos;
+  renderResultados();renderPrecio();renderInventario();renderCarrito();
+  estado('SIN INTERNET · Catálogo guardado el '+new Date(item.fecha).toLocaleString('es-BO')+'. Ventas pendientes de sincronizar.','error');
+ }catch(e){
+  catalogo=[];renderResultados();renderPrecio();renderInventario();renderCarrito();
+  estado('Sin conexión: '+(e.message||e)+'. Abre la caja con internet una vez para guardar el catálogo.','error');
+ }
+}
+async function modoSinInternet(user){
+ const perfil=await localGet('perfiles',user.id).catch(()=>null);
+ if(!perfil||!perfil.activo){cuenta=null;mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('Sin conexión: no hay un acceso autorizado previamente guardado.','error');return}
+ cuenta=perfil;offlineMode=true;loadPending(user.id);pendingView();
+ $('who').textContent=perfil.nombre+' · sin internet';
+ $('roleDesc').textContent='Modo sin internet: los cobros quedan pendientes hasta sincronizar';
+ show('btnSalir',true);
+ show('tabEmpleados',false);show('tabReporte',false);show('tabEntradas',false);
+ mostrarPantalla('app');selectTab('venta');
+ await cargarColaOffline();await cargarCatalogoLocal();pendingView();
+}
+async function sincronizarCola(){
+ if(sincronizando||!cuenta||!online()||offlineMode)return;
+ const lista=[...colaOffline];
+ if(!lista.length)return;
+ sincronizando=true;pintarColaOffline();
+ let hechas=0,fallidas=0;
+ for(const v of lista){
+  if(v.usuario!==cuenta.auth_user_id)continue;
+  try{
+   const {data,error}=await db.rpc('registrar_venta',{
+    p_items:v.items,p_metodo_pago:v.pago,p_monto_efectivo:v.ef,
+    p_monto_qr:v.qr,p_clave_sincronizacion:v.key
+   });
+   if(error)throw new Error(error.message);
+   if(!data||!data.venta_id)throw new Error('Confirmación inválida del servidor');
+   await localDelete('pendientes',v.key);
+   hechas++;
+  }catch(e){
+   v.error=String(e.message||e);
+   await localPut('pendientes',v).catch(()=>{});
+   fallidas++;
+   if(!online())break;
+  }
+ }
+ sincronizando=false;
+ await cargarColaOffline();
+ if(hechas)await cargarCatalogo();
+ if(fallidas)estado(hechas+' venta(s) sincronizadas y '+fallidas+' pendiente(s) con error. Revisa antes de reintentar.','error');
+ else estado(hechas+' venta(s) locales confirmadas en Supabase; inventario actualizado.','success');
+}
+async function guardarVentaOffline(){
+ if(!cuenta||!cart.length){estado('Necesitas una cuenta autorizada y productos en el carrito.','error');return;}
+ if(pending){estado('Primero resuelve la venta anterior pendiente de confirmación.','error');return;}
+ const faltantes=cart.filter(x=>x.cantidad>disponible(x.producto)||x.cantidad<=0);
+ if(faltantes.length){estado('Stock local insuficiente: '+faltantes.map(x=>x.producto.detalles).join(', '),'error');return;}
+ const pago=$('tipoPago').value,tt=total(),ef=pago==='mixto'?Number($('pagoEfectivo').value):null,qr=pago==='mixto'?Number($('pagoQr').value):null;
+ if(pago==='mixto'&&(!(ef>0&&qr>0)||cent(ef)+cent(qr)!==cent(tt))){estado('Efectivo y QR deben sumar '+moneda(tt),'error');return;}
+ if(!confirm('SIN INTERNET. ¿Guardar esta venta por '+moneda(tt)+' SÓLO EN ESTE DISPOSITIVO? No se descontará en Supabase hasta sincronizar. Si el stock cambió en otro equipo, puede requerir revisión.'))return;
+ const venta={usuario:cuenta.auth_user_id,key:crypto.randomUUID(),fecha:new Date().toISOString(),
+  items:cart.map(x=>({producto_id:x.producto.id,cantidad:x.cantidad,precio_esperado:Number(x.producto.precio_venta)})),pago,ef,qr,total:tt,error:''};
+ try{
+  await localPut('pendientes',venta);
+  cart=[];
+  await cargarColaOffline();
+  renderCarrito();renderResultados();
+  estado('VENTA GUARDADA SOLO EN ESTE CELULAR · '+moneda(tt)+' · PENDIENTE DE SINCRONIZAR.','error');
+ }catch(e){estado('NO se guardó la venta en el dispositivo: '+(e.message||e),'error');}
+}
+function limpiarcodigo(s){return String(s??'').trim()}
+function stock(p){return Number(p?.stock??0)}
+function precio(p){return Number(p?.precio_venta??0)}
+function cent(n){return Math.round((Number(n)+Number.EPSILON)*100)}
+function total(){return cart.reduce((s,x)=>s+cent(x.cantidad*precio(x.producto)),0)/100}
+function lockCart(){return Boolean(pending)||procesando}
+function mostrarPantalla(n){show('authCard',n==='login');show('app',n==='app');show('pendiente',n==='pendiente');if(n!=='app')void detenerLector()}
+function loadPending(usuario){
+ pending=null;
+ if(!usuario)return;
+ try{
+  const llave=PENDKEY+'-'+usuario;
+  let v=JSON.parse(localStorage.getItem(llave)||'null');
+  // Migración de una venta pendiente de la versión anterior, solamente al administrador.
+  if(!v && cuenta?.rol==='administrador'){
+   const legado=JSON.parse(localStorage.getItem(PENDKEY)||'null');
+   if(legado&&Array.isArray(legado.items)&&legado.key){
+    v={...legado,usuario};
+    localStorage.setItem(llave,JSON.stringify(v));
+    localStorage.removeItem(PENDKEY);
+   }
+  }
+  pending=v&&v.usuario===usuario&&Array.isArray(v.items)&&v.key?v:null;
+ }catch(e){pending=null}
+}
+function savePending(){
+ if(!cuenta?.auth_user_id)return;
+ const llave=PENDKEY+'-'+cuenta.auth_user_id;
+ if(pending){pending.usuario=cuenta.auth_user_id;localStorage.setItem(llave,JSON.stringify(pending))}
+ else localStorage.removeItem(llave);
+}
+function pendingView(){show('alertaPendiente',!!pending);if(pending){$('alertaPendiente').textContent='Hay una venta pendiente de confirmación con Supabase. No cambies el carrito ni crees otra venta. Pulsa «Reintentar comprobación» para usar la MISMA clave y evitar duplicados.';$('btnVender').textContent='REINTENTAR COMPROBACIÓN';}else{$('btnVender').textContent=online()&&!offlineMode?'COBRAR Y REGISTRAR VENTA':'GUARDAR VENTA LOCAL · SIN INTERNET'}renderCarrito()}
+async function boot(){
+ pending=null;pendingView();
+ const {data:{session}}=await db.auth.getSession();
+ if(!online()){
+  if(session?.user){await modoSinInternet(session.user);return}
+  cuenta=null;mostrarPantalla('login');estado('Sin conexión. Para entrar debes haber iniciado sesión antes en este dispositivo.','error');return;
+ }
+ let user=null,error=null;
+ try{const r=await db.auth.getUser();user=r.data.user;error=r.error}catch(e){error=e}
+ if(error||!user){
+  if(session?.user){await modoSinInternet(session.user);return}
+  cuenta=null;mostrarPantalla('login');estado('Inicia sesión para consultar productos o vender.');return;
+ }
+ const {data:rol,error:er}=await db.from('empleados').select('id,nombre,rol,activo,auth_user_id').eq('auth_user_id',user.id).maybeSingle();
+ if(er){mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('No se pudo comprobar la cuenta: '+er.message,'error');return}
+ if(!rol||!rol.activo){cuenta=null;mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('Tu administrador todavía no ha autorizado tu acceso.');return}
+ cuenta=rol;offlineMode=false;loadPending(user.id);pendingView();
+ try{await localPut('perfiles',{...rol,usuario:user.id})}catch(e){/* El modo en línea continúa sin IndexedDB. */}
+ await cargarColaOffline();
+ $('who').textContent=rol.nombre+' · '+rol.rol;
+ $('roleDesc').textContent=rol.rol==='administrador'?'Administrador · Ventas, inventario, personal y reportes':'Empleado · Ventas, consultas e inventario';
+ show('btnSalir',true);show('tabEmpleados',rol.rol==='administrador');show('tabReporte',rol.rol==='administrador');show('tabEntradas',rol.rol==='administrador');
+ if(rol.rol!=='administrador'&&['entradas','empleados','reporte'].includes(tab))tab='venta';
+ mostrarPantalla('app');selectTab(tab);await cargarCatalogo();pendingView();
+ if(rol.rol==='administrador')await cargarEmpleados();
+ if(colaOffline.length)void sincronizarCola();
+}
+async function cargarCatalogo(){
+ if(!cuenta)return;
+ if(!online()||offlineMode){await cargarCatalogoLocal();return}
+ estado('Consultando el inventario real…');
+ const {data,error}=await db.rpc('listar_catalogo_venta');
+ if(error){estado('Error al consultar inventario: '+error.message,'error');return}
+ catalogo=Array.isArray(data)?data:[];
+ try{await localPut('catalogos',{usuario:cuenta.auth_user_id,productos:catalogo,fecha:new Date().toISOString()})}catch(e){/* No interrumpir una caja en línea. */}
+ renderResultados();renderPrecio();renderInventario();renderCarrito();renderEntradas();
+ estado(catalogo.length+' productos obtenidos desde Supabase.','success');
+}
+function normalizarBusqueda(s){
+ return String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es').replace(/[^a-z0-9]+/g,' ').trim();
+}
+function buscarProductos(q){
+ const texto=normalizarBusqueda(q);
+ if(!texto)return catalogo.slice(0,40);
+ const terminos=[...new Set(texto.split(/\s+/).filter(Boolean))];
+ const evaluar=p=>{
+  const nombre=normalizarBusqueda(p.detalles),codigo=normalizarBusqueda(p.codigo_barras),categoria=normalizarBusqueda(p.categoria);
+  const todo=nombre+' '+codigo+' '+categoria;
+  const aciertos=terminos.filter(t=>todo.includes(t));
+  if(!aciertos.length)return null;
+  const todos=aciertos.length===terminos.length;
+  const comienza=nombre.startsWith(texto)||nombre.split(' ').some(t=>t.startsWith(texto));
+  return {p,score:(todos?100:0)+(comienza?50:0)+(nombre.includes(texto)?35:0)+(codigo===texto?70:0)+aciertos.length*10};
+ };
+ const ordenados=catalogo.map(evaluar).filter(Boolean).sort((a,b)=>b.score-a.score||String(a.p.detalles).localeCompare(String(b.p.detalles),'es'));
+ const exactos=ordenados.filter(x=>x.score>=100);
+ if(exactos.length)return exactos.slice(0,50).map(x=>x.p);
+ // Si “maní 20” no coincide completo, ofrecer productos relacionados con “maní”.
+ // Evitar que un número aislado desplace a un nombre relevante.
+ const palabras=terminos.filter(x=>!/^\d+$/.test(x)&&x.length>=2);
+ if(!palabras.length)return ordenados.slice(0,50).map(x=>x.p);
+ return ordenados.filter(x=>palabras.some(t=>normalizarBusqueda(x.p.detalles).includes(t)))
+   .slice(0,50).map(x=>x.p);
+}
+function renderResultados(){const a=buscarProductos($('buscarProducto').value);
+ const sug=$('sugerenciasProductos');
+ sug.innerHTML=a.slice(0,25).map(p=>'<option value="'+safe(p.detalles)+'"></option>').join('');
+ $('busquedaResultados').innerHTML=a.length?a.map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+stock(p)+'</p></div><div class="right"><b>'+moneda(p.precio_venta)+'</b><br><button class="btn" data-add="'+p.id+'" '+(stock(p)<=0?'disabled':'')+'>Agregar</button></div></div>').join(''):'<p class="empty">No se encontraron coincidencias. Comprueba si ya registraste el producto en COSTOS.</p>';
+ $('busquedaResultados').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>agregar(Number(b.dataset.add)))}
+function agregar(id){
+ if(lockCart()){estado('Primero confirma la venta pendiente.','error');return}
+ const p=catalogo.find(x=>x.id===id);if(!p){estado('Producto no encontrado.','error');return}
+ const x=cart.find(y=>y.producto.id===id), nueva=(x?.cantidad||0)+1;
+ if(nueva>disponible(p)){estado('No quedan suficientes unidades disponibles de '+p.detalles+' (incluye ventas sin sincronizar).','error');return}
+ if(x)x.cantidad=nueva;else cart.push({producto:p,cantidad:1});
+ estado('Agregado: '+p.detalles);renderCarrito();
+}
+function quitar(i){if(lockCart())return;cart.splice(i,1);renderCarrito()}
+function cambiarCantidad(i,v){if(lockCart())return;const x=cart[i];if(!x)return;const n=Number(v);if(!Number.isInteger(n)||n<1||n>disponible(x.producto)){estado('Cantidad inválida o supera las existencias.','error');renderCarrito();return}x.cantidad=n;renderCarrito()}
+function renderCarrito(){
+ $('carrito').innerHTML=cart.length?cart.map((x,i)=>'<div class="item"><div style="min-width:0"><strong>'+safe(x.producto.detalles)+'</strong><p>'+moneda(x.producto.precio_venta)+' por unidad</p></div><div class="right"><input aria-label="Cantidad" class="qty" data-qty="'+i+'" type="number" min="1" step="1" max="'+stock(x.producto)+'" value="'+x.cantidad+'" '+(lockCart()?'disabled':'')+'><br><button data-remove="'+i+'" class="flat" '+(lockCart()?'disabled':'')+'>Quitar</button></div></div>').join(''):'<p class="empty">Todavía no hay productos en el carrito.</p>';
+ $('carrito').querySelectorAll('[data-qty]').forEach(x=>x.onchange=()=>cambiarCantidad(Number(x.dataset.qty),x.value));
+ $('carrito').querySelectorAll('[data-remove]').forEach(x=>x.onclick=()=>quitar(Number(x.dataset.remove)));
+ $('totalVenta').textContent=moneda(total());
+ $('tipoPago').disabled=lockCart();$('pagoEfectivo').disabled=lockCart();$('pagoQr').disabled=lockCart();
+ $('btnVender').disabled=procesando||(!pending&&!cart.length);
+ pintarColaOffline();
+}
+function renderPrecio(){
+ const q=limpiarcodigo($('buscarPrecio').value).toLocaleLowerCase('es');
+ if(!q){$('resultadoPrecio').innerHTML='<p class="muted">Escanea un código o escribe un nombre para consultar su precio.</p>';return}
+ const list=buscarProductos(q);
+ $('resultadoPrecio').innerHTML=list.length?list.map(p=>'<div class="result"><strong>'+safe(p.detalles)+'</strong><div class="bigprice">'+moneda(p.precio_venta)+'</div><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">Existencias: '+stock(p)+'</span><p class="itemcode">Código: '+safe(p.codigo_barras||'Sin asignar')+'</p></div>').join(''):'<p class="note red">Producto no encontrado en el catálogo.</p>';
+}
+function renderInventario(){
+ const bajo=catalogo.filter(p=>stock(p)<=Number(p.stock_minimo));
+ $('alertas').innerHTML=bajo.length?'<div class="note red"><strong>REPOSICIÓN: '+bajo.length+' producto(s) en mínimo</strong><br>'+bajo.map(p=>safe(p.detalles)+' ('+stock(p)+' unidades)').join(' · ')+'</div>':'<div class="note ok">No hay productos bajo su stock mínimo configurado.</div>';
+ $('tablaInventario').innerHTML=catalogo.map(p=>'<tr><td>'+safe(p.codigo_barras||'—')+'</td><td>'+safe(p.detalles)+'</td><td>'+moneda(p.precio_venta)+'</td><td>'+stock(p)+'</td><td>'+Number(p.stock_minimo)+'</td><td><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">'+(stock(p)<=Number(p.stock_minimo)?'REPOSICIÓN':'DISPONIBLE')+'</span></td></tr>').join('');
+}
+function selectTab(t){
+ if(['entradas','empleados','reporte'].includes(t)&&(cuenta?.rol!=='administrador'||offlineMode))return;
+ tab=t;document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+ ['venta','precio','inventario','entradas','empleados','reporte'].forEach(x=>show('panel'+x[0].toUpperCase()+x.slice(1),x===t));
+ void detenerLector();
+ if(t==='precio')renderPrecio();if(t==='inventario')renderInventario();if(t==='entradas')renderEntradas();if(t==='empleados')void cargarEmpleados();
+ if(t==='reporte')void cargarReporte();
+}
+async function detenerLector(){
+ const l=lector;lector=null;abriendo=false;
+ if(l){try{await l.stop()}catch(e){}try{l.clear()}catch(e){}}
+ show('lectorPanel',false);
+}
+async function iniciarLector(m){
+ if(abriendo||lector)return;
+ if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){estado('La cámara requiere HTTPS y un navegador con permisos.','error');return}
+ if(typeof Html5Qrcode==='undefined'){estado('No se cargó la biblioteca del escáner. Comprueba la conexión.','error');return}
+ if(m==='entrada'&&(cuenta?.rol!=='administrador'||offlineMode||!online())){estado('Las entradas requieren administrador e internet.','error');return}
+ if(m==='venta'&&lockCart()){estado('Primero confirma la venta pendiente.','error');return}
+ abriendo=true;show('lectorPanel',true);$('camaraInfo').textContent='Solicitando cámara…';
+ try {
+  const l=new Html5Qrcode('camara',{verbose:false});lector=l;
+  await l.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},codigo=>{
+   if(lector!==l)return;
+   const p=catalogo.find(x=>limpiarcodigo(x.codigo_barras)===limpiarcodigo(codigo));
+   void detenerLector();
+   if(!p){if(m==='entrada'){$('buscarEntrada').value=codigo;renderEntradas()}estado('Código no registrado: '+codigo+'. Primero crea el producto en COSTOS.','error');return}
+   if(m==='precio'){selectTab('precio');$('buscarPrecio').value=p.codigo_barras||p.detalles;renderPrecio();estado('Precio encontrado: '+p.detalles,'success')}
+   else if(m==='entrada'){seleccionarEntrada(p.id);estado('Producto seleccionado: '+p.detalles,'success')}
+   else {agregar(Number(p.id));}
+  },()=>{});
+  $('camaraInfo').textContent='Apunta al código de barras del producto.';estado('Cámara iniciada.');
+ }catch(e){$('camaraInfo').textContent='No se pudo abrir la cámara. Revisa el permiso de Chrome: '+(e?.message||e);estado('Error de cámara.','error');if(lector){try{lector.clear()}catch(e){}}lector=null;abriendo=false;}
+}
+async function cobrar(){
+ if(procesando)return;
+ if(!online()||offlineMode){await guardarVentaOffline();return}
+ let payload=pending;
+ if(!payload){
+  if(!cart.length){estado('Carrito vacío.','error');return}
+  for(const x of cart){if(x.cantidad>stock(x.producto)||x.cantidad<=0){estado('Actualiza existencias: cantidad inválida para '+x.producto.detalles,'error');return}}
+  const pago=$('tipoPago').value,tt=total(),ef=pago==='mixto'?Number($('pagoEfectivo').value):null,qr=pago==='mixto'?Number($('pagoQr').value):null;
+  if(pago==='mixto'&&(!(ef>0&&qr>0)||cent(ef)+cent(qr)!==cent(tt))){estado('Los importes de efectivo y QR deben sumar exactamente '+moneda(tt),'error');return}
+  const msg='¿Confirmar venta REAL por '+moneda(tt)+'? Pago: '+pago+'. Se descontarán las existencias.';
+  if(!window.confirm(msg))return;
+  payload={key:crypto.randomUUID(),items:cart.map(x=>({producto_id:x.producto.id,cantidad:x.cantidad,precio_esperado:Number(x.producto.precio_venta)})),pago,ef,qr};
+  pending=payload;savePending();pendingView();
+ }
+ procesando=true;renderCarrito();estado('Registrando la venta con protección contra duplicados…');
+ try {
+  const {data,error}=await db.rpc('registrar_venta',{
+   p_items:payload.items,p_metodo_pago:payload.pago,p_monto_efectivo:payload.ef,p_monto_qr:payload.qr,p_clave_sincronizacion:payload.key
+  });
+  if(error){estado('No se confirmó la venta: '+error.message+'. Reintenta con la misma clave.','error');return}
+  pending=null;savePending();cart=[];show('alertaPendiente',false);
+  estado('VENTA REGISTRADA por '+moneda(data.total)+'. '+(data.repetida?'Operación ya confirmada, no se duplicó.':'Comprobante '+data.venta_id),'success');
+  await cargarCatalogo();estado('VENTA CONFIRMADA · Total '+moneda(data.total)+(data.repetida?' · Sin duplicar':''),'success');
+ }catch(e){estado('No se confirmó el resultado por la conexión. Reintenta, sin crear otra venta: '+String(e.message||e),'error')}
+ finally{procesando=false;pendingView()}
+}
+function fechaLocalEntrada(){
+ $('entradaFecha').value=new Intl.DateTimeFormat('sv-SE',{timeZone:'America/La_Paz',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+}
+function seleccionarEntrada(id){
+ const p=catalogo.find(x=>String(x.id)===String(id));if(!p)return;
+ $('entradaProductoId').value=String(p.id);$('buscarEntrada').value=p.detalles;
+ $('entradaSeleccion').textContent='Producto: '+p.detalles+' · Código: '+(p.codigo_barras||'sin código')+' · Stock: '+stock(p)+' · Precio venta: '+moneda(p.precio_venta);
+ renderEntradas();previoEntrada();
+}
+function renderEntradas(){
+ const q=$('buscarEntrada').value.trim(),items=q?buscarProductos(q):[],sel=$('entradaProductoId').value;
+ $('resultadosEntrada').innerHTML=items.length?items.slice(0,25).map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+stock(p)+'</p></div><button type="button" class="btn" data-entrada="'+safe(p.id)+'" '+(sel===String(p.id)?'disabled':'')+'>'+(sel===String(p.id)?'Elegido':'Elegir')+'</button></div>').join(''):(q?'<p class="empty">No hay coincidencias. Si es nuevo, registra primero el producto en COSTOS.</p>':'<p class="muted mini">Escribe o escanea el código para buscar.</p>');
+ $('resultadosEntrada').querySelectorAll('[data-entrada]').forEach(b=>b.onclick=()=>seleccionarEntrada(b.dataset.entrada));
+}
+function previoEntrada(){
+ const p=catalogo.find(x=>String(x.id)===$('entradaProductoId').value),u=Number($('entradaUnidades').value),t=Number($('entradaCostoTotal').value);
+ if(!p||$('entradaUnidades').value===''||$('entradaCostoTotal').value===''||!Number.isFinite(u)||u<=0||!Number.isFinite(t)||t<0){$('previoEntrada').textContent='Selecciona producto, unidades y precio total para calcular el costo.';return}
+ const coste=t/u;
+ $('previoEntrada').textContent='Costo de compra: '+moneda(coste)+' por unidad · Venta: '+moneda(p.precio_venta)+' · Ganancia estimada: '+moneda(Number(p.precio_venta)-coste)+' por unidad · Stock nuevo estimado: '+(stock(p)+u);
+}
+let guardandoEntrada=false;
+async function registrarEntrada(ev){
+ ev.preventDefault();if(guardandoEntrada)return;
+ if(cuenta?.rol!=='administrador'||offlineMode||!online()){estado('Para registrar compras necesitas internet y permiso de administrador.','error');return}
+ const p=catalogo.find(x=>String(x.id)===$('entradaProductoId').value),fecha=$('entradaFecha').value,u=Number($('entradaUnidades').value),t=Number($('entradaCostoTotal').value),proveedor=$('entradaProveedor').value.trim();
+ if(!p||!/^\d{4}-\d{2}-\d{2}$/.test(fecha)||$('entradaUnidades').value===''||!Number.isFinite(u)||u<=0||$('entradaCostoTotal').value===''||!Number.isFinite(t)||t<0){estado('Completa producto, fecha, unidades y precio total válidos.','error');return}
+ if(!confirm('¿Registrar compra de '+u+' unidades de '+p.detalles+' por '+moneda(t)+'? Esto aumentará el inventario REAL.'))return;
+ guardandoEntrada=true;$('guardarEntrada').disabled=true;estado('Guardando compra en Supabase…');
+ try{
+  const {data,error}=await db.rpc('registrar_compra',{p_producto_id:p.id,p_fecha:fecha,p_precio_compra:t,p_unidades:u,p_proveedor:proveedor||null});
+  if(error){estado('No se confirmó la compra: '+error.message+'. Verifica existencias antes de volver a guardar.','error');return}
+  $('formEntrada').reset();$('entradaProductoId').value='';$('buscarEntrada').value='';fechaLocalEntrada();renderEntradas();previoEntrada();
+  $('entradaSeleccion').textContent='Compra #'+data+' de '+p.detalles+' registrada.';
+  await cargarCatalogo();estado('COMPRA REGISTRADA · '+u+' unidades sumadas al inventario de '+p.detalles+'.','success');
+ }catch(err){estado('Compra sin confirmación. Actualiza inventario y comprueba antes de reintentar: '+(err.message||err),'error')}
+ finally{guardandoEntrada=false;$('guardarEntrada').disabled=false}
+}
+async function cargarEmpleados(){
+ if(cuenta?.rol!=='administrador')return;
+ const {data,error}=await db.from('empleados').select('id,auth_user_id,nombre,rol,activo').order('nombre');
+ if(error){estado('No se pudieron consultar empleados: '+error.message,'error');return}
+ empleados=data||[];
+ $('listaEmpleados').innerHTML=empleados.length?empleados.map(e=>'<div class="item"><div><strong>'+safe(e.nombre)+'</strong><p>'+safe(e.rol)+' · '+(e.activo?'Activo':'Inactivo')+'</p></div><div class="right">'+(e.id===cuenta.id?'<span class="mini muted">Tu cuenta</span>':'<button class="btn" data-toggle="'+safe(e.id)+'">'+(e.activo?'Desactivar':'Activar')+'</button>')+'</div></div>').join(''):'<p class="empty">Sin empleados registrados.</p>';
+ $('listaEmpleados').querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>toggleEmpleado(b.dataset.toggle));
+}
+async function toggleEmpleado(id){
+ if(cuenta?.rol!=='administrador')return;
+ const e=empleados.find(x=>x.id===id);if(!e||e.id===cuenta.id)return;
+ if(!confirm((e.activo?'Desactivar':'Activar')+' al empleado '+e.nombre+'?'))return;
+ const {error}=await db.from('empleados').update({activo:!e.activo}).eq('id',id);
+ if(error){estado(error.message,'error');return}
+ estado('Cuenta actualizada.','success');await cargarEmpleados();
+}
+async function cargarReporte(){
+ if(cuenta?.rol!=='administrador')return;
+ const {data,error}=await db.from('ventas').select('id,fecha,empleado_id,total,monto_efectivo,monto_qr,estado').order('fecha',{ascending:false}).limit(150);
+ if(error){estado('No se pudo cargar ventas: '+error.message,'error');return}
+ const arr=data||[],names=Object.fromEntries(empleados.map(e=>[e.id,e.nombre]));
+ const sum=key=>arr.filter(v=>v.estado==='registrada').reduce((s,v)=>s+Number(v[key]||0),0);
+ $('reporteResumen').innerHTML='<p class="note">Últimas '+arr.length+' ventas · Efectivo '+moneda(sum('monto_efectivo'))+' · QR '+moneda(sum('monto_qr'))+' · Total '+moneda(sum('total'))+'</p>';
+ $('tablaVentas').innerHTML=arr.map(v=>'<tr><td>'+safe(new Date(v.fecha).toLocaleString('es-BO'))+'</td><td>'+safe(names[v.empleado_id]||'Sin nombre')+'</td><td>'+moneda(v.monto_efectivo)+'</td><td>'+moneda(v.monto_qr)+'</td><td>'+moneda(v.total)+'</td><td>'+safe(v.estado)+'</td></tr>').join('');
+}
+$('formLogin').onsubmit=async e=>{e.preventDefault();estado('Iniciando sesión…');const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){estado('No se pudo ingresar: '+error.message,'error');return}await boot()};
+$('formAlta').onsubmit=async e=>{e.preventDefault();const email=$('altaEmail').value.trim(),password=$('altaPass').value;estado('Creando cuenta…');const {error}=await db.auth.signUp({email,password});if(error){estado('No se pudo registrar: '+error.message,'error');return}estado('Cuenta solicitada. Revisa si te llegó correo de confirmación y pide al administrador que te habilite.','success');await boot()};
+$('formEmpleado').onsubmit=async e=>{e.preventDefault();if(cuenta?.rol!=='administrador')return;estado('Autorizando empleado…');const {error}=await db.rpc('vincular_empleado',{p_correo:$('correoNuevo').value.trim(),p_nombre:$('nombreNuevo').value.trim()});if(error){estado('No se pudo autorizar: '+error.message,'error');return}$('formEmpleado').reset();estado('Empleado autorizado. Ya puede ingresar desde su cuenta.','success');await cargarEmpleados()};
+$('btnSalir').onclick=async()=>{await detenerLector();await db.auth.signOut();cuenta=null;catalogo=[];cart=[];show('btnSalir',false);mostrarPantalla('login');estado('Sesión cerrada.')};
+$('btnComprobar').onclick=boot;
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>selectTab(b.dataset.tab));
+$('buscarProducto').oninput=renderResultados;$('buscarPrecio').oninput=renderPrecio;
+$('escanearVenta').onclick=()=>iniciarLector('venta');
+$('escanearPrecio').onclick=()=>iniciarLector('precio');
+$('escanearEntrada').onclick=()=>iniciarLector('entrada');
+$('recargarEntrada').onclick=cargarCatalogo;
+$('buscarEntrada').oninput=()=>{$('entradaProductoId').value='';$('entradaSeleccion').textContent='Selecciona un producto de la lista.';renderEntradas();previoEntrada()};
+$('entradaUnidades').oninput=previoEntrada;$('entradaCostoTotal').oninput=previoEntrada;$('formEntrada').onsubmit=registrarEntrada;fechaLocalEntrada();
+$('cerrarCamara').onclick=detenerLector;
+$('tipoPago').onchange=()=>show('mixto',$('tipoPago').value==='mixto');
+$('btnVender').onclick=cobrar;
+$('actualizarCatalogo').onclick=cargarCatalogo;$('actualizarPrecio').onclick=cargarCatalogo;$('actualizarInventario').onclick=cargarCatalogo;
+window.addEventListener('online',()=>{
+ estado('Conexión recuperada. Comprobando la cuenta y las ventas locales…');
+ void boot();
+});
+window.addEventListener('offline',()=>{
+ offlineMode=true;
+ show('tabEmpleados',false);show('tabReporte',false);show('tabEntradas',false);
+ pendingView();pintarColaOffline();
+ estado('SIN INTERNET · Las ventas nuevas se guardarán en el celular y se sincronizarán después.','error');
+});
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>{
+  void navigator.serviceWorker.register('./sw-amphx.js',{scope:'./'}).catch(e=>console.warn('Modo instalable no disponible',e));
+ });
+}
+const {data:{session}}=await db.auth.getSession();
+if(!session) {mostrarPantalla('login');estado('Ingresa con tu cuenta de administrador o empleado.')}
+else await boot();
+</script></body></html>

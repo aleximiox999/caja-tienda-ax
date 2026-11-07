@@ -54,27 +54,46 @@ $('abrirEscaner').onclick=async()=>{
     $('abrirEscaner').disabled=false;abriendoLector=false;return;
   }
   try{
-    // Decodificar toda la imagen: el recuadro anterior recortaba códigos fuera del centro.
-    // Usar ZXing en lugar del detector nativo para evitar fallos silenciosos en Android.
+    // COSTOS: lector de códigos lineales. No restringir el decodificador a un recorte.
+    // El reconocimiento se ejecuta en el video integrado, sin salir del formulario.
     const formatos=['EAN_13','EAN_8','UPC_A','UPC_E','CODE_128','CODE_39','ITF','CODABAR']
-      .map(nombre=>Html5QrcodeSupportedFormats[nombre]).filter(x=>x!==undefined);
-    const lector=new Html5Qrcode('lectorCodigo',{
-      verbose:false,formatsToSupport:formatos,useBarCodeDetectorIfSupported:false
-    });lectorActivo=lector;
-    let fallos=0,ultimoAviso=Date.now();
-    await lector.start({facingMode:'environment'},{fps:15,disableFlip:true},async codigo=>{
-      if(lectorActivo!==lector)return;
-      document.querySelector('#productoForm [name="codigo_barras"]').value=codigo;
+      .map(nombre=>window.Html5QrcodeSupportedFormats?.[nombre]).filter(x=>x!==undefined);
+    const opciones={verbose:false,useBarCodeDetectorIfSupported:false};
+    if(formatos.length)opciones.formatsToSupport=formatos;
+    const lector=new Html5Qrcode('lectorCodigo',opciones);lectorActivo=lector;
+    let fallos=0,ultimoAviso=0,finalizado=false;
+    const codigoDetectado=async codigo=>{
+      if(lectorActivo!==lector||finalizado)return;
+      finalizado=true;
+      document.querySelector('#productoForm [name="codigo_barras"]').value=String(codigo).trim();
       await detenerLector();estado('Código de barras leído: '+codigo);
-    },()=>{
-      if(lectorActivo!==lector)return;
+    };
+    const intentoFallido=()=>{
+      if(lectorActivo!==lector||finalizado)return;
       fallos++;
-      if(Date.now()-ultimoAviso>5000){
-        $('mensajeEscaner').textContent='Buscando código en toda la imagen… ('+fallos+' intentos). Mantén visibles todas las barras.';
+      if(Date.now()-ultimoAviso>2500){
+        $('mensajeEscaner').textContent='Lector activo · '+fallos+' intentos · Acerca el código hasta que las barras se vean nítidas y completas.';
         ultimoAviso=Date.now();
       }
-    });
-    $('mensajeEscaner').textContent='Lector activo: buscando EAN, UPC y códigos de productos en toda la imagen.';
+    };
+    // Cámara trasera; permitir que el navegador elija resolución alta.
+    await lector.start({facingMode:'environment'},{
+      fps:12,disableFlip:true,aspectRatio:1.777778,
+      videoConstraints:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}
+    },codigoDetectado,intentoFallido);
+    $('mensajeEscaner').textContent='Lector activo · buscando códigos de barras…';
+    // En algunos teléfonos el enfoque continuo tarda en activarse.
+    try{
+      const capacidades=lector.getRunningTrackCapabilities?.();
+      const ajustes={};
+      if(capacidades?.focusMode?.includes('continuous'))ajustes.focusMode='continuous';
+      if(capacidades?.zoom){
+        const actual=lector.getRunningTrackSettings?.().zoom||capacidades.zoom.min;
+        const objetivo=Math.min(capacidades.zoom.max,Math.max(capacidades.zoom.min,Math.min(2,actual*1.5)));
+        if(objetivo>actual)ajustes.zoom=objetivo;
+      }
+      if(Object.keys(ajustes).length)await lector.applyVideoConstraints({advanced:[ajustes]});
+    }catch(_){/* Las cámaras sin enfoque/zoom programático siguen escaneando. */}
   }catch(e){
     $('mensajeEscaner').textContent='No se pudo abrir la cámara. Comprueba el permiso de cámara del navegador. '+(e?.message||String(e));
     if(lectorActivo){try{lectorActivo.clear()}catch(x){}lectorActivo=null}

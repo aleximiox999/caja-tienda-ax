@@ -65,7 +65,7 @@ input[type="number"]{min-width:0}input[type="checkbox"]{width:auto;min-height:0}
 <div class="grid">
 <div class="card"><h2>Productos</h2><p class="mini muted">Escanea o busca. Se utiliza el precio registrado en Supabase.</p>
 <div class="actions"><button class="btn primary" id="escanearVenta">Escanear código</button><button class="btn" id="actualizarCatalogo">Actualizar productos</button></div>
-<div class="field"><label for="buscarProducto">Nombre o código de barras</label><input id="buscarProducto" placeholder="Buscar productos" autocomplete="off"></div>
+<div class="field"><label for="buscarProducto">Nombre o código de barras</label><input id="buscarProducto" placeholder="Ej.: maní, AFOXOPET o código" autocomplete="off" list="sugerenciasProductos" spellcheck="false"><datalist id="sugerenciasProductos"></datalist><p class="mini muted" style="margin:7px 0 0">Aparecen coincidencias mientras escribes, con o sin tildes.</p></div>
 <div id="busquedaResultados" class="productResults"></div></div>
 <div class="card"><h2>Carrito de venta</h2><div id="carrito"></div><div class="total" id="totalVenta">Bs 0,00</div>
 <div class="field"><label>Método de pago</label><select id="tipoPago"><option value="efectivo">Efectivo</option><option value="qr">QR</option><option value="mixto">Mixto: efectivo y QR</option></select></div>
@@ -124,9 +124,36 @@ async function cargarCatalogo(){
  catalogo=Array.isArray(data)?data:[];renderResultados();renderPrecio();renderInventario();renderCarrito();
  estado(catalogo.length+' productos obtenidos desde Supabase.','success');
 }
-function buscarProductos(q){q=limpiarcodigo(q).toLocaleLowerCase('es');if(!q)return catalogo.slice(0,30);return catalogo.filter(p=>[p.detalles,p.codigo_barras,p.categoria].some(t=>String(t||'').toLocaleLowerCase('es').includes(q))).slice(0,50)}
+function normalizarBusqueda(s){
+ return String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es').replace(/[^a-z0-9]+/g,' ').trim();
+}
+function buscarProductos(q){
+ const texto=normalizarBusqueda(q);
+ if(!texto)return catalogo.slice(0,40);
+ const terminos=[...new Set(texto.split(/\s+/).filter(Boolean))];
+ const evaluar=p=>{
+  const nombre=normalizarBusqueda(p.detalles),codigo=normalizarBusqueda(p.codigo_barras),categoria=normalizarBusqueda(p.categoria);
+  const todo=nombre+' '+codigo+' '+categoria;
+  const aciertos=terminos.filter(t=>todo.includes(t));
+  if(!aciertos.length)return null;
+  const todos=aciertos.length===terminos.length;
+  const comienza=nombre.startsWith(texto)||nombre.split(' ').some(t=>t.startsWith(texto));
+  return {p,score:(todos?100:0)+(comienza?50:0)+(nombre.includes(texto)?35:0)+(codigo===texto?70:0)+aciertos.length*10};
+ };
+ const ordenados=catalogo.map(evaluar).filter(Boolean).sort((a,b)=>b.score-a.score||String(a.p.detalles).localeCompare(String(b.p.detalles),'es'));
+ const exactos=ordenados.filter(x=>x.score>=100);
+ if(exactos.length)return exactos.slice(0,50).map(x=>x.p);
+ // Si “maní 20” no coincide completo, ofrecer productos relacionados con “maní”.
+ // Evitar que un número aislado desplace a un nombre relevante.
+ const palabras=terminos.filter(x=>!/^\d+$/.test(x)&&x.length>=2);
+ if(!palabras.length)return ordenados.slice(0,50).map(x=>x.p);
+ return ordenados.filter(x=>palabras.some(t=>normalizarBusqueda(x.p.detalles).includes(t)))
+   .slice(0,50).map(x=>x.p);
+}
 function renderResultados(){const a=buscarProductos($('buscarProducto').value);
- $('busquedaResultados').innerHTML=a.length?a.map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+stock(p)+'</p></div><div class="right"><b>'+moneda(p.precio_venta)+'</b><br><button class="btn" data-add="'+p.id+'" '+(stock(p)<=0?'disabled':'')+'>Agregar</button></div></div>').join(''):'<p class="empty">No se encontraron productos.</p>';
+ const sug=$('sugerenciasProductos');
+ sug.innerHTML=a.slice(0,25).map(p=>'<option value="'+safe(p.detalles)+'"></option>').join('');
+ $('busquedaResultados').innerHTML=a.length?a.map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+stock(p)+'</p></div><div class="right"><b>'+moneda(p.precio_venta)+'</b><br><button class="btn" data-add="'+p.id+'" '+(stock(p)<=0?'disabled':'')+'>Agregar</button></div></div>').join(''):'<p class="empty">No se encontraron coincidencias. Comprueba si ya registraste el producto en COSTOS.</p>';
  $('busquedaResultados').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>agregar(Number(b.dataset.add)))}
 function agregar(id){
  if(lockCart()){estado('Primero confirma la venta pendiente.','error');return}

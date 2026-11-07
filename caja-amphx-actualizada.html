@@ -140,6 +140,16 @@ th,td{border-bottom:1px solid #e1e6eb}
 details{border-top:1px solid #d7dfe7}
 @media(max-width:850px){body{font-size:16px}.lead,.muted{font-size:14px}.item strong{font-size:15px}.btn{font-size:16px}.card{box-shadow:0 3px 14px rgba(38,51,69,.055)}}
 @media(max-width:440px){.hrow{padding:12px}.card{padding:16px}.actions .btn{width:100%}}
+
+/* Total en vivo durante el escaneo, para administrador y empleados */
+.resumen-escaneo{display:grid;gap:5px;background:#eef8f2;border:1px solid #a4d4b5;border-radius:12px;padding:12px 15px;margin:10px 0 13px;text-align:center}
+.resumen-etiqueta{font-size:11px;font-weight:800;letter-spacing:.07em;color:#315e47}
+.resumen-total{font-size:clamp(32px,8vw,52px);font-weight:850;line-height:1.12;color:#12673b;font-variant-numeric:tabular-nums}
+.resumen-conteo{font-size:14px;font-weight:700;color:#2a5340}
+.resumen-ultimo{font-size:13px;color:#32483c;min-height:20px}
+#repetirUltimoEscaneo{margin:8px auto 0;width:min(100%,350px);min-height:42px;background:#fff;border-color:#a5d5b6;color:#16643b}
+#lectorPanel .scanner-title{flex-wrap:wrap}
+#lectorPanel .scanner-title .btn{min-height:40px}
 </style>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark">A</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
@@ -161,7 +171,7 @@ details{border-top:1px solid #d7dfe7}
 <button class="btn hidden" data-tab="empleados" id="tabEmpleados">Empleados</button>
 <button class="btn hidden" data-tab="reporte" id="tabReporte">Ventas</button>
 </div>
-<div id="lectorPanel" class="scanner hidden"><div class="scanner-title"><strong>Cámara dentro de la aplicación</strong><button class="btn" id="cerrarCamara">Cerrar cámara</button></div><div id="camara"></div><p class="muted mini" id="camaraInfo">Apunta al código de barras.</p></div>
+<div id="lectorPanel" class="scanner hidden"><div class="scanner-title"><strong>Cámara dentro de la aplicación</strong><button class="btn" id="cerrarCamara">Terminar escaneo</button></div><div id="resumenEscaneo" class="resumen-escaneo hidden" aria-live="polite"><div class="resumen-etiqueta">TOTAL ACUMULADO · ESTA VENTA</div><div id="totalEscaneo" class="resumen-total">Bs 0,00</div><div id="conteoEscaneo" class="resumen-conteo">0 unidades · 0 productos distintos</div><div id="ultimoEscaneo" class="resumen-ultimo">Apuntá al primer producto para comenzar.</div><button class="btn" type="button" id="repetirUltimoEscaneo" disabled>+1 unidad del último producto</button></div><div id="camara"></div><p class="muted mini" id="camaraInfo">Apunta al código de barras.</p></div>
 <section id="panelVenta">
 <div class="grid">
 <div class="card"><h2>Productos</h2><p class="mini muted">Escanea o busca. Se utiliza el precio registrado en Supabase.</p>
@@ -462,6 +472,7 @@ function renderCarrito(){
  $('totalVenta').textContent=moneda(total());
  $('tipoPago').disabled=lockCart();$('pagoEfectivo').disabled=lockCart();$('pagoQr').disabled=lockCart();
  $('btnVender').disabled=procesando||(!pending&&!cart.length);
+ actualizarResumenEscaneo();
  pintarColaOffline();
 }
 function renderPrecio(){
@@ -483,6 +494,18 @@ function selectTab(t){
  if(t==='precio')renderPrecio();if(t==='inventario')renderInventario();if(t==='entradas')renderEntradas();if(t==='empleados')void cargarEmpleados();
  if(t==='reporte')void cargarReporte();
 }
+let ultimoCodigoDetectado='',ultimaDeteccionCodigo=0,ultimoProductoEscaneadoId=null;
+function actualizarResumenEscaneo(){
+ const unidades=cart.reduce((s,x)=>s+Number(x.cantidad),0);
+ $('totalEscaneo').textContent=moneda(total());
+ $('conteoEscaneo').textContent=unidades+' unidad'+(unidades===1?'':'es')+' · '+cart.length+' producto'+(cart.length===1?'':'s')+' distinto'+(cart.length===1?'':'s');
+ $('repetirUltimoEscaneo').disabled=!ultimoProductoEscaneadoId||lockCart();
+}
+function mostrarUltimoProductoEscaneado(p){
+ ultimoProductoEscaneadoId=Number(p.id);
+ $('ultimoEscaneo').textContent='Último: '+p.detalles+' · '+moneda(precio(p))+' por unidad';
+ actualizarResumenEscaneo();
+}
 async function detenerLector(){
  const l=lector;lector=null;abriendo=false;
  if(l){try{await l.stop()}catch(e){}try{l.clear()}catch(e){}}
@@ -494,20 +517,48 @@ async function iniciarLector(m){
  if(typeof Html5Qrcode==='undefined'){estado('No se cargó la biblioteca del escáner. Comprueba la conexión.','error');return}
  if(m==='entrada'&&(cuenta?.rol!=='administrador'||offlineMode||!online())){estado('Las entradas requieren administrador e internet.','error');return}
  if(m==='venta'&&lockCart()){estado('Primero confirma la venta pendiente.','error');return}
- abriendo=true;show('lectorPanel',true);$('camaraInfo').textContent='Solicitando cámara…';
+ abriendo=true;ultimoCodigoDetectado='';ultimaDeteccionCodigo=0;ultimoProductoEscaneadoId=null;
+ show('lectorPanel',true);show('resumenEscaneo',m==='venta');
+ if(m==='venta'){$('ultimoEscaneo').textContent='Apuntá al primer producto para comenzar.';actualizarResumenEscaneo();}
+ $('camaraInfo').textContent='Solicitando cámara…';
  try {
   const l=new Html5Qrcode('camara',{verbose:false});lector=l;
   await l.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},codigo=>{
    if(lector!==l)return;
-   const p=catalogo.find(x=>limpiarcodigo(x.codigo_barras)===limpiarcodigo(codigo));
+   const limpio=limpiarcodigo(codigo);
+   if(m==='venta'){
+    const ahora=Date.now();
+    // Evita sumar de nuevo el mismo código en cada fotograma de la cámara.
+    const repetido=limpio===ultimoCodigoDetectado&&ahora-ultimaDeteccionCodigo<1800;
+    ultimoCodigoDetectado=limpio;ultimaDeteccionCodigo=ahora;
+    if(repetido)return;
+    const p=catalogo.find(x=>limpiarcodigo(x.codigo_barras)===limpio);
+    if(!p){
+     $('camaraInfo').textContent='Código no registrado: '+limpio+'. Podés continuar escaneando.';
+     estado('Código no registrado: '+limpio+'. Primero creá el producto en COSTOS.','error');return;
+    }
+    const antes=cart.reduce((s,x)=>s+Number(x.cantidad),0);
+    agregar(Number(p.id));
+    const despues=cart.reduce((s,x)=>s+Number(x.cantidad),0);
+    if(despues>antes){mostrarUltimoProductoEscaneado(p);$('camaraInfo').textContent='Añadido. Seguís escaneando; no necesitás cerrar la cámara.';}
+    else{$('camaraInfo').textContent='No se añadió '+p.detalles+'. Revisá el aviso de la caja.';}
+    return;
+   }
+   const p=catalogo.find(x=>limpiarcodigo(x.codigo_barras)===limpio);
    void detenerLector();
-   if(!p){if(m==='entrada'){$('buscarEntrada').value=codigo;renderEntradas()}estado('Código no registrado: '+codigo+'. Primero crea el producto en COSTOS.','error');return}
+   if(!p){if(m==='entrada'){$('buscarEntrada').value=limpio;renderEntradas()}estado('Código no registrado: '+limpio+'. Primero creá el producto en COSTOS.','error');return}
    if(m==='precio'){selectTab('precio');$('buscarPrecio').value=p.codigo_barras||p.detalles;renderPrecio();estado('Precio encontrado: '+p.detalles,'success')}
    else if(m==='entrada'){seleccionarEntrada(p.id);estado('Producto seleccionado: '+p.detalles,'success')}
-   else {agregar(Number(p.id));}
   },()=>{});
-  $('camaraInfo').textContent='Apunta al código de barras del producto.';estado('Cámara iniciada.');
- }catch(e){$('camaraInfo').textContent='No se pudo abrir la cámara. Revisa el permiso de Chrome: '+(e?.message||e);estado('Error de cámara.','error');if(lector){try{lector.clear()}catch(e){}}lector=null;abriendo=false;}
+  if(lector!==l){try{await l.stop()}catch(e){}return}
+  $('camaraInfo').textContent=m==='venta'?'Escaneá todos los productos. El total cambia aquí mismo. Para varios iguales, usá +1.':'Apuntá al código de barras del producto.';
+  estado('Cámara iniciada.');
+ }catch(e){
+  $('camaraInfo').textContent='No se pudo abrir la cámara. Revisa el permiso de Chrome: '+(e?.message||e);
+  estado('Error de cámara.','error');
+  if(lector){try{lector.clear()}catch(e){}}
+  lector=null;abriendo=false;
+ }
 }
 async function cobrar(){
  if(procesando)return;
@@ -612,6 +663,7 @@ $('recargarEntrada').onclick=cargarCatalogo;
 $('buscarEntrada').oninput=()=>{$('entradaProductoId').value='';$('entradaSeleccion').textContent='Selecciona un producto de la lista.';renderEntradas();previoEntrada()};
 $('entradaUnidades').oninput=previoEntrada;$('entradaCostoTotal').oninput=previoEntrada;$('formEntrada').onsubmit=registrarEntrada;fechaLocalEntrada();
 $('cerrarCamara').onclick=detenerLector;
+$('repetirUltimoEscaneo').onclick=()=>{if(!ultimoProductoEscaneadoId||lockCart())return;const p=catalogo.find(x=>Number(x.id)===ultimoProductoEscaneadoId);if(!p)return;const antes=cart.reduce((n,x)=>n+Number(x.cantidad),0);agregar(ultimoProductoEscaneadoId);const despues=cart.reduce((n,x)=>n+Number(x.cantidad),0);if(despues>antes)mostrarUltimoProductoEscaneado(p);};
 $('tipoPago').onchange=()=>show('mixto',$('tipoPago').value==='mixto');
 $('btnVender').onclick=cobrar;
 $('actualizarCatalogo').onclick=cargarCatalogo;$('actualizarPrecio').onclick=cargarCatalogo;$('actualizarInventario').onclick=cargarCatalogo;

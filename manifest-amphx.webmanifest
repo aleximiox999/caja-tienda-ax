@@ -6,7 +6,7 @@
   "start_url": "./caja-real.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0d0f12",
-  "theme_color": "#0d0f12",
+  "background_color": "#f5f6f8",
+  "theme_color": "#f5f6f8",
   "lang": "es-BO"
 }

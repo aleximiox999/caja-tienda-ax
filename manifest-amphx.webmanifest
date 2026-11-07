@@ -1,0 +1,12 @@
+{
+  "name": "Tienda AMPHX · Caja",
+  "short_name": "Tienda AMPHX",
+  "description": "Caja, precios y ventas de Tienda AMPHX",
+  "id": "./caja-real.html",
+  "start_url": "./caja-real.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d0f12",
+  "theme_color": "#0d0f12",
+  "lang": "es-BO"
+}

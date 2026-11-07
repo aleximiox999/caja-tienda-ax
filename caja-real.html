@@ -151,6 +151,15 @@ details{border-top:1px solid #d7dfe7}
 #repetirUltimoEscaneo{margin:8px auto 0;width:min(100%,350px);min-height:42px;background:#fff;border-color:#a5d5b6;color:#16643b}
 #lectorPanel .scanner-title{flex-wrap:wrap}
 #lectorPanel .scanner-title .btn{min-height:40px}
+
+.credenciales-acceso{background:#f0f9f4;border:1px solid #9bcfac;border-radius:12px;padding:16px;margin:15px 0;color:#193d2d}
+.credenciales-acceso h3{color:#193d2d}
+.credenciales-acceso label{color:#315c43;margin:10px 0 5px}
+.credencial-valor{display:block;background:#fff;color:#163f2b;border:1px solid #b8dbbe;border-radius:8px;padding:11px 13px;margin:4px 0 10px;font-size:clamp(16px,4.5vw,22px);font-family:ui-monospace,monospace;letter-spacing:1px;font-weight:760;user-select:all;overflow-wrap:anywhere}
+.credenciales-acceso #copiarAcceso{width:100%;margin-top:4px}
+.empleado-codigo{font-family:ui-monospace,monospace;font-size:13px;font-weight:700;color:#2c664b}
+.empleado-controles{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}
+.empleado-controles .btn{padding:8px 10px;min-height:38px}
 </style>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark">A</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
@@ -158,8 +167,8 @@ details{border-top:1px solid #d7dfe7}
 <div id="status" role="status">Inicializando conexión…</div>
 <section id="authCard" class="card hidden">
 <h1>Acceso a Tienda AMPHX</h1><p class="lead">Usa tu cuenta personal. Las operaciones quedan asociadas al empleado.</p>
-<form id="formLogin"><div class="field"><label for="email">Correo electrónico</label><input id="email" type="email" autocomplete="username" required></div><div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" required></div><button class="btn primary" type="submit" style="width:100%">Ingresar</button></form>
-<details><summary>Soy empleado nuevo: crear mi cuenta</summary><p class="mini muted">Crea tu cuenta con tu correo. El administrador debe habilitarte antes de usar la caja.</p><form id="formAlta"><div class="field"><label>Mi correo</label><input id="altaEmail" type="email" required autocomplete="email"></div><div class="field"><label>Contraseña (mínimo 8 caracteres)</label><input id="altaPass" type="password" required minlength="8" autocomplete="new-password"></div><button class="btn" type="submit">Crear cuenta de empleado</button></form></details>
+<form id="formLogin"><div class="field"><label for="email">Código de empleado o correo del administrador</label><input id="email" type="text" placeholder="Ej.: AX-ABCD2345" autocomplete="username" autocapitalize="characters" spellcheck="false" required></div><div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" required></div><button class="btn primary" type="submit" style="width:100%">Ingresar</button></form>
+<p class="mini muted">Empleados: pedí tu código y contraseña al administrador. No necesitás correo ni registrar una cuenta. Administrador: seguí ingresando con tu correo habitual.</p>
 </section>
 <section id="pendiente" class="card hidden"><h2>Cuenta pendiente de autorización</h2><p>Tu cuenta existe, pero todavía no estás habilitado como empleado. El administrador debe entrar en «Empleados» y asociar tu correo.</p><p class="muted mini" id="pendingEmail"></p><button class="btn" id="btnComprobar">Comprobar acceso</button></section>
 <section id="app" class="hidden">
@@ -205,7 +214,7 @@ details{border-top:1px solid #d7dfe7}
 <div id="previoEntrada" class="note">Selecciona producto, unidades y precio para calcular el costo unitario.</div>
 <button class="btn primary" id="guardarEntrada" type="submit" style="width:100%">GUARDAR COMPRA Y SUMAR INVENTARIO</button>
 </form><p class="mini muted">Requiere internet. Si una operación no confirma, comprueba el inventario antes de intentar otra vez.</p></div></div></section>
-<section id="panelEmpleados" class="hidden"><div class="grid"><div class="card"><h2>Agregar empleado</h2><p class="lead">El empleado primero crea su cuenta con su correo desde la pantalla de acceso. Después tú lo habilitas aquí.</p><form id="formEmpleado"><div class="field"><label>Nombre del empleado</label><input id="nombreNuevo" maxlength="100" required></div><div class="field"><label>Correo de su cuenta</label><input id="correoNuevo" type="email" maxlength="320" required></div><button class="btn primary" type="submit">Autorizar empleado</button></form><div class="note">El empleado podrá vender y consultar precios, sin acceso a costos ni ganancias.</div></div><div class="card"><h2>Personal registrado</h2><div id="listaEmpleados"></div></div></div></section>
+<section id="panelEmpleados" class="hidden"><div class="grid"><div class="card"><h2>Nuevo empleado</h2><p class="lead">Ingresá el nombre y presioná «Crear acceso». El código y la contraseña se generan automáticamente. No se necesita correo.</p><form id="formEmpleado"><div class="field"><label for="nombreNuevo">Nombre completo del empleado</label><input id="nombreNuevo" maxlength="100" placeholder="Ej.: Franco Andrés Guzmán" autocomplete="off" required></div><button id="crearEmpleadoBtn" class="btn primary" type="submit">Crear acceso</button></form><div id="credencialesNuevas" class="credenciales-acceso hidden" role="status" aria-live="polite"><h3 id="accesoNombre">Acceso creado</h3><p class="mini">Entregá estos datos únicamente al empleado. La contraseña se muestra ahora y después no se puede consultar; sí se puede generar una nueva.</p><label>Código de empleado</label><div id="accesoCodigo" class="credencial-valor"></div><label>Contraseña temporal</label><div id="accesoContrasena" class="credencial-valor"></div><button type="button" class="btn primary" id="copiarAcceso">Copiar código y contraseña</button></div><div class="note">El empleado podrá vender y consultar precios, sin acceso a costos ni ganancias.</div></div><div class="card"><h2>Personal registrado</h2><div id="listaEmpleados"></div></div></div></section>
 <section id="panelReporte" class="hidden"><div class="card"><h2>Ventas registradas</h2><p class="lead">Las ventas quedan asociadas al empleado. Montos en efectivo y QR separados.</p><div id="reporteResumen"></div><div class="tablewrap"><table><thead><tr><th>FECHA</th><th>EMPLEADO</th><th>EFECTIVO</th><th>QR</th><th>TOTAL</th><th>ESTADO</th></tr></thead><tbody id="tablaVentas"></tbody></table></div></div></section>
 </section>
 <footer class="muted mini" style="margin-top:25px;text-align:center">TIENDA AMPHX · Caja de ventas y entradas de mercadería con inventario real.</footer>
@@ -492,7 +501,8 @@ function selectTab(t){
  tab=t;document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
  ['venta','precio','inventario','entradas','empleados','reporte'].forEach(x=>show('panel'+x[0].toUpperCase()+x.slice(1),x===t));
  void detenerLector();
- if(t==='precio')renderPrecio();if(t==='inventario')renderInventario();if(t==='entradas')renderEntradas();if(t==='empleados')void cargarEmpleados();
+ if(t==='empleados')void cargarEmpleados();else limpiarCredenciales();
+ if(t==='precio')renderPrecio();if(t==='inventario')renderInventario();if(t==='entradas')renderEntradas();
  if(t==='reporte')void cargarReporte();
 }
 let ultimoCodigoDetectado='',ultimaDeteccionCodigo=0,ultimoProductoEscaneadoId=null;
@@ -625,13 +635,56 @@ async function registrarEntrada(ev){
  }catch(err){estado('Compra sin confirmación. Actualiza inventario y comprueba antes de reintentar: '+(err.message||err),'error')}
  finally{guardandoEntrada=false;$('guardarEntrada').disabled=false}
 }
+let credencialesRecientes=null;
+function mostrarCredenciales(datos){
+ credencialesRecientes={nombre:datos.nombre,codigo:datos.codigo,contrasena:datos.contrasena};
+ $('accesoNombre').textContent='Acceso creado: '+datos.nombre;
+ $('accesoCodigo').textContent=datos.codigo;
+ $('accesoContrasena').textContent=datos.contrasena;
+ show('credencialesNuevas',true);
+}
+function limpiarCredenciales(){
+ credencialesRecientes=null;
+ $('accesoCodigo').textContent='';
+ $('accesoContrasena').textContent='';
+ show('credencialesNuevas',false);
+}
+async function solicitarAccesoEmpleado(accion,params={}){
+ const {data:{session},error:sessionError}=await db.auth.getSession();
+ if(sessionError||!session?.access_token)throw new Error('Iniciá sesión nuevamente como administrador.');
+ const respuesta=await fetch('https://tdentkkksydawctcezrs.supabase.co/functions/v1/empleados-acceso',{
+  method:'POST',cache:'no-store',
+  headers:{'Content-Type':'application/json','apikey':'sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh','Authorization':'Bearer '+session.access_token},
+  body:JSON.stringify({accion,...params})
+ });
+ const datos=await respuesta.json().catch(()=>({error:'El servidor no respondió correctamente'}));
+ if(!respuesta.ok||!datos.ok)throw new Error(datos.error||'No se pudo completar la operación.');
+ return datos;
+}
 async function cargarEmpleados(){
  if(cuenta?.rol!=='administrador')return;
- const {data,error}=await db.from('empleados').select('id,auth_user_id,nombre,rol,activo').order('nombre');
+ const {data,error}=await db.from('empleados').select('id,auth_user_id,nombre,rol,activo,codigo_acceso').order('nombre');
  if(error){estado('No se pudieron consultar empleados: '+error.message,'error');return}
  empleados=data||[];
- $('listaEmpleados').innerHTML=empleados.length?empleados.map(e=>'<div class="item"><div><strong>'+safe(e.nombre)+'</strong><p>'+safe(e.rol)+' · '+(e.activo?'Activo':'Inactivo')+'</p></div><div class="right">'+(e.id===cuenta.id?'<span class="mini muted">Tu cuenta</span>':'<button class="btn" data-toggle="'+safe(e.id)+'">'+(e.activo?'Desactivar':'Activar')+'</button>')+'</div></div>').join(''):'<p class="empty">Sin empleados registrados.</p>';
+ $('listaEmpleados').innerHTML=empleados.length?empleados.map(e=>
+  '<div class="item"><div><strong>'+safe(e.nombre)+'</strong><p>'+safe(e.rol)+' · '+(e.activo?'Activo':'Inactivo')+'</p>'+
+  (e.codigo_acceso?'<p class="empleado-codigo">'+safe(e.codigo_acceso)+'</p>':'')+
+  '</div><div class="right empleado-controles">'+(e.id===cuenta.id?'<span class="mini muted">Tu cuenta</span>':
+  (e.codigo_acceso?'<button class="btn" type="button" data-reset="'+safe(e.id)+'">Nueva contraseña</button>':'')+
+  '<button class="btn" type="button" data-toggle="'+safe(e.id)+'">'+(e.activo?'Desactivar':'Activar')+'</button>')+
+  '</div></div>').join(''):'<p class="empty">Sin empleados registrados.</p>';
  $('listaEmpleados').querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>toggleEmpleado(b.dataset.toggle));
+ $('listaEmpleados').querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>restablecerClaveEmpleado(b.dataset.reset));
+}
+async function restablecerClaveEmpleado(id){
+ if(cuenta?.rol!=='administrador')return;
+ const e=empleados.find(x=>x.id===id);if(!e||!e.codigo_acceso)return;
+ if(!confirm('¿Generar una contraseña nueva para '+e.nombre+'? La anterior dejará de funcionar.'))return;
+ const btn=$('listaEmpleados').querySelector('[data-reset="'+id+'"]');if(btn)btn.disabled=true;
+ estado('Generando nueva contraseña…');
+ try{const datos=await solicitarAccesoEmpleado('restablecer',{empleado_id:id});mostrarCredenciales(datos);estado('Contraseña nueva creada para '+e.nombre+'. Compartila con ese empleado.','success');}
+ catch(err){estado('No se pudo cambiar la contraseña: '+(err?.message||err),'error')}
+ finally{if(btn)btn.disabled=false}
 }
 async function toggleEmpleado(id){
  if(cuenta?.rol!=='administrador')return;
@@ -650,10 +703,29 @@ async function cargarReporte(){
  $('reporteResumen').innerHTML='<p class="note">Últimas '+arr.length+' ventas · Efectivo '+moneda(sum('monto_efectivo'))+' · QR '+moneda(sum('monto_qr'))+' · Total '+moneda(sum('total'))+'</p>';
  $('tablaVentas').innerHTML=arr.map(v=>'<tr><td>'+safe(new Date(v.fecha).toLocaleString('es-BO'))+'</td><td>'+safe(names[v.empleado_id]||'Sin nombre')+'</td><td>'+moneda(v.monto_efectivo)+'</td><td>'+moneda(v.monto_qr)+'</td><td>'+moneda(v.total)+'</td><td>'+safe(v.estado)+'</td></tr>').join('');
 }
-$('formLogin').onsubmit=async e=>{e.preventDefault();estado('Iniciando sesión…');const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){estado('No se pudo ingresar: '+error.message,'error');return}await boot()};
-$('formAlta').onsubmit=async e=>{e.preventDefault();const email=$('altaEmail').value.trim(),password=$('altaPass').value;estado('Creando cuenta…');const {error}=await db.auth.signUp({email,password});if(error){estado('No se pudo registrar: '+error.message,'error');return}estado('Cuenta solicitada. Revisa si te llegó correo de confirmación y pide al administrador que te habilite.','success');await boot()};
-$('formEmpleado').onsubmit=async e=>{e.preventDefault();if(cuenta?.rol!=='administrador')return;estado('Autorizando empleado…');const {error}=await db.rpc('vincular_empleado',{p_correo:$('correoNuevo').value.trim(),p_nombre:$('nombreNuevo').value.trim()});if(error){estado('No se pudo autorizar: '+error.message,'error');return}$('formEmpleado').reset();estado('Empleado autorizado. Ya puede ingresar desde su cuenta.','success');await cargarEmpleados()};
-$('btnSalir').onclick=async()=>{await detenerLector();await db.auth.signOut();cuenta=null;catalogo=[];cart=[];show('btnSalir',false);mostrarPantalla('login');estado('Sesión cerrada.')};
+$('formLogin').onsubmit=async e=>{e.preventDefault();const entrada=$('email').value.trim();const codigo=entrada.toUpperCase().replace(/\s/g,'');const usuario=/^AX-[A-Z2-9]{8}$/.test(codigo)?codigo.toLowerCase()+'@empleados.amphx.invalid':entrada;if(!usuario.includes('@')){estado('Escribí tu código de empleado (AX-...) o el correo de administrador.','error');return;}const btn=e.currentTarget.querySelector('button[type="submit"]');btn.disabled=true;estado('Iniciando sesión…');try{const {error}=await db.auth.signInWithPassword({email:usuario,password:$('password').value});if(error){estado('Código o contraseña incorrectos. Revisalos o pedí una nueva contraseña al administrador.','error');return;}await boot();}catch(err){estado('No se pudo ingresar: '+(err?.message||err),'error');}finally{btn.disabled=false}};
+
+$('formEmpleado').onsubmit=async e=>{
+ e.preventDefault();if(cuenta?.rol!=='administrador')return;
+ const nombre=$('nombreNuevo').value.trim();
+ if(nombre.length<3){estado('Escribí el nombre completo del empleado.','error');return}
+ const btn=$('crearEmpleadoBtn');btn.disabled=true;estado('Creando acceso seguro para '+nombre+'…');
+ try{
+  const datos=await solicitarAccesoEmpleado('crear',{nombre});
+  mostrarCredenciales(datos);
+  $('formEmpleado').reset();
+  await cargarEmpleados();
+  estado('Empleado '+nombre+' creado y autorizado. Entregale su código y contraseña.','success');
+ }catch(err){estado('No se pudo crear el acceso: '+(err?.message||err),'error');}
+ finally{btn.disabled=false;}
+};
+$('copiarAcceso').onclick=async()=>{
+ if(!credencialesRecientes)return;
+ const texto='TIENDA AMPHX — Acceso de empleado\nNombre: '+credencialesRecientes.nombre+'\nCódigo: '+credencialesRecientes.codigo+'\nContraseña: '+credencialesRecientes.contrasena+'\nCaja: https://aleximiox999.github.io/caja-tienda-ax/caja-real.html';
+ try{await navigator.clipboard.writeText(texto);estado('Acceso copiado. Enviáselo únicamente al empleado.','success')}
+ catch{window.prompt('Copiá el acceso y compartilo solamente con el empleado:',texto)}
+};
+$('btnSalir').onclick=async()=>{await detenerLector();await db.auth.signOut();cuenta=null;catalogo=[];cart=[];limpiarCredenciales();show('btnSalir',false);mostrarPantalla('login');estado('Sesión cerrada.')};
 $('btnComprobar').onclick=boot;
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>selectTab(b.dataset.tab));
 $('buscarProducto').oninput=renderResultados;$('buscarPrecio').oninput=renderPrecio;

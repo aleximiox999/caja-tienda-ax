@@ -1,8 +1,9 @@
 /* TIENDA AMPHX - app shell offline; nunca intercepta solicitudes a Supabase. */
-const VERSION='amphx-caja-offline-v1';
+const VERSION='amphx-caja-offline-v2';
 const HOME='./caja-real.html';
 const JS_MODULE='https://esm.sh/@supabase/supabase-js@2.57.0';
 const SCANNER='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+const MANIFEST='./manifest-amphx.webmanifest';
 async function cacheResource(cache,request){
   try {
     const response=await fetch(request);
@@ -14,6 +15,7 @@ self.addEventListener('install',event=>{
     const cache=await caches.open(VERSION);
     await Promise.all([
       cacheResource(cache,new Request(HOME,{cache:'reload'})),
+      cacheResource(cache,new Request(MANIFEST,{cache:'reload'})),
       cacheResource(cache,new Request(JS_MODULE,{mode:'cors'})),
       cacheResource(cache,new Request(SCANNER,{mode:'no-cors'}))
     ]);
@@ -33,10 +35,10 @@ self.addEventListener('fetch',event=>{
   const u=new URL(event.request.url);
   // No almacenar tokens, respuestas de autenticación, inventario en vivo ni operaciones de venta.
   if(u.hostname.endsWith('.supabase.co'))return;
-  const own=u.origin===self.location.origin &&
-    (u.pathname.endsWith('/caja-real.html')||u.pathname.endsWith('/sw-amphx.js'));
+  const own=u.origin===self.location.origin && u.pathname.endsWith('/caja-real.html');
   const dependency=u.hostname==='esm.sh'||u.hostname.endsWith('.esm.sh')||u.hostname==='unpkg.com';
-  if(!own&&!dependency)return;
+  const manifest=u.origin===self.location.origin && u.pathname.endsWith('/manifest-amphx.webmanifest');
+  if(!own&&!dependency&&!manifest)return;
   event.respondWith((async()=>{
     const cache=await caches.open(VERSION);
     if(own){

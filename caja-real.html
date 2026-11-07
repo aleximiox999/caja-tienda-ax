@@ -221,8 +221,10 @@ details{border-top:1px solid #d7dfe7}
 </main>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
-const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh');
+const accesoSoloEmpleados=new URLSearchParams(location.search).get('empleado')==='1';
+const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',accesoSoloEmpleados?{auth:{storageKey:'amphx-caja-empleado-auth-v1'}}:undefined);
 const $=(id)=>document.getElementById(id);
+if(accesoSoloEmpleados){document.title='Ingreso de empleados · Tienda AMPHX';document.querySelector('#authCard h1').textContent='Acceso de empleados';document.querySelector('#authCard .lead').textContent='Ingresá con el código de empleado y la contraseña que te entregó el administrador.';document.querySelector('label[for="email"]').textContent='Código de empleado';$('email').placeholder='AX-ABCD2345';document.querySelector('#authCard > p.mini').textContent='No necesitás correo electrónico ni crear una cuenta. Si no tenés acceso, pedíselo al administrador.';}
 const moneda=(n)=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
 const safe=(s)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let cuenta=null, catalogo=[],cart=[], tab='venta',lector=null,abriendo=false,procesando=false,empleados=[],pending=null;
@@ -305,6 +307,7 @@ async function cargarCatalogoLocal(){
 }
 async function modoSinInternet(user){
  const perfil=await localGet('perfiles',user.id).catch(()=>null);
+ if(accesoSoloEmpleados&&perfil?.rol!=='empleado'){cuenta=null;mostrarPantalla('login');estado('Este enlace es solo para empleados. Usá tu código de acceso.','error');return;}
  if(!perfil||!perfil.activo){cuenta=null;mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('Sin conexión: no hay un acceso autorizado previamente guardado.','error');return}
  cuenta=perfil;offlineMode=true;loadPending(user.id);pendingView();
  $('who').textContent=perfil.nombre+' · sin internet';
@@ -410,6 +413,7 @@ async function boot(){
  }
  const {data:rol,error:er}=await db.from('empleados').select('id,nombre,rol,activo,auth_user_id').eq('auth_user_id',user.id).maybeSingle();
  if(er){mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('No se pudo comprobar la cuenta: '+er.message,'error');return}
+ if(accesoSoloEmpleados&&rol?.rol==='administrador'){await db.auth.signOut();cuenta=null;mostrarPantalla('login');estado('Este enlace es exclusivo para empleados. Como administrador, usá tu enlace habitual.','error');return;}
  if(!rol||!rol.activo){cuenta=null;mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('Tu administrador todavía no ha autorizado tu acceso.');return}
  cuenta=rol;offlineMode=false;loadPending(user.id);pendingView();
  try{await localPut('perfiles',{...rol,usuario:user.id})}catch(e){/* El modo en línea continúa sin IndexedDB. */}
@@ -703,7 +707,7 @@ async function cargarReporte(){
  $('reporteResumen').innerHTML='<p class="note">Últimas '+arr.length+' ventas · Efectivo '+moneda(sum('monto_efectivo'))+' · QR '+moneda(sum('monto_qr'))+' · Total '+moneda(sum('total'))+'</p>';
  $('tablaVentas').innerHTML=arr.map(v=>'<tr><td>'+safe(new Date(v.fecha).toLocaleString('es-BO'))+'</td><td>'+safe(names[v.empleado_id]||'Sin nombre')+'</td><td>'+moneda(v.monto_efectivo)+'</td><td>'+moneda(v.monto_qr)+'</td><td>'+moneda(v.total)+'</td><td>'+safe(v.estado)+'</td></tr>').join('');
 }
-$('formLogin').onsubmit=async e=>{e.preventDefault();const entrada=$('email').value.trim();const codigo=entrada.toUpperCase().replace(/\s/g,'');const usuario=/^AX-[A-Z2-9]{8}$/.test(codigo)?codigo.toLowerCase()+'@empleados.amphx.invalid':entrada;if(!usuario.includes('@')){estado('Escribí tu código de empleado (AX-...) o el correo de administrador.','error');return;}const btn=e.currentTarget.querySelector('button[type="submit"]');btn.disabled=true;estado('Iniciando sesión…');try{const {error}=await db.auth.signInWithPassword({email:usuario,password:$('password').value});if(error){estado('Código o contraseña incorrectos. Revisalos o pedí una nueva contraseña al administrador.','error');return;}await boot();}catch(err){estado('No se pudo ingresar: '+(err?.message||err),'error');}finally{btn.disabled=false}};
+$('formLogin').onsubmit=async e=>{e.preventDefault();const entrada=$('email').value.trim();const codigo=entrada.toUpperCase().replace(/\s/g,'');if(accesoSoloEmpleados&&!/^AX-[A-Z2-9]{8}$/.test(codigo)){estado('Ingresá el código del empleado que empieza con AX-.','error');return;}const usuario=/^AX-[A-Z2-9]{8}$/.test(codigo)?codigo.toLowerCase()+'@empleados.amphx.invalid':entrada;if(!usuario.includes('@')){estado('Escribí tu código de empleado (AX-...) o el correo de administrador.','error');return;}const btn=e.currentTarget.querySelector('button[type="submit"]');btn.disabled=true;estado('Iniciando sesión…');try{const {error}=await db.auth.signInWithPassword({email:usuario,password:$('password').value});if(error){estado('Código o contraseña incorrectos. Revisalos o pedí una nueva contraseña al administrador.','error');return;}await boot();}catch(err){estado('No se pudo ingresar: '+(err?.message||err),'error');}finally{btn.disabled=false}};
 
 $('formEmpleado').onsubmit=async e=>{
  e.preventDefault();if(cuenta?.rol!=='administrador')return;
@@ -721,7 +725,7 @@ $('formEmpleado').onsubmit=async e=>{
 };
 $('copiarAcceso').onclick=async()=>{
  if(!credencialesRecientes)return;
- const texto='TIENDA AMPHX — Acceso de empleado\nNombre: '+credencialesRecientes.nombre+'\nCódigo: '+credencialesRecientes.codigo+'\nContraseña: '+credencialesRecientes.contrasena+'\nCaja: https://aleximiox999.github.io/caja-tienda-ax/caja-real.html';
+ const texto='TIENDA AMPHX — Acceso de empleado\nNombre: '+credencialesRecientes.nombre+'\nCódigo: '+credencialesRecientes.codigo+'\nContraseña: '+credencialesRecientes.contrasena+'\nCaja empleados: https://aleximiox999.github.io/caja-tienda-ax/caja-real.html?empleado=1';
  try{await navigator.clipboard.writeText(texto);estado('Acceso copiado. Enviáselo únicamente al empleado.','success')}
  catch{window.prompt('Copiá el acceso y compartilo solamente con el empleado:',texto)}
 };

@@ -165,12 +165,14 @@ async function localOp(store,mode,cb){
  const d=await abrirDB();
  return await new Promise((resolve,reject)=>{
   const tx=d.transaction(store,mode);
+  let result;
   const req=cb(tx.objectStore(store));
-  req.onsuccess=()=>resolve(req.result);
+  req.onsuccess=()=>{result=req.result};
   req.onerror=()=>reject(req.error);
-  tx.onabort=()=>reject(tx.error||new Error('No se pudo guardar sin internet'));
-  // cerrar la conexión luego de la transacción
-  tx.oncomplete=()=>d.close();
+  tx.onerror=()=>reject(tx.error||new Error('Error de almacenamiento local'));
+  tx.onabort=()=>{d.close();reject(tx.error||new Error('No se pudo guardar sin internet'))};
+  // Resolver solo cuando los datos quedaron confirmados en IndexedDB.
+  tx.oncomplete=()=>{d.close();resolve(result)};
  });
 }
 const localGet=(store,key)=>localOp(store,'readonly',s=>s.get(key));
@@ -218,7 +220,7 @@ async function cargarCatalogoLocal(){
 async function modoSinInternet(user){
  const perfil=await localGet('perfiles',user.id).catch(()=>null);
  if(!perfil||!perfil.activo){cuenta=null;mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('Sin conexión: no hay un acceso autorizado previamente guardado.','error');return}
- cuenta=perfil;offlineMode=true;
+ cuenta=perfil;offlineMode=true;loadPending(user.id);pendingView();
  $('who').textContent=perfil.nombre+' · sin internet';
  $('roleDesc').textContent='Modo sin internet: los cobros quedan pendientes hasta sincronizar';
  show('btnSalir',true);
@@ -265,7 +267,7 @@ async function guardarVentaOffline(){
  if(pago==='mixto'&&(!(ef>0&&qr>0)||cent(ef)+cent(qr)!==cent(tt))){estado('Efectivo y QR deben sumar '+moneda(tt),'error');return;}
  if(!confirm('SIN INTERNET. ¿Guardar esta venta por '+moneda(tt)+' SÓLO EN ESTE DISPOSITIVO? No se descontará en Supabase hasta sincronizar. Si el stock cambió en otro equipo, puede requerir revisión.'))return;
  const venta={usuario:cuenta.auth_user_id,key:crypto.randomUUID(),fecha:new Date().toISOString(),
-  items:cart.map(x=>({producto_id:x.producto.id,cantidad:x.cantidad})),pago,ef,qr,total:tt,error:''};
+  items:cart.map(x=>({producto_id:x.producto.id,cantidad:x.cantidad,precio_esperado:Number(x.producto.precio_venta)})),pago,ef,qr,total:tt,error:''};
  try{
   await localPut('pendientes',venta);
   cart=[];
@@ -281,11 +283,33 @@ function cent(n){return Math.round((Number(n)+Number.EPSILON)*100)}
 function total(){return cart.reduce((s,x)=>s+cent(x.cantidad*precio(x.producto)),0)/100}
 function lockCart(){return Boolean(pending)||procesando}
 function mostrarPantalla(n){show('authCard',n==='login');show('app',n==='app');show('pendiente',n==='pendiente');if(n!=='app')void detenerLector()}
-function loadPending(){try{const v=JSON.parse(localStorage.getItem(PENDKEY)||'null');pending=(v&&Array.isArray(v.items)&&v.key)?v:null}catch(e){pending=null} }
-function savePending(){if(pending)localStorage.setItem(PENDKEY,JSON.stringify(pending));else localStorage.removeItem(PENDKEY)}
+function loadPending(usuario){
+ pending=null;
+ if(!usuario)return;
+ try{
+  const llave=PENDKEY+'-'+usuario;
+  let v=JSON.parse(localStorage.getItem(llave)||'null');
+  // Migración de una venta pendiente de la versión anterior, solamente al administrador.
+  if(!v && cuenta?.rol==='administrador'){
+   const legado=JSON.parse(localStorage.getItem(PENDKEY)||'null');
+   if(legado&&Array.isArray(legado.items)&&legado.key){
+    v={...legado,usuario};
+    localStorage.setItem(llave,JSON.stringify(v));
+    localStorage.removeItem(PENDKEY);
+   }
+  }
+  pending=v&&v.usuario===usuario&&Array.isArray(v.items)&&v.key?v:null;
+ }catch(e){pending=null}
+}
+function savePending(){
+ if(!cuenta?.auth_user_id)return;
+ const llave=PENDKEY+'-'+cuenta.auth_user_id;
+ if(pending){pending.usuario=cuenta.auth_user_id;localStorage.setItem(llave,JSON.stringify(pending))}
+ else localStorage.removeItem(llave);
+}
 function pendingView(){show('alertaPendiente',!!pending);if(pending){$('alertaPendiente').textContent='Hay una venta pendiente de confirmación con Supabase. No cambies el carrito ni crees otra venta. Pulsa «Reintentar comprobación» para usar la MISMA clave y evitar duplicados.';$('btnVender').textContent='REINTENTAR COMPROBACIÓN';}else{$('btnVender').textContent=online()&&!offlineMode?'COBRAR Y REGISTRAR VENTA':'GUARDAR VENTA LOCAL · SIN INTERNET'}renderCarrito()}
 async function boot(){
- loadPending();pendingView();
+ pending=null;pendingView();
  const {data:{session}}=await db.auth.getSession();
  if(!online()){
   if(session?.user){await modoSinInternet(session.user);return}
@@ -300,7 +324,7 @@ async function boot(){
  const {data:rol,error:er}=await db.from('empleados').select('id,nombre,rol,activo,auth_user_id').eq('auth_user_id',user.id).maybeSingle();
  if(er){mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('No se pudo comprobar la cuenta: '+er.message,'error');return}
  if(!rol||!rol.activo){cuenta=null;mostrarPantalla('pendiente');$('pendingEmail').textContent=user.email||'';estado('Tu administrador todavía no ha autorizado tu acceso.');return}
- cuenta=rol;offlineMode=false;
+ cuenta=rol;offlineMode=false;loadPending(user.id);pendingView();
  try{await localPut('perfiles',{...rol,usuario:user.id})}catch(e){/* El modo en línea continúa sin IndexedDB. */}
  await cargarColaOffline();
  $('who').textContent=rol.nombre+' · '+rol.rol;
@@ -425,7 +449,7 @@ async function cobrar(){
   if(pago==='mixto'&&(!(ef>0&&qr>0)||cent(ef)+cent(qr)!==cent(tt))){estado('Los importes de efectivo y QR deben sumar exactamente '+moneda(tt),'error');return}
   const msg='¿Confirmar venta REAL por '+moneda(tt)+'? Pago: '+pago+'. Se descontarán las existencias.';
   if(!window.confirm(msg))return;
-  payload={key:crypto.randomUUID(),items:cart.map(x=>({producto_id:x.producto.id,cantidad:x.cantidad})),pago,ef,qr};
+  payload={key:crypto.randomUUID(),items:cart.map(x=>({producto_id:x.producto.id,cantidad:x.cantidad,precio_esperado:Number(x.producto.precio_venta)})),pago,ef,qr};
   pending=payload;savePending();pendingView();
  }
  procesando=true;renderCarrito();estado('Registrando la venta con protección contra duplicados…');

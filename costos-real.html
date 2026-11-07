@@ -54,13 +54,27 @@ $('abrirEscaner').onclick=async()=>{
     $('abrirEscaner').disabled=false;abriendoLector=false;return;
   }
   try{
-    const lector=new Html5Qrcode('lectorCodigo',{verbose:false});lectorActivo=lector;
-    await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},async codigo=>{
+    // Decodificar toda la imagen: el recuadro anterior recortaba códigos fuera del centro.
+    // Usar ZXing en lugar del detector nativo para evitar fallos silenciosos en Android.
+    const formatos=['EAN_13','EAN_8','UPC_A','UPC_E','CODE_128','CODE_39','ITF','CODABAR']
+      .map(nombre=>Html5QrcodeSupportedFormats[nombre]).filter(x=>x!==undefined);
+    const lector=new Html5Qrcode('lectorCodigo',{
+      verbose:false,formatsToSupport:formatos,useBarCodeDetectorIfSupported:false
+    });lectorActivo=lector;
+    let fallos=0,ultimoAviso=Date.now();
+    await lector.start({facingMode:'environment'},{fps:15,disableFlip:true},async codigo=>{
       if(lectorActivo!==lector)return;
       document.querySelector('#productoForm [name="codigo_barras"]').value=codigo;
       await detenerLector();estado('Código de barras leído: '+codigo);
-    },()=>{});
-    $('mensajeEscaner').textContent='Apunta la cámara al código de barras del producto.';
+    },()=>{
+      if(lectorActivo!==lector)return;
+      fallos++;
+      if(Date.now()-ultimoAviso>5000){
+        $('mensajeEscaner').textContent='Buscando código en toda la imagen… ('+fallos+' intentos). Mantén visibles todas las barras.';
+        ultimoAviso=Date.now();
+      }
+    });
+    $('mensajeEscaner').textContent='Lector activo: buscando EAN, UPC y códigos de productos en toda la imagen.';
   }catch(e){
     $('mensajeEscaner').textContent='No se pudo abrir la cámara. Comprueba el permiso de cámara del navegador. '+(e?.message||String(e));
     if(lectorActivo){try{lectorActivo.clear()}catch(x){}lectorActivo=null}

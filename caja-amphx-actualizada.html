@@ -327,6 +327,7 @@ async function sincronizarCola(){
 async function guardarVentaOffline(){
  if(!cuenta||!cart.length){estado('Necesitas una cuenta autorizada y productos en el carrito.','error');return;}
  if(pending){estado('Primero resuelve la venta anterior pendiente de confirmación.','error');return;}
+ const sinPrecio=cart.find(x=>!Number.isFinite(precio(x.producto))||precio(x.producto)<=0);if(sinPrecio){estado('Primero asigná un precio de venta en COSTOS a '+sinPrecio.producto.detalles,'error');return;}
  const faltantes=cart.filter(x=>x.cantidad>disponible(x.producto)||x.cantidad<=0);
  if(faltantes.length){estado('Stock local insuficiente: '+faltantes.map(x=>x.producto.detalles).join(', '),'error');return;}
  const pago=$('tipoPago').value,tt=total(),ef=pago==='mixto'?Number($('pagoEfectivo').value):null,qr=pago==='mixto'?Number($('pagoQr').value):null;
@@ -441,11 +442,12 @@ function buscarProductos(q){
 function renderResultados(){const a=buscarProductos($('buscarProducto').value);
  const sug=$('sugerenciasProductos');
  sug.innerHTML=a.slice(0,25).map(p=>'<option value="'+safe(p.detalles)+'"></option>').join('');
- $('busquedaResultados').innerHTML=a.length?a.map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+stock(p)+'</p></div><div class="right"><b>'+moneda(p.precio_venta)+'</b><br><button class="btn" data-add="'+p.id+'" '+(stock(p)<=0?'disabled':'')+'>Agregar</button></div></div>').join(''):'<p class="empty">No se encontraron coincidencias. Comprueba si ya registraste el producto en COSTOS.</p>';
+ $('busquedaResultados').innerHTML=a.length?a.map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+stock(p)+'</p></div><div class="right"><b>'+moneda(p.precio_venta)+'</b><br><button class="btn" data-add="'+p.id+'" '+(stock(p)<=0||precio(p)<=0?'disabled':'')+'>'+(precio(p)<=0?'Precio pendiente':'Agregar')+'</button></div></div>').join(''):'<p class="empty">No se encontraron coincidencias. Comprueba si ya registraste el producto en COSTOS.</p>';
  $('busquedaResultados').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>agregar(Number(b.dataset.add)))}
 function agregar(id){
  if(lockCart()){estado('Primero confirma la venta pendiente.','error');return}
  const p=catalogo.find(x=>x.id===id);if(!p){estado('Producto no encontrado.','error');return}
+ if(!Number.isFinite(precio(p))||precio(p)<=0){estado('Este producto no tiene precio de venta. Colocá el precio en COSTOS antes de venderlo: '+p.detalles,'error');return;}
  const x=cart.find(y=>y.producto.id===id), nueva=(x?.cantidad||0)+1;
  if(nueva>disponible(p)){estado('No quedan suficientes unidades disponibles de '+p.detalles+' (incluye ventas sin sincronizar).','error');return}
  if(x)x.cantidad=nueva;else cart.push({producto:p,cantidad:1});
@@ -466,7 +468,7 @@ function renderPrecio(){
  const q=limpiarcodigo($('buscarPrecio').value).toLocaleLowerCase('es');
  if(!q){$('resultadoPrecio').innerHTML='<p class="muted">Escanea un código o escribe un nombre para consultar su precio.</p>';return}
  const list=buscarProductos(q);
- $('resultadoPrecio').innerHTML=list.length?list.map(p=>'<div class="result"><strong>'+safe(p.detalles)+'</strong><div class="bigprice">'+moneda(p.precio_venta)+'</div><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">Existencias: '+stock(p)+'</span><p class="itemcode">Código: '+safe(p.codigo_barras||'Sin asignar')+'</p></div>').join(''):'<p class="note red">Producto no encontrado en el catálogo.</p>';
+ $('resultadoPrecio').innerHTML=list.length?list.map(p=>'<div class="result"><strong>'+safe(p.detalles)+'</strong><div class="bigprice">'+(precio(p)>0?moneda(p.precio_venta):'PRECIO PENDIENTE')+'</div><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">Existencias: '+stock(p)+'</span><p class="itemcode">Código: '+safe(p.codigo_barras||'Sin asignar')+'</p></div>').join(''):'<p class="note red">Producto no encontrado en el catálogo.</p>';
 }
 function renderInventario(){
  const bajo=catalogo.filter(p=>stock(p)<=Number(p.stock_minimo));
@@ -513,6 +515,7 @@ async function cobrar(){
  let payload=pending;
  if(!payload){
   if(!cart.length){estado('Carrito vacío.','error');return}
+  const sinPrecio=cart.find(x=>!Number.isFinite(precio(x.producto))||precio(x.producto)<=0);if(sinPrecio){estado('Primero asigná un precio de venta en COSTOS a '+sinPrecio.producto.detalles,'error');return}
   for(const x of cart){if(x.cantidad>stock(x.producto)||x.cantidad<=0){estado('Actualiza existencias: cantidad inválida para '+x.producto.detalles,'error');return}}
   const pago=$('tipoPago').value,tt=total(),ef=pago==='mixto'?Number($('pagoEfectivo').value):null,qr=pago==='mixto'?Number($('pagoQr').value):null;
   if(pago==='mixto'&&(!(ef>0&&qr>0)||cent(ef)+cent(qr)!==cent(tt))){estado('Los importes de efectivo y QR deben sumar exactamente '+moneda(tt),'error');return}

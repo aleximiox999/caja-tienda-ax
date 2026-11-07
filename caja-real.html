@@ -107,6 +107,7 @@ th {color:#FFE3B2; font-size:12px;}
 <button class="btn active" data-tab="venta">Vender</button>
 <button class="btn" data-tab="precio">Consultar precio</button>
 <button class="btn" data-tab="inventario">Inventario</button>
+<button class="btn hidden" data-tab="entradas" id="tabEntradas">Ingresar mercadería</button>
 <button class="btn hidden" data-tab="empleados" id="tabEmpleados">Empleados</button>
 <button class="btn hidden" data-tab="reporte" id="tabReporte">Ventas</button>
 </div>
@@ -128,10 +129,25 @@ th {color:#FFE3B2; font-size:12px;}
 </section>
 <section id="panelPrecio" class="hidden"><div class="card"><h2>Consultar precio</h2><p class="lead">Esta consulta no registra venta ni modifica existencias.</p><div class="actions"><button class="btn primary" id="escanearPrecio">Escanear código</button><button class="btn" id="actualizarPrecio">Actualizar precios</button></div><div class="field"><label>Nombre o código</label><input id="buscarPrecio" placeholder="Escribe o escanea un producto" autocomplete="off"></div><div id="resultadoPrecio"></div></div></section>
 <section id="panelInventario" class="hidden"><div class="card"><h2>Inventario</h2><p class="lead">Existencias calculadas de entradas y salidas reales. Las alertas indican los productos que alcanzaron su mínimo.</p><div id="alertas"></div><div class="tablewrap"><table><thead><tr><th>CÓDIGO</th><th>PRODUCTO</th><th>PRECIO</th><th>EXISTENCIAS</th><th>MÍNIMO</th><th>ESTADO</th></tr></thead><tbody id="tablaInventario"></tbody></table></div><div class="actions"><button class="btn" id="actualizarInventario">Actualizar existencias</button></div></div></section>
+<section id="panelEntradas" class="hidden"><div class="grid"><div class="card">
+<h2>Ingresar mercadería</h2><p class="lead">Solo administrador. Escanea aquí mismo el código o busca el producto ya registrado.</p>
+<div class="actions"><button class="btn primary" type="button" id="escanearEntrada">Escanear código</button><button class="btn" type="button" id="recargarEntrada">Actualizar catálogo</button></div>
+<div class="field"><label for="buscarEntrada">Nombre o código del producto</label><input id="buscarEntrada" autocomplete="off" placeholder="Busca producto o escanea el código" spellcheck="false"></div>
+<div id="resultadosEntrada" class="productResults"></div><div class="note" id="entradaSeleccion">Selecciona el producto para añadir unidades.</div>
+<p class="mini muted">Para un producto nuevo, primero usa <a href="./costos-real.html" style="color:#FFE1AD">COSTOS · Registrar producto y compra</a>.</p>
+</div><div class="card"><h2>Registrar compra</h2><form id="formEntrada">
+<input type="hidden" id="entradaProductoId">
+<div class="field"><label for="entradaFecha">Fecha de compra</label><input id="entradaFecha" type="date" required></div>
+<div class="field"><label for="entradaUnidades">Unidades que ingresan</label><input id="entradaUnidades" type="number" min="0.001" step="any" inputmode="decimal" required placeholder="Ej. 24"></div>
+<div class="field"><label for="entradaCostoTotal">Precio total del paquete (Bs)</label><input id="entradaCostoTotal" type="number" min="0" step="any" inputmode="decimal" required placeholder="Ej. 120"></div>
+<div class="field"><label for="entradaProveedor">Proveedor (opcional)</label><input id="entradaProveedor" maxlength="150" placeholder="Nombre del proveedor"></div>
+<div id="previoEntrada" class="note">Selecciona producto, unidades y precio para calcular el costo unitario.</div>
+<button class="btn primary" id="guardarEntrada" type="submit" style="width:100%">GUARDAR COMPRA Y SUMAR INVENTARIO</button>
+</form><p class="mini muted">Requiere internet. Si una operación no confirma, comprueba el inventario antes de intentar otra vez.</p></div></div></section>
 <section id="panelEmpleados" class="hidden"><div class="grid"><div class="card"><h2>Agregar empleado</h2><p class="lead">El empleado primero crea su cuenta con su correo desde la pantalla de acceso. Después tú lo habilitas aquí.</p><form id="formEmpleado"><div class="field"><label>Nombre del empleado</label><input id="nombreNuevo" maxlength="100" required></div><div class="field"><label>Correo de su cuenta</label><input id="correoNuevo" type="email" maxlength="320" required></div><button class="btn primary" type="submit">Autorizar empleado</button></form><div class="note">El empleado podrá vender y consultar precios, sin acceso a costos ni ganancias.</div></div><div class="card"><h2>Personal registrado</h2><div id="listaEmpleados"></div></div></div></section>
 <section id="panelReporte" class="hidden"><div class="card"><h2>Ventas registradas</h2><p class="lead">Las ventas quedan asociadas al empleado. Montos en efectivo y QR separados.</p><div id="reporteResumen"></div><div class="tablewrap"><table><thead><tr><th>FECHA</th><th>EMPLEADO</th><th>EFECTIVO</th><th>QR</th><th>TOTAL</th><th>ESTADO</th></tr></thead><tbody id="tablaVentas"></tbody></table></div></div></section>
 </section>
-<footer class="muted mini" style="margin-top:25px;text-align:center">TIENDA AMPHX · Esta caja usa datos reales. Lector de COSTOS independiente.</footer>
+<footer class="muted mini" style="margin-top:25px;text-align:center">TIENDA AMPHX · Caja de ventas y entradas de mercadería con inventario real.</footer>
 </main>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
@@ -224,7 +240,7 @@ async function modoSinInternet(user){
  $('who').textContent=perfil.nombre+' · sin internet';
  $('roleDesc').textContent='Modo sin internet: los cobros quedan pendientes hasta sincronizar';
  show('btnSalir',true);
- show('tabEmpleados',false);show('tabReporte',false);
+ show('tabEmpleados',false);show('tabReporte',false);show('tabEntradas',false);
  mostrarPantalla('app');selectTab('venta');
  await cargarColaOffline();await cargarCatalogoLocal();pendingView();
 }
@@ -329,7 +345,8 @@ async function boot(){
  await cargarColaOffline();
  $('who').textContent=rol.nombre+' · '+rol.rol;
  $('roleDesc').textContent=rol.rol==='administrador'?'Administrador · Ventas, inventario, personal y reportes':'Empleado · Ventas, consultas e inventario';
- show('btnSalir',true);show('tabEmpleados',rol.rol==='administrador');show('tabReporte',rol.rol==='administrador');
+ show('btnSalir',true);show('tabEmpleados',rol.rol==='administrador');show('tabReporte',rol.rol==='administrador');show('tabEntradas',rol.rol==='administrador');
+ if(rol.rol!=='administrador'&&['entradas','empleados','reporte'].includes(tab))tab='venta';
  mostrarPantalla('app');selectTab(tab);await cargarCatalogo();pendingView();
  if(rol.rol==='administrador')await cargarEmpleados();
  if(colaOffline.length)void sincronizarCola();
@@ -342,7 +359,7 @@ async function cargarCatalogo(){
  if(error){estado('Error al consultar inventario: '+error.message,'error');return}
  catalogo=Array.isArray(data)?data:[];
  try{await localPut('catalogos',{usuario:cuenta.auth_user_id,productos:catalogo,fecha:new Date().toISOString()})}catch(e){/* No interrumpir una caja en línea. */}
- renderResultados();renderPrecio();renderInventario();renderCarrito();
+ renderResultados();renderPrecio();renderInventario();renderCarrito();renderEntradas();
  estado(catalogo.length+' productos obtenidos desde Supabase.','success');
 }
 function normalizarBusqueda(s){
@@ -407,11 +424,11 @@ function renderInventario(){
  $('tablaInventario').innerHTML=catalogo.map(p=>'<tr><td>'+safe(p.codigo_barras||'—')+'</td><td>'+safe(p.detalles)+'</td><td>'+moneda(p.precio_venta)+'</td><td>'+stock(p)+'</td><td>'+Number(p.stock_minimo)+'</td><td><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">'+(stock(p)<=Number(p.stock_minimo)?'REPOSICIÓN':'DISPONIBLE')+'</span></td></tr>').join('');
 }
 function selectTab(t){
- if(['empleados','reporte'].includes(t)&&cuenta?.rol!=='administrador')return;
+ if(['entradas','empleados','reporte'].includes(t)&&(cuenta?.rol!=='administrador'||offlineMode))return;
  tab=t;document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
- ['venta','precio','inventario','empleados','reporte'].forEach(x=>show('panel'+x[0].toUpperCase()+x.slice(1),x===t));
+ ['venta','precio','inventario','entradas','empleados','reporte'].forEach(x=>show('panel'+x[0].toUpperCase()+x.slice(1),x===t));
  void detenerLector();
- if(t==='precio')renderPrecio();if(t==='inventario')renderInventario();if(t==='empleados')void cargarEmpleados();
+ if(t==='precio')renderPrecio();if(t==='inventario')renderInventario();if(t==='entradas')renderEntradas();if(t==='empleados')void cargarEmpleados();
  if(t==='reporte')void cargarReporte();
 }
 async function detenerLector(){
@@ -423,6 +440,7 @@ async function iniciarLector(m){
  if(abriendo||lector)return;
  if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){estado('La cámara requiere HTTPS y un navegador con permisos.','error');return}
  if(typeof Html5Qrcode==='undefined'){estado('No se cargó la biblioteca del escáner. Comprueba la conexión.','error');return}
+ if(m==='entrada'&&(cuenta?.rol!=='administrador'||offlineMode||!online())){estado('Las entradas requieren administrador e internet.','error');return}
  if(m==='venta'&&lockCart()){estado('Primero confirma la venta pendiente.','error');return}
  abriendo=true;show('lectorPanel',true);$('camaraInfo').textContent='Solicitando cámara…';
  try {
@@ -431,8 +449,9 @@ async function iniciarLector(m){
    if(lector!==l)return;
    const p=catalogo.find(x=>limpiarcodigo(x.codigo_barras)===limpiarcodigo(codigo));
    void detenerLector();
-   if(!p){estado('Código leído, pero no está registrado: '+codigo,'error');return}
+   if(!p){if(m==='entrada'){$('buscarEntrada').value=codigo;renderEntradas()}estado('Código no registrado: '+codigo+'. Primero crea el producto en COSTOS.','error');return}
    if(m==='precio'){selectTab('precio');$('buscarPrecio').value=p.codigo_barras||p.detalles;renderPrecio();estado('Precio encontrado: '+p.detalles,'success')}
+   else if(m==='entrada'){seleccionarEntrada(p.id);estado('Producto seleccionado: '+p.detalles,'success')}
    else {agregar(Number(p.id));}
   },()=>{});
   $('camaraInfo').textContent='Apunta al código de barras del producto.';estado('Cámara iniciada.');
@@ -463,6 +482,43 @@ async function cobrar(){
   await cargarCatalogo();estado('VENTA CONFIRMADA · Total '+moneda(data.total)+(data.repetida?' · Sin duplicar':''),'success');
  }catch(e){estado('No se confirmó el resultado por la conexión. Reintenta, sin crear otra venta: '+String(e.message||e),'error')}
  finally{procesando=false;pendingView()}
+}
+function fechaLocalEntrada(){
+ $('entradaFecha').value=new Intl.DateTimeFormat('sv-SE',{timeZone:'America/La_Paz',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+}
+function seleccionarEntrada(id){
+ const p=catalogo.find(x=>String(x.id)===String(id));if(!p)return;
+ $('entradaProductoId').value=String(p.id);$('buscarEntrada').value=p.detalles;
+ $('entradaSeleccion').textContent='Producto: '+p.detalles+' · Código: '+(p.codigo_barras||'sin código')+' · Stock: '+stock(p)+' · Precio venta: '+moneda(p.precio_venta);
+ renderEntradas();previoEntrada();
+}
+function renderEntradas(){
+ const q=$('buscarEntrada').value.trim(),items=q?buscarProductos(q):[],sel=$('entradaProductoId').value;
+ $('resultadosEntrada').innerHTML=items.length?items.slice(0,25).map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+stock(p)+'</p></div><button type="button" class="btn" data-entrada="'+safe(p.id)+'" '+(sel===String(p.id)?'disabled':'')+'>'+(sel===String(p.id)?'Elegido':'Elegir')+'</button></div>').join(''):(q?'<p class="empty">No hay coincidencias. Si es nuevo, registra primero el producto en COSTOS.</p>':'<p class="muted mini">Escribe o escanea el código para buscar.</p>');
+ $('resultadosEntrada').querySelectorAll('[data-entrada]').forEach(b=>b.onclick=()=>seleccionarEntrada(b.dataset.entrada));
+}
+function previoEntrada(){
+ const p=catalogo.find(x=>String(x.id)===$('entradaProductoId').value),u=Number($('entradaUnidades').value),t=Number($('entradaCostoTotal').value);
+ if(!p||$('entradaUnidades').value===''||$('entradaCostoTotal').value===''||!Number.isFinite(u)||u<=0||!Number.isFinite(t)||t<0){$('previoEntrada').textContent='Selecciona producto, unidades y precio total para calcular el costo.';return}
+ const coste=t/u;
+ $('previoEntrada').textContent='Costo de compra: '+moneda(coste)+' por unidad · Venta: '+moneda(p.precio_venta)+' · Ganancia estimada: '+moneda(Number(p.precio_venta)-coste)+' por unidad · Stock nuevo estimado: '+(stock(p)+u);
+}
+let guardandoEntrada=false;
+async function registrarEntrada(ev){
+ ev.preventDefault();if(guardandoEntrada)return;
+ if(cuenta?.rol!=='administrador'||offlineMode||!online()){estado('Para registrar compras necesitas internet y permiso de administrador.','error');return}
+ const p=catalogo.find(x=>String(x.id)===$('entradaProductoId').value),fecha=$('entradaFecha').value,u=Number($('entradaUnidades').value),t=Number($('entradaCostoTotal').value),proveedor=$('entradaProveedor').value.trim();
+ if(!p||!/^\d{4}-\d{2}-\d{2}$/.test(fecha)||$('entradaUnidades').value===''||!Number.isFinite(u)||u<=0||$('entradaCostoTotal').value===''||!Number.isFinite(t)||t<0){estado('Completa producto, fecha, unidades y precio total válidos.','error');return}
+ if(!confirm('¿Registrar compra de '+u+' unidades de '+p.detalles+' por '+moneda(t)+'? Esto aumentará el inventario REAL.'))return;
+ guardandoEntrada=true;$('guardarEntrada').disabled=true;estado('Guardando compra en Supabase…');
+ try{
+  const {data,error}=await db.rpc('registrar_compra',{p_producto_id:p.id,p_fecha:fecha,p_precio_compra:t,p_unidades:u,p_proveedor:proveedor||null});
+  if(error){estado('No se confirmó la compra: '+error.message+'. Verifica existencias antes de volver a guardar.','error');return}
+  $('formEntrada').reset();$('entradaProductoId').value='';$('buscarEntrada').value='';fechaLocalEntrada();renderEntradas();previoEntrada();
+  $('entradaSeleccion').textContent='Compra #'+data+' de '+p.detalles+' registrada.';
+  await cargarCatalogo();estado('COMPRA REGISTRADA · '+u+' unidades sumadas al inventario de '+p.detalles+'.','success');
+ }catch(err){estado('Compra sin confirmación. Actualiza inventario y comprueba antes de reintentar: '+(err.message||err),'error')}
+ finally{guardandoEntrada=false;$('guardarEntrada').disabled=false}
 }
 async function cargarEmpleados(){
  if(cuenta?.rol!=='administrador')return;
@@ -498,6 +554,10 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>selectTab(b.dat
 $('buscarProducto').oninput=renderResultados;$('buscarPrecio').oninput=renderPrecio;
 $('escanearVenta').onclick=()=>iniciarLector('venta');
 $('escanearPrecio').onclick=()=>iniciarLector('precio');
+$('escanearEntrada').onclick=()=>iniciarLector('entrada');
+$('recargarEntrada').onclick=cargarCatalogo;
+$('buscarEntrada').oninput=()=>{$('entradaProductoId').value='';$('entradaSeleccion').textContent='Selecciona un producto de la lista.';renderEntradas();previoEntrada()};
+$('entradaUnidades').oninput=previoEntrada;$('entradaCostoTotal').oninput=previoEntrada;$('formEntrada').onsubmit=registrarEntrada;fechaLocalEntrada();
 $('cerrarCamara').onclick=detenerLector;
 $('tipoPago').onchange=()=>show('mixto',$('tipoPago').value==='mixto');
 $('btnVender').onclick=cobrar;
@@ -508,7 +568,7 @@ window.addEventListener('online',()=>{
 });
 window.addEventListener('offline',()=>{
  offlineMode=true;
- show('tabEmpleados',false);show('tabReporte',false);
+ show('tabEmpleados',false);show('tabReporte',false);show('tabEntradas',false);
  pendingView();pintarColaOffline();
  estado('SIN INTERNET · Las ventas nuevas se guardarán en el celular y se sincronizarán después.','error');
 });

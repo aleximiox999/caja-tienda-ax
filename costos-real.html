@@ -145,7 +145,100 @@ button.costo-abrir:hover{color:#0b6889;text-decoration-style:solid}
  #listado .sheet-card .sheet-mobile-row .sheet-input{font-size:13px;padding:7px 5px}
  #listado .sheet-card .sheet-mobile-row .sheet-result{font-size:13px}
 }
-</style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script></head><body><main class="wrap"><header><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div><div><span class="pill">DATOS REALES · ACCESO RESTRINGIDO</span> <button id="salir" class="alt hidden">Salir</button></div></header>
+
+/* AMPHX COSTOS · EDICION VISUAL METALICO 2026: no modifica datos ni logica. */
+:root{--metal:#101a27;--metal-lustre:#2b3b4b;--am-verde:#1f9255;--am-plata:#e3edf4}
+body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.wrap{max-width:1160px;margin:auto;padding:0 16px 85px}
+.wrap>header{
+ padding:22px 22px;margin:0 -16px 20px;border-radius:0 0 22px 22px;
+ background:linear-gradient(118deg,transparent 7%,#ffffff20 26%,transparent 42%,#ffffff09 53%,transparent 65%),
+ linear-gradient(155deg,#060b12 0%,#2e4051 44%,#101923 78%,#1c2b3a 100%);
+ border-bottom:3px solid #b0c0cf;box-shadow:0 10px 25px #09121f3d,inset 0 1px 1px #ffffff6b;
+ color:white
+}
+.wrap>header h1{color:#fff;font-size:clamp(20px,3vw,28px);margin:0}
+.wrap>header .muted{color:#dce5ed;font-size:11px;font-weight:800;letter-spacing:1px}
+.wrap>header .pill{background:#eef4fa19;color:white;border:1px solid #ffffff70}
+.wrap>header button.alt{background:#f4f8fc;color:#172a3b;border-radius:12px}
+.amp-marca{display:flex;align-items:center;gap:12px;min-width:0}
+.amp-marca-icono{display:grid;place-items:center;width:46px;height:46px;flex:none;border-radius:13px;
+ background:linear-gradient(133deg,#fff,#9eafc0 54%,#f5f8fc);color:#152637;
+ box-shadow:0 3px 9px #050b1566,inset 0 1px 1px #fff;border:1px solid #ffffffac}
+.amp-marca-icono svg{width:27px;height:27px}
+.wrap section{border:1px solid #dce5ed;border-radius:16px;box-shadow:0 3px 14px #1223340b}
+#listado{background:#fff;padding:18px}
+#listado h2{color:#162739;font-size:21px}
+#listado>.actions{background:linear-gradient(130deg,#273a4c,#09121e);border-radius:17px;padding:12px;
+ gap:10px;align-items:center;margin-bottom:15px;border:1px solid #536d86;
+ box-shadow:0 4px 15px #11243a21}
+#listado .busqueda-wrap{position:relative;width:min(100%,680px);flex:1 1 245px}
+#listado #buscar{background:white;border:2px solid #dde7ef;border-radius:28px;min-height:50px;
+ font-size:15px;padding:11px 16px 11px 47px;color:#182b40;box-shadow:0 3px 10px #0002}
+#listado #buscar:focus{border-color:#4aaf79;outline:2px solid #bfe8d4}
+#listado .busqueda-wrap:before{content:"";pointer-events:none;position:absolute;top:15px;left:17px;
+ width:16px;height:16px;border:2.3px solid #1f3a51;border-radius:50%;z-index:1}
+#listado .busqueda-wrap:after{content:"";pointer-events:none;position:absolute;top:33px;left:34px;
+ width:10px;height:2.3px;background:#1f3a51;transform:rotate(45deg);transform-origin:left center;z-index:1}
+#listado #resultadoBusqueda{color:#f2f7ff;font-size:12px;font-weight:800}
+#listado #recargar{background:#eff5fb;color:#1b3a50;border-radius:25px;min-height:43px}
+#listado .cards{grid-template-columns:minmax(0,1fr)!important;gap:14px}
+#listado .sheet-card{background:#fff;border:1px solid #dce5ed;border-top:5px solid #2c4863;
+ box-shadow:0 5px 16px #152d4817;border-radius:18px;padding:15px}
+#listado .sheet-card:focus-within{box-shadow:0 7px 21px #1e627b33}
+#listado .sheet-card .sheet-card-title{font-size:17px}
+#listado .sheet-card .sheet-card-title button{color:#142b40;font-weight:850}
+#listado .sheet-card .sheet-card-details{color:#52697e;font-size:12px}
+#listado .sheet-card .sheet-mobile-row{background:#f6f9fc;border:1px solid #dde8ef;border-radius:10px}
+#listado .sheet-card .sheet-mobile-row label{color:#485f74;font-size:11px}
+#listado .sheet-card .sheet-mobile-row .sheet-input{background:#fff;border:1.5px solid #cfdae6;
+ border-radius:9px;color:#112839;font-size:16px;font-weight:720;min-height:42px}
+#listado .sheet-card .sheet-mobile-row .sheet-input:focus{outline:2px solid #a8dfc3;border-color:#269262}
+#listado .sheet-card .sheet-mobile-row .sheet-input.sheet-dirty{background:#fff6df;border-color:#dcaa48}
+#listado .sheet-card .sheet-mobile-row:has(.sheet-result){background:#eaf7ef;border-color:#c5e8d3}
+#listado .sheet-card .sheet-mobile-row .sheet-result{color:#17643e;font-size:17px;font-weight:850}
+#listado .sheet-card .sheet-mobile-row .sheet-negative{color:#b82640!important}
+#listado .sheet-card .sheet-actions{background:#f4f8fb;border:1px solid #dee9f1;border-radius:12px;padding:10px}
+#listado .sheet-card .sheet-actions button.sheet-save{border-radius:11px;min-height:46px;
+ font-size:13px;background:#dce9ed;color:#315366;white-space:normal}
+#listado .sheet-card .sheet-actions button.sheet-save:not(:disabled){background:linear-gradient(135deg,#49b876,#198753);
+ color:#fff;box-shadow:0 3px 12px #19875336}
+#listado .sheet-card .sheet-actions .sheet-tools{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+ padding:6px;gap:7px;border-radius:12px;background:#fff;border:1px solid #e1e8ef}
+#listado .sheet-card .sheet-actions .sheet-tools button{
+ width:42px!important;min-width:42px!important;flex:0 0 42px;height:42px!important;
+ padding:0!important;margin:0;border:0;border-radius:11px;color:#fff;background:#3673c0;
+ display:inline-flex!important;align-items:center;justify-content:center;
+ box-shadow:0 2px 7px #112c4629
+}
+#listado .sheet-card .sheet-actions .sheet-tools button svg{width:23px;height:23px;fill:none;
+ stroke:currentColor;stroke-width:2.1;stroke-linejoin:round;stroke-linecap:round;pointer-events:none}
+#listado .sheet-card .sheet-actions .sheet-tools button[data-accion="nombre"]{background:#8365bb;color:white}
+#listado .sheet-card .sheet-actions .sheet-tools button[data-accion="foto"]{background:#e34749;color:white}
+#listado .sheet-card .sheet-actions .sheet-tools button[data-accion="editar"]{background:#3670c6;color:white}
+#listado .sheet-card .sheet-actions .sheet-tools button[data-accion="codigo"]{background:#168ca9;color:white}
+#listado .sheet-card .sheet-actions .sheet-tools button[data-accion="compra"]{background:#349d60;color:white}
+#listado .sheet-card .sheet-actions .sheet-tools button[data-accion="kilos"]{background:#e6b139;color:#1f3040}
+#listado .sheet-card .sheet-actions .sheet-tools button[data-accion="eliminar"]{background:#b72f46;color:white}
+#listado .sheet-card .sheet-actions .sheet-tools button:hover{filter:brightness(1.1)}
+#listado .sheet-card .sheet-actions .sheet-tools button:focus-visible{outline:3px solid #153c55;outline-offset:2px}
+.amp-icon-help{display:none;position:fixed;z-index:99999;max-width:min(290px,85vw);padding:10px 13px;
+ border-radius:11px;color:white;background:#0e2539;border:1px solid #68839a;
+ box-shadow:0 7px 24px #06121e69;font-size:13px;font-weight:800;text-align:center;
+ line-height:1.35;pointer-events:none;overflow-wrap:anywhere}
+.amp-icon-help.visible{display:block}
+@media(max-width:760px){
+ .wrap{padding:0 10px 95px}
+ .wrap>header{margin:0 -10px 13px;padding:18px 14px 20px;border-radius:0 0 20px 20px}
+ #listado{padding:10px}#listado>.actions{padding:10px}
+ .amp-marca-icono{width:42px;height:42px}
+ .wrap>header h1{font-size:20px}
+ #listado .sheet-card{padding:12px;gap:8px}
+ #listado .sheet-card .sheet-mobile-row .sheet-result{font-size:15px}
+ #listado .sheet-card .sheet-actions{grid-template-columns:minmax(0,1fr)}
+ #listado .sheet-card .sheet-actions .sheet-tools button{width:42px!important;min-width:42px!important;flex-basis:42px;height:42px!important}
+}
+</style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><span class="pill">DATOS REALES · ACCESO RESTRINGIDO</span> <button id="salir" class="alt hidden">Salir</button></div></header>
 <section id="login"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
 <section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si vuelves a comprar el mismo producto, utiliza su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿Cómo se vende este producto?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">Unidades / bolsas / paquetes</option><option value="kg">Kilogramos (kg) a granel</option><option value="botella">Botellas</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min=".001" step="any" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
 
@@ -206,6 +299,7 @@ button.costo-abrir:hover{color:#0b6889;text-decoration-style:solid}
  setTimeout(()=>{if(!listo&&status()&&status().textContent.includes('Conectando de forma segura')){status().textContent='La aplicación no terminó de cargar. Abre este enlace directamente en Chrome (no en el navegador interno de ChatGPT) y actualiza la página.';status().classList.add('error')}},9000);
 })();
 </script>
+<div id="ampIconHelp" class="amp-icon-help" role="status" aria-live="polite"></div>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh');
@@ -324,27 +418,83 @@ function nombreFilaHoja(p){
  b.textContent=String(p.detalles||'').toLocaleUpperCase('es');
  b.title='Tocá para ver la fotografía';b.onclick=()=>abrirFotoProducto(p);return b;
 }
+
+/* Iconografía SVG vectorial, accesible y sin dependencias externas. */
+const ampIcons={
+ nombre:'<path d="M5 20h14M6 17l1-5 9-9 5 5-9 9-6 1Z"/><path d="m14 5 5 5"/>',
+ foto:'<path d="M4 7h4l2-3h5l2 3h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="4"/>',
+ editar:'<path d="M4 20h5l11-11-5-5L4 15v5Z"/><path d="m13 6 5 5"/>',
+ codigo:'<path d="M3 5h2M3 19h2M19 5h2M19 19h2M7 7v10M10 7v10M14 7v10M17 7v10"/>',
+ compra:'<path d="M3 8h18v12H3zM3 8l3-4h12l3 4M9 12h6M12 9v7"/>',
+ eliminar:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>',
+ kilos:'<path d="M12 3v17M5 7h14M5 7l-3 6h6L5 7ZM19 7l-3 6h6l-3-6ZM8 20h8"/>'
+};
+const ampIconSvg=key=>'<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+ampIcons[key]+'</svg>';
+let ampHelpTimer=null,ampHelpActive=null;
+function ampOcultarAyuda(){
+ if(ampHelpTimer!==null){clearTimeout(ampHelpTimer);ampHelpTimer=null;}
+ $('ampIconHelp').classList.remove('visible');ampHelpActive=null;
+}
+function ampMostrarAyuda(btn,texto){
+ if(!btn.isConnected)return;
+ const tip=$('ampIconHelp');tip.textContent=texto;tip.classList.add('visible');
+ const r=btn.getBoundingClientRect(),w=tip.offsetWidth,h=tip.offsetHeight;
+ tip.style.left=Math.max(8,Math.min(window.innerWidth-w-8,r.left+r.width/2-w/2))+'px';
+ tip.style.top=(r.top-h-9>=8?r.top-h-9:Math.min(window.innerHeight-h-8,r.bottom+9))+'px';
+ ampHelpActive=btn;
+}
+function ampAyudaBoton(btn,texto){
+ btn.title=texto;btn.setAttribute('aria-label',texto);
+ let pressed=false,suppress=false,sx=0,sy=0;
+ btn.addEventListener('mouseenter',()=>{if(matchMedia('(hover:hover)').matches)ampMostrarAyuda(btn,texto)});
+ btn.addEventListener('mouseleave',()=>{if(ampHelpActive===btn)ampOcultarAyuda()});
+ btn.addEventListener('focus',()=>{if(matchMedia('(hover:hover)').matches)ampMostrarAyuda(btn,texto)});
+ btn.addEventListener('blur',()=>{if(ampHelpActive===btn)ampOcultarAyuda()});
+ btn.addEventListener('pointerdown',e=>{
+  if(e.pointerType!=='touch'&&e.pointerType!=='pen')return;
+  pressed=true;suppress=false;sx=e.clientX;sy=e.clientY;
+  if(ampHelpTimer!==null)clearTimeout(ampHelpTimer);
+  ampHelpTimer=setTimeout(()=>{ampHelpTimer=null;if(pressed){suppress=true;ampMostrarAyuda(btn,texto)}},600);
+ });
+ btn.addEventListener('pointermove',e=>{
+  if(!pressed||ampHelpTimer===null)return;
+  if(Math.hypot(e.clientX-sx,e.clientY-sy)>14){clearTimeout(ampHelpTimer);ampHelpTimer=null;pressed=false}
+ });
+ btn.addEventListener('pointerup',()=>{
+  pressed=false;if(ampHelpTimer!==null){clearTimeout(ampHelpTimer);ampHelpTimer=null;}
+  if(suppress)setTimeout(()=>{if(ampHelpActive===btn)ampOcultarAyuda()},1800);
+ });
+ btn.addEventListener('pointercancel',()=>{pressed=false;if(ampHelpTimer!==null){clearTimeout(ampHelpTimer);ampHelpTimer=null;}});
+ btn.addEventListener('contextmenu',e=>{if(suppress){e.preventDefault();}});
+ btn.addEventListener('click',e=>{
+  if(suppress){e.preventDefault();e.stopImmediatePropagation();suppress=false;}
+  else if(ampHelpActive===btn)ampOcultarAyuda();
+ },true);
+}
+document.addEventListener('scroll',ampOcultarAyuda,true);
+window.addEventListener('resize',ampOcultarAyuda);
 function accionesFilaHoja(p){
  const tools=document.createElement('div');tools.className='sheet-tools';
  const opciones=[
-  ['📝','Cambiar nombre',()=>abrirEditarNombre(p)],
-  ['📷','Agregar o ver fotografía',()=>abrirFotoProducto(p)],
-  ['✏️','Editar precio o existencias',()=>elegirEdicion(p)],
-  ['▦','Asociar código de barras',()=>abrirVinculador(p)],
-  ['📦','Registrar otra compra',()=>otraCompra(p)],
-  ['🗑️','Retirar producto',()=>eliminarProducto(p)]
+  ['nombre','Cambiar nombre del producto',()=>abrirEditarNombre(p)],
+  ['foto','Ver o agregar fotografía',()=>abrirFotoProducto(p)],
+  ['editar','Editar precio de venta o existencias',()=>elegirEdicion(p)],
+  ['codigo','Asociar código de barras',()=>abrirVinculador(p)],
+  ['compra','Registrar otra compra',()=>otraCompra(p)],
+  ['eliminar','Eliminar registro del producto',()=>eliminarProducto(p)]
  ];
  if(p.unidad_medida!=='kg'){
-  const button=crearBotonGestionKg(p);
-  button.textContent='⚖️';button.title='Cambiar de unidades a kilos o abrir bolsas';
-  button.setAttribute('aria-label','Cambiar a kilos o abrir bolsas de '+p.detalles);
-  tools.append(button);
+  const btn=crearBotonGestionKg(p);
+  btn.dataset.accion='kilos';btn.innerHTML=ampIconSvg('kilos');
+  ampAyudaBoton(btn,'Cambiar de unidades a kilos o abrir bolsa');
+  tools.append(btn);
  }
- for(const [icon,label,action] of opciones){
-  const button=document.createElement('button');button.type='button';button.textContent=icon;
-  button.title=label;button.setAttribute('aria-label',label+' de '+p.detalles);
-  button.className=icon==='🗑️'?'delete-product alt':'alt';
-  button.onclick=action;tools.append(button);
+ for(const [clave,label,accion] of opciones){
+  const btn=document.createElement('button');btn.type='button';btn.dataset.accion=clave;
+  btn.className='alt';btn.innerHTML=ampIconSvg(clave);
+  ampAyudaBoton(btn,label);
+  btn.onclick=accion;
+  tools.append(btn);
  }
  return tools;
 }

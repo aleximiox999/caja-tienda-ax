@@ -512,17 +512,17 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 <div class="foto-botones">
 <button type="button" id="elegirGaleriaFoto" class="alt">🖼️ Elegir de galería</button>
 <button type="button" id="tomarCamaraFoto" class="alt">📷 Tomar fotografía</button>
-<button type="button" id="abrirBusquedaFotoWeb" class="alt">🌐 Buscar imagen en internet</button>
+<button type="button" id="abrirBusquedaFotoWeb" class="alt">🌐 BUSCAR EN GOOGLE IMÁGENES</button>
 </div>
 <div id="fotoWebPanel" class="foto-web-panel hidden">
- <label for="fotoWebConsulta">Buscar fotografía del producto</label>
+ <label for="fotoWebConsulta">BUSCAR EN GOOGLE IMÁGENES</label>
  <div class="foto-web-controles">
   <input id="fotoWebConsulta" type="search" placeholder="Ej.: AGUA VITAL 600 ML" maxlength="120" autocomplete="off">
-  <button id="fotoWebBuscar" type="button">BUSCAR IMÁGENES</button>
+  <button id="fotoWebBuscar" type="button">BUSCAR EN GOOGLE</button>
  </div>
- <p id="fotoWebEstado" class="foto-web-estado" role="status" aria-live="polite">Buscamos fotografías con título, tamaño y fuente para que elijas la correcta.</p>
+ <p id="fotoWebEstado" class="foto-web-estado" role="status" aria-live="polite">Elegí una foto de Google; se encuadra en cuadrado y se guarda directamente en el producto.</p>
  <div id="fotoWebResultados" class="foto-web-resultados"></div>
- <p class="foto-web-ayuda">Fuentes: Openverse y Wikimedia Commons (imágenes abiertas). Revisá la licencia y que sea exactamente tu producto. Si no aparece, <a id="fotoWebGoogle" href="https://www.google.com/imghp" target="_blank" rel="noopener noreferrer">buscar en Google Imágenes</a>, descargá la foto y usá «Elegir de galería».</p>
+ <p class="foto-web-ayuda">Resultados de Google Imágenes a través de Serper. Verificá que sea el empaque correcto y revisá las condiciones de uso del sitio de origen. Algunas páginas no permiten importar sus imágenes automáticamente.</p>
 </div>
 <input id="archivoGaleriaFoto" type="file" accept="image/*" style="display:none">
 <input id="archivoCamaraFoto" type="file" accept="image/*" capture="environment" style="display:none">
@@ -1152,9 +1152,7 @@ $('tomarCamaraFoto').onclick=()=>$('archivoCamaraFoto').click();
 function estadoBusquedaFoto(mensaje,esError=false){
  const el=$('fotoWebEstado');el.textContent=mensaje;el.style.color=esError?'#a32733':'#344f63';
 }
-function actualizarGoogleFoto(q){
- $('fotoWebGoogle').href='https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q||'foto del producto');
-}
+function actualizarGoogleFoto(q){ /* Consulta integrada en la galería de COSTOS. */ }
 $('abrirBusquedaFotoWeb').onclick=()=>{
  if(!fotoProductoActivo||fotoGuardando||fotoWebImportando)return;
  const panel=$('fotoWebPanel'),abrir=panel.classList.contains('hidden');
@@ -1181,14 +1179,18 @@ async function buscarImagenesProductoWeb(){
  estadoBusquedaFoto('Buscando fotografías de «'+q+'» en internet…');
  try{
   const {data,error}=await db.functions.invoke('imagenes-producto',{body:{accion:'buscar',consulta:q}});
-  if(error)throw Error(error.message||'No se pudo consultar el buscador de fotografías.');
+  if(error){
+   let detalle=error.message||'No se pudo consultar el buscador de fotografías.';
+   try{if(error.context?.json){const j=await error.context.json();if(j?.error)detalle=j.error;}}catch(_e){}
+   throw Error(detalle);
+  }
   if(solicitud!==fotoWebSolicitud||String(fotoProductoActivo?.id)!==identidad||panel.classList.contains('hidden'))return;
   if(data?.error)throw Error(data.error);
   const imagenes=Array.isArray(data?.imagenes)?data.imagenes:[];
   const resultados=$('fotoWebResultados');
-  estadoBusquedaFoto(imagenes.length?'Encontré '+imagenes.length+' opciones. Revisá el título y elegí la imagen correcta.':'No encontré imágenes abiertas para ese nombre. Probá menos palabras o usá el enlace a Google Imágenes.');
+  estadoBusquedaFoto(imagenes.length?'Encontré '+imagenes.length+' imágenes de Google. Elegí la que corresponda al producto.':'No se encontraron fotografías. Probá menos palabras o una descripción distinta.');
   for(const item of imagenes){
-   if(!['commons','openverse'].includes(item.proveedor)||typeof item.id!=='string')continue;
+   if(item.proveedor!=='google'||typeof item.id!=='string')continue;
    const tarjeta=document.createElement('article');tarjeta.className='foto-web-opcion';
    const foto=document.createElement('img');foto.loading='lazy';foto.decoding='async';foto.referrerPolicy='no-referrer';
    foto.alt=String(item.titulo||'Fotografía disponible').slice(0,150);
@@ -1197,18 +1199,18 @@ async function buscarImagenesProductoWeb(){
    const nombre=document.createElement('strong');nombre.textContent=String(item.titulo||'Imagen sin título');
    const meta=document.createElement('small');
    const ancho=Number(item.ancho||0),alto=Number(item.alto||0);
-   meta.textContent=(ancho>0&&alto>0?ancho+' × '+alto+' px · ':'')+(item.proveedor==='commons'?'Wikimedia Commons':'Openverse')+
-    (Math.min(ancho,alto)<650?' · Resolución limitada':'');
+   meta.textContent=(ancho>0&&alto>0?ancho+' × '+alto+' px · ':'')+String(item.fuente||'Google Imágenes')+
+    (ancho>0&&alto>0&&Math.min(ancho,alto)<650?' · Baja resolución':'');
    const licencia=document.createElement('small');
-   licencia.textContent='Licencia: '+String(item.licencia||'Consultar fuente');
+   licencia.textContent=String(item.licencia||'Verificá derechos de uso en la página de origen');
    tarjeta.append(foto,nombre,meta,licencia);
    if(typeof item.pagina==='string'&&item.pagina.startsWith('https://')){
     const fuente=document.createElement('a');
     fuente.href=item.pagina;fuente.target='_blank';fuente.rel='noopener noreferrer';
-    fuente.textContent='Ver fuente y licencia';tarjeta.append(fuente);
+    fuente.textContent='Ver página de origen';tarjeta.append(fuente);
    }
    const elegir=document.createElement('button');elegir.type='button';
-   elegir.textContent='USAR ESTA FOTO';
+   elegir.textContent='ENCUADRAR Y GUARDAR';
    elegir.onclick=()=>void importarFotoProductoWeb(item,elegir);
    tarjeta.append(elegir);resultados.append(tarjeta);
   }
@@ -1222,7 +1224,7 @@ async function buscarImagenesProductoWeb(){
 }
 async function importarFotoProductoWeb(item,boton){
  const p=fotoProductoActivo;if(!p||fotoWebImportando||fotoGuardando)return;
- if(!confirm('¿Usar esta fotografía para «'+p.detalles+'»? Se reemplazará la imagen anterior, si tiene una. Revisá que corresponda al producto y su licencia.'))return;
+ if(!confirm('¿Guardar esta foto para «'+p.detalles+'»? Se encuadrará en cuadrado, se comprimirá y reemplazará la anterior, si la hay.'))return;
  fotoWebImportando=true;
  boton.disabled=true;
  $('cerrarFotoProducto').disabled=true;
@@ -1233,7 +1235,11 @@ async function importarFotoProductoWeb(item,boton){
  estadoBusquedaFoto('Descargando fotografía en calidad disponible…');
  try{
   const {data,error}=await db.functions.invoke('imagenes-producto',{body:{accion:'importar',proveedor:item.proveedor,id:item.id}});
-  if(error)throw Error(error.message||'La fuente no permitió importar esta imagen.');
+  if(error){
+   let detalle=error.message||'No se pudo descargar esta imagen.';
+   try{if(error.context?.json){const j=await error.context.json();if(j?.error)detalle=j.error;}}catch(_e){}
+   throw Error(detalle);
+  }
   if(!(data instanceof Blob))throw Error('La fuente no devolvió una imagen compatible.');
   if(data.size>8*1024*1024)throw Error('Imagen demasiado pesada; elegí otra opción.');
   // Las funciones de Supabase devuelven binarios como octet-stream. Detectamos
@@ -1247,7 +1253,7 @@ async function importarFotoProductoWeb(item,boton){
   const mime=jpg?'image/jpeg':png?'image/png':webp?'image/webp':gif?'image/gif':'';
   if(!mime)throw Error('La fuente no entregó JPG, PNG, WebP ni GIF.');
   const archivo=new File([data],'foto-de-producto.'+(jpg?'jpg':png?'png':webp?'webp':'gif'),{type:mime});
-  estadoBusquedaFoto('Optimizando nitidez y tamaño. Guardando imagen en Supabase…');
+  estadoBusquedaFoto('Encuadrando, optimizando el peso y guardando la foto en Supabase…');
   await guardarFotoProducto(archivo,true);
  }catch(error){
   estadoBusquedaFoto('No se pudo importar: '+(error?.message||String(error))+'. Probá otra fotografía.',true);
@@ -1290,11 +1296,22 @@ async function comprimirFoto(file,mejoraWeb=false){
   const dibujar=async(maximo,calidad)=>{
    const base=Math.max(img.naturalWidth,img.naturalHeight);
    const escala=Math.min(maximo/base,mejoraWeb&&base<850?1.35:1);
-   const cv=document.createElement('canvas');cv.width=Math.max(1,Math.round(img.naturalWidth*escala));cv.height=Math.max(1,Math.round(img.naturalHeight*escala));
+   const w=Math.max(1,Math.round(img.naturalWidth*escala)),h=Math.max(1,Math.round(img.naturalHeight*escala));
+   const lado=mejoraWeb?Math.min(maximo,Math.max(w,h)+Math.max(8,Math.round(Math.max(w,h)*.065))):0;
+   const cv=document.createElement('canvas');
+   cv.width=mejoraWeb?lado:w;cv.height=mejoraWeb?lado:h;
    const ctx=cv.getContext('2d');if(!ctx)throw Error('El navegador no puede procesar imágenes.');
    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
-   ctx.fillStyle='#ffffff';ctx.fillRect(0,0,cv.width,cv.height);ctx.drawImage(img,0,0,cv.width,cv.height);
-   if(mejoraWeb)realzarNitidezLigera(ctx,cv.width,cv.height);
+   ctx.fillStyle='#ffffff';ctx.fillRect(0,0,cv.width,cv.height);
+   if(mejoraWeb){
+    // Cuadro 1:1 con margen blanco; se conserva entero el envase sin deformarlo.
+    const r=Math.min(cv.width*.94/img.naturalWidth,cv.height*.94/img.naturalHeight);
+    const dw=img.naturalWidth*r,dh=img.naturalHeight*r;
+    ctx.drawImage(img,(cv.width-dw)/2,(cv.height-dh)/2,dw,dh);
+    realzarNitidezLigera(ctx,cv.width,cv.height);
+   }else{
+    ctx.drawImage(img,0,0,cv.width,cv.height);
+   }
    return await new Promise((resolve,reject)=>cv.toBlob(blob=>blob?resolve(blob):reject(Error('No se pudo preparar la imagen.')),'image/jpeg',calidad));
   };
   let blob=await dibujar(1400,0.82);
@@ -1331,6 +1348,7 @@ async function guardarFotoProducto(file,mejoraWeb=false){
   if(fotoAnterior&&fotoAnterior!==rutaNueva){void db.storage.from(FOTOS_BUCKET).remove([fotoAnterior]);}
  }catch(e){
   marcarEstadoFoto((e.message||String(e))+'. Revisá la conexión antes de volver a intentar.',true);
+  if(mejoraWeb)throw e;
  }finally{
   fotoGuardando=false;
   $('elegirGaleriaFoto').disabled=false;$('tomarCamaraFoto').disabled=false;$('cerrarFotoProducto').disabled=false;

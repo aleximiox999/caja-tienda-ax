@@ -30,11 +30,45 @@ button.costo-abrir:hover{color:#0b6889;text-decoration-style:solid}
 #editorCostosDialog .costo-oculto{display:none!important}
 #editorCostosDialog .costos-acciones{display:flex;gap:9px;flex-wrap:wrap}
 #editorCostosDialog .costos-acciones button{flex:1 1 150px}
+
+/* Hoja COSTOS: primeras ocho columnas en el orden acordado. */
+.wrap{max-width:98vw}
+#listado table{min-width:1530px;width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+#listado th{position:sticky;top:0;background:#e7f0f6;z-index:2;color:#233c50;white-space:nowrap;padding:12px 9px;border:1px solid #d6e2eb;font-size:11px}
+#listado td{padding:8px 7px;border-bottom:1px solid #e5edf3;border-right:1px solid #e7edf2;vertical-align:middle}
+#listado tr:nth-child(2n) td{background:#f8fbfd}
+#listado td:first-child,#listado th:first-child{position:sticky;left:0;z-index:1;background:#fff;min-width:210px;max-width:270px;box-shadow:3px 0 7px #2334480e}
+#listado tr:nth-child(2n) td:first-child{background:#f8fbfd}
+#listado th:first-child{z-index:3;background:#e7f0f6}
+#listado .sheet-input{width:100%;min-width:75px;padding:9px 7px;background:#fff;border:1px solid #cbd9e4;border-radius:5px;color:#102d45;font-size:13px;font-variant-numeric:tabular-nums}
+#listado .sheet-input:focus{border-color:#08795b;outline:2px solid #a8dfc4}
+#listado .sheet-input.sheet-dirty{background:#fff6dc;border-color:#b58d29}
+#listado td.sheet-derived{background:#edf5fd;color:#234860;min-width:125px;text-align:right;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+#listado .sheet-negative{color:#ad2727!important}
+#listado .sheet-stock-note{font-size:11px;display:block;margin-top:6px;color:#617180}
+#listado button.sheet-save{padding:9px 12px;background:#08795b;white-space:nowrap;font-size:12px;min-width:110px}
+#listado button.sheet-save:disabled{background:#c5d2d8;color:#40515d;opacity:.85}
+#listado .sheet-message{font-size:11px;color:#516679;margin:4px 0;white-space:normal;max-width:230px}
+#listado .sheet-error{color:#b32325!important}
+#listado .sheet-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#listado .sheet-actions .sheet-tools{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+#listado .sheet-actions .sheet-tools button{font-size:12px;padding:7px 9px;width:auto;height:auto;min-width:32px;line-height:1.2}
+#listado .sheet-actions .sheet-tools button.convert-kg{font-size:11px!important}
+@media(max-width:760px){
+ #listado .scroll{display:none}
+ #listado .cards{display:block}
+ #listado .sheet-mobile-row{display:grid;grid-template-columns:minmax(100px,1fr) minmax(128px,1.2fr);gap:9px;align-items:center;padding:7px 0;border-bottom:1px solid #e7edf2}
+ #listado .sheet-mobile-row label{font-size:12px;margin:0}
+ #listado .sheet-mobile-row .sheet-input{font-size:14px}
+ #listado .sheet-mobile-row .sheet-result{font-weight:800;text-align:right;overflow-wrap:anywhere}
+ #listado .sheet-actions{margin-top:13px}
+ #listado .sheet-actions button.sheet-save{min-height:44px;flex:1 1 180px}
+}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script></head><body><main class="wrap"><header><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div><div><span class="pill">DATOS REALES · ACCESO RESTRINGIDO</span> <button id="salir" class="alt hidden">Salir</button></div></header>
 <section id="login"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
 <section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si vuelves a comprar el mismo producto, utiliza su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿Cómo se vende este producto?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">Unidades / bolsas / paquetes</option><option value="kg">Kilogramos (kg) a granel</option><option value="botella">Botellas</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min=".001" step="any" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
 
-<section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Productos que llegaron al stock mínimo o tienen menos existencias. Se actualiza al cargar o actualizar los datos.</p><div id="listaAlertas"></div></section><section id="listado" class="hidden"><h2>Productos registrados</h2><div class="actions"><div class="busqueda-wrap"><input id="buscar" placeholder="Escribe 2 letras del nombre o un código" autocomplete="off" aria-controls="sugerencias" aria-expanded="false" aria-autocomplete="list"><div id="sugerencias" class="sugerencias hidden" style="display:none" role="listbox" aria-label="Sugerencias de productos"></div></div><div id="resultadoBusqueda" role="status" aria-live="polite" style="margin:8px 0;font-weight:600"></div><button class="alt" id="recargar">Actualizar</button></div><div class="scroll"><table><thead><tr><th>Producto</th><th>Código</th><th>Precio venta</th><th>Costo unitario</th><th>Total última compra</th><th>Ganancia</th><th>Existencias</th><th>Proveedor</th><th>Acción</th></tr></thead><tbody id="filas"></tbody></table></div><div id="tarjetas" class="cards"></div></section>
+<section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Productos que llegaron al stock mínimo o tienen menos existencias. Se actualiza al cargar o actualizar los datos.</p><div id="listaAlertas"></div></section><section id="listado" class="hidden"><h2>COSTOS · Hoja de cálculo</h2><p class="muted" style="margin:8px 0 12px">El nombre del producto aparece primero. Editá las celdas blancas y tocá <strong>Guardar fila</strong>. El costo y las utilidades se calculan solos. <strong>UNIDADES</strong> indica cuántas trae la compra, no las existencias actuales.</p><div class="actions"><div class="busqueda-wrap"><input id="buscar" placeholder="Escribe 2 letras del nombre o un código" autocomplete="off" aria-controls="sugerencias" aria-expanded="false" aria-autocomplete="list"><div id="sugerencias" class="sugerencias hidden" style="display:none" role="listbox" aria-label="Sugerencias de productos"></div></div><div id="resultadoBusqueda" role="status" aria-live="polite" style="margin:8px 0;font-weight:600"></div><button class="alt" id="recargar">Actualizar</button></div><div class="scroll"><table><thead><tr><th>PRODUCTO</th><th>PRECIO DE COMPRA</th><th>UNIDADES / KG</th><th>COSTO UNITARIO</th><th>PRECIO DE VENTA</th><th>UTILIDAD POR UNIDAD</th><th>UTILIDAD TOTAL</th><th>PROVEEDOR</th><th>ACCIONES</th></tr></thead><tbody id="filas"></tbody></table></div><div id="tarjetas" class="cards"></div></section>
 <dialog id="fotoProductoDialog" aria-labelledby="tituloFotoProducto">
 <h2 id="tituloFotoProducto">Fotografía del producto</h2>
 <p id="nombreFotoProducto" class="muted"></p>
@@ -196,7 +230,185 @@ function mostrarSugerencias(){
  panel.classList.remove('hidden');panel.style.display='block';campo.setAttribute('aria-expanded','true');
 }
 $('buscar').addEventListener('focus',mostrarSugerencias);
-const normalizarBusqueda=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es');function dibujar(){dibujarAlertas();mostrarSugerencias();const q=normalizarBusqueda($('buscar').value.trim());$('filas').replaceChildren();$('tarjetas').replaceChildren();const encontrados=normalizarFlexible(q).length<2?productos:buscarCoincidencias(q);const aviso=$('resultadoBusqueda');if(aviso){aviso.replaceChildren();const encabezado=document.createElement('div');encabezado.textContent=q.length>=2?(encontrados.length+' producto(s) encontrados para «'+$('buscar').value+'»'):productos.length+' productos registrados.';aviso.append(encabezado);}for(const p of encontrados){const d=datosProducto(p);const nombreVisible=String(p.detalles||'').toLocaleUpperCase('es');const tr=document.createElement('tr');for(const [indice,v] of [nombreVisible,p.codigo_barras||'—',bs(p.precio_venta)+' / '+unidadCorta(p),bs(d.unit)+' / '+unidadCorta(p),d.ultimaCompra?bs(d.ultimaCompra.precio_compra)+' ('+d.ultimaCompra.unidades+')':'—',bs(d.ganancia)+' / '+unidadCorta(p),conMedida(d.stock,p),d.proveedor||'—'].entries()){const td=document.createElement('td');if(indice===0){const ver=document.createElement('button');ver.type='button';ver.className='nombre-con-foto';ver.textContent=v;ver.title='Tocar para ver la fotografía del producto';ver.onclick=()=>abrirFotoProducto(p);td.append(ver)}else if(indice===3||indice===4){const b=document.createElement('button');b.type='button';b.className='costo-abrir';b.textContent=v+(indice===3||d.ultimaCompra?' ✏️':'');b.title=indice===3?'Editar costo unitario actual':'Corregir costo total de última compra';b.onclick=()=>abrirEditorCostos(p,indice===3?'actual':'compra');td.append(b)}else td.textContent=v;tr.append(td)}const action=document.createElement('td');const iconos=document.createElement('div');iconos.className='icon-actions';const editar=document.createElement('button');editar.textContent='✏️';editar.title='Editar precio de venta o existencias';editar.setAttribute('aria-label','Editar precio de venta o existencias de '+p.detalles);editar.className='edit-price';editar.onclick=()=>elegirEdicion(p);iconos.append(editar);iconos.append(crearBotonEditarNombre(p));iconos.append(crearBotonGestionFoto(p));if(p.unidad_medida!=='kg')iconos.append(crearBotonGestionKg(p));const borrar=document.createElement('button');borrar.textContent='🗑️';borrar.title='Retirar producto';borrar.setAttribute('aria-label','Retirar '+p.detalles);borrar.className='delete-product';borrar.onclick=()=>eliminarProducto(p);iconos.append(borrar);const codBtn=crearBotonCodigo(p);iconos.append(codBtn);action.append(iconos);const b=document.createElement('button');b.textContent='Otra compra';b.title='Registrar otra compra';b.onclick=()=>otraCompra(p);action.append(b);tr.append(action);$('filas').append(tr);const card=document.createElement('article');card.className='card';const h=document.createElement('h3');const botonFotoNombre=document.createElement('button');botonFotoNombre.type='button';botonFotoNombre.className='nombre-con-foto';botonFotoNombre.textContent=nombreVisible;botonFotoNombre.onclick=()=>abrirFotoProducto(p);h.append(botonFotoNombre);card.append(h);for(const [label,val] of [['Precio venta',bs(p.precio_venta)+' / '+unidadCorta(p)],['Costo unitario',bs(d.unit)+' / '+unidadCorta(p)],['Total última compra',d.ultimaCompra?bs(d.ultimaCompra.precio_compra)+' ('+d.ultimaCompra.unidades+')':'—'],['Ganancia / '+unidadCorta(p),bs(d.ganancia)],['Existencias',conMedida(d.stock,p)],['Código',p.codigo_barras||'—']]){const row=document.createElement('div');row.className='row';const l=document.createElement('span');l.textContent=label;const v=document.createElement('strong');if(label==='Costo unitario'||label==='Total última compra'){const costBtn=document.createElement('button');costBtn.type='button';costBtn.className='costo-abrir';costBtn.textContent=val+' ✏️';costBtn.onclick=()=>abrirEditorCostos(p,label==='Costo unitario'?'actual':'compra');v.append(costBtn)}else v.textContent=val;row.append(l,v);card.append(row)}const iconosCard=document.createElement('div');iconosCard.className='icon-actions';const editarCard=document.createElement('button');editarCard.textContent='✏️';editarCard.title='Editar precio de venta o existencias';editarCard.setAttribute('aria-label','Editar precio de venta o existencias de '+p.detalles);editarCard.className='edit-price';editarCard.onclick=()=>elegirEdicion(p);iconosCard.append(editarCard);iconosCard.append(crearBotonEditarNombre(p));iconosCard.append(crearBotonGestionFoto(p));if(p.unidad_medida!=='kg')iconosCard.append(crearBotonGestionKg(p));const borrarCard=document.createElement('button');borrarCard.textContent='🗑️';borrarCard.title='Retirar producto';borrarCard.setAttribute('aria-label','Retirar '+p.detalles);borrarCard.className='delete-product';borrarCard.onclick=()=>eliminarProducto(p);iconosCard.append(borrarCard);iconosCard.append(crearBotonCodigo(p));card.append(iconosCard);const btn=document.createElement('button');btn.textContent='Registrar otra compra';btn.onclick=()=>otraCompra(p);card.append(btn);$('tarjetas').append(card)}}
+const normalizarBusqueda=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es');
+/* Una fila de COSTOS corresponde a la compra más reciente de ese producto. El stock se gestiona aparte. */
+function ultimaCompraHoja(p){
+ return comprasDeProducto(p).sort((a,b)=>{
+  const t=String(b.fecha_registro||'').localeCompare(String(a.fecha_registro||''));
+  return t||Number(b.id)-Number(a.id);
+ })[0]||null;
+}
+function nombreFilaHoja(p){
+ const b=document.createElement('button');b.type='button';b.className='nombre-con-foto';
+ b.textContent=String(p.detalles||'').toLocaleUpperCase('es');
+ b.title='Tocá para ver la fotografía';b.onclick=()=>abrirFotoProducto(p);return b;
+}
+function accionesFilaHoja(p){
+ const tools=document.createElement('div');tools.className='sheet-tools';
+ const opciones=[
+  ['📝','Cambiar nombre',()=>abrirEditarNombre(p)],
+  ['📷','Agregar o ver fotografía',()=>abrirFotoProducto(p)],
+  ['✏️','Editar precio o existencias',()=>elegirEdicion(p)],
+  ['▦','Asociar código de barras',()=>abrirVinculador(p)],
+  ['📦','Registrar otra compra',()=>otraCompra(p)],
+  ['🗑️','Retirar producto',()=>eliminarProducto(p)]
+ ];
+ if(p.unidad_medida!=='kg'){
+  const button=crearBotonGestionKg(p);
+  tools.append(button);
+ }
+ for(const [icon,label,action] of opciones){
+  const button=document.createElement('button');button.type='button';button.textContent=icon;
+  button.title=label;button.setAttribute('aria-label',label+' de '+p.detalles);
+  button.className=icon==='🗑️'?'delete-product alt':'alt';
+  button.onclick=action;tools.append(button);
+ }
+ return tools;
+}
+function configurarEditorFila(p,compra,superficie,movil){
+ const lista=[
+  ['compra','PRECIO DE COMPRA'],
+  ['unidades',p.unidad_medida==='kg'?'UNIDADES (KG)':'UNIDADES'],
+  ['costo','COSTO UNITARIO'],
+  ['venta','PRECIO DE VENTA'],
+  ['utilidad','UTILIDAD POR UNIDAD'],
+  ['total','UTILIDAD TOTAL'],
+  ['proveedor','PROVEEDOR']
+ ];
+ const inputs={},derivados={};
+ const original={
+  compra:Number(compra.precio_compra),unidades:Number(compra.unidades),
+  venta:Number(p.precio_venta||0),proveedor:String(compra.proveedor||'').trim()
+ };
+ function incluirCampo(clave,titulo){
+  const cell=document.createElement(movil?'div':'td');if(movil)cell.className='sheet-mobile-row';
+  if(movil){const lbl=document.createElement('label');lbl.textContent=titulo;cell.append(lbl);}
+  if(['compra','unidades','venta','proveedor'].includes(clave)){
+   const input=document.createElement('input');input.className='sheet-input';input.autocomplete='off';
+   input.setAttribute('aria-label',titulo+' de '+p.detalles);
+   if(clave==='proveedor'){input.type='text';input.maxLength=180;input.value=compra.proveedor||'';}
+   else{
+    input.type='number';input.inputMode='decimal';input.min=clave==='unidades'?'0.001':'0';
+    input.step=clave==='unidades'?(p.unidad_medida==='kg'?'0.001':'1'):'0.01';
+    input.value=clave==='compra'?original.compra.toFixed(2):clave==='venta'?original.venta.toFixed(2):String(original.unidades);
+   }
+   inputs[clave]=input;cell.append(input);
+  }else{
+   if(!movil)cell.className='sheet-derived';
+   const output=document.createElement('strong');output.className=movil?'sheet-result':'';
+   derivados[clave]=output;cell.append(output);
+  }
+  superficie.append(cell);
+ }
+ for(const [clave,titulo] of lista)incluirCampo(clave,titulo);
+ const action=document.createElement(movil?'div':'td');action.className='sheet-actions';
+ if(!compra)throw Error('La fila requiere una compra');
+ const save=document.createElement('button');save.type='button';save.className='sheet-save';
+ save.textContent='Guardar fila';save.disabled=true;
+ const err=document.createElement('p');err.className='sheet-message';err.setAttribute('role','status');
+ const tools=accionesFilaHoja(p);
+ action.append(save,tools,err);superficie.append(action);
+ let guardando=false;
+ function valor(clave){
+  const raw=inputs[clave].value.trim();return raw===''?NaN:Number(raw);
+ }
+ function estadoFila(){
+  const comp=valor('compra'),unid=valor('unidades'),vent=valor('venta'),
+   prov=inputs.proveedor.value.trim();
+  const valid=Number.isFinite(comp)&&comp>=0&&comp<=100000000&&
+   Number.isFinite(unid)&&unid>0&&unid<=1000000&&
+   Number.isFinite(vent)&&vent>=0&&vent<=100000000&&
+   Math.abs(comp*100-Math.round(comp*100))<0.00001&&
+   Math.abs(vent*100-Math.round(vent*100))<0.00001&&
+   (p.unidad_medida==='kg'?Math.abs(unid*1000-Math.round(unid*1000))<0.00001:Number.isInteger(unid))&&
+   prov.length<=180;
+  const dif=comp!==original.compra||unid!==original.unidades||vent!==original.venta||prov!==original.proveedor;
+  for(const [clave,antiguo] of Object.entries(original)){
+   const actual=clave==='proveedor'?prov:clave==='compra'?comp:clave==='unidades'?unid:vent;
+   inputs[clave].classList.toggle('sheet-dirty',actual!==antiguo);
+  }
+  if(valid){
+   const costo=Number((comp/unid).toFixed(4));
+   const utilidad=Number((vent-costo).toFixed(4));
+   const total=Number((utilidad*unid).toFixed(2));
+   derivados.costo.textContent=costo.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:4})+' Bs / '+unidadCorta(p);
+   derivados.utilidad.textContent=bs(utilidad);
+   derivados.total.textContent=bs(total);
+   for(const key of ['utilidad','total']){
+    derivados[key].classList.toggle('sheet-negative',key==='utilidad'?utilidad<0:total<0);
+   }
+  }else{
+   for(const key of ['costo','utilidad','total'])derivados[key].textContent='Revisá datos';
+  }
+  save.disabled=guardando||!valid||!dif;
+  if(!guardando)err.textContent=!valid?'Ingresá precio de compra, unidades o kg, precio de venta y proveedor válidos.':dif?'Cambios sin guardar.':'';
+  return {valid,dif,comp,unid,vent,prov};
+ }
+ Object.values(inputs).forEach(input=>input.addEventListener('input',estadoFila));
+ save.onclick=async()=>{
+  const valores=estadoFila();
+  if(!valores.valid||!valores.dif||guardando)return;
+  const msg='¿Guardar COSTOS de «'+p.detalles+'»? Precio de compra: '+bs(valores.comp)+
+   ' · Cantidad de compra: '+valores.unid+' '+unidadCorta(p)+
+   ' · Precio de venta: '+bs(valores.vent)+
+   ' · Proveedor: '+(valores.prov||'Sin indicar')+
+   '. Las existencias físicas actuales permanecerán iguales.';
+  if(!confirm(msg))return;
+  guardando=true;save.disabled=true;err.textContent='Guardando cambios en Supabase…';
+  try{
+   const args={
+    p_producto_id:p.id,p_compra_id:compra.id,
+    p_precio_compra:valores.comp,p_unidades:valores.unid,
+    p_precio_venta:valores.vent,p_proveedor:valores.prov,
+    p_precio_compra_esperado:original.compra,p_unidades_esperadas:original.unidades,
+    p_precio_venta_esperado:original.venta,p_proveedor_esperado:String(compra.proveedor||''),
+    p_costo_actual_esperado:Number(datosProducto(p).unit)
+   };
+   const {data,error}=await db.rpc('guardar_fila_costos_amphx',args);
+   if(error)throw error;
+   if(!data||Number(data.producto_id)!==Number(p.id)||Number(data.compra_id)!==Number(compra.id))throw Error('Supabase no confirmó la corrección.');
+   await cargar();
+   estado('COSTOS guardados: '+p.detalles+'. Compra '+bs(valores.comp)+' / '+valores.unid+' '+unidadCorta(p)+'. Se recalcularon utilidad y costo unitario. Las existencias reales no cambiaron.');
+  }catch(e){
+   err.classList.add('sheet-error');
+   err.textContent='No se guardó: '+(e.message||String(e))+'. Pulsá Actualizar y revisá los datos antes de intentar de nuevo.';
+   estado('Error al corregir COSTOS: '+(e.message||String(e)),true);
+  }finally{guardando=false;estadoFila();}
+ };
+ estadoFila();
+}
+function dibujar(){
+ dibujarAlertas();mostrarSugerencias();
+ const campo=$('buscar').value.trim(),q=normalizarBusqueda(campo),encontrados=normalizarFlexible(q).length<2?productos:buscarCoincidencias(q);
+ $('filas').replaceChildren();$('tarjetas').replaceChildren();
+ const aviso=$('resultadoBusqueda');
+ if(aviso)aviso.textContent=(q.length>=2?encontrados.length+' producto(s) encontrados para «'+campo+'»':productos.length+' productos registrados.');
+ for(const p of encontrados){
+  const compra=ultimaCompraHoja(p),d=datosProducto(p),nombreVisible=String(p.detalles||'').toLocaleUpperCase('es');
+  const tr=document.createElement('tr'),tdNombre=document.createElement('td');
+  tdNombre.append(nombreFilaHoja(p));
+  const existencia=document.createElement('small');existencia.className='sheet-stock-note';
+  existencia.textContent='Existencias: '+conMedida(d.stock,p)+' · '+(p.codigo_barras?'Código: '+p.codigo_barras:'Sin código de barras');
+  tdNombre.append(existencia);tr.append(tdNombre);
+  if(compra){configurarEditorFila(p,compra,tr,false);}
+  else{
+   const empty=document.createElement('td');empty.colSpan=7;empty.textContent='Este producto no tiene una compra registrada. Registrá una para editar los costos de su paquete.';
+   tr.append(empty);
+   const action=document.createElement('td');action.append(accionesFilaHoja(p));tr.append(action);
+  }
+  $('filas').append(tr);
+  const card=document.createElement('article');card.className='card';
+  const h=document.createElement('h3');h.append(nombreFilaHoja(p));card.append(h);
+  const dato=document.createElement('p');dato.className='muted';
+  dato.textContent='Existencias: '+conMedida(d.stock,p)+(p.codigo_barras?' · Código: '+p.codigo_barras:'');
+  card.append(dato);
+  if(compra)configurarEditorFila(p,compra,card,true);
+  else{
+   const note=document.createElement('p');note.className='muted';note.textContent='Sin compra registrada. Añadí una compra para habilitar esta fila.';card.append(note,accionesFilaHoja(p));
+  }
+  $('tarjetas').append(card);
+ }
+}
 function crearBotonEditarNombre(p){
  const boton=document.createElement('button');
  boton.type='button';

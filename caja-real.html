@@ -371,6 +371,212 @@ table th{color:#d5f0e4}
 #status{color:#d2e7f7}
 footer{color:#d5e2ee}
 @media(forced-colors:active){.brand b{background:none;-webkit-text-fill-color:currentColor}}
+
+/* AMPHX CAJA REAL · PERLA CROMADA 2026-11-08
+   Mantener cabecera titanio negro; el resto de superficies/controles en perla metálica
+   con tipografía negro grafito y jerarquía de acciones. Solo presentación CSS. */
+:root{
+ color-scheme:light;
+ --bg:#e6ebf0;
+ --surface:#f5f7f9;
+ --surface2:#e8edf1;
+ --line:#aebbc6;
+ --text:#14212c;
+ --muted:#41505e;
+ --gold:#bcc8d2;
+ --gold2:#192935;
+ --red:#9b293a;
+ --green:#146744;
+}
+html{background:#e5eaf0}
+body{
+ color:var(--text);
+ background:
+  radial-gradient(ellipse at 50% -10%,#ffffffd8,transparent 52%),
+  linear-gradient(135deg,#d9e0e7 0%,#edf1f4 26%,#f9fafb 49%,#e3e9ee 77%,#dce5ec 100%);
+ background-attachment:fixed;
+}
+main{color:#182632}
+main h1,main h2,main h3{
+ color:#172633;
+ font-weight:850;
+ text-shadow:0 1px 0 #fff,0 1px 1px #77889935;
+}
+main .lead,main .muted,main .mini,main .item p,
+main .itemcode,main .empty{color:#445360}
+main label{color:#243440;font-weight:780}
+.card{
+ color:#152431;
+ background:
+  linear-gradient(120deg,transparent 6%,#ffffffa8 27%,transparent 48%,#ffffff52 73%,transparent 90%),
+  linear-gradient(162deg,#ffffff 0%,#f5f7f9 31%,#dfe6ec 74%,#f6f8f9 100%);
+ border:1px solid #adbcc8;
+ border-top:3px solid #e5edf4;
+ border-radius:18px;
+ box-shadow:0 9px 26px #182f3b20,inset 0 1px 0 #fff,inset 0 -1px 0 #b9c8d450;
+}
+.card h2,.card h3{color:#1b2b36}
+.field input,.field select,input,select{
+ color:#182732;
+ background:linear-gradient(180deg,#fff 0%,#f2f5f7 100%);
+ border:1.5px solid #a9b9c6;
+ box-shadow:inset 0 1px 3px #33465612;
+}
+input::placeholder{color:#586a78;opacity:1}
+input:focus,select:focus{
+ background:#fff;border-color:#45667e;
+ outline:3px solid #91b6d356;outline-offset:1px;
+}
+input[type=checkbox]{accent-color:#284b60}
+.btn,.btn.outline{
+ color:#1c2c38;
+ background:linear-gradient(145deg,#fff 0%,#eaf0f4 41%,#ccd8e0 100%);
+ border:1px solid #a5b5c1;
+ border-top-color:#fff;
+ box-shadow:inset 0 1px 0 #fff,0 2px 8px #263e5029;
+ text-shadow:0 1px 0 #ffffffba;
+}
+.btn.primary{
+ color:#152c39;
+ background:linear-gradient(140deg,#ffffff 0%,#e9f1f5 29%,#bbcbd5 100%);
+ border:1.5px solid #7b98aa;
+ box-shadow:inset 0 1px 0 #fff,0 3px 11px #284c6530;
+}
+.btn.danger{
+ color:#872634;
+ background:linear-gradient(145deg,#fff8f9,#f4dfe3);
+ border-color:#ca8b96;
+}
+.btn:hover:not(:disabled){filter:brightness(1.035);box-shadow:0 3px 14px #223f5130,inset 0 1px 0 #fff}
+.btn:active:not(:disabled){filter:brightness(.98)}
+button:focus-visible,input:focus-visible,select:focus-visible{
+ outline:3px solid #3c6f91;outline-offset:2px
+}
+.tabs{
+ border-bottom:1px solid #acbdc8;
+ gap:9px;
+}
+.tabs .btn{
+ color:#23333f;
+ background:linear-gradient(145deg,#fff 0%,#eef2f5 48%,#d5e0e7 100%);
+ border:1px solid #afbeca;border-top-color:#fff;
+ border-radius:13px;
+ box-shadow:inset 0 1px 0 #fff,0 2px 8px #1d384d24;
+ text-shadow:0 1px 0 #fff;
+}
+.tabs .btn.active{
+ color:#0a1a26;
+ background:linear-gradient(135deg,#fff 0%,#f5f8fa 37%,#c5d4df 100%);
+ border:2px solid #536c7c;
+ border-bottom:4px solid #1b3445;
+ box-shadow:0 3px 12px #112a3e3c,inset 0 1px 0 #fff;
+ font-weight:900;
+}
+.tabs .btn svg{stroke:currentColor}
+.badge{
+ color:#24493b;background:linear-gradient(145deg,#ffffff,#e5f1e8);
+ border-color:#89b9a2;box-shadow:inset 0 1px 0 #fff;
+}
+.note{
+ color:#2b4252;
+ background:linear-gradient(145deg,#fff,#e6edf3);
+ border:1px solid #b8c8d4;box-shadow:inset 0 1px 0 #fff;
+}
+.note.red{color:#932e3b;background:#fff0f2;border-color:#dfa8b0}
+.note.ok{color:#176244;background:#ecf9f1;border-color:#a0d2b7}
+#status{color:#405563}
+#status.error{color:#a92f3e}#status.success{color:#166948}
+.scanner{
+ color:#18303c;
+ background:linear-gradient(160deg,#fff,#e3ebf1 86%,#f8fafb);
+ border:1px solid #a3b8c7;
+ box-shadow:inset 0 1px 0 #fff,0 5px 17px #213d4d22;
+}
+.scanner-title strong{color:#182e3d}
+#camara{background:#09121d;border:1px solid #7793a3}
+.resumen-escaneo{
+ background:linear-gradient(145deg,#fff,#e6f3eb);
+ border:1px solid #9ec6ad;
+ box-shadow:inset 0 1px 0 #fff;
+}
+.resumen-etiqueta{color:#315444}
+.resumen-total{color:#165b3c;text-shadow:0 1px 0 #fff}
+.resumen-conteo,.resumen-ultimo{color:#254636}
+#repetirUltimoEscaneo{
+ color:#184d35;background:linear-gradient(145deg,#fff,#e1efe6);
+ border-color:#9dc8b0;
+}
+#escanearVenta,#escanearPrecio,#escanearEntrada{
+ color:#16435e;
+ background:linear-gradient(145deg,#fff,#e8f2f8 50%,#c8dae8);
+ border:1.5px solid #8baec7;
+}
+#btnVender{
+ color:#133329;
+ background:linear-gradient(135deg,#fff 0%,#e3f3e9 44%,#b8d7c6 100%);
+ border:2px solid #739e87;
+ font-weight:900;min-height:54px;
+ box-shadow:0 4px 14px #27674825,inset 0 1px 0 #fff;
+ text-shadow:0 1px 0 #fff;
+}
+#guardarEntrada{
+ color:#12422d;background:linear-gradient(135deg,#fff,#cbead9);
+ border-color:#83bca0;
+}
+.bigprice,.total{color:#152e40;font-weight:900;text-shadow:0 1px 0 #fff}
+.result{
+ color:#1c2f3e;
+ background:linear-gradient(145deg,#fff,#e8eef3);
+ border:1px solid #abbecb;
+ box-shadow:inset 0 1px 0 #fff;
+}
+.result strong,.item strong{color:#172832}
+.item{border-bottom:1px solid #cbd6df}
+.item p,.itemcode{color:#465966}
+.item .right b{color:#172f42}
+.stock{color:#185f3e;background:#e4f5e8;border:1px solid #b8d8c4}
+.stock.low{color:#a02d38;background:#fcecef;border-color:#edb1bc}
+.tablewrap{
+ background:linear-gradient(150deg,#fff,#e6edf2);
+ border:1px solid #acbdc9;
+ box-shadow:inset 0 1px 0 #fff;
+}
+thead{background:linear-gradient(140deg,#f9fbfc,#d6e1e9)}
+th{color:#243c4b}
+td{color:#1f2e3b}
+th,td{border-bottom:1px solid #c4d0da}
+.flat,summary,main a{color:#244d68}
+details{border-top:1px solid #bfccd6}
+.credenciales-acceso{
+ color:#1f3d30;
+ background:linear-gradient(150deg,#fff,#e2f2e8);
+ border:1px solid #9bc4ae;
+}
+.credenciales-acceso h3,.credenciales-acceso label{color:#1d5037}
+.credencial-valor{background:#fff;border-color:#a5cfb6;color:#153829}
+.empleado-codigo{color:#1d6042}
+#fotoVistaCaja{
+ background:linear-gradient(155deg,#fff,#e6ecf1);
+ color:#192936;border:1px solid #a9bac9;
+}
+#fotoVistaCaja .foto-vista-vacia{
+ color:#526273;background:#f7f9fa;border-color:#a8b6c2;
+}
+#fotoVistaCaja .foto-vista-img{background:#e5eaf0}
+#fotoVistaCaja .foto-vista-error{color:#a12c3c}
+button.foto-nombre{
+ color:#224f6e!important;text-decoration-color:#799dae;
+}
+button.foto-nombre:hover{color:#103c59!important}
+footer{color:#445665}
+.amp-caja-tip{
+ background:#122c3d;color:#fff;border-color:#9eb5c3;
+}
+@media(max-width:850px){
+ .card{box-shadow:0 5px 16px #172d4024,inset 0 1px 0 #fff}
+ .tabs .btn.active{border-bottom-width:3px}
+}
+/* Cabecera y texto plateado existentes se mantienen deliberadamente sin cambios. */
 </style>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>

@@ -64,11 +64,92 @@ button.costo-abrir:hover{color:#0b6889;text-decoration-style:solid}
  #listado .sheet-actions{margin-top:13px}
  #listado .sheet-actions button.sheet-save{min-height:44px;flex:1 1 180px}
 }
+
+/* COSTOS compacto: fichas completas, sin desplazamiento horizontal. */
+#listado{min-width:0;overflow-x:clip}
+#listado .scroll{display:none!important}
+#listado .cards{
+ display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,570px),1fr));
+ gap:14px;align-items:start;width:100%;min-width:0;overflow-x:clip;
+}
+#listado .sheet-card{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:9px 12px;min-width:0;margin:0;padding:15px;
+ border:1px solid #ccdde8;border-radius:14px;background:#fff;
+ box-shadow:0 3px 15px #10263c0b;
+}
+#listado .sheet-card .sheet-card-title{
+ grid-column:1/-1;font-size:16px;font-weight:800;
+ overflow-wrap:anywhere;line-height:1.3;margin:0;
+}
+#listado .sheet-card .sheet-card-title button{color:#124b6d;text-align:left;white-space:normal;overflow-wrap:anywhere}
+#listado .sheet-card .sheet-card-details{
+ grid-column:1/-1;font-size:11px;color:#637588;margin:0 0 5px;
+ padding:0 0 8px;border-bottom:1px solid #e5ebf1;overflow-wrap:anywhere
+}
+#listado .sheet-card .sheet-mobile-row{
+ display:flex!important;flex-direction:column;align-items:stretch;
+ gap:4px;min-width:0;margin:0;padding:7px 9px;
+ border:1px solid #e1e9ee;border-radius:8px;background:#fbfdff;
+}
+#listado .sheet-card .sheet-mobile-row label{font-size:10.5px;line-height:1.25;margin:0;color:#50677c;font-weight:800}
+#listado .sheet-card .sheet-mobile-row .sheet-input{
+ display:block;width:100%;min-width:0;max-width:100%;
+ padding:8px 7px;font-size:15px;min-height:38px;
+}
+#listado .sheet-card .sheet-mobile-row .sheet-result{
+ display:block;width:100%;min-width:0;text-align:left;
+ font-size:15px;line-height:1.4;overflow-wrap:anywhere;
+}
+#listado .sheet-card .sheet-mobile-row:has(.sheet-result){background:#eef7f5;border-color:#c8e5dc}
+#listado .sheet-card .sheet-mobile-row:last-of-type:has(input[type=text]){grid-column:1/-1}
+#listado .sheet-card .sheet-provider-row{grid-column:1/-1}
+#listado .sheet-card .sheet-actions{
+ grid-column:1/-1;display:grid!important;grid-template-columns:minmax(120px,1fr) minmax(0,2fr);
+ align-items:center;gap:9px;margin:2px 0 0;padding:10px;
+ border:1px solid #d6e3e9;background:#f3f8fa;border-radius:10px;min-width:0;
+}
+#listado .sheet-card .sheet-actions button.sheet-save{
+ width:100%;min-width:0;min-height:43px;max-width:none;
+ padding:8px 9px;font-size:12px;white-space:normal;overflow-wrap:anywhere;
+}
+#listado .sheet-card .sheet-actions button.sheet-save:not(:disabled){background:#0e8164;box-shadow:0 0 0 2px #b1dfd0}
+#listado .sheet-card .sheet-actions .sheet-tools{
+ display:flex!important;flex-wrap:wrap;justify-content:flex-start;
+ align-items:center;gap:5px;padding:0;margin:0;min-width:0;
+}
+#listado .sheet-card .sheet-actions .sheet-tools button{
+ display:inline-flex!important;align-items:center;justify-content:center;
+ flex:0 0 37px;width:37px!important;min-width:37px;height:37px!important;
+ margin:0;padding:3px!important;border:1px solid #d6e3ea;border-radius:8px;
+ font-size:18px!important;line-height:1;background:white;
+}
+#listado .sheet-card .sheet-actions .sheet-tools button.convert-kg{font-size:19px!important;background:#fff3d7}
+#listado .sheet-card .sheet-actions .sheet-tools button.delete-product{color:#a12727;background:#fff0f0}
+#listado .sheet-card .sheet-actions .sheet-message{
+ grid-column:1/-1;font-size:12px;max-width:none;margin:0;white-space:normal;
+}
+#listado .sheet-card .sheet-actions .sheet-message:empty{display:none}
+@media(max-width:620px){
+ .wrap{max-width:100%;padding:10px}
+ #listado{padding:12px}
+ #listado .cards{grid-template-columns:minmax(0,1fr);gap:11px}
+ #listado .sheet-card{padding:11px;gap:8px}
+ #listado .sheet-card .sheet-actions{grid-template-columns:minmax(0,1fr);gap:10px}
+ #listado .sheet-card .sheet-actions .sheet-tools{justify-content:center}
+ #listado .sheet-card .sheet-actions button.sheet-save{width:100%;min-height:45px}
+ #listado .sheet-card .sheet-actions .sheet-tools button{flex-basis:39px;width:39px!important;min-width:39px;height:39px!important}
+}
+@media(max-width:350px){
+ #listado .sheet-card .sheet-mobile-row{padding:6px}
+ #listado .sheet-card .sheet-mobile-row .sheet-input{font-size:13px;padding:7px 5px}
+ #listado .sheet-card .sheet-mobile-row .sheet-result{font-size:13px}
+}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script></head><body><main class="wrap"><header><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div><div><span class="pill">DATOS REALES · ACCESO RESTRINGIDO</span> <button id="salir" class="alt hidden">Salir</button></div></header>
 <section id="login"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
 <section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si vuelves a comprar el mismo producto, utiliza su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿Cómo se vende este producto?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">Unidades / bolsas / paquetes</option><option value="kg">Kilogramos (kg) a granel</option><option value="botella">Botellas</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min=".001" step="any" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
 
-<section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Productos que llegaron al stock mínimo o tienen menos existencias. Se actualiza al cargar o actualizar los datos.</p><div id="listaAlertas"></div></section><section id="listado" class="hidden"><h2>COSTOS · Hoja de cálculo</h2><p class="muted" style="margin:8px 0 12px">El nombre del producto aparece primero. Editá las celdas blancas y tocá <strong>Guardar fila</strong>. El costo y las utilidades se calculan solos. <strong>UNIDADES</strong> indica cuántas trae la compra, no las existencias actuales.</p><div class="actions"><div class="busqueda-wrap"><input id="buscar" placeholder="Escribe 2 letras del nombre o un código" autocomplete="off" aria-controls="sugerencias" aria-expanded="false" aria-autocomplete="list"><div id="sugerencias" class="sugerencias hidden" style="display:none" role="listbox" aria-label="Sugerencias de productos"></div></div><div id="resultadoBusqueda" role="status" aria-live="polite" style="margin:8px 0;font-weight:600"></div><button class="alt" id="recargar">Actualizar</button></div><div class="scroll"><table><thead><tr><th>PRODUCTO</th><th>PRECIO DE COMPRA</th><th>UNIDADES / KG</th><th>COSTO UNITARIO</th><th>PRECIO DE VENTA</th><th>UTILIDAD POR UNIDAD</th><th>UTILIDAD TOTAL</th><th>PROVEEDOR</th><th>ACCIONES</th></tr></thead><tbody id="filas"></tbody></table></div><div id="tarjetas" class="cards"></div></section>
+<section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Productos que llegaron al stock mínimo o tienen menos existencias. Se actualiza al cargar o actualizar los datos.</p><div id="listaAlertas"></div></section><section id="listado" class="hidden"><h2>COSTOS · Fichas de productos</h2><p class="muted" style="margin:8px 0 12px">Cada producto está en un solo cuadro, sin deslizar a los lados. Corregí los campos blancos, revisá los cálculos automáticos y tocá <strong>Guardar cambios</strong>. Las unidades o kilos son los de la compra, no las existencias actuales.</p><div class="actions"><div class="busqueda-wrap"><input id="buscar" placeholder="Escribe 2 letras del nombre o un código" autocomplete="off" aria-controls="sugerencias" aria-expanded="false" aria-autocomplete="list"><div id="sugerencias" class="sugerencias hidden" style="display:none" role="listbox" aria-label="Sugerencias de productos"></div></div><div id="resultadoBusqueda" role="status" aria-live="polite" style="margin:8px 0;font-weight:600"></div><button class="alt" id="recargar">Actualizar</button></div><div class="scroll"><table><thead><tr><th>PRODUCTO</th><th>PRECIO DE COMPRA</th><th>UNIDADES / KG</th><th>COSTO UNITARIO</th><th>PRECIO DE VENTA</th><th>UTILIDAD POR UNIDAD</th><th>UTILIDAD TOTAL</th><th>PROVEEDOR</th><th>ACCIONES</th></tr></thead><tbody id="filas"></tbody></table></div><div id="tarjetas" class="cards"></div></section>
 <dialog id="fotoProductoDialog" aria-labelledby="tituloFotoProducto">
 <h2 id="tituloFotoProducto">Fotografía del producto</h2>
 <p id="nombreFotoProducto" class="muted"></p>
@@ -255,6 +336,8 @@ function accionesFilaHoja(p){
  ];
  if(p.unidad_medida!=='kg'){
   const button=crearBotonGestionKg(p);
+  button.textContent='⚖️';button.title='Cambiar de unidades a kilos o abrir bolsas';
+  button.setAttribute('aria-label','Cambiar a kilos o abrir bolsas de '+p.detalles);
   tools.append(button);
  }
  for(const [icon,label,action] of opciones){
@@ -281,7 +364,7 @@ function configurarEditorFila(p,compra,superficie,movil){
   venta:Number(p.precio_venta||0),proveedor:String(compra.proveedor||'').trim()
  };
  function incluirCampo(clave,titulo){
-  const cell=document.createElement(movil?'div':'td');if(movil)cell.className='sheet-mobile-row';
+  const cell=document.createElement(movil?'div':'td');if(movil)cell.className='sheet-mobile-row'+(clave==='proveedor'?' sheet-provider-row':'');
   if(movil){const lbl=document.createElement('label');lbl.textContent=titulo;cell.append(lbl);}
   if(['compra','unidades','venta','proveedor'].includes(clave)){
    const input=document.createElement('input');input.className='sheet-input';input.autocomplete='off';
@@ -304,7 +387,7 @@ function configurarEditorFila(p,compra,superficie,movil){
  const action=document.createElement(movil?'div':'td');action.className='sheet-actions';
  if(!compra)throw Error('La fila requiere una compra');
  const save=document.createElement('button');save.type='button';save.className='sheet-save';
- save.textContent='Guardar fila';save.disabled=true;
+ save.textContent='✓ Guardado';save.disabled=true;
  const err=document.createElement('p');err.className='sheet-message';err.setAttribute('role','status');
  const tools=accionesFilaHoja(p);
  action.append(save,tools,err);superficie.append(action);
@@ -354,6 +437,7 @@ function configurarEditorFila(p,compra,superficie,movil){
    }
   }
   save.disabled=guardando||!valid||!dif;
+  save.textContent=guardando?'Guardando…':(dif?'💾 Guardar cambios':'✓ Guardado');
   if(!guardando&&!err.classList.contains('sheet-error'))err.textContent=!valid?'Ingresá precio de compra, unidades o kg, precio de venta y proveedor válidos.':dif?'Cambios sin guardar.':'';
   return {valid,dif,comp,unid,vent,prov};
  }
@@ -410,9 +494,9 @@ function dibujar(){
    const action=document.createElement('td');action.append(accionesFilaHoja(p));tr.append(action);
   }
   $('filas').append(tr);
-  const card=document.createElement('article');card.className='card';
-  const h=document.createElement('h3');h.append(nombreFilaHoja(p));card.append(h);
-  const dato=document.createElement('p');dato.className='muted';
+  const card=document.createElement('article');card.className='card sheet-card';
+  const h=document.createElement('h3');h.className='sheet-card-title';h.append(nombreFilaHoja(p));card.append(h);
+  const dato=document.createElement('p');dato.className='sheet-card-details';
   dato.textContent='Existencias: '+conMedida(d.stock,p)+(p.codigo_barras?' · Código: '+p.codigo_barras:'');
   card.append(dato);
   if(compra)configurarEditorFila(p,compra,card,true);

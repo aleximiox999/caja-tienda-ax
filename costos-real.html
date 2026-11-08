@@ -341,10 +341,10 @@ function configurarEditorFila(p,compra,superficie,movil){
    for(const key of ['costo','utilidad','total'])derivados[key].textContent='Revisá datos';
   }
   save.disabled=guardando||!valid||!dif;
-  if(!guardando)err.textContent=!valid?'Ingresá precio de compra, unidades o kg, precio de venta y proveedor válidos.':dif?'Cambios sin guardar.':'';
+  if(!guardando&&!err.classList.contains('sheet-error'))err.textContent=!valid?'Ingresá precio de compra, unidades o kg, precio de venta y proveedor válidos.':dif?'Cambios sin guardar.':'';
   return {valid,dif,comp,unid,vent,prov};
  }
- Object.values(inputs).forEach(input=>input.addEventListener('input',estadoFila));
+ Object.values(inputs).forEach(input=>input.addEventListener('input',()=>{err.classList.remove('sheet-error');estadoFila();}));
  save.onclick=async()=>{
   const valores=estadoFila();
   if(!valores.valid||!valores.dif||guardando)return;
@@ -373,7 +373,7 @@ function configurarEditorFila(p,compra,superficie,movil){
    err.classList.add('sheet-error');
    err.textContent='No se guardó: '+(e.message||String(e))+'. Pulsá Actualizar y revisá los datos antes de intentar de nuevo.';
    estado('Error al corregir COSTOS: '+(e.message||String(e)),true);
-  }finally{guardando=false;estadoFila();}
+  }finally{guardando=false;if(!err.classList.contains('sheet-error'))estadoFila();else save.disabled=false;}
  };
  estadoFila();
 }

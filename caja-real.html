@@ -170,9 +170,158 @@ button.foto-nombre:hover{color:#e8d5a9!important}
 #fotoVistaCaja .foto-vista-img.hidden{display:none}
 #fotoVistaCaja .foto-vista-vacia{border:1px dashed #656a72;border-radius:10px;text-align:center;padding:38px 15px;color:#c1cbd0;background:#282f35;margin:10px 0}
 #fotoVistaCaja .foto-vista-error{color:#ffb5aa;font-size:13px;margin:10px 0;white-space:pre-wrap}
+
+/* CAJA AMPHX 2026 · negro metalizado, botones vivos, legibilidad y pantalla móvil. */
+:root{
+ color-scheme:dark;
+ --bg:#0a1018;--surface:#172330;--surface2:#1f3040;--line:#3a5165;
+ --gold:#60d399;--gold2:#e6f2fb;--text:#f5f9ff;--muted:#c4d3df;
+ --red:#ff9d9f;--green:#7be6b3;
+}
+html{background:#0a1018}
+body{
+ background:radial-gradient(ellipse at 50% -15%,#273c50 0%,transparent 60%),
+ linear-gradient(160deg,#0a111c 0%,#0a1018 60%,#121f2b 100%);
+ color:var(--text);font-size:16px;line-height:1.55
+}
+header{
+ position:sticky;top:0;z-index:8;backdrop-filter:blur(12px);
+ border-bottom:2px solid #8c9dae;
+ background:linear-gradient(110deg,transparent 5%,#ffffff1b 28%,transparent 43%,#ffffff0a 54%,transparent 67%),
+ linear-gradient(145deg,#03070d,#2e3d4c 48%,#0a121c 80%,#172537);
+ box-shadow:0 5px 24px #02080f6b,inset 0 1px 1px #ffffff3d;
+}
+.hrow{max-width:1190px;padding:15px 19px;gap:12px}
+.brand{gap:13px}
+.brand .mark{
+ width:47px;height:47px;flex:none;border-radius:13px;
+ color:#172332;background:linear-gradient(130deg,#fff,#a7b7c7 54%,#f5f8fc);
+ border:1px solid #f2f7fc;box-shadow:inset 0 1px 1px #fff,0 4px 10px #03080e77;
+}
+.brand .mark svg{width:28px;height:28px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.brand b{color:#f5f8fd;letter-spacing:.7px;font-size:17px}
+.brand small{color:#cbd7e3;font-weight:700;letter-spacing:1px}
+.who{color:#dbe8f4}
+.headerTools .btn{background:#e7f0f8;color:#1c3144;border:1px solid #b4c6d6}
+main{max-width:1190px;padding:22px 18px 65px}
+.bgmark{display:none!important}
+h1{color:#fff;font-weight:800;letter-spacing:-.5px}
+h2,h3{color:#e5f0f9;font-weight:790}
+.lead,.muted,.mini,.item p,.itemcode,.empty{color:#c4d5e2}
+.card{
+ background:linear-gradient(160deg,#1c2937,#151f2c);
+ border:1px solid #3a4e63;border-top:3px solid #7e9eb8;
+ border-radius:17px;padding:20px;
+ box-shadow:0 9px 24px #02081042,inset 0 1px 0 #ffffff0c;
+}
+label{color:#e4eff9;font-weight:750;font-size:13px}
+input,select{
+ background:#101a27;border:1.5px solid #526b83;border-radius:11px;
+ color:#f5faff;min-height:49px;font-weight:650;
+}
+input::placeholder{color:#abbfce;opacity:1}
+input:focus,select:focus{border-color:#69d5a2;outline:2px solid #315d54;outline-offset:1px}
+input[type=checkbox]{accent-color:#36b87b}
+.btn{
+ background:linear-gradient(145deg,#2c4053,#203042);
+ border:1px solid #627b91;color:#edf5fc;
+ border-radius:11px;min-height:46px;font-size:15px;font-weight:750;
+ box-shadow:0 3px 8px #0002;
+ transition:filter .16s ease,transform .14s ease
+}
+.btn.primary,.tabs .btn.active{
+ background:linear-gradient(130deg,#45b879,#168659);
+ border:1px solid #6cdea0;color:#fff;
+ box-shadow:0 4px 13px #137b5845;
+}
+.btn.outline{background:#182637;color:#e5f1fd;border-color:#668099}
+.btn.danger{background:linear-gradient(140deg,#8c2f43,#6c2234);border-color:#d46d7e;color:#fff}
+.btn:hover:not(:disabled){filter:brightness(1.13)}
+.btn:active:not(:disabled){transform:scale(.99)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #94cdb7;outline-offset:2px}
+.tabs{
+ display:flex;flex-wrap:wrap;overflow:visible;gap:8px;padding:5px 0 13px;
+ border-bottom:1px solid #334c61;margin-bottom:15px
+}
+.tabs .btn{
+ display:inline-flex;align-items:center;justify-content:center;gap:9px;
+ min-height:47px;white-space:normal;flex:1 1 145px;
+ background:linear-gradient(135deg,#263b4e,#192a3b);
+ border:1px solid #526c83;border-radius:12px;
+ padding:11px 13px;color:#dfeaf4
+}
+.tabs .btn.active{background:linear-gradient(130deg,#278d68,#115e4a);border-color:#5ac59a;color:white}
+.tabs .btn svg{flex:none;width:20px;height:20px;stroke:currentColor;stroke-width:2.2;
+ stroke-linecap:round;stroke-linejoin:round;fill:none;pointer-events:none}
+.badge{background:#183b31;border:1px solid #3ea47a;color:#aaf1ce;font-size:11px;font-weight:800}
+.note{background:#1c3344;border:1px solid #496981;color:#e2f1fb;border-radius:12px}
+.note.red{background:#3b1e2a;border-color:#b45061;color:#ffd5db}
+.note.ok{background:#183f31;border-color:#3aa77c;color:#bef9d8}
+#status{color:#b5d3e9;font-size:14px}
+#status.error{color:#ffb1b8}#status.success{color:#92e4ba}
+.scanner{background:#0e1c29;border:1px solid #426e83;border-radius:14px;padding:15px;box-shadow:0 5px 19px #0004}
+#camara{background:#050d16;border:1px solid #38576c;border-radius:12px}
+.resumen-escaneo{background:linear-gradient(140deg,#153d31,#123123);border:1px solid #2da770}
+.resumen-etiqueta{color:#afebcc}
+.resumen-total{color:#80ffbd;font-variant-numeric:tabular-nums;text-shadow:0 1px 11px #30c37b4f}
+.resumen-conteo,.resumen-ultimo{color:#c8f6df}
+#repetirUltimoEscaneo{background:#204b3c;border-color:#55bd82;color:#e4ffef}
+#escanearVenta,#escanearPrecio,#escanearEntrada{
+ background:linear-gradient(135deg,#347bd2,#1958a9);border-color:#78baff;color:white
+}
+#btnVender{background:linear-gradient(130deg,#4ec986,#168956);border-color:#82edb3;
+ color:white;font-weight:850;min-height:54px;font-size:17px}
+#guardarEntrada{background:linear-gradient(135deg,#39b57a,#168759);border-color:#69dfaa}
+.bigprice,.total{color:#87e9b8;font-weight:850}
+.result{background:#182d40;border:1px solid #4d718b;color:white;border-radius:12px}
+.result strong,.scanner-title strong,.item strong{color:#fff}
+.item{border-bottom:1px solid #344a5d}
+.item p{color:#b8cddd}.item .right b{color:#91ecc0}
+.stock{background:#174534;color:#a1f2c3;font-weight:800}
+.stock.low{background:#4d2531;color:#ffbdc6}
+.tablewrap{background:#121f2b;border:1px solid #41596d;border-radius:12px}
+thead{background:#25394a}
+th{color:#bcead3;font-weight:750}
+td{color:#edf6fd}
+th,td{border-bottom:1px solid #344b5e}
+.flat,summary,a{color:#9ecaff}
+details{border-top:1px solid #466074}
+.credenciales-acceso{background:#173d30;color:#e2ffed;border-color:#47aa77}
+.credenciales-acceso h3,.credenciales-acceso label{color:#e2ffed}
+.credencial-valor{background:#122d24;border:1px solid #5cab82;color:#e2ffe9}
+.empleado-codigo{color:#93e6b8}
+#fotoVistaCaja{background:#182633;border:1px solid #648099;color:#f4fbff}
+#fotoVistaCaja .foto-vista-vacia{background:#10202e;color:#cce0eb;border-color:#648399}
+#fotoVistaCaja .foto-vista-img{background:#0d1926}
+#fotoVistaCaja .foto-vista-error{color:#ffb7b7}
+button.foto-nombre{color:#c9eafc!important;text-decoration-color:#5c9dc4}
+button.foto-nombre:hover{color:#fff!important}
+footer{color:#b6c9d9}
+.amp-caja-tip{display:none;position:fixed;z-index:20000;max-width:min(300px,86vw);
+ color:#fff;background:#0d253a;border:1px solid #7da5bd;border-radius:11px;
+ padding:9px 12px;text-align:center;font-size:13px;font-weight:750;
+ box-shadow:0 7px 23px #0009;pointer-events:none}
+.amp-caja-tip.visible{display:block}
+@media(max-width:850px){
+ main{padding:16px 11px 50px}
+ .hrow{padding:12px 13px}
+ .card{padding:15px}
+ .tabs{gap:7px}
+ .tabs .btn{min-height:43px;flex:1 1 135px;font-size:13px;padding:8px 10px}
+ .brand .mark{width:43px;height:43px}
+ .brand b{font-size:15px}
+}
+@media(max-width:440px){
+ .actions{flex-direction:column}
+ .actions .btn{width:100%}
+ .tabs .btn{flex:1 1 44%;max-width:none;min-height:44px}
+ .card{padding:13px}
+ .hrow{padding:10px 12px}
+}
+@media(prefers-reduced-motion:reduce){.btn{transition:none!important}}
 </style>
 </head><body>
-<header><div class="hrow"><div class="brand"><div class="mark">A</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
+<header><div class="hrow"><div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
 <main>
 <div id="status" role="status">Inicializando conexión…</div>
 <section id="authCard" class="card hidden">
@@ -184,12 +333,12 @@ button.foto-nombre:hover{color:#e8d5a9!important}
 <section id="app" class="hidden">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:13px"><div><h1>Caja de ventas</h1><p class="lead" id="roleDesc">Productos y precios reales desde Supabase.</p></div><span class="badge">● CONEXIÓN REAL</span></div>
 <div class="tabs" role="tablist">
-<button class="btn active" data-tab="venta">Vender</button>
-<button class="btn" data-tab="precio">Consultar precio</button>
-<button class="btn" data-tab="inventario">Inventario</button>
-<button class="btn hidden" data-tab="entradas" id="tabEntradas">Ingresar mercadería</button>
-<button class="btn hidden" data-tab="empleados" id="tabEmpleados">Empleados</button>
-<button class="btn hidden" data-tab="reporte" id="tabReporte">Ventas</button>
+<button class="btn active" title="Registrar una venta y cobrar" data-amp-tip="Registrar una venta y cobrar" data-tab="venta"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h2l2 11h12l2-8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span>Vender</span></button>
+<button class="btn" title="Consultar precios sin registrar ventas" data-amp-tip="Consultar precios sin registrar ventas" data-tab="precio"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13l-7 7-10-10V3h7l10 10Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg><span>Consultar precio</span></button>
+<button class="btn" title="Consultar existencias y alertas" data-amp-tip="Consultar existencias y alertas" data-tab="inventario"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg><span>Inventario</span></button>
+<button class="btn hidden" title="Registrar nuevas compras y entradas" data-amp-tip="Registrar nuevas compras y entradas" data-tab="entradas" id="tabEntradas"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 8h18v12H3zM3 8l3-4h12l3 4M12 11v6M9 14h6"/></svg><span>Ingresar mercadería</span></button>
+<button class="btn hidden" title="Administrar accesos de empleados" data-amp-tip="Administrar accesos de empleados" data-tab="empleados" id="tabEmpleados"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 7a3 3 0 0 1 0 6M18 17h4M20 15v4"/></svg><span>Empleados</span></button>
+<button class="btn hidden" title="Consultar ventas registradas" data-amp-tip="Consultar ventas registradas" data-tab="reporte" id="tabReporte"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 3h14v18l-3-2-4 2-4-2-3 2V3ZM8 8h8M8 12h8"/></svg><span>Ventas</span></button>
 </div>
 <div id="lectorPanel" class="scanner hidden"><div class="scanner-title"><strong>Cámara dentro de la aplicación</strong><button class="btn" id="cerrarCamara">Terminar escaneo</button></div><div id="resumenEscaneo" class="resumen-escaneo hidden" aria-live="polite"><div class="resumen-etiqueta">TOTAL ACUMULADO · ESTA VENTA</div><div id="totalEscaneo" class="resumen-total">Bs 0,00</div><div id="conteoEscaneo" class="resumen-conteo">0 unidades · 0 productos distintos</div><div id="ultimoEscaneo" class="resumen-ultimo">Apuntá al primer producto para comenzar.</div><button class="btn" type="button" id="repetirUltimoEscaneo" disabled>+1 unidad del último producto</button></div><div id="camara"></div><p class="muted mini" id="camaraInfo">Apunta al código de barras.</p></div>
 <section id="panelVenta">
@@ -238,9 +387,54 @@ button.foto-nombre:hover{color:#e8d5a9!important}
 <p id="fotoVistaError" class="foto-vista-error" role="status" aria-live="polite"></p>
 <button id="fotoVistaCerrar" type="button" class="btn" style="width:100%">Cerrar</button>
 </dialog>
+<div id="ampCajaTip" class="amp-caja-tip" role="status" aria-live="polite"></div>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
 const accesoSoloEmpleados=new URLSearchParams(location.search).get('empleado')==='1';
+
+/* Ayuda de navegación en PC y móvil: mantener pulsado no cambia de pestaña. */
+let ampCajaTipTimer=null,ampCajaTipButton=null;
+function ampCajaTipOcultar(){
+ if(ampCajaTipTimer!==null){clearTimeout(ampCajaTipTimer);ampCajaTipTimer=null;}
+ $('ampCajaTip').classList.remove('visible');ampCajaTipButton=null;
+}
+function ampCajaTipMostrar(btn,txt){
+ const t=$('ampCajaTip');t.textContent=txt;t.classList.add('visible');
+ const r=btn.getBoundingClientRect(),w=t.offsetWidth,h=t.offsetHeight;
+ t.style.left=Math.max(8,Math.min(window.innerWidth-w-8,r.left+r.width/2-w/2))+'px';
+ t.style.top=(r.top-h-10>8?r.top-h-10:Math.min(window.innerHeight-h-8,r.bottom+10))+'px';
+ ampCajaTipButton=btn;
+}
+for(const btn of document.querySelectorAll('button[data-amp-tip]')){
+ const tip=btn.dataset.ampTip;let held=false,suppress=false,sx=0,sy=0;
+ btn.addEventListener('mouseenter',()=>{if(matchMedia('(hover:hover)').matches)ampCajaTipMostrar(btn,tip)});
+ btn.addEventListener('mouseleave',()=>{if(ampCajaTipButton===btn)ampCajaTipOcultar()});
+ btn.addEventListener('focus',()=>{if(matchMedia('(hover:hover)').matches)ampCajaTipMostrar(btn,tip)});
+ btn.addEventListener('blur',()=>{if(ampCajaTipButton===btn)ampCajaTipOcultar()});
+ btn.addEventListener('pointerdown',e=>{
+  if(e.pointerType!=='touch'&&e.pointerType!=='pen')return;
+  held=true;suppress=false;sx=e.clientX;sy=e.clientY;
+  if(ampCajaTipTimer!==null)clearTimeout(ampCajaTipTimer);
+  ampCajaTipTimer=setTimeout(()=>{ampCajaTipTimer=null;if(held){suppress=true;ampCajaTipMostrar(btn,tip)}},600);
+ });
+ btn.addEventListener('pointermove',e=>{
+  if(!held||ampCajaTipTimer===null)return;
+  if(Math.hypot(e.clientX-sx,e.clientY-sy)>14){clearTimeout(ampCajaTipTimer);ampCajaTipTimer=null;held=false;}
+ });
+ btn.addEventListener('pointerup',()=>{
+  held=false;if(ampCajaTipTimer!==null){clearTimeout(ampCajaTipTimer);ampCajaTipTimer=null;}
+  if(suppress)setTimeout(()=>{if(ampCajaTipButton===btn)ampCajaTipOcultar()},1700);
+ });
+ btn.addEventListener('pointercancel',()=>{held=false;if(ampCajaTipTimer!==null){clearTimeout(ampCajaTipTimer);ampCajaTipTimer=null;}});
+ btn.addEventListener('contextmenu',e=>{if(suppress)e.preventDefault()});
+ btn.addEventListener('click',e=>{
+  if(suppress){e.preventDefault();e.stopImmediatePropagation();suppress=false;}
+  else if(ampCajaTipButton===btn)ampCajaTipOcultar();
+ },true);
+}
+window.addEventListener('resize',ampCajaTipOcultar);
+document.addEventListener('scroll',ampCajaTipOcultar,true);
+
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',accesoSoloEmpleados?{auth:{storageKey:'amphx-caja-empleado-auth-v1'}}:undefined);
 const $=(id)=>document.getElementById(id);
 if(accesoSoloEmpleados){document.title='Ingreso de empleados · Tienda AMPHX';document.querySelector('#authCard h1').textContent='Acceso de empleados';document.querySelector('#authCard .lead').textContent='Ingresá con el código de empleado y la contraseña que te entregó el administrador.';document.querySelector('label[for="email"]').textContent='Código de empleado';$('email').placeholder='AX-ABCD2345';document.querySelector('#authCard > p.mini').textContent='No necesitás correo electrónico ni crear una cuenta. Si no tenés acceso, pedíselo al administrador.';}

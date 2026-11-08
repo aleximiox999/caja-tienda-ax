@@ -80,7 +80,7 @@ button.costo-abrir:hover{color:#0b6889;text-decoration-style:solid}
 <p id="errorEditorCostos" class="error-costo" role="alert"></p>
 <div class="costos-acciones"><button id="guardarEditorCostos" type="submit">Guardar corrección</button><button type="button" id="cancelarEditorCostos" class="alt">Cancelar</button></div>
 </form></dialog>
-<dialog id="editorExistencias" aria-labelledby="editorTitulo"><form id="editorForm"><h2 id="editorTitulo">Editar producto</h2><p id="editorNombre" class="muted"></p><div class="field"><label for="editorPrecio" id="editorPrecioLabel">Precio de venta por unidad (Bs)</label><input id="editorPrecio" type="number" min="0" step=".01" inputmode="decimal" required></div><div class="field"><label for="editorStock" id="editorStockLabel">Existencias actuales</label><input id="editorStock" type="number" min="0" max="1000000" step="any" inputmode="decimal" required></div><p class="muted">Cambiar existencias registra un ajuste de inventario; no modifica las compras ni ventas anteriores.</p><p id="editorError" role="alert"></p><div class="actions"><button type="submit" id="editorGuardar">Guardar cambios</button><button type="button" class="alt" id="abrirCostosDesdeEditor">💰 Editar costo de compra</button><button type="button" class="alt" id="editorCancelar">Cancelar</button></div></form></dialog><dialog id="vincularCodigo" aria-labelledby="codigoTitulo"><form id="codigoForm"><h2 id="codigoTitulo">Asociar código de barras</h2><p id="codigoProductoNombre" class="muted"></p><div class="field"><label for="codigoAsociar">Código de barras del producto</label><input id="codigoAsociar" type="text" inputmode="numeric" autocomplete="off" placeholder="Escaneá o escribí el código" required></div><div id="zonaCodigoAsociar"><div id="lectorCodigoAsociar" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeCodigoAsociar" class="muted" role="status">Preparando cámara…</p></div><p id="codigoError" role="alert"></p><div class="actions"><button id="codigoGuardar" type="submit">Guardar código</button><button id="codigoReintentar" type="button" class="alt">📷 Abrir cámara</button><button id="codigoCancelar" type="button" class="alt">Cancelar</button></div></form></dialog><div id="estado" class="status">Conectando de forma segura…</div></main>
+<dialog id="editorExistencias" aria-labelledby="editorTitulo"><form id="editorForm"><h2 id="editorTitulo">Editar producto</h2><p id="editorNombre" class="muted"></p><div class="field"><label for="editorPrecio" id="editorPrecioLabel">Precio de venta por unidad (Bs)</label><input id="editorPrecio" type="number" min="0" step=".01" inputmode="decimal" required></div><div class="field"><label for="editorStock" id="editorStockLabel">Existencias actuales</label><input id="editorStock" type="number" min="0" max="1000000" step="any" inputmode="decimal" required></div><p class="muted">Cambiar existencias registra un ajuste de inventario; no modifica las compras ni ventas anteriores.</p><div class="field" id="editorUnidadMedidaGrupo" style="padding:12px;background:#f0f7ff;border:1px solid #bddbf3;border-radius:10px"><strong id="editorUnidadActual">Unidad de medida: UNIDADES</strong><p style="margin:8px 0 10px;color:#415775">Si antes registraste kilos como unidades, podés corregirlo sin borrar este producto ni sus compras.</p><button type="button" id="editorConvertirKg" class="alt" style="width:100%;min-height:48px;font-weight:750">⚖️ CAMBIAR DE UNIDADES A KILOS (kg)</button></div><p id="editorError" role="alert"></p><div class="actions"><button type="submit" id="editorGuardar">Guardar cambios</button><button type="button" class="alt" id="abrirCostosDesdeEditor">💰 Editar costo de compra</button><button type="button" class="alt" id="editorCancelar">Cancelar</button></div></form></dialog><dialog id="vincularCodigo" aria-labelledby="codigoTitulo"><form id="codigoForm"><h2 id="codigoTitulo">Asociar código de barras</h2><p id="codigoProductoNombre" class="muted"></p><div class="field"><label for="codigoAsociar">Código de barras del producto</label><input id="codigoAsociar" type="text" inputmode="numeric" autocomplete="off" placeholder="Escaneá o escribí el código" required></div><div id="zonaCodigoAsociar"><div id="lectorCodigoAsociar" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeCodigoAsociar" class="muted" role="status">Preparando cámara…</p></div><p id="codigoError" role="alert"></p><div class="actions"><button id="codigoGuardar" type="submit">Guardar código</button><button id="codigoReintentar" type="button" class="alt">📷 Abrir cámara</button><button id="codigoCancelar" type="button" class="alt">Cancelar</button></div></form></dialog><div id="estado" class="status">Conectando de forma segura…</div></main>
 <script>
 (function(){
  const status=()=>document.getElementById('estado');
@@ -369,7 +369,7 @@ $('archivoGaleriaFoto').onchange=e=>{const f=e.target.files?.[0];e.target.value=
 $('archivoCamaraFoto').onchange=e=>{const f=e.target.files?.[0];e.target.value='';if(f)void guardarFotoProducto(f);};
 
 function crearBotonGestionKg(p){
- const b=document.createElement('button');b.type='button';b.textContent='⚖️';b.className='convert-kg';
+ const b=document.createElement('button');b.type='button';b.textContent='⚖️ Cambiar a kg';b.className='convert-kg';b.style.fontSize='12px';b.style.whiteSpace='nowrap';
  b.title='Gestionar bolsas y kilos';b.setAttribute('aria-label','Cambiar a kg o abrir bolsa de '+p.detalles);
  b.onclick=()=>mostrarOpcionesKg(p);return b;
 }
@@ -566,7 +566,7 @@ $('formEditarCostos').onsubmit=async e=>{
 
 function elegirEdicion(p){
  productoEnEdicion=p;
- $('editorNombre').textContent=p.detalles; $('editorPrecioLabel').textContent='Precio de venta por '+unidadCorta(p)+' (Bs)';$('editorStockLabel').textContent='Existencias actuales ('+nombreMedida(p)+')';$('editorStock').step=p.unidad_medida==='kg'?'0.001':'1';
+ $('editorNombre').textContent=p.detalles; $('editorUnidadMedidaGrupo').classList.toggle('hidden',p.unidad_medida==='kg');$('editorUnidadActual').textContent='Unidad de medida actual: '+nombreMedida(p).toLocaleUpperCase('es'); $('editorPrecioLabel').textContent='Precio de venta por '+unidadCorta(p)+' (Bs)';$('editorStockLabel').textContent='Existencias actuales ('+nombreMedida(p)+')';$('editorStock').step=p.unidad_medida==='kg'?'0.001':'1';
  $('editorPrecio').value=Number(p.precio_venta||0).toFixed(2);
  $('editorStock').value=String(datosProducto(p).stock);
  $('editorError').textContent='';
@@ -576,6 +576,13 @@ function elegirEdicion(p){
 }
 function cerrarEditor(){const d=$('editorExistencias');if(typeof d.close==='function')d.close();else d.removeAttribute('open');productoEnEdicion=null}
 $('editorCancelar').onclick=cerrarEditor;
+$('editorConvertirKg').onclick=()=>{
+ const p=productoEnEdicion;if(!p)return;
+ if(p.unidad_medida==='kg'){estado('Este producto ya está registrado por kilogramos.');return;}
+ cerrarEditor();
+ productoMedida=p;
+ $('opcionConvertirKg').click();
+};
 $('editorForm').onsubmit=async e=>{
  e.preventDefault();
  const p=productoEnEdicion;if(!p)return;

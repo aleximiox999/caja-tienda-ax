@@ -319,6 +319,58 @@ footer{color:#b6c9d9}
  .hrow{padding:10px 12px}
 }
 @media(prefers-reduced-motion:reduce){.btn{transition:none!important}}
+
+/* 2026-11-08 · Caja Real: titanio negro metalizado como COSTOS, tipografía plata más clara. */
+:root{
+ color-scheme:dark;
+ --bg:#050c13;--surface:#121f2b;--surface2:#1c2d3a;--line:#526777;
+ --gold:#5add9d;--gold2:#f3f7fb;--text:#f8fbff;--muted:#e0eaf2;
+ --red:#ffb0b7;--green:#a4f6c8;
+}
+html{background:#030b12}
+body{
+ color:#f7faff;
+ background:
+  radial-gradient(ellipse at 75% 0%,#1b334344 0%,transparent 58%),
+  linear-gradient(145deg,#02070d,#08131d 56%,#02080f);
+}
+header{
+ background:
+  repeating-linear-gradient(0deg,rgba(245,250,255,.014) 0px,rgba(245,250,255,.014) 1px,rgba(0,0,0,.018) 2px,rgba(0,0,0,.018) 3px),
+  linear-gradient(110deg,transparent 8%,#f4f9ff10 29%,transparent 48%,#eff9ff0c 62%,transparent 75%),
+  radial-gradient(ellipse at 75% -40%,#7390ab42,transparent 55%),
+  linear-gradient(112deg,#02070c 0%,#07131d 27%,#172b3b 51%,#0b1722 74%,#02080e 100%);
+ background-color:#07111b;
+ border-bottom:2px solid #a9b9c6;
+ box-shadow:0 10px 30px #000a,inset 0 1px 0 #e5f1fa52,inset 0 -1px 0 #a5b6c843;
+}
+.brand b{
+ font-size:17px;letter-spacing:.015em;font-weight:850;
+ background:linear-gradient(180deg,#fff,#dce8f1 28%,#9cb1c3 52%,#fbfdff 62%,#bdcbd7 100%);
+ -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 1px 2px #0008);
+}
+.brand small,.who{color:#e2eaf1;font-weight:750}
+h1,h2,h3{color:#f8fbff;font-weight:790}
+h2,h3{color:#e8f3fd}
+.lead,.muted,.mini,.item p,.itemcode,.empty{color:#dce8f1}
+label{color:#f6f9fc}
+input,select{color:#fff;border-color:#8297aa;background:#101c28}
+input::placeholder{color:#d0dfeb}
+.card{
+ background:linear-gradient(165deg,#172737,#101c28);
+ border-color:#49647a;border-top-color:#9fb6c7;
+}
+.tabs .btn{color:#f1f8ff;border-color:#7993a8}
+.note{color:#e9f5ff}
+.badge{color:#c6f6df}
+.item strong,.result strong,.scanner-title strong{color:#fff}
+.item p,.itemcode{color:#d4e4ef}
+table td{color:#edf7ff}
+table th{color:#d5f0e4}
+#status{color:#d2e7f7}
+footer{color:#d5e2ee}
+@media(forced-colors:active){.brand b{background:none;-webkit-text-fill-color:currentColor}}
 </style>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>

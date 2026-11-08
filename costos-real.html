@@ -651,7 +651,63 @@ let productos=[],compras=[],costos=[],movimientos=[];
 function estado(m,error=false){$('estado').textContent=m;$('estado').classList.toggle('error',error)}
 let recuperando=false;function mostrar(ok){if(!ok)$('alertasInventario').classList.add('hidden');$('login').classList.toggle('hidden',ok);$('app').classList.toggle('hidden',!ok);$('listado').classList.toggle('hidden',!ok);$('salir').classList.toggle('hidden',!ok)}
 async function revisar(){if(recuperando)return;const {data:{user}}=await db.auth.getUser();if(!user){mostrar(false);estado('Inicia sesión para continuar.');return}const {data,error}=await db.from('productos').select('id').limit(1);if(error){mostrar(false);estado('Cuenta iniciada, pero todavía no autorizada como administrador. Pide activar tu acceso. Detalle: '+error.message,true);return}const {data:permiso,error:pe}=await db.rpc('soy_administrador');if(pe||permiso!==true){mostrar(false);estado('Cuenta registrada. Falta autorizarla como administrador antes de ver COSTOS.',true);return}mostrar(true);await cargar()}
-async function cargar(){estado('Cargando datos…');const results=await Promise.all([db.from('productos').select('*').eq('activo',true).order('detalles'),db.from('compras').select('*').order('fecha_registro',{ascending:false}),db.from('costos_productos').select('*'),db.from('movimientos_inventario').select('producto_id,tipo,cantidad')]);const e=results.find(r=>r.error);if(e){estado('Error al cargar: '+e.error.message,true);return} [productos,compras,costos,movimientos]=results.map(r=>r.data);actualizarIndiceProveedores();dibujar();mostrarSugerencias();mostrarSugerenciasRegistro();estado(productos.length+' productos cargados desde Supabase.')}
+/* AMPHX COSTOS 2026-11-08 - lectura resistente a cortes cortos de conexión.
+   Nunca guardar costos en caché local sin cifrar ni repetir operaciones de escritura. */
+const fallaTransitoriaAMPHX=e=>/Failed to fetch|fetch failed|NetworkError|Load failed|timeout|timed out|connection|network|abort/i.test(String(e?.message||e||''));
+let ampxCargandoDatos=false;
+async function leerAMPHX(construirConsulta){
+ let ultimoError=null;
+ for(let intento=0;intento<2;intento++){
+  if(intento)await new Promise(r=>setTimeout(r,1000));
+  try{
+   const r=await construirConsulta();
+   if(!r.error)return r;
+   ultimoError=r.error;
+   if(!fallaTransitoriaAMPHX(ultimoError))break;
+  }catch(e){
+   ultimoError=e;
+   if(!fallaTransitoriaAMPHX(e))break;
+  }
+ }
+ return {data:null,error:ultimoError||new Error('No se pudo completar la consulta.')};
+}
+async function cargar(){
+ if(ampxCargandoDatos)return false;
+ ampxCargandoDatos=true;
+ const recargar=$('recargar');
+ recargar.disabled=true;
+ estado('Consultando inventario, compras y costos en Supabase…');
+ try{
+  const consultas=[
+   ()=>db.from('productos').select('*').eq('activo',true).order('detalles'),
+   ()=>db.from('compras').select('*').order('fecha_registro',{ascending:false}),
+   ()=>db.from('costos_productos').select('*'),
+   ()=>db.from('movimientos_inventario').select('producto_id,tipo,cantidad')
+  ];
+  const results=await Promise.all(consultas.map(leerAMPHX));
+  const fallos=results.filter(r=>r.error);
+  if(fallos.length){
+   const err=fallos[0].error,network=fallos.some(r=>fallaTransitoriaAMPHX(r.error));
+   // NO reemplazar por arrays vacíos ni borrar los datos ya visibles.
+   estado(network
+    ?'CONEXIÓN INESTABLE · Se intentó de nuevo, pero Supabase no respondió. Los datos que ya ves no están actualizados. Revisá la conexión y tocá ACTUALIZAR.'
+    :'No se pudo actualizar el inventario: '+String(err?.message||err)+'. Los datos existentes permanecen sin cambios.',true);
+   return false;
+  }
+  if(results.some(r=>!Array.isArray(r.data))){
+   estado('Supabase devolvió datos incompletos. No se reemplazó ningún registro; tocá ACTUALIZAR.',true);
+   return false;
+  }
+  [productos,compras,costos,movimientos]=results.map(r=>r.data);
+  actualizarIndiceProveedores();dibujar();mostrarSugerencias();mostrarSugerenciasRegistro();
+  estado(productos.length+' productos cargados correctamente desde Supabase.');
+  return true;
+ }catch(e){
+  estado('No se pudo completar la consulta de COSTOS: '+String(e?.message||e)+'. No se modificaron los datos.',true);
+  return false;
+ }finally{ampxCargandoDatos=false;recargar.disabled=false}
+}
+
 function actualizarCostoPrevio(){const f=$('productoForm');const u=f.elements.unidad_medida.value==='kg'?'kg':f.elements.unidad_medida.value==='botella'?'botella':'unidad';const total=Number(f.elements.precio_compra.value),unidades=Number(f.elements.unidades.value),venta=Number(f.elements.precio_venta.value);const hayCosto=f.elements.precio_compra.value.trim()!==''&&Number.isFinite(total)&&total>=0&&f.elements.unidades.value.trim()!==''&&Number.isFinite(unidades)&&unidades>0;const costo=hayCosto?total/unidades:null;$('costoUnitarioPrevio').textContent=costo===null?'Introduce el costo total y las unidades':bs(costo)+' por '+u;$('gananciaUnidadPrevia').textContent=costo===null||f.elements.precio_venta.value.trim()===''||!Number.isFinite(venta)?'—':bs(venta-costo)+' por '+u;$('gananciaTotalPrevia').textContent=costo===null||f.elements.precio_venta.value.trim()===''||!Number.isFinite(venta)?'—':bs((venta-costo)*unidades)+' por paquete';}
 function actualizarEtiquetasRegistro(){
  const med=$('unidadMedidaRegistro').value,u=med==='kg'?'kg':med==='botella'?'botella':'unidad';
@@ -1820,41 +1876,100 @@ $('resetForm').onsubmit=async e=>{e.preventDefault();const pwd=String(new FormDa
 db.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY'){recuperando=true;mostrar(false);$('restablecer').classList.remove('hidden');estado('Enlace de recuperación válido. Escribe tu nueva contraseña.')}});
 $('registro').onclick=async()=>{const f=new FormData($('loginForm'));const email=String(f.get('email')||''),password=String(f.get('password')||'');if(!email||password.length<6){estado('Introduce correo y contraseña de al menos 6 caracteres.',true);return}const {error}=await db.auth.signUp({email,password});estado(error?'No se pudo crear la cuenta: '+error.message:'Registro solicitado. Revisa tu correo para confirmar la cuenta y después solicita activar el permiso de administrador.',!!error)};
 $('salir').onclick=async()=>{await db.auth.signOut();mostrar(false);estado('Sesión cerrada.')};
-let lectorActivo=null,abriendoLector=false;
+/* AMPHX COSTOS 2026-11-08 - lector con recuperacion.
+   Cámara integrada y bibliotecas alternativas solo si falló la carga inicial.
+   La lectura del código no requiere consultar Supabase ni escribir inventario. */
+let lectorActivo=null,abriendoLector=false,ampxEscanerSesion=0,ampxLibreriaPendiente=null;
+async function prepararBibliotecaEscanerAMPHX(){
+ if(typeof Html5Qrcode!=='undefined')return true;
+ if(!navigator.onLine)throw Error('El lector no terminó de descargarse y ahora no hay internet. Conectate y volvé a tocar ESCANEAR CÓDIGO.');
+ if(ampxLibreriaPendiente)return ampxLibreriaPendiente;
+ ampxLibreriaPendiente=(async()=>{
+  const fuentes=[
+   'https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js',
+   'https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js'
+  ];
+  for(const url of fuentes){
+   if(typeof Html5Qrcode!=='undefined')return true;
+   try{
+    await new Promise((resolve,reject)=>{
+     const js=document.createElement('script');
+     const limite=setTimeout(()=>{js.remove();reject(new Error('Tiempo de espera agotado'));},8000);
+     js.async=true;js.src=url;
+     js.onload=()=>{clearTimeout(limite);resolve();};
+     js.onerror=()=>{clearTimeout(limite);js.remove();reject(new Error('No se pudo descargar el lector'));};
+     document.head.appendChild(js);
+    });
+    if(typeof Html5Qrcode!=='undefined')return true;
+   }catch(e){/* Intentar otra fuente. */}
+  }
+  if(typeof Html5Qrcode!=='undefined')return true;
+  throw Error('El lector de barras no pudo cargarse. Revisá internet y volvé a tocar ESCANEAR CÓDIGO.');
+ })();
+ try{return await ampxLibreriaPendiente}
+ finally{ampxLibreriaPendiente=null}
+}
 async function detenerLector(){
-  const lector=lectorActivo;lectorActivo=null;
-  if(lector){try{await lector.stop()}catch(e){}try{lector.clear()}catch(e){}}
-  $('zonaEscaner').classList.add('hidden');$('abrirEscaner').disabled=false;abriendoLector=false;
+ const sesion=++ampxEscanerSesion;
+ const lector=lectorActivo;lectorActivo=null;
+ if(lector){try{await lector.stop()}catch(e){}try{lector.clear()}catch(e){}}
+ $('zonaEscaner').classList.add('hidden');
+ $('abrirEscaner').disabled=false;
+ abriendoLector=false;
 }
 $('abrirEscaner').onclick=async()=>{
-  if(abriendoLector||lectorActivo)return;
-  abriendoLector=true;$('abrirEscaner').disabled=true;
-  $('zonaEscaner').classList.remove('hidden');
+ if(abriendoLector||lectorActivo)return;
+ const sesion=++ampxEscanerSesion;
+ abriendoLector=true;$('abrirEscaner').disabled=true;
+ $('zonaEscaner').classList.remove('hidden');
+ $('mensajeEscaner').textContent='Preparando lector de código de barras…';
+ try{
+  if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia)
+   throw Error('La cámara requiere HTTPS y un navegador compatible.');
+  await prepararBibliotecaEscanerAMPHX();
+  if(sesion!==ampxEscanerSesion)return;
   $('mensajeEscaner').textContent='Solicitando permiso para usar la cámara…';
-  if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){
-    $('mensajeEscaner').textContent='La cámara requiere HTTPS y un navegador compatible.';
-    $('abrirEscaner').disabled=false;abriendoLector=false;return;
+  const lector=new Html5Qrcode('lectorCodigo',{verbose:false});lectorActivo=lector;
+  await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({
+   width:Math.min(280,Math.floor(w*.8)),
+   height:Math.min(180,Math.floor(h*.7))
+  })},async codigo=>{
+   if(lectorActivo!==lector||sesion!==ampxEscanerSesion)return;
+   const valor=String(codigo||'').trim();
+   if(!valor)return;
+   document.querySelector('#productoForm [name="codigo_barras"]').value=valor;
+   await detenerLector();
+   const existe=productos.find(p=>String(p.codigo_barras||'').trim()===valor);
+   if(existe){
+    estado('Código leído: '+valor+'. Ya corresponde a «'+existe.detalles+'». No lo registres en otro producto; usá su ficha de COSTOS.',true);
+   }else{
+    estado('Código leído: '+valor+'. Ya está colocado en el formulario. Podés completar el producto.');
+   }
+  },()=>{});
+  if(sesion!==ampxEscanerSesion){await detenerLector();return}
+  $('mensajeEscaner').textContent='Apuntá la cámara al código de barras del producto.';
+ }catch(e){
+  if(sesion===ampxEscanerSesion){
+   const error=String(e?.message||e);
+   const permiso=/NotAllowedError|Permission denied|denied|not permitted/i.test(error);
+   $('mensajeEscaner').textContent=permiso
+    ?'La cámara está bloqueada. Permití el acceso a la cámara en Chrome y volvé a intentar.'
+    :'No se pudo iniciar el lector. '+error+' Podés escribir el código manualmente.';
+   if(lectorActivo){
+    const lector=lectorActivo;lectorActivo=null;
+    try{await lector.stop()}catch(x){}
+    try{lector.clear()}catch(x){}
+   }
   }
-  if(typeof Html5Qrcode==='undefined'){
-    $('mensajeEscaner').textContent='No se cargó el lector de códigos. Revisa tu conexión a internet.';
-    $('abrirEscaner').disabled=false;abriendoLector=false;return;
+ }finally{
+  if(sesion===ampxEscanerSesion){
+   $('abrirEscaner').disabled=false;
+   abriendoLector=false;
   }
-  try{
-    const lector=new Html5Qrcode('lectorCodigo',{verbose:false});lectorActivo=lector;
-    await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},async codigo=>{
-      if(lectorActivo!==lector)return;
-      document.querySelector('#productoForm [name="codigo_barras"]').value=codigo;
-      await detenerLector();estado('Código de barras leído: '+codigo);
-    },()=>{});
-    $('mensajeEscaner').textContent='Apunta la cámara al código de barras del producto.';
-  }catch(e){
-    $('mensajeEscaner').textContent='No se pudo abrir la cámara. Comprueba el permiso de cámara del navegador. '+(e?.message||String(e));
-    if(lectorActivo){try{lectorActivo.clear()}catch(x){}lectorActivo=null}
-    $('abrirEscaner').disabled=false;
-  }finally{abriendoLector=false}
+ }
 };
 $('cerrarEscaner').onclick=detenerLector;
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&lectorActivo)detenerLector()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&(lectorActivo||abriendoLector))void detenerLector()});
 $('productoForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const p={detalles:String(f.get('detalles')).trim().toLocaleUpperCase('es'),unidad_medida:String(f.get('unidad_medida')||'unidad'),codigo_barras:String(f.get('codigo_barras')).trim()||null,categoria:String(f.get('categoria')).trim()||null,precio_venta:Number(f.get('precio_venta')),stock_minimo:Number(f.get('stock_minimo')||0),stock_ideal:Number(f.get('stock_ideal')||0)};const unidades=Number(f.get('unidades')),compra=Number(f.get('precio_compra'));if(productos.some(x=>normalizarBusqueda(x.detalles)===normalizarBusqueda(p.detalles))){estado('Este producto ya está registrado. Seleccionalo en las sugerencias y usá «Registrar otra compra». No se creó ningún producto duplicado.',true);return;}if(!p.detalles||!Number.isFinite(unidades)||unidades<=0||!Number.isFinite(compra)||compra<0||!Number.isFinite(p.precio_venta)||p.precio_venta<0||(p.unidad_medida!=='kg'&&!Number.isInteger(unidades))||(p.unidad_medida==='kg'&&Math.abs(unidades*1000-Math.round(unidades*1000))>0.00001)){estado('Revisa los datos del producto.',true);return} $('guardar').disabled=true;estado('Guardando…');let avisoDemora=setTimeout(()=>estado('La operación está tardando más de 20 segundos. No vuelvas a guardar ni cierres esta página: estamos esperando confirmación de Supabase.'),20000);try{const {data,error}=await db.from('productos').insert(p).select('id').single();if(error){estado('No se guardó: '+error.message,true);$('guardar').disabled=false;return}const {error:ce}=await db.rpc('registrar_compra',{p_producto_id:data.id,p_fecha:String(f.get('fecha')),p_precio_compra:compra,p_unidades:unidades,p_proveedor:String(f.get('proveedor')||'')});$('guardar').disabled=false;if(ce){estado('Producto creado, pero la compra falló. No lo vuelvas a crear; registra la compra desde la lista. Detalle: '+ce.message,true);await cargar();return}e.currentTarget.reset();actualizarEtiquetasRegistro();e.currentTarget.elements.fecha.value=new Date().toISOString().slice(0,10);productoSeleccionadoRegistro=null;$('avisoProductoExistente').textContent='';$('comprarProductoExistente').classList.add('hidden');mostrarSugerenciasRegistro();actualizarCostoPrevio();await cargar();estado('Producto y compra guardados correctamente.')}catch(err){estado('No se pudo confirmar el registro: '+(err?.message||String(err))+'. Antes de intentar otra vez, pulsa Actualizar y comprueba si aparece el producto para evitar duplicados.',true)}finally{clearTimeout(avisoDemora);$('guardar').disabled=false}};
 $('buscar').addEventListener('input',e=>{const campo=e.currentTarget;const inicio=campo.selectionStart,fin=campo.selectionEnd;campo.value=campo.value.toLocaleUpperCase('es');try{campo.setSelectionRange(inicio,fin)}catch(err){}dibujar()});$('recargar').onclick=cargar;if(location.hash.includes('type=recovery')){recuperando=true;mostrar(false);$('restablecer').classList.remove('hidden');estado('Establece tu nueva contraseña.')}else{await revisar()}
 </script></body></html>

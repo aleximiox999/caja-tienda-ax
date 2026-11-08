@@ -227,7 +227,7 @@ function calcularConvertirKg(ajustarStock=false){
  if(ajustarStock&&fac>0)$('convertirKgStock').value=String(Math.round(datosProducto(p).stock*fac*1000)/1000);
  $('convertirKgPrevio').textContent=fac>0?'Costo estimado por kg: '+bs(datosProducto(p).unit/fac)+' · Existencias al convertir: '+conMedida(datosProducto(p).stock,p)+' → '+$('convertirKgStock').value+' kg.':'Indicá los kilos por unidad anterior.';
 }
-$('convertirKgFactor').addEventListener('input',()=>calcularConvertirKg(true));
+$('convertirKgFactor').addEventListener('input',()=>{const factor=Number($('convertirKgFactor').value);if(productoMedida&&factor>0){$('convertirKgPrecio').value=(Math.round(Number(productoMedida.precio_venta||0)/factor*100)/100).toFixed(2);}calcularConvertirKg(true);});
 $('convertirKgStock').addEventListener('input',()=>calcularConvertirKg(false));
 $('convertirKgCancelar').onclick=()=>{cerrarDialogMedida('convertirKgDialog');productoMedida=null};
 $('convertirKgForm').onsubmit=async e=>{

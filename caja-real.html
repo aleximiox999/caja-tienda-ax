@@ -577,6 +577,55 @@ footer{color:#445665}
  .tabs .btn.active{border-bottom-width:3px}
 }
 /* Cabecera y texto plateado existentes se mantienen deliberadamente sin cambios. */
+
+/* AMPHX CAJA REAL: TITULOS EN MAYUSCULAS Y PESTAÑAS TITANIO (2026-11-08).
+   Textos descriptivos, contenido de productos y operaciones sin cambios. */
+main h1,main h2,main h3,
+main .scanner-title strong,
+main .tabs .btn,
+main button.btn,
+main .field>label,
+main th,
+main summary{
+ text-transform:uppercase;
+}
+main h1{font-weight:900;letter-spacing:.018em}
+main h2,main h3{font-weight:850;letter-spacing:.025em}
+main .field>label{font-weight:800;letter-spacing:.015em}
+main button.btn{font-weight:830;letter-spacing:.015em}
+main .tabs .btn{
+ color:#f5f9fd;
+ background:
+  linear-gradient(115deg,transparent 12%,#ffffff18 35%,transparent 53%,#ffffff09 72%,transparent 87%),
+  linear-gradient(145deg,#0a121b 0%,#27394a 46%,#0b1722 100%);
+ border:1.5px solid #516b7e;
+ border-top-color:#a3b7c7;
+ border-radius:12px;
+ text-shadow:0 1px 1px #000a;
+ box-shadow:0 4px 13px #03111d3c,inset 0 1px 0 #ffffff1f;
+ font-size:14px;
+ font-weight:900;
+ letter-spacing:.03em;
+}
+main .tabs .btn.active{
+ color:#fff;
+ background:
+  linear-gradient(116deg,transparent 10%,#fff2 36%,transparent 60%),
+  linear-gradient(135deg,#101f2d,#344b60 45%,#122433 100%);
+ border:2px solid #b8c9d5;
+ border-bottom:4px solid #8aa6b8;
+ box-shadow:0 4px 13px #06182757,inset 0 1px 0 #fff5;
+ text-shadow:0 1px 2px #000d;
+ font-weight:950;
+}
+main .tabs .btn svg{stroke:#f6fbff;stroke-width:2.4}
+main .tabs .btn:hover:not(:disabled){
+ filter:brightness(1.15);
+ box-shadow:0 5px 15px #0e263947,inset 0 1px 0 #ffffff33;
+}
+main .tabs .btn:focus-visible{outline:3px solid #6d9fbd;outline-offset:2px}
+@media(max-width:850px){main .tabs .btn{font-size:12px;letter-spacing:.012em;font-weight:900}}
+@media(forced-colors:active){main .tabs .btn,main .tabs .btn.active{background:ButtonFace;color:ButtonText;border-color:ButtonText}}
 </style>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>

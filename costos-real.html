@@ -1314,7 +1314,7 @@ async function comprimirFoto(file,mejoraWeb=false){
    }
    return await new Promise((resolve,reject)=>cv.toBlob(blob=>blob?resolve(blob):reject(Error('No se pudo preparar la imagen.')),'image/jpeg',calidad));
   };
-  let blob=await dibujar(1400,0.82);
+  let blob=await dibujar(mejoraWeb?1024:1400,mejoraWeb?0.85:0.82);
   if(blob.size>2*1024*1024)blob=await dibujar(1000,0.69);
   if(blob.size>2*1024*1024)throw Error('No se pudo reducir la imagen al tamaño permitido.');
   return blob;

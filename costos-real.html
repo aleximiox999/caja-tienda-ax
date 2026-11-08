@@ -1234,9 +1234,19 @@ async function importarFotoProductoWeb(item,boton){
  try{
   const {data,error}=await db.functions.invoke('imagenes-producto',{body:{accion:'importar',proveedor:item.proveedor,id:item.id}});
   if(error)throw Error(error.message||'La fuente no permitió importar esta imagen.');
-  if(!(data instanceof Blob)||!String(data.type||'').startsWith('image/'))throw Error('La fuente no devolvió una imagen compatible.');
+  if(!(data instanceof Blob))throw Error('La fuente no devolvió una imagen compatible.');
   if(data.size>8*1024*1024)throw Error('Imagen demasiado pesada; elegí otra opción.');
-  const archivo=new File([data],'foto-de-producto.jpg',{type:data.type});
+  // Las funciones de Supabase devuelven binarios como octet-stream. Detectamos
+  // el formato real por su firma antes de convertirlo al archivo que comprime la app.
+  const bytes=new Uint8Array(await data.slice(0,16).arrayBuffer());
+  const jpg=bytes[0]===255&&bytes[1]===216;
+  const png=bytes[0]===137&&bytes[1]===80&&bytes[2]===78&&bytes[3]===71;
+  const webp=bytes[0]===82&&bytes[1]===73&&bytes[2]===70&&bytes[3]===70&&
+   bytes[8]===87&&bytes[9]===69&&bytes[10]===66&&bytes[11]===80;
+  const gif=bytes[0]===71&&bytes[1]===73&&bytes[2]===70&&bytes[3]===56;
+  const mime=jpg?'image/jpeg':png?'image/png':webp?'image/webp':gif?'image/gif':'';
+  if(!mime)throw Error('La fuente no entregó JPG, PNG, WebP ni GIF.');
+  const archivo=new File([data],'foto-de-producto.'+(jpg?'jpg':png?'png':webp?'webp':'gif'),{type:mime});
   estadoBusquedaFoto('Optimizando nitidez y tamaño. Guardando imagen en Supabase…');
   await guardarFotoProducto(archivo,true);
  }catch(error){

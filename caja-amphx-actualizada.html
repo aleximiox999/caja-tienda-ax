@@ -207,7 +207,7 @@ details{border-top:1px solid #d7dfe7}
 </div><div class="card"><h2>Registrar compra</h2><form id="formEntrada">
 <input type="hidden" id="entradaProductoId">
 <div class="field"><label for="entradaFecha">Fecha de compra</label><input id="entradaFecha" type="date" required></div>
-<div class="field"><label for="entradaUnidades">Unidades que ingresan</label><input id="entradaUnidades" type="number" min="0.001" step="any" inputmode="decimal" required placeholder="Ej. 24"></div>
+<div class="field"><label for="entradaUnidades" id="entradaUnidadesLabel">Cantidad que ingresa (unidades)</label><input id="entradaUnidades" type="number" min="0.001" step="any" inputmode="decimal" required placeholder="Ej. 24"></div>
 <div class="field"><label for="entradaCostoTotal">Precio total del paquete (Bs)</label><input id="entradaCostoTotal" type="number" min="0" step="any" inputmode="decimal" required placeholder="Ej. 120"></div>
 <div class="field"><label for="entradaProveedor">Proveedor (opcional)</label><input id="entradaProveedor" maxlength="150" placeholder="Nombre del proveedor"></div>
 <div id="previoEntrada" class="note">Selecciona producto, unidades y precio para calcular el costo unitario.</div>
@@ -367,6 +367,11 @@ async function guardarVentaOffline(){
 }
 function limpiarcodigo(s){return String(s??'').trim()}
 function stock(p){return Number(p?.stock??0)}
+function esKg(p){return p?.unidad_medida==='kg'}
+function unidadCorta(p){return esKg(p)?'kg':p?.unidad_medida==='botella'?'botella':'unidad'}
+function cantidadMedida(v,p){return Number(v||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+(esKg(p)?'kg':p?.unidad_medida==='botella'?'botellas':'unidades')}
+function cantidadValida(n,p){return Number.isFinite(n)&&n>0&&(esKg(p)?Math.abs(n*1000-Math.round(n*1000))<.00001:Number.isInteger(n))}
+function pasoMedida(p){return esKg(p)?'0.001':'1'}
 function precio(p){return Number(p?.precio_venta??0)}
 function cent(n){return Math.round((Number(n)+Number.EPSILON)*100)}
 function total(){return cart.reduce((s,x)=>s+cent(x.cantidad*precio(x.producto)),0)/100}
@@ -462,42 +467,53 @@ function buscarProductos(q){
  return ordenados.filter(x=>palabras.some(t=>normalizarBusqueda(x.p.detalles).includes(t)))
    .slice(0,50).map(x=>x.p);
 }
-function renderResultados(){const a=buscarProductos($('buscarProducto').value);
- const sug=$('sugerenciasProductos');
+function renderResultados(){
+ const a=buscarProductos($('buscarProducto').value),sug=$('sugerenciasProductos');
  sug.innerHTML=a.slice(0,25).map(p=>'<option value="'+safe(p.detalles)+'"></option>').join('');
- $('busquedaResultados').innerHTML=a.length?a.map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+stock(p)+'</p></div><div class="right"><b>'+moneda(p.precio_venta)+'</b><br><button class="btn" data-add="'+p.id+'" '+(stock(p)<=0||precio(p)<=0?'disabled':'')+'>'+(precio(p)<=0?'Precio pendiente':'Agregar')+'</button></div></div>').join(''):'<p class="empty">No se encontraron coincidencias. Comprueba si ya registraste el producto en COSTOS.</p>';
- $('busquedaResultados').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>agregar(Number(b.dataset.add)))}
+ $('busquedaResultados').innerHTML=a.length?a.map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+cantidadMedida(stock(p),p)+'</p></div><div class="right"><b>'+moneda(p.precio_venta)+' / '+unidadCorta(p)+'</b><br><button class="btn" data-add="'+p.id+'" '+(stock(p)<=0||precio(p)<=0?'disabled':'')+'>'+(precio(p)<=0?'Precio pendiente':esKg(p)?'Agregar kg':'Agregar')+'</button></div></div>').join(''):'<p class="empty">No se encontraron coincidencias. Comprueba si ya registraste el producto en COSTOS.</p>';
+ $('busquedaResultados').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>agregar(Number(b.dataset.add)));
+}
 function agregar(id){
  if(lockCart()){estado('Primero confirma la venta pendiente.','error');return}
  const p=catalogo.find(x=>x.id===id);if(!p){estado('Producto no encontrado.','error');return}
- if(!Number.isFinite(precio(p))||precio(p)<=0){estado('Este producto no tiene precio de venta. Colocá el precio en COSTOS antes de venderlo: '+p.detalles,'error');return;}
- const x=cart.find(y=>y.producto.id===id), nueva=(x?.cantidad||0)+1;
- if(nueva>disponible(p)){estado('No quedan suficientes unidades disponibles de '+p.detalles+' (incluye ventas sin sincronizar).','error');return}
- if(x)x.cantidad=nueva;else cart.push({producto:p,cantidad:1});
- estado('Agregado: '+p.detalles);renderCarrito();
+ if(!Number.isFinite(precio(p))||precio(p)<=0){estado('Este producto no tiene precio de venta. Colocá el precio en COSTOS antes de venderlo: '+p.detalles,'error');return}
+ const x=cart.find(y=>y.producto.id===id),dis=disponible(p);
+ const inicial=esKg(p)?Math.min(1,dis):1;
+ const nueva=Number(((x?.cantidad||0)+inicial).toFixed(3));
+ if(nueva>dis+0.000001||nueva<=0){estado('No queda suficiente stock disponible de '+p.detalles+' (incluye ventas sin sincronizar).','error');return}
+ if(x)x.cantidad=nueva;else cart.push({producto:p,cantidad:inicial});
+ estado('Agregado: '+p.detalles+' · '+cantidadMedida(inicial,p)+'. Podés ajustar la cantidad en el carrito.');
+ renderCarrito();
 }
 function quitar(i){if(lockCart())return;cart.splice(i,1);renderCarrito()}
-function cambiarCantidad(i,v){if(lockCart())return;const x=cart[i];if(!x)return;const n=Number(v);if(!Number.isInteger(n)||n<1||n>disponible(x.producto)){estado('Cantidad inválida o supera las existencias.','error');renderCarrito();return}x.cantidad=n;renderCarrito()}
+function cambiarCantidad(i,v){
+ if(lockCart())return;const x=cart[i];if(!x)return;
+ const n=Number(v);
+ if(!String(v).trim()||!cantidadValida(n,x.producto)||n>disponible(x.producto)+.000001){
+  estado('Cantidad inválida. '+(esKg(x.producto)?'Escribí kg con hasta tres decimales (ej. 0.5 o 2.5).':'Usá unidades enteras.')+' Revisá las existencias.','error');
+  renderCarrito();return;
+ }
+ x.cantidad=n;renderCarrito();
+}
 function renderCarrito(){
- $('carrito').innerHTML=cart.length?cart.map((x,i)=>'<div class="item"><div style="min-width:0"><strong>'+safe(x.producto.detalles)+'</strong><p>'+moneda(x.producto.precio_venta)+' por unidad</p></div><div class="right"><input aria-label="Cantidad" class="qty" data-qty="'+i+'" type="number" min="1" step="1" max="'+stock(x.producto)+'" value="'+x.cantidad+'" '+(lockCart()?'disabled':'')+'><br><button data-remove="'+i+'" class="flat" '+(lockCart()?'disabled':'')+'>Quitar</button></div></div>').join(''):'<p class="empty">Todavía no hay productos en el carrito.</p>';
+ $('carrito').innerHTML=cart.length?cart.map((x,i)=>'<div class="item"><div style="min-width:0"><strong>'+safe(x.producto.detalles)+'</strong><p>'+moneda(x.producto.precio_venta)+' por '+unidadCorta(x.producto)+'</p></div><div class="right"><label class="mini muted" for="cantidadCarrito'+i+'">Cantidad ('+unidadCorta(x.producto)+')</label><input id="cantidadCarrito'+i+'" aria-label="Cantidad en '+unidadCorta(x.producto)+'" class="qty" data-qty="'+i+'" type="number" inputmode="decimal" min="'+(esKg(x.producto)?'0.001':'1')+'" step="'+pasoMedida(x.producto)+'" max="'+disponible(x.producto)+'" value="'+x.cantidad+'" '+(lockCart()?'disabled':'')+'><br><button data-remove="'+i+'" class="flat" '+(lockCart()?'disabled':'')+'>Quitar</button></div></div>').join(''):'<p class="empty">Todavía no hay productos en el carrito.</p>';
  $('carrito').querySelectorAll('[data-qty]').forEach(x=>x.onchange=()=>cambiarCantidad(Number(x.dataset.qty),x.value));
  $('carrito').querySelectorAll('[data-remove]').forEach(x=>x.onclick=()=>quitar(Number(x.dataset.remove)));
  $('totalVenta').textContent=moneda(total());
  $('tipoPago').disabled=lockCart();$('pagoEfectivo').disabled=lockCart();$('pagoQr').disabled=lockCart();
  $('btnVender').disabled=procesando||(!pending&&!cart.length);
- actualizarResumenEscaneo();
- pintarColaOffline();
+ actualizarResumenEscaneo();pintarColaOffline();
 }
 function renderPrecio(){
  const q=limpiarcodigo($('buscarPrecio').value).toLocaleLowerCase('es');
  if(!q){$('resultadoPrecio').innerHTML='<p class="muted">Escanea un código o escribe un nombre para consultar su precio.</p>';return}
  const list=buscarProductos(q);
- $('resultadoPrecio').innerHTML=list.length?list.map(p=>'<div class="result"><strong>'+safe(p.detalles)+'</strong><div class="bigprice">'+(precio(p)>0?moneda(p.precio_venta):'PRECIO PENDIENTE')+'</div><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">Existencias: '+stock(p)+'</span><p class="itemcode">Código: '+safe(p.codigo_barras||'Sin asignar')+'</p></div>').join(''):'<p class="note red">Producto no encontrado en el catálogo.</p>';
+ $('resultadoPrecio').innerHTML=list.length?list.map(p=>'<div class="result"><strong>'+safe(p.detalles)+'</strong><div class="bigprice">'+(precio(p)>0?moneda(p.precio_venta)+' / '+unidadCorta(p):'PRECIO PENDIENTE')+'</div><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">Existencias: '+cantidadMedida(stock(p),p)+'</span><p class="itemcode">Código: '+safe(p.codigo_barras||'Sin asignar')+'</p></div>').join(''):'<p class="note red">Producto no encontrado en el catálogo.</p>';
 }
 function renderInventario(){
  const bajo=catalogo.filter(p=>stock(p)<=Number(p.stock_minimo));
- $('alertas').innerHTML=bajo.length?'<div class="note red"><strong>REPOSICIÓN: '+bajo.length+' producto(s) en mínimo</strong><br>'+bajo.map(p=>safe(p.detalles)+' ('+stock(p)+' unidades)').join(' · ')+'</div>':'<div class="note ok">No hay productos bajo su stock mínimo configurado.</div>';
- $('tablaInventario').innerHTML=catalogo.map(p=>'<tr><td>'+safe(p.codigo_barras||'—')+'</td><td>'+safe(p.detalles)+'</td><td>'+moneda(p.precio_venta)+'</td><td>'+stock(p)+'</td><td>'+Number(p.stock_minimo)+'</td><td><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">'+(stock(p)<=Number(p.stock_minimo)?'REPOSICIÓN':'DISPONIBLE')+'</span></td></tr>').join('');
+ $('alertas').innerHTML=bajo.length?'<div class="note red"><strong>REPOSICIÓN: '+bajo.length+' producto(s) en mínimo</strong><br>'+bajo.map(p=>safe(p.detalles)+' ('+cantidadMedida(stock(p),p)+')').join(' · ')+'</div>':'<div class="note ok">No hay productos bajo su stock mínimo configurado.</div>';
+ $('tablaInventario').innerHTML=catalogo.map(p=>'<tr><td>'+safe(p.codigo_barras||'—')+'</td><td>'+safe(p.detalles)+'</td><td>'+moneda(p.precio_venta)+' / '+unidadCorta(p)+'</td><td>'+cantidadMedida(stock(p),p)+'</td><td>'+cantidadMedida(p.stock_minimo,p)+'</td><td><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">'+(stock(p)<=Number(p.stock_minimo)?'REPOSICIÓN':'DISPONIBLE')+'</span></td></tr>').join('');
 }
 function selectTab(t){
  if(['entradas','empleados','reporte'].includes(t)&&(cuenta?.rol!=='administrador'||offlineMode))return;
@@ -510,14 +526,17 @@ function selectTab(t){
 }
 let ultimoCodigoDetectado='',ultimaDeteccionCodigo=0,ultimoProductoEscaneadoId=null;
 function actualizarResumenEscaneo(){
- const unidades=cart.reduce((s,x)=>s+Number(x.cantidad),0);
+ const enteros=cart.filter(x=>!esKg(x.producto)).reduce((s,x)=>s+Number(x.cantidad),0);
+ const kilos=cart.filter(x=>esKg(x.producto)).reduce((s,x)=>s+Number(x.cantidad),0);
  $('totalEscaneo').textContent=moneda(total());
- $('conteoEscaneo').textContent=unidades+' unidad'+(unidades===1?'':'es')+' · '+cart.length+' producto'+(cart.length===1?'':'s')+' distinto'+(cart.length===1?'':'s');
- $('repetirUltimoEscaneo').disabled=!ultimoProductoEscaneadoId||lockCart();
+ $('conteoEscaneo').textContent=(enteros?enteros+' unidades':'')+(enteros&&kilos?' · ':'')+(kilos?Number(kilos.toFixed(3))+' kg':'')+(!enteros&&!kilos?'0 productos':'')+' · '+cart.length+' producto(s) distintos';
+ const ultimo=catalogo.find(x=>Number(x.id)===ultimoProductoEscaneadoId);
+ $('repetirUltimoEscaneo').textContent=ultimo&&esKg(ultimo)?'+1 kg del último producto':'+1 unidad del último producto';
+ $('repetirUltimoEscaneo').disabled=!ultimo||lockCart();
 }
 function mostrarUltimoProductoEscaneado(p){
  ultimoProductoEscaneadoId=Number(p.id);
- $('ultimoEscaneo').textContent='Último: '+p.detalles+' · '+moneda(precio(p))+' por unidad';
+ $('ultimoEscaneo').textContent='Último: '+p.detalles+' · '+moneda(precio(p))+' por '+unidadCorta(p);
  actualizarResumenEscaneo();
 }
 async function detenerLector(){
@@ -607,27 +626,31 @@ function fechaLocalEntrada(){
 function seleccionarEntrada(id){
  const p=catalogo.find(x=>String(x.id)===String(id));if(!p)return;
  $('entradaProductoId').value=String(p.id);$('buscarEntrada').value=p.detalles;
- $('entradaSeleccion').textContent='Producto: '+p.detalles+' · Código: '+(p.codigo_barras||'sin código')+' · Stock: '+stock(p)+' · Precio venta: '+moneda(p.precio_venta);
+ $('entradaUnidadesLabel').textContent='Cantidad que ingresa ('+(esKg(p)?'kg':p.unidad_medida==='botella'?'botellas':'unidades')+')';
+ $('entradaUnidades').step=pasoMedida(p);
+ $('entradaSeleccion').textContent='Producto: '+p.detalles+' · Código: '+(p.codigo_barras||'sin código')+' · Stock: '+cantidadMedida(stock(p),p)+' · Precio venta: '+moneda(p.precio_venta)+' / '+unidadCorta(p);
  renderEntradas();previoEntrada();
 }
 function renderEntradas(){
  const q=$('buscarEntrada').value.trim(),items=q?buscarProductos(q):[],sel=$('entradaProductoId').value;
- $('resultadosEntrada').innerHTML=items.length?items.slice(0,25).map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+stock(p)+'</p></div><button type="button" class="btn" data-entrada="'+safe(p.id)+'" '+(sel===String(p.id)?'disabled':'')+'>'+(sel===String(p.id)?'Elegido':'Elegir')+'</button></div>').join(''):(q?'<p class="empty">No hay coincidencias. Si es nuevo, registra primero el producto en COSTOS.</p>':'<p class="muted mini">Escribe o escanea el código para buscar.</p>');
+ $('resultadosEntrada').innerHTML=items.length?items.slice(0,25).map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+cantidadMedida(stock(p),p)+'</p></div><button type="button" class="btn" data-entrada="'+safe(p.id)+'" '+(sel===String(p.id)?'disabled':'')+'>'+(sel===String(p.id)?'Elegido':'Elegir')+'</button></div>').join(''):(q?'<p class="empty">No hay coincidencias. Si es nuevo, registra primero el producto en COSTOS.</p>':'<p class="muted mini">Escribe o escanea el código para buscar.</p>');
  $('resultadosEntrada').querySelectorAll('[data-entrada]').forEach(b=>b.onclick=()=>seleccionarEntrada(b.dataset.entrada));
 }
 function previoEntrada(){
  const p=catalogo.find(x=>String(x.id)===$('entradaProductoId').value),u=Number($('entradaUnidades').value),t=Number($('entradaCostoTotal').value);
- if(!p||$('entradaUnidades').value===''||$('entradaCostoTotal').value===''||!Number.isFinite(u)||u<=0||!Number.isFinite(t)||t<0){$('previoEntrada').textContent='Selecciona producto, unidades y precio total para calcular el costo.';return}
+ if(!p||$('entradaUnidades').value===''||$('entradaCostoTotal').value===''||!cantidadValida(u,p)||!Number.isFinite(t)||t<0){
+  $('previoEntrada').textContent='Seleccioná producto, cantidad válida y precio total para calcular el costo.';return;
+ }
  const coste=t/u;
- $('previoEntrada').textContent='Costo de compra: '+moneda(coste)+' por unidad · Venta: '+moneda(p.precio_venta)+' · Ganancia estimada: '+moneda(Number(p.precio_venta)-coste)+' por unidad · Stock nuevo estimado: '+(stock(p)+u);
+ $('previoEntrada').textContent='Costo: '+moneda(coste)+' por '+unidadCorta(p)+' · Venta: '+moneda(p.precio_venta)+' / '+unidadCorta(p)+' · Ganancia estimada: '+moneda(Number(p.precio_venta)-coste)+' por '+unidadCorta(p)+' · Stock nuevo estimado: '+cantidadMedida(stock(p)+u,p);
 }
 let guardandoEntrada=false;
 async function registrarEntrada(ev){
  ev.preventDefault();if(guardandoEntrada)return;
  if(cuenta?.rol!=='administrador'||offlineMode||!online()){estado('Para registrar compras necesitas internet y permiso de administrador.','error');return}
  const p=catalogo.find(x=>String(x.id)===$('entradaProductoId').value),fecha=$('entradaFecha').value,u=Number($('entradaUnidades').value),t=Number($('entradaCostoTotal').value),proveedor=$('entradaProveedor').value.trim();
- if(!p||!/^\d{4}-\d{2}-\d{2}$/.test(fecha)||$('entradaUnidades').value===''||!Number.isFinite(u)||u<=0||$('entradaCostoTotal').value===''||!Number.isFinite(t)||t<0){estado('Completa producto, fecha, unidades y precio total válidos.','error');return}
- if(!confirm('¿Registrar compra de '+u+' unidades de '+p.detalles+' por '+moneda(t)+'? Esto aumentará el inventario REAL.'))return;
+ if(!p||!/^\d{4}-\d{2}-\d{2}$/.test(fecha)||$('entradaUnidades').value===''||!cantidadValida(u,p)||$('entradaCostoTotal').value===''||!Number.isFinite(t)||t<0){estado('Completa producto, fecha, unidades y precio total válidos.','error');return}
+ if(!confirm('¿Registrar compra de '+cantidadMedida(u,p)+' de +p.detalles+' por '+moneda(t)+'? Esto aumentará el inventario REAL.'))return;
  guardandoEntrada=true;$('guardarEntrada').disabled=true;estado('Guardando compra en Supabase…');
  try{
   const {data,error}=await db.rpc('registrar_compra',{p_producto_id:p.id,p_fecha:fecha,p_precio_compra:t,p_unidades:u,p_proveedor:proveedor||null});

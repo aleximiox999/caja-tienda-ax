@@ -651,7 +651,7 @@ async function registrarEntrada(ev){
  if(cuenta?.rol!=='administrador'||offlineMode||!online()){estado('Para registrar compras necesitas internet y permiso de administrador.','error');return}
  const p=catalogo.find(x=>String(x.id)===$('entradaProductoId').value),fecha=$('entradaFecha').value,u=Number($('entradaUnidades').value),t=Number($('entradaCostoTotal').value),proveedor=$('entradaProveedor').value.trim();
  if(!p||!/^\d{4}-\d{2}-\d{2}$/.test(fecha)||$('entradaUnidades').value===''||!cantidadValida(u,p)||$('entradaCostoTotal').value===''||!Number.isFinite(t)||t<0){estado('Completa producto, fecha, unidades y precio total válidos.','error');return}
- if(!confirm('¿Registrar compra de '+cantidadMedida(u,p)+' de +p.detalles+' por '+moneda(t)+'? Esto aumentará el inventario REAL.'))return;
+ if(!confirm('¿Registrar compra de '+cantidadMedida(u,p)+' de '+p.detalles+' por '+moneda(t)+'? Esto aumentará el inventario REAL.'))return;
  guardandoEntrada=true;$('guardarEntrada').disabled=true;estado('Guardando compra en Supabase…');
  try{
   const {data,error}=await db.rpc('registrar_compra',{p_producto_id:p.id,p_fecha:fecha,p_precio_compra:t,p_unidades:u,p_proveedor:proveedor||null});

@@ -1025,16 +1025,61 @@ async function boot(){
  if(rol.rol==='administrador')await cargarEmpleados();
  if(colaOffline.length)void sincronizarCola();
 }
+/* AMPHX 2026-11-08 · consultas de inventario resistentes a fallos de red.
+   Reintenta únicamente la lectura idempotente; nunca duplica ventas ni compras.
+   Si la red falla, enseña la copia local con su fecha y avisa que NO está sincronizada. */
 async function cargarCatalogo(){
- if(!cuenta)return;
- if(!online()||offlineMode){await cargarCatalogoLocal();return}
+ if(!cuenta)return false;
+ if(!online()||offlineMode){await cargarCatalogoLocal();return false;}
+ const usuario=cuenta.auth_user_id;
  estado('Consultando el inventario real…');
- const {data,error}=await db.rpc('listar_catalogo_venta');
- if(error){estado('Error al consultar inventario: '+error.message,'error');return}
- catalogo=Array.isArray(data)?data:[];
- try{await localPut('catalogos',{usuario:cuenta.auth_user_id,productos:catalogo,fecha:new Date().toISOString()})}catch(e){/* No interrumpir una caja en línea. */}
+ let data=null,error=null;
+ for(let intento=0;intento<2;intento++){
+  if(intento>0)await new Promise(resolve=>setTimeout(resolve,1100));
+  if(!cuenta||cuenta.auth_user_id!==usuario)return false;
+  try{
+   const r=await db.rpc('listar_catalogo_venta');
+   data=r.data;error=r.error;
+   if(!error)break;
+   const mensaje=String(error.message||error);
+   // Errores de permisos o de base de datos no se resuelven repitiendo.
+   if(!/Failed to fetch|NetworkError|fetch failed|Load failed|timed out|timeout|network|connection|abort/i.test(mensaje))break;
+  }catch(e){
+   error=e instanceof Error?e:Error(String(e));
+  }
+ }
+ if(!cuenta||cuenta.auth_user_id!==usuario)return false;
+ if(error){
+  const mensaje=String(error.message||error);
+  const falloRed=/Failed to fetch|NetworkError|fetch failed|Load failed|timed out|timeout|network|connection|abort/i.test(mensaje);
+  if(!falloRed){
+   estado('No se pudo consultar el inventario: '+mensaje+'. Revisá el acceso o volvé a intentar.','error');
+   return false;
+  }
+  try{
+   const guardado=await localGet('catalogos',usuario);
+   if(guardado&&Array.isArray(guardado.productos)){
+    catalogo=guardado.productos;
+    renderResultados();renderPrecio();renderInventario();renderCarrito();renderEntradas();
+    const fecha=guardado.fecha?new Date(guardado.fecha).toLocaleString('es-BO'):'fecha desconocida';
+    estado('CONEXIÓN INESTABLE · Se muestra la última copia del inventario guardada el '+fecha+
+      '. No está confirmada en Supabase. Tocá ACTUALIZAR PRODUCTOS cuando vuelva la conexión; las ventas reales requieren conexión.','error');
+    return false;
+   }
+  }catch(e){/* Sin copia local disponible. No borrar el catálogo que ya esté en memoria. */}
+  estado('No pudimos comunicarnos con Supabase tras dos intentos. No se borró el inventario. Revisá la conexión y tocá ACTUALIZAR PRODUCTOS; si nunca abriste la caja con internet, no hay copia local.','error');
+  return false;
+ }
+ if(!Array.isArray(data)){
+  estado('Supabase devolvió un catálogo inválido. No se modificaron los productos. Probá ACTUALIZAR PRODUCTOS.','error');
+  return false;
+ }
+ catalogo=data;
+ try{await localPut('catalogos',{usuario,productos:catalogo,fecha:new Date().toISOString()})}
+ catch(e){/* No interrumpir una caja en línea. */}
  renderResultados();renderPrecio();renderInventario();renderCarrito();renderEntradas();
  estado(catalogo.length+' productos obtenidos desde Supabase.','success');
+ return true;
 }
 function normalizarBusqueda(s){
  return String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es').replace(/[^a-z0-9]+/g,' ').trim();

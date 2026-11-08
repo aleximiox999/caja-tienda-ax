@@ -160,6 +160,16 @@ details{border-top:1px solid #d7dfe7}
 .empleado-codigo{font-family:ui-monospace,monospace;font-size:13px;font-weight:700;color:#2c664b}
 .empleado-controles{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}
 .empleado-controles .btn{padding:8px 10px;min-height:38px}
+
+/* Vista rápida de foto: sin ocupar sitio en inventario ni mostrar controles de edición. */
+button.foto-nombre{background:transparent!important;border:0!important;color:inherit!important;font:inherit!important;font-weight:700!important;text-align:left!important;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#a5ad8c;padding:1px 2px!important;min-height:30px;cursor:pointer;max-width:100%;overflow-wrap:anywhere}
+button.foto-nombre:hover{color:#e8d5a9!important}
+#fotoVistaCaja{border:1px solid #4a4d50;border-radius:16px;padding:20px;background:#1d2228;color:#f6f3eb;width:min(94vw,500px);max-height:90dvh;overflow:auto;box-shadow:0 20px 65px #0009}
+#fotoVistaCaja::backdrop{background:#05080bc9}
+#fotoVistaCaja .foto-vista-img{width:100%;max-height:60dvh;object-fit:contain;border-radius:10px;background:#30353b}
+#fotoVistaCaja .foto-vista-img.hidden{display:none}
+#fotoVistaCaja .foto-vista-vacia{border:1px dashed #656a72;border-radius:10px;text-align:center;padding:38px 15px;color:#c1cbd0;background:#282f35;margin:10px 0}
+#fotoVistaCaja .foto-vista-error{color:#ffb5aa;font-size:13px;margin:10px 0;white-space:pre-wrap}
 </style>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark">A</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
@@ -219,6 +229,15 @@ details{border-top:1px solid #d7dfe7}
 </section>
 <footer class="muted mini" style="margin-top:25px;text-align:center">TIENDA AMPHX · Caja de ventas y entradas de mercadería con inventario real.</footer>
 </main>
+
+<dialog id="fotoVistaCaja" aria-labelledby="fotoVistaTitulo">
+<h2 id="fotoVistaTitulo" style="margin:0 0 10px">Fotografía del producto</h2>
+<p id="fotoVistaNombre" style="font-weight:700;overflow-wrap:anywhere"></p>
+<img id="fotoVistaImagen" class="foto-vista-img hidden" alt="Fotografía del producto">
+<div id="fotoVistaVacia" class="foto-vista-vacia">Este producto todavía no tiene fotografía registrada.</div>
+<p id="fotoVistaError" class="foto-vista-error" role="status" aria-live="polite"></p>
+<button id="fotoVistaCerrar" type="button" class="btn" style="width:100%">Cerrar</button>
+</dialog>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
 const accesoSoloEmpleados=new URLSearchParams(location.search).get('empleado')==='1';
@@ -468,11 +487,54 @@ function buscarProductos(q){
  return ordenados.filter(x=>palabras.some(t=>normalizarBusqueda(x.p.detalles).includes(t)))
    .slice(0,50).map(x=>x.p);
 }
+
+const FOTOS_PRODUCTOS_BUCKET='fotos-productos-amphx';
+let fotoVistaPeticion=0;
+async function abrirVistaFotoProducto(id){
+ const p=catalogo.find(x=>Number(x.id)===Number(id));if(!p)return;
+ const dialog=$('fotoVistaCaja'),peticion=++fotoVistaPeticion,img=$('fotoVistaImagen');
+ img.removeAttribute('src');img.classList.add('hidden');
+ $('fotoVistaNombre').textContent=p.detalles;
+ $('fotoVistaVacia').classList.remove('hidden');
+ $('fotoVistaVacia').textContent=p.foto_path?'Cargando fotografía…':'Este producto todavía no tiene fotografía registrada.';
+ $('fotoVistaError').textContent='';
+ if(!dialog.open){if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');}
+ if(!p.foto_path)return;
+ if(!navigator.onLine){$('fotoVistaVacia').textContent='Para consultar la fotografía necesitás conexión a internet.';return;}
+ try{
+  const {data,error}=await db.storage.from(FOTOS_PRODUCTOS_BUCKET).createSignedUrl(p.foto_path,600);
+  if(peticion!==fotoVistaPeticion||!dialog.open)return;
+  if(error||!data?.signedUrl)throw Error(error?.message||'No se generó el enlace de imagen.');
+  img.onload=()=>{if(peticion!==fotoVistaPeticion)return;img.classList.remove('hidden');$('fotoVistaVacia').classList.add('hidden');};
+  img.onerror=()=>{if(peticion!==fotoVistaPeticion)return;img.classList.add('hidden');$('fotoVistaVacia').textContent='No se pudo mostrar la fotografía.';$('fotoVistaError').textContent='Revisá tu conexión o probá de nuevo.';};
+  img.alt='Fotografía de '+p.detalles;img.src=data.signedUrl;
+ }catch(e){
+  if(peticion!==fotoVistaPeticion)return;
+  $('fotoVistaVacia').textContent='No se pudo cargar la fotografía.';
+  $('fotoVistaError').textContent=e.message||String(e);
+ }
+}
+function cerrarVistaFotoProducto(){
+ const dialog=$('fotoVistaCaja');if(dialog.open){if(typeof dialog.close==='function')dialog.close();else dialog.removeAttribute('open');}
+ fotoVistaPeticion++;
+}
+$('fotoVistaCerrar').onclick=cerrarVistaFotoProducto;
+$('fotoVistaCaja').addEventListener('click',e=>{if(e.target===$('fotoVistaCaja'))cerrarVistaFotoProducto();});
+$('fotoVistaCaja').addEventListener('cancel',()=>{fotoVistaPeticion++;});
+$('fotoVistaCaja').addEventListener('close',()=>{fotoVistaPeticion++;});
+function botonVerFoto(p){
+ return '<button class="foto-nombre" type="button" data-foto-id="'+Number(p.id)+'" aria-label="Ver foto de '+safe(p.detalles)+'">'+safe(p.detalles)+(p.foto_path?' 📷':'')+'</button>';
+}
+function activarBotonesFoto(raiz){
+ $(raiz).querySelectorAll('[data-foto-id]').forEach(b=>{b.onclick=()=>abrirVistaFotoProducto(b.dataset.fotoId);});
+}
+
 function renderResultados(){
  const a=buscarProductos($('buscarProducto').value),sug=$('sugerenciasProductos');
  sug.innerHTML=a.slice(0,25).map(p=>'<option value="'+safe(p.detalles)+'"></option>').join('');
- $('busquedaResultados').innerHTML=a.length?a.map(p=>'<div class="item"><div><strong>'+safe(p.detalles)+'</strong><p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+cantidadMedida(stock(p),p)+'</p></div><div class="right"><b>'+moneda(p.precio_venta)+' / '+unidadCorta(p)+'</b><br><button class="btn" data-add="'+p.id+'" '+(stock(p)<=0||precio(p)<=0?'disabled':'')+'>'+(precio(p)<=0?'Precio pendiente':esKg(p)?'Agregar kg':'Agregar')+'</button></div></div>').join(''):'<p class="empty">No se encontraron coincidencias. Comprueba si ya registraste el producto en COSTOS.</p>';
+ $('busquedaResultados').innerHTML=a.length?a.map(p=>'<div class="item"><div>'+botonVerFoto(p)+'<p>'+safe(p.codigo_barras||'Sin código')+' · Stock: '+cantidadMedida(stock(p),p)+'</p></div><div class="right"><b>'+moneda(p.precio_venta)+' / '+unidadCorta(p)+'</b><br><button class="btn" data-add="'+p.id+'" '+(stock(p)<=0||precio(p)<=0?'disabled':'')+'>'+(precio(p)<=0?'Precio pendiente':esKg(p)?'Agregar kg':'Agregar')+'</button></div></div>').join(''):'<p class="empty">No se encontraron coincidencias. Comprueba si ya registraste el producto en COSTOS.</p>';
  $('busquedaResultados').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>agregar(Number(b.dataset.add)));
+ activarBotonesFoto('busquedaResultados');
 }
 function agregar(id){
  if(lockCart()){estado('Primero confirma la venta pendiente.','error');return}
@@ -509,12 +571,14 @@ function renderPrecio(){
  const q=limpiarcodigo($('buscarPrecio').value).toLocaleLowerCase('es');
  if(!q){$('resultadoPrecio').innerHTML='<p class="muted">Escanea un código o escribe un nombre para consultar su precio.</p>';return}
  const list=buscarProductos(q);
- $('resultadoPrecio').innerHTML=list.length?list.map(p=>'<div class="result"><strong>'+safe(p.detalles)+'</strong><div class="bigprice">'+(precio(p)>0?moneda(p.precio_venta)+' / '+unidadCorta(p):'PRECIO PENDIENTE')+'</div><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">Existencias: '+cantidadMedida(stock(p),p)+'</span><p class="itemcode">Código: '+safe(p.codigo_barras||'Sin asignar')+'</p></div>').join(''):'<p class="note red">Producto no encontrado en el catálogo.</p>';
+ $('resultadoPrecio').innerHTML=list.length?list.map(p=>'<div class="result">'+botonVerFoto(p)+'<div class="bigprice">'+(precio(p)>0?moneda(p.precio_venta)+' / '+unidadCorta(p):'PRECIO PENDIENTE')+'</div><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">Existencias: '+cantidadMedida(stock(p),p)+'</span><p class="itemcode">Código: '+safe(p.codigo_barras||'Sin asignar')+'</p></div>').join(''):'<p class="note red">Producto no encontrado en el catálogo.</p>';
+ activarBotonesFoto('resultadoPrecio');
 }
 function renderInventario(){
  const bajo=catalogo.filter(p=>stock(p)<=Number(p.stock_minimo));
  $('alertas').innerHTML=bajo.length?'<div class="note red"><strong>REPOSICIÓN: '+bajo.length+' producto(s) en mínimo</strong><br>'+bajo.map(p=>safe(p.detalles)+' ('+cantidadMedida(stock(p),p)+')').join(' · ')+'</div>':'<div class="note ok">No hay productos bajo su stock mínimo configurado.</div>';
- $('tablaInventario').innerHTML=catalogo.map(p=>'<tr><td>'+safe(p.codigo_barras||'—')+'</td><td>'+safe(p.detalles)+'</td><td>'+moneda(p.precio_venta)+' / '+unidadCorta(p)+'</td><td>'+cantidadMedida(stock(p),p)+'</td><td>'+cantidadMedida(p.stock_minimo,p)+'</td><td><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">'+(stock(p)<=Number(p.stock_minimo)?'REPOSICIÓN':'DISPONIBLE')+'</span></td></tr>').join('');
+ $('tablaInventario').innerHTML=catalogo.map(p=>'<tr><td>'+safe(p.codigo_barras||'—')+'</td><td>'+botonVerFoto(p)+'</td><td>'+moneda(p.precio_venta)+' / '+unidadCorta(p)+'</td><td>'+cantidadMedida(stock(p),p)+'</td><td>'+cantidadMedida(p.stock_minimo,p)+'</td><td><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">'+(stock(p)<=Number(p.stock_minimo)?'REPOSICIÓN':'DISPONIBLE')+'</span></td></tr>').join('');
+ activarBotonesFoto('tablaInventario');
 }
 function selectTab(t){
  if(['entradas','empleados','reporte'].includes(t)&&(cuenta?.rol!=='administrador'||offlineMode))return;

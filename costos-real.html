@@ -329,22 +329,35 @@ function configurarEditorFila(p,compra,superficie,movil){
   }
   if(valid){
    const costo=Number((comp/unid).toFixed(4));
-   const utilidad=Number((vent-costo).toFixed(4));
-   const total=Number((utilidad*unid).toFixed(2));
    derivados.costo.textContent=costo.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:4})+' Bs / '+unidadCorta(p);
-   derivados.utilidad.textContent=bs(utilidad);
-   derivados.total.textContent=bs(total);
-   for(const key of ['utilidad','total']){
-    derivados[key].classList.toggle('sheet-negative',key==='utilidad'?utilidad<0:total<0);
+   if(vent===0){
+    derivados.utilidad.textContent='Precio pendiente';
+    derivados.total.textContent='Precio pendiente';
+    derivados.utilidad.classList.remove('sheet-negative');
+    derivados.total.classList.remove('sheet-negative');
+    derivados.utilidad.title='Primero ingresá el precio al que querés vender este producto.';
+    derivados.total.title='Se calculará cuando definas el precio de venta.';
+   }else{
+    const utilidad=Number((vent-costo).toFixed(4));
+    const total=Number((utilidad*unid).toFixed(2));
+    derivados.utilidad.textContent=bs(utilidad);
+    derivados.total.textContent=bs(total);
+    derivados.utilidad.classList.toggle('sheet-negative',utilidad<0);
+    derivados.total.classList.toggle('sheet-negative',total<0);
+    derivados.utilidad.title='Precio de venta menos costo unitario';
+    derivados.total.title='Utilidad por unidad multiplicada por las unidades de compra';
    }
   }else{
-   for(const key of ['costo','utilidad','total'])derivados[key].textContent='Revisá datos';
+   for(const key of ['costo','utilidad','total']){
+    derivados[key].textContent='Revisá datos';
+    derivados[key].classList.remove('sheet-negative');
+   }
   }
   save.disabled=guardando||!valid||!dif;
   if(!guardando&&!err.classList.contains('sheet-error'))err.textContent=!valid?'Ingresá precio de compra, unidades o kg, precio de venta y proveedor válidos.':dif?'Cambios sin guardar.':'';
   return {valid,dif,comp,unid,vent,prov};
  }
- Object.values(inputs).forEach(input=>input.addEventListener('input',()=>{err.classList.remove('sheet-error');estadoFila();}));
+ Object.values(inputs).forEach(input=>{for(const ev of ['input','change'])input.addEventListener(ev,()=>{err.classList.remove('sheet-error');estadoFila();});});
  save.onclick=async()=>{
   const valores=estadoFila();
   if(!valores.valid||!valores.dif||guardando)return;

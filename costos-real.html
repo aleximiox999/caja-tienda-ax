@@ -621,6 +621,40 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 #exitoProductoNuevo{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(14,28,36,.24);pointer-events:none}
 #exitoProductoNuevo .mensaje-exito{width:min(92vw,430px);padding:28px 22px;background:#f0fff7;border:2px solid #168459;border-radius:18px;box-shadow:0 20px 64px #14282055;text-align:center;font:800 clamp(20px,5vw,25px)/1.3 system-ui,Arial;color:#0d6842}
 #exitoProductoNuevo .marca-exito{display:grid;place-items:center;margin:0 auto 14px;width:64px;height:64px;border-radius:50%;background:#168459;color:#fff;font-size:38px}
+
+/* AMPHX · historial de precios por factura, sin navegación */
+#listado button.amp-historial-trigger{
+ appearance:none;border:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;
+ color:inherit!important;padding:3px 1px!important;margin:0;min-width:0;max-width:100%;
+ display:inline-flex;flex-direction:column;align-items:flex-end;gap:3px;white-space:normal;
+ text-align:right;cursor:help;font:inherit;border-radius:5px
+}
+#listado button.amp-historial-trigger:hover,#listado button.amp-historial-trigger:focus-visible{outline:2px solid #65cfb0;outline-offset:3px}
+#listado .sheet-mobile-row button.amp-historial-trigger{align-items:flex-start;text-align:left;cursor:pointer}
+#listado .amp-historial-badge{display:inline-block;color:#ffe5e5;background:#982a2e;border:1px solid #ef8b8b;padding:3px 6px;border-radius:6px;font-size:10px;font-weight:800;line-height:1.35;white-space:normal;max-width:100%}
+#listado .amp-historial-badge.amp-baja{color:#ddffea;background:#126243;border-color:#70c29e}
+#listado .amp-historial-badge[hidden]{display:none}
+#ampHistorialCostos[hidden]{display:none!important}
+#ampHistorialCostos{
+ position:fixed;z-index:12000;display:block;width:min(420px,calc(100vw - 20px));
+ max-height:75vh;overflow:auto;padding:15px 16px;background:#fff;color:#17283b;
+ border:2px solid #247958;border-radius:12px;box-shadow:0 15px 45px #08151a66;
+ font:13px/1.5 system-ui,Arial;pointer-events:none;overflow-wrap:anywhere
+}
+#ampHistorialCostos .amp-hist-head{display:flex;align-items:start;justify-content:space-between;gap:10px;border-bottom:1px solid #dae6eb;padding-bottom:9px}
+#ampHistorialCostos .amp-hist-head strong{font-size:14px;color:#154733}
+#ampHistorialCostos .amp-hist-close{background:#e6eff2;color:#203b48;border:1px solid #bfd0d8;padding:5px 8px;font-size:12px;flex-shrink:0}
+#ampHistorialCostos .amp-hist-producto{font-weight:800;margin:9px 0}
+#ampHistorialCostos .amp-hist-line{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px solid #edf1f4}
+#ampHistorialCostos .amp-hist-line strong{text-align:right;font-variant-numeric:tabular-nums}
+#ampHistorialCostos .amp-hist-alza{color:#a52525!important}
+#ampHistorialCostos .amp-hist-baja{color:#08734e!important}
+#ampHistorialCostos .amp-hist-alerta{background:#fff5df;border:1px solid #e8d49e;padding:7px;border-radius:7px;margin:9px 0}
+#ampHistorialCostos .amp-hist-nota{font-size:11px;color:#5b6c7c;margin:9px 0 3px}
+#ampHistorialCostos .amp-hist-tabla{max-height:155px;overflow-y:auto;border:1px solid #e4eaf0;border-radius:7px;margin-top:6px}
+#ampHistorialCostos .amp-hist-item{display:grid;grid-template-columns:minmax(90px,.7fr) 1fr;gap:8px;padding:5px 8px;border-bottom:1px solid #ecf0f4}
+#ampHistorialCostos .amp-hist-item:last-child{border-bottom:0}
+#ampHistorialCostos.amp-hist-touch{pointer-events:auto;left:10px!important;top:50%!important;transform:translateY(-50%);width:calc(100vw - 20px);max-width:420px;max-height:80vh}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><span class="pill">DATOS REALES · ACCESO RESTRINGIDO</span> <button id="salir" class="alt hidden">Salir</button></div></header>
 <section id="login"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
 <section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si vuelves a comprar el mismo producto, utiliza su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿Cómo se vende este producto?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">UNIDADES</option><option value="kg">KILOGRAMOS (KG)</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min="1" step="1" inputmode="numeric" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
@@ -1137,6 +1171,169 @@ function accionesFilaHoja(p){
  }
  return tools;
 }
+
+/* Panel reutilizable: historial ordenado por FECHA DE FACTURA, no fecha de carga.
+   No guarda, modifica ni replica costos; solo lee compras ya autorizadas en COSTOS. */
+let ampHistorialCostosActivo=null;
+function ampFechaFactura(c){
+ return String(c?.fecha||c?.fecha_registro||'').slice(0,10);
+}
+function ampFechaLegible(fecha){
+ const f=String(fecha||'').slice(0,10),m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(f);
+ return m?m[3]+'/'+m[2]+'/'+m[1]:(f||'Sin fecha');
+}
+function ampCostoFactura(c){
+ const u=Number(c?.costo_unitario);
+ if(c?.costo_unitario!==null&&c?.costo_unitario!==undefined&&Number.isFinite(u)&&u>=0)return u;
+ const total=Number(c?.precio_compra),cantidad=Number(c?.unidades);
+ return Number.isFinite(total)&&Number.isFinite(cantidad)&&cantidad>0?total/cantidad:null;
+}
+function ampOrdenarFacturas(p){
+ return comprasDeProducto(p).filter(c=>ampCostoFactura(c)!==null).sort((a,b)=>
+  ampFechaFactura(b).localeCompare(ampFechaFactura(a))||
+  String(b.fecha_registro||'').localeCompare(String(a.fecha_registro||''))||
+  Number(b.id||0)-Number(a.id||0));
+}
+function ampResumenFacturas(p){
+ const historial=ampOrdenarFacturas(p),reciente=historial[0]||null,anterior=historial[1]||null;
+ const nuevo=reciente?ampCostoFactura(reciente):null,viejo=anterior?ampCostoFactura(anterior):null;
+ const delta=nuevo!==null&&viejo!==null?Number((nuevo-viejo).toFixed(4)):null;
+ const porcentaje=delta!==null&&viejo>0?delta/viejo*100:null;
+ return{historial,reciente,anterior,nuevo,viejo,delta,porcentaje};
+}
+function ampMontoUnit(n){
+ return 'Bs '+Number(n).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:4});
+}
+function ampPorcentaje(n){
+ return Number(n).toLocaleString('es-BO',{minimumFractionDigits:1,maximumFractionDigits:2})+' %';
+}
+function ampHistorialPanel(){
+ let panel=document.getElementById('ampHistorialCostos');
+ if(!panel){
+  panel=document.createElement('section');panel.id='ampHistorialCostos';panel.hidden=true;
+  panel.setAttribute('aria-label','Historial de precios de compra');
+  panel.innerHTML='<div class="amp-hist-head"><strong>HISTORIAL DE COSTOS</strong><button type="button" class="amp-hist-close" aria-label="Cerrar historial">Cerrar ×</button></div><div id="ampHistorialCostosDetalle"></div>';
+  document.body.append(panel);
+  panel.querySelector('button').addEventListener('click',e=>{e.stopPropagation();ampCerrarHistorialCostos();});
+ }
+ return panel;
+}
+function ampLineaHistorial(destino,titulo,valor,clase=''){
+ const fila=document.createElement('div');fila.className='amp-hist-line';
+ const etiqueta=document.createElement('span');etiqueta.textContent=titulo;
+ const dato=document.createElement('strong');dato.textContent=valor;if(clase)dato.className=clase;
+ fila.append(etiqueta,dato);destino.append(fila);
+}
+function ampCerrarHistorialCostos(){
+ const panel=document.getElementById('ampHistorialCostos');if(panel)panel.hidden=true;
+ if(ampHistorialCostosActivo?.boton?.isConnected)ampHistorialCostosActivo.boton.setAttribute('aria-expanded','false');
+ ampHistorialCostosActivo=null;
+}
+function ampAbrirHistorialCostos(p,boton,tactil){
+ const panel=ampHistorialPanel(),detalle=document.getElementById('ampHistorialCostosDetalle');
+ if(ampHistorialCostosActivo?.boton&&ampHistorialCostosActivo.boton!==boton)
+  ampHistorialCostosActivo.boton.setAttribute('aria-expanded','false');
+ const resumen=ampResumenFacturas(p),actual=Number(datosProducto(p).unit),venta=Number(p.precio_venta||0);
+ detalle.replaceChildren();
+ const titulo=document.createElement('div');titulo.className='amp-hist-producto';titulo.textContent=String(p.detalles||'').toLocaleUpperCase('es');
+ detalle.append(titulo);
+ ampLineaHistorial(detalle,'Costo unitario vigente',ampMontoUnit(actual)+' / '+unidadCorta(p));
+ if(resumen.reciente){
+  ampLineaHistorial(detalle,'Última factura ('+ampFechaLegible(ampFechaFactura(resumen.reciente))+')',ampMontoUnit(resumen.nuevo));
+ }
+ if(resumen.anterior){
+  ampLineaHistorial(detalle,'Factura anterior ('+ampFechaLegible(ampFechaFactura(resumen.anterior))+')',ampMontoUnit(resumen.viejo));
+  const delta=resumen.delta,pct=resumen.porcentaje;
+  const estadoCambio=Math.abs(delta)<.00005?'Sin cambio':
+    delta>0?'Subió '+ampMontoUnit(delta):'Bajó '+ampMontoUnit(Math.abs(delta));
+  ampLineaHistorial(detalle,'Cambio entre facturas',estadoCambio+(pct===null?'':' · '+(pct>0?'+':'')+ampPorcentaje(pct)),
+    delta>0?'amp-hist-alza':delta<0?'amp-hist-baja':'');
+  if(venta>0){
+   const gananciaAnterior=venta-resumen.viejo,gananciaNueva=venta-resumen.nuevo;
+   ampLineaHistorial(detalle,'Ganancia anterior (precio venta actual)',ampMontoUnit(gananciaAnterior));
+   ampLineaHistorial(detalle,'Ganancia con nuevo costo',ampMontoUnit(gananciaNueva));
+   const impacto=-delta,impactoPct=gananciaAnterior>0?impacto/gananciaAnterior*100:null;
+   const texto=(impacto>0?'+':'')+ampMontoUnit(impacto)+(impactoPct===null?'':' ('+(impactoPct>0?'+':'')+ampPorcentaje(impactoPct)+' de la ganancia anterior)');
+   ampLineaHistorial(detalle,'Impacto en ganancia / '+unidadCorta(p),texto,
+    impacto<0?'amp-hist-alza':impacto>0?'amp-hist-baja':'');
+  }else ampLineaHistorial(detalle,'Impacto en ganancia','Definí precio de venta para calcularlo');
+ }else{
+  const sinDatos=document.createElement('p');sinDatos.className='amp-hist-nota';
+  sinDatos.textContent=resumen.reciente?'Solo hay una compra registrada; todavía no existe otra factura para comparar.':'No hay compras registradas para este producto.';
+  detalle.append(sinDatos);
+ }
+ if(resumen.reciente&&Math.abs(actual-resumen.nuevo)>0.00011){
+  const alerta=document.createElement('p');alerta.className='amp-hist-alerta';
+  alerta.textContent='Atención: el costo vigente no coincide con el de la factura más reciente. Puede haber un ajuste manual o una compra cargada fuera de orden. Revisalo antes de actualizar precios.';
+  detalle.append(alerta);
+ }
+ if(resumen.historial.length){
+  const subtitulo=document.createElement('strong');subtitulo.textContent='Facturas anteriores (más reciente primero)';
+  const tabla=document.createElement('div');tabla.className='amp-hist-tabla';
+  for(const factura of resumen.historial){
+   const fila=document.createElement('div');fila.className='amp-hist-item';
+   const fecha=document.createElement('span');fecha.textContent=ampFechaLegible(ampFechaFactura(factura));
+   const valor=document.createElement('span');valor.textContent=ampMontoUnit(ampCostoFactura(factura))+' / '+unidadCorta(p);
+   fila.append(fecha,valor);tabla.append(fila);
+  }
+  detalle.append(subtitulo,tabla);
+ }
+ const nota=document.createElement('p');nota.className='amp-hist-nota';
+ nota.textContent='La variación de ganancia supone que el precio de venta no cambia. Consultar este historial no modifica compras, existencias ni precios.';
+ detalle.append(nota);
+ ampHistorialCostosActivo={boton,tactil};boton.setAttribute('aria-expanded','true');
+ panel.hidden=false;panel.classList.toggle('amp-hist-touch',!!tactil);
+ panel.setAttribute('role',tactil?'dialog':'tooltip');
+ if(tactil){
+  panel.style.top='';panel.style.left='';panel.style.transform='';
+ }else{
+  panel.style.transform='none';
+  const r=boton.getBoundingClientRect(),w=panel.offsetWidth,h=panel.offsetHeight;
+  const left=Math.max(10,Math.min(window.innerWidth-w-10,r.left+r.width/2-w/2));
+  const top=r.bottom+h+9<window.innerHeight? r.bottom+8: Math.max(8,r.top-h-8);
+  panel.style.left=left+'px';panel.style.top=top+'px';
+ }
+}
+function ampVincularHistorialCostos(boton,p){
+ boton.setAttribute('aria-label','Ver historial de costos de '+p.detalles);
+ boton.setAttribute('aria-controls','ampHistorialCostos');boton.setAttribute('aria-expanded','false');
+ const tactil=()=>matchMedia('(hover:none), (pointer:coarse)').matches;
+ boton.addEventListener('mouseenter',()=>{
+  if(!tactil())ampAbrirHistorialCostos(p,boton,false);
+ });
+ boton.addEventListener('mouseleave',()=>{
+  if(ampHistorialCostosActivo?.boton===boton&&!ampHistorialCostosActivo.tactil)ampCerrarHistorialCostos();
+ });
+ boton.addEventListener('focus',()=>{
+  if(!tactil())ampAbrirHistorialCostos(p,boton,false);
+ });
+ boton.addEventListener('blur',()=>{
+  if(ampHistorialCostosActivo?.boton===boton&&!ampHistorialCostosActivo.tactil)ampCerrarHistorialCostos();
+ });
+ boton.addEventListener('click',e=>{
+  e.stopPropagation();
+  if(ampHistorialCostosActivo?.boton===boton&&ampHistorialCostosActivo.tactil){ampCerrarHistorialCostos();return;}
+  ampAbrirHistorialCostos(p,boton,tactil());
+ });
+}
+function ampAvisoPrecioHistorico(insignia,p){
+ const r=ampResumenFacturas(p),delta=r.delta;
+ if(delta===null||Math.abs(delta)<.00005){insignia.hidden=true;return;}
+ insignia.hidden=false;insignia.classList.toggle('amp-baja',delta<0);
+ insignia.textContent=(delta>0?'▲ SUBIÓ ':'▼ BAJÓ ')+ampMontoUnit(Math.abs(delta))+
+  (r.porcentaje===null?'':' · '+ampPorcentaje(Math.abs(r.porcentaje)));
+ insignia.title='Cambio entre las dos últimas facturas por fecha, sin alterar el precio de venta';
+}
+document.addEventListener('click',e=>{
+ if(ampHistorialCostosActivo?.tactil&&!document.getElementById('ampHistorialCostos')?.contains(e.target)&&
+  !ampHistorialCostosActivo.boton.contains(e.target))ampCerrarHistorialCostos();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')ampCerrarHistorialCostos();});
+window.addEventListener('resize',ampCerrarHistorialCostos);
+document.addEventListener('scroll',e=>{
+ if(ampHistorialCostosActivo&&!document.getElementById('ampHistorialCostos')?.contains(e.target))ampCerrarHistorialCostos();
+},true);
+
 function configurarEditorFila(p,compra,superficie,movil){
  const lista=[
   ['compra','PRECIO DE COMPRA'],
@@ -1168,7 +1365,13 @@ function configurarEditorFila(p,compra,superficie,movil){
   }else{
    if(!movil)cell.className='sheet-derived';
    const output=document.createElement('strong');output.className=movil?'sheet-result':'';
-   derivados[clave]=output;cell.append(output);
+   derivados[clave]=output;
+   if(clave==='costo'){
+    const boton=document.createElement('button');boton.type='button';boton.className='amp-historial-trigger';
+    const insignia=document.createElement('span');insignia.className='amp-historial-badge';
+    boton.append(output,insignia);cell.append(boton);
+    ampAvisoPrecioHistorico(insignia,p);ampVincularHistorialCostos(boton,p);
+   }else cell.append(output);
   }
   superficie.append(cell);
  }

@@ -957,7 +957,6 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
     <button type="button" class="amp-edit-choice" data-editar-opcion="compra"><span class="amp-edit-simbolo">$</span><span><strong>Compra y unidades</strong><small>Corregir el costo de compra y la cantidad</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="existencias"><span class="amp-edit-simbolo">#</span><span><strong>Existencias</strong><small>Corregir el stock actual</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="nombre"><span class="amp-edit-simbolo">✎</span><span><strong>Nombre del producto</strong><small>Corregir el título del artículo</small></span></button>
-    <button type="button" class="amp-edit-choice" data-editar-opcion="foto"><span class="amp-edit-simbolo">📷</span><span><strong>Fotografía</strong><small>Agregar o reemplazar la foto del producto</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="proveedor"><span class="amp-edit-simbolo">P</span><span><strong>Proveedor</strong><small>Modificar el nombre del proveedor</small></span></button>
   </div>
   <button id="ampEditarCancelar" class="alt amp-edit-cancel" type="button">Cancelar</button>
@@ -1443,7 +1442,6 @@ for(const btn of document.querySelectorAll('#ampEditarMenu [data-editar-opcion]'
   if(!p)return;
   cerrarMenuEdicion();
   if(opcion==='nombre'){abrirEditarNombre(p);return;}
-  if(opcion==='foto'){abrirFotoProducto(p,'gestionar');return;}
   if(opcion==='existencias'){elegirEdicion(p);$('editorStock').focus();$('editorStock').select();return;}
   if(opcion==='compra'){ampEnfocarCampo(p,'compra');return;}
   if(opcion==='precio'||opcion==='proveedor')ampEnfocarCampo(p,opcion==='precio'?'venta':'proveedor');
@@ -1452,7 +1450,7 @@ for(const btn of document.querySelectorAll('#ampEditarMenu [data-editar-opcion]'
 function accionesFilaHoja(p){
  const tools=document.createElement('div');tools.className='sheet-tools';
  const opciones=[
-  ['foto','Ver fotografía',()=>abrirFotoProducto(p)],
+  ['foto','Ver o agregar fotografía',()=>abrirFotoProducto(p,'gestionar')],
   ['editar','Editar producto: precio, existencias, nombre o proveedor',()=>abrirMenuEdicion(p)],
   ['codigo','Asociar código de barras',()=>abrirVinculador(p)],
   ['compra','Registrar otra compra',()=>otraCompra(p)],
@@ -1468,8 +1466,8 @@ function accionesFilaHoja(p){
   const btn=document.createElement('button');btn.type='button';btn.dataset.accion=clave;
   btn.className='alt';btn.innerHTML=ampIconSvg(clave);
   if(clave==='foto'){
-   // La camarita muestra solo la imagen; para cambiarla se usa el lapicito.
-   btn.title=p.foto_path?'Ver fotografía sin controles':'Agregar primera fotografía';
+   // Cámara: visor completo con opciones para elegir, tomar o buscar fotos.
+   btn.title='Ver, agregar o cambiar fotografía del producto';
    btn.setAttribute('aria-label',label);
    ampVincularHoverFoto(p,btn);
   }else ampAyudaBoton(btn,label);
@@ -2038,9 +2036,9 @@ let fotoProductoActivo=null,fotoGuardando=false,fotoSolicitud=0;
 let fotoWebImportando=false,fotoWebSolicitud=0;
 function crearBotonGestionFoto(p){
  const b=document.createElement('button');b.type='button';b.textContent='📷';b.className='gestionar-foto';
- b.title=p.foto_path?'Ver fotografía':'Agregar fotografía';
- b.setAttribute('aria-label',(p.foto_path?'Ver':'Agregar')+' fotografía de '+p.detalles);
- b.onclick=()=>abrirFotoProducto(p);return b;
+ b.title=p.foto_path?'Ver o cambiar fotografía':'Agregar fotografía';
+ b.setAttribute('aria-label',(p.foto_path?'Ver o cambiar':'Agregar')+' fotografía de '+p.detalles);
+ b.onclick=()=>abrirFotoProducto(p,'gestionar');return b;
 }
 function marcarEstadoFoto(texto,esError=false){
  const el=$('estatusFotoProducto');el.textContent=texto;el.classList.toggle('error',esError);
@@ -2128,8 +2126,7 @@ async function cargarImagenFoto(p,solicitud){
 }
 function abrirFotoProducto(p,modo='ver'){
  if(fotoGuardando||fotoWebImportando)return;
- // Todas las rutas de visualización (nombre, cámara y vista previa) muestran solo la imagen.
- // La gestión de la foto queda separada en el menú del lapicito.
+ // El nombre abre la imagen limpia; el ícono de cámara mantiene el gestor completo.
  const soloImagen=Boolean(p.foto_path&&modo!=='gestionar');
  $('fotoProductoDialog').classList.toggle('amp-solo-imagen',soloImagen);
  fotoProductoActivo=p;

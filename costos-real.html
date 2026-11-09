@@ -659,9 +659,9 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  border-radius:12px;box-shadow:0 15px 45px #08151aaa,inset 0 1px #ffffff3b;
  font:13px/1.5 system-ui,Arial;pointer-events:none;overflow-wrap:anywhere
 }
-#ampHistorialCostos .amp-hist-head{display:flex;align-items:start;justify-content:space-between;gap:10px;border-bottom:1px solid #688298;padding-bottom:9px}
-#ampHistorialCostos .amp-hist-head strong{font-size:14px;color:#f7fbff}
-#ampHistorialCostos .amp-hist-close{background:#e6eff2;color:#203b48;border:1px solid #bfd0d8;padding:5px 8px;font-size:12px;flex-shrink:0}
+#ampHistorialCostos .amp-hist-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;border-bottom:1px solid #688298;padding-bottom:9px}
+#ampHistorialCostos .amp-hist-head strong{min-width:0;font-size:14px;color:#f7fbff;line-height:1.3;word-break:normal;overflow-wrap:normal}
+#ampHistorialCostos .amp-hist-close{background:#e6eff2;color:#203b48;border:1px solid #bfd0d8;padding:5px 8px;font-size:12px;width:auto!important;min-width:0;max-width:max-content;white-space:nowrap;flex:0 0 auto}
 #ampHistorialCostos .amp-hist-producto{font-weight:800;margin:9px 0;color:#f7fbff}
 #ampHistorialCostos .amp-hist-line{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px solid #65798a88}
 #ampHistorialCostos .amp-hist-line span{color:#dce8f3}
@@ -690,21 +690,23 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  color:#f7fbff!important;font-weight:900;text-shadow:0 1px 2px #000b;
 }
 #listado .amp-campo-titanio input.sheet-input{
- background:#101f2d!important;color:#ffffff!important;
- border:1.5px solid #96b0c3!important;border-radius:7px;
+ background:transparent!important;color:#ffffff!important;
+ border:0!important;border-radius:0!important;
+ margin:0!important;padding:0!important;min-height:30px;
  -webkit-text-fill-color:#ffffff!important;
  font-weight:850!important;caret-color:#ffffff;
- box-shadow:inset 0 1px 2px #0008;
+ box-shadow:none!important;
 }
 #listado .amp-campo-titanio input.sheet-input::placeholder{
  color:#b8ccd9;opacity:1;-webkit-text-fill-color:#b8ccd9;
 }
 #listado .amp-campo-titanio input.sheet-input:focus{
- outline:2px solid #a9d8fa!important;outline-offset:1px;
- border-color:#e1f0ff!important;background:#173249!important;
+ outline:0!important;background:transparent!important;
+ box-shadow:inset 0 -2px #a9d8fa!important;
 }
-#listado .amp-campo-titanio input.sheet-input.sheet-dirty{
- background:#403112!important;border-color:#e5ba59!important;
+#listado .amp-campo-titanio input.sheet-input.sheet-dirty:not(:focus){
+ background:transparent!important;border:0!important;
+ box-shadow:inset 0 -2px #e5ba59!important;
 }
 #listado .amp-campo-titanio input.sheet-input::selection{background:#5d95b6;color:white}
 @media(forced-colors:active){

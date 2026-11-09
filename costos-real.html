@@ -519,6 +519,16 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  pointer-events:none;
 }
 #listado .sheet-card .amp-foto-vista.hidden{display:none!important}
+#listado .sheet-card .amp-foto-vista:has(img){
+ touch-action:none;user-select:none;-webkit-user-select:none;
+}
+#listado .sheet-card .amp-foto-vista img{
+ transform-origin:center center;user-select:none;-webkit-user-select:none;
+ pointer-events:none;-webkit-user-drag:none;
+}
+@media(hover:none),(pointer:coarse){
+ #listado .sheet-card .amp-foto-vista{pointer-events:auto;touch-action:none;}
+}
 #listado .sheet-card .amp-foto-vista img{
  display:block;width:100%;max-height:min(240px,45dvh);
  aspect-ratio:1;object-fit:contain;object-position:center;
@@ -1325,10 +1335,16 @@ function nombreFilaHoja(p){
  b.title='En PC: pasar el cursor para ver la fotografía. En celular: tocar el nombre.';
  ampVincularHoverFoto(p,b);
  b.onclick=e=>{
-  // En móvil abrir directamente el visor real; la vista previa se cerraba al tocarla.
+  const card=b.closest('.sheet-card');
+  const tactil=e.pointerType==='touch'||(!e.pointerType&&matchMedia('(hover:none), (pointer:coarse)').matches);
   e.preventDefault();e.stopPropagation();
-  ampOcultarVistaFotoTarjeta();
-  abrirFotoProducto(p,true);
+  if(card&&tactil){
+   // Vista flotante original dentro de la ficha, sin cambiar la navegación.
+   ampAlternarVistaFotoTarjeta(p,b);
+  }else{
+   ampOcultarVistaFotoTarjeta();
+   abrirFotoProducto(p,'gestionar');
+  }
  };
  return b;
 }
@@ -1931,7 +1947,71 @@ const FOTOS_BUCKET='fotos-productos-amphx';
 /* Vista previa ligera: solo se solicita la URL firmada cuando se muestra.
    No descarga ni guarda imágenes al pasar el cursor. */
 let ampVistaFotoActual=null,ampVistaFotoVersion=0;
+let ampFotoZoomEvitarCierreHasta=0;
 const ampVistaFotoCache=new Map();
+/* Zoom de la fotografía flotante original, con dos dedos y desplazamiento.
+   La vista conserva su formato anterior y vuelve a 1x cuando se cierra. */
+function ampActivarZoomEnVistaPrevia(panel,img){
+ const puntos=new Map();
+ let escala=1,desplX=0,desplY=0,inicio=null;
+ const limitar=()=>{
+  if(escala<=1.001){escala=1;desplX=0;desplY=0;return;}
+  const limiteX=img.clientWidth*(escala-1)/2;
+  const limiteY=img.clientHeight*(escala-1)/2;
+  desplX=Math.max(-limiteX,Math.min(limiteX,desplX));
+  desplY=Math.max(-limiteY,Math.min(limiteY,desplY));
+ };
+ const pintar=()=>{img.style.transform='translate('+desplX+'px,'+desplY+'px) scale('+escala+')';};
+ const tomarBase=()=>{
+  const a=[...puntos.values()];
+  const r=panel.getBoundingClientRect();
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  if(a.length===2){
+   const p=a[0],q=a[1];
+   inicio={tipo:2,d:Math.max(1,Math.hypot(p.x-q.x,p.y-q.y)),
+    mx:(p.x+q.x)/2-cx,my:(p.y+q.y)/2-cy,
+    escala,desplX,desplY};
+  }else if(a.length===1){
+   inicio={tipo:1,x:a[0].x,y:a[0].y,desplX,desplY};
+  }else inicio=null;
+ };
+ const proteger=()=>{ampFotoZoomEvitarCierreHasta=Date.now()+750;};
+ panel.addEventListener('pointerdown',e=>{
+  if(!panel.isConnected||!img.isConnected||e.pointerType==='mouse'&&e.button!==0)return;
+  puntos.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{panel.setPointerCapture(e.pointerId);}catch(_){}
+  tomarBase();proteger();e.preventDefault();e.stopPropagation();
+ });
+ panel.addEventListener('pointermove',e=>{
+  if(!puntos.has(e.pointerId))return;
+  puntos.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=[...puntos.values()];
+  if(inicio?.tipo===2&&a.length===2){
+   const p=a[0],q=a[1],r=panel.getBoundingClientRect();
+   const mx=(p.x+q.x)/2-r.left-r.width/2;
+   const my=(p.y+q.y)/2-r.top-r.height/2;
+   escala=Math.max(1,Math.min(6,inicio.escala*Math.hypot(p.x-q.x,p.y-q.y)/inicio.d));
+   desplX=mx-(inicio.mx-inicio.desplX)*escala/inicio.escala;
+   desplY=my-(inicio.my-inicio.desplY)*escala/inicio.escala;
+  }else if(inicio?.tipo===1&&a.length===1&&escala>1){
+   desplX=inicio.desplX+a[0].x-inicio.x;
+   desplY=inicio.desplY+a[0].y-inicio.y;
+  }
+  limitar();pintar();proteger();e.preventDefault();e.stopPropagation();
+ });
+ const soltar=e=>{
+  if(!puntos.has(e.pointerId))return;
+  puntos.delete(e.pointerId);
+  try{panel.releasePointerCapture(e.pointerId);}catch(_){}
+  limitar();pintar();tomarBase();proteger();e.preventDefault();e.stopPropagation();
+ };
+ panel.addEventListener('pointerup',soltar);
+ panel.addEventListener('pointercancel',soltar);
+ panel.addEventListener('dblclick',e=>{
+  e.preventDefault();e.stopPropagation();
+  escala=1;desplX=0;desplY=0;pintar();proteger();
+ });
+}
 function ampOcultarVistaFotoTarjeta(){
  ampVistaFotoVersion++;
  if(!ampVistaFotoActual)return;
@@ -1980,11 +2060,8 @@ function ampMostrarVistaFotoTarjeta(p,origen,modo){
  ampOcultarVistaFotoTarjeta();
  const version=ampVistaFotoVersion, panel=document.createElement('div');
  panel.className='amp-foto-vista';
- if(modo==='movil')panel.addEventListener('click',e=>{
-  e.stopPropagation();
-  ampOcultarVistaFotoTarjeta();
-  abrirFotoProducto(p,true);
- });
+ // Un gesto sobre la fotografía nunca debe cerrar ni reemplazar la vista previa.
+ if(modo==='movil')panel.addEventListener('click',e=>e.stopPropagation());
  panel.setAttribute('role','status');
  panel.setAttribute('aria-label','Vista previa de '+String(p.detalles||'producto'));
  const nota=document.createElement('span');nota.className='amp-foto-vista-texto';
@@ -2015,6 +2092,7 @@ function ampMostrarVistaFotoTarjeta(p,origen,modo){
    // La vista previa no agrega texto debajo de la imagen.
    nota.textContent='';nota.hidden=true;
    panel.prepend(img);
+   if(modo==='movil')ampActivarZoomEnVistaPrevia(panel,img);
   };
   img.onerror=()=>{
    if(version===ampVistaFotoVersion&&ampVistaFotoActual?.panel===panel)
@@ -2027,10 +2105,20 @@ function ampMostrarVistaFotoTarjeta(p,origen,modo){
  });
 }
 document.addEventListener('click',e=>{
- if(ampVistaFotoActual?.modo==='movil')ampOcultarVistaFotoTarjeta();
+ const vista=ampVistaFotoActual;
+ if(vista?.modo!=='movil')return;
+ if(vista.panel?.contains(e.target)||vista.origen?.contains(e.target))return;
+ if(Date.now()<ampFotoZoomEvitarCierreHasta)return;
+ ampOcultarVistaFotoTarjeta();
 });
-document.addEventListener('scroll',ampOcultarVistaFotoTarjeta,true);
-window.addEventListener('resize',ampOcultarVistaFotoTarjeta);
+document.addEventListener('scroll',()=>{
+ // Nunca cerrar una foto móvil por el scroll accidental durante un gesto de zoom.
+ if(ampVistaFotoActual?.modo==='pc')ampOcultarVistaFotoTarjeta();
+},true);
+window.addEventListener('resize',()=>{
+ // Los cambios de dimensiones en Android durante pinch no deben cerrar la fotografía.
+ if(ampVistaFotoActual?.modo==='pc')ampOcultarVistaFotoTarjeta();
+});
 
 let fotoProductoActivo=null,fotoGuardando=false,fotoSolicitud=0;
 let fotoWebImportando=false,fotoWebSolicitud=0;

@@ -624,37 +624,56 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 #exitoProductoNuevo .marca-exito{display:grid;place-items:center;margin:0 auto 14px;width:64px;height:64px;border-radius:50%;background:#168459;color:#fff;font-size:38px}
 
 /* AMPHX · historial de precios por factura, sin navegación */
-#listado button.amp-historial-trigger{
- appearance:none;border:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;
- color:inherit!important;padding:3px 1px!important;margin:0;min-width:0;max-width:100%;
- display:inline-flex;flex-direction:column;align-items:flex-end;gap:3px;white-space:normal;
- text-align:right;cursor:help;font:inherit;border-radius:5px
+/* Toda la casilla de COSTO UNITARIO, incluido el título, activa el historial. */
+#listado td.sheet-derived.amp-historial-celda,
+#listado .sheet-card .sheet-mobile-row.amp-historial-celda{
+ cursor:help;background-image:var(--amp-metal-reflejo),var(--amp-titanio);
+ background-color:#08131e;color:var(--amp-letra-metal);
+ border:1px solid #7c94a6;border-top-color:#c2d2df;
+ box-shadow:inset 0 1px 0 #ffffff34,0 2px 8px #14273724;
 }
-#listado button.amp-historial-trigger:hover,#listado button.amp-historial-trigger:focus-visible{outline:2px solid #65cfb0;outline-offset:3px}
-#listado .sheet-mobile-row button.amp-historial-trigger{align-items:flex-start;text-align:left;cursor:pointer}
+#listado .sheet-card .sheet-mobile-row.amp-historial-celda label{color:#dfeaf4;text-shadow:0 1px 1px #0009}
+#listado .sheet-card .sheet-mobile-row.amp-historial-celda .sheet-result,
+#listado td.amp-historial-celda .sheet-result{color:#f7fbff;text-shadow:0 1px 2px #000b}
+#listado .amp-historial-celda:hover,#listado .amp-historial-celda:focus-visible{
+ outline:2px solid #9dc9e2;outline-offset:2px;filter:brightness(1.12);
+}
+#listado .amp-historial-trigger{
+ display:flex;flex-direction:column;gap:3px;align-items:flex-end;
+ width:100%;min-width:0;color:inherit;font:inherit;text-align:right;white-space:normal;
+}
+#listado .sheet-mobile-row .amp-historial-trigger{align-items:flex-start;text-align:left}
+#listado .amp-historial-trigger .sheet-result{white-space:normal;overflow-wrap:anywhere}
+@media(forced-colors:active){
+ #listado .amp-historial-celda{background:Canvas!important;color:CanvasText!important;border-color:CanvasText!important}
+}
 #listado .amp-historial-badge{display:inline-block;color:#ffe5e5;background:#982a2e;border:1px solid #ef8b8b;padding:3px 6px;border-radius:6px;font-size:10px;font-weight:800;line-height:1.35;white-space:normal;max-width:100%}
 #listado .amp-historial-badge.amp-baja{color:#ddffea;background:#126243;border-color:#70c29e}
 #listado .amp-historial-badge[hidden]{display:none}
 #ampHistorialCostos[hidden]{display:none!important}
 #ampHistorialCostos{
- position:fixed;z-index:12000;display:block;width:min(420px,calc(100vw - 20px));
- max-height:75vh;overflow:auto;padding:15px 16px;background:#fff;color:#17283b;
- border:2px solid #247958;border-radius:12px;box-shadow:0 15px 45px #08151a66;
+ position:fixed;z-index:12000;display:block;width:min(440px,calc(100vw - 20px));
+ max-height:75vh;overflow:auto;padding:15px 16px;
+ background:var(--amp-metal-reflejo),var(--amp-titanio);background-color:#08131e;
+ color:#f7fbff;border:1px solid #a5bacb;border-top-color:#e0eaf2;
+ border-radius:12px;box-shadow:0 15px 45px #08151aaa,inset 0 1px #ffffff3b;
  font:13px/1.5 system-ui,Arial;pointer-events:none;overflow-wrap:anywhere
 }
-#ampHistorialCostos .amp-hist-head{display:flex;align-items:start;justify-content:space-between;gap:10px;border-bottom:1px solid #dae6eb;padding-bottom:9px}
-#ampHistorialCostos .amp-hist-head strong{font-size:14px;color:#154733}
+#ampHistorialCostos .amp-hist-head{display:flex;align-items:start;justify-content:space-between;gap:10px;border-bottom:1px solid #688298;padding-bottom:9px}
+#ampHistorialCostos .amp-hist-head strong{font-size:14px;color:#f7fbff}
 #ampHistorialCostos .amp-hist-close{background:#e6eff2;color:#203b48;border:1px solid #bfd0d8;padding:5px 8px;font-size:12px;flex-shrink:0}
-#ampHistorialCostos .amp-hist-producto{font-weight:800;margin:9px 0}
-#ampHistorialCostos .amp-hist-line{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px solid #edf1f4}
-#ampHistorialCostos .amp-hist-line strong{text-align:right;font-variant-numeric:tabular-nums}
-#ampHistorialCostos .amp-hist-alza{color:#a52525!important}
-#ampHistorialCostos .amp-hist-baja{color:#08734e!important}
-#ampHistorialCostos .amp-hist-alerta{background:#fff5df;border:1px solid #e8d49e;padding:7px;border-radius:7px;margin:9px 0}
-#ampHistorialCostos .amp-hist-nota{font-size:11px;color:#5b6c7c;margin:9px 0 3px}
-#ampHistorialCostos .amp-hist-tabla{max-height:155px;overflow-y:auto;border:1px solid #e4eaf0;border-radius:7px;margin-top:6px}
-#ampHistorialCostos .amp-hist-item{display:grid;grid-template-columns:minmax(90px,.7fr) 1fr;gap:8px;padding:5px 8px;border-bottom:1px solid #ecf0f4}
+#ampHistorialCostos .amp-hist-producto{font-weight:800;margin:9px 0;color:#f7fbff}
+#ampHistorialCostos .amp-hist-line{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px solid #65798a88}
+#ampHistorialCostos .amp-hist-line span{color:#dce8f3}
+#ampHistorialCostos .amp-hist-line strong{text-align:right;font-variant-numeric:tabular-nums;color:#fff;overflow-wrap:anywhere}
+#ampHistorialCostos .amp-hist-alza{color:#ffb9c4!important}
+#ampHistorialCostos .amp-hist-baja{color:#9df0c5!important}
+#ampHistorialCostos .amp-hist-alerta{background:#172c3c;border:1px solid #809bae;padding:7px;border-radius:7px;margin:9px 0}
+#ampHistorialCostos .amp-hist-nota{font-size:11px;color:#cbd9e6;margin:9px 0 3px}
+#ampHistorialCostos .amp-hist-tabla{max-height:155px;overflow-y:auto;border:1px solid #71899c;border-radius:7px;margin-top:6px}
+#ampHistorialCostos .amp-hist-item{display:grid;grid-template-columns:minmax(90px,.7fr) 1fr;gap:8px;padding:5px 8px;border-bottom:1px solid #65798a88}
 #ampHistorialCostos .amp-hist-item:last-child{border-bottom:0}
+#ampHistorialCostos.amp-hist-touch{max-width:440px}
 #ampHistorialCostos.amp-hist-touch{pointer-events:auto;left:10px!important;top:50%!important;transform:translateY(-50%);width:calc(100vw - 20px);max-width:420px;max-height:80vh}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><span class="pill">DATOS REALES · ACCESO RESTRINGIDO</span> <button id="salir" class="alt hidden">Salir</button></div></header>
 <section id="login"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
@@ -1213,7 +1232,7 @@ function ampHistorialPanel(){
  if(!panel){
   panel=document.createElement('section');panel.id='ampHistorialCostos';panel.hidden=true;
   panel.setAttribute('aria-label','Historial de precios de compra');
-  panel.innerHTML='<div class="amp-hist-head"><strong>HISTORIAL DE COSTOS</strong><button type="button" class="amp-hist-close" aria-label="Cerrar historial">Cerrar ×</button></div><div id="ampHistorialCostosDetalle"></div>';
+  panel.innerHTML='<div class="amp-hist-head"><strong>HISTORIAL DE COSTOS UNITARIOS</strong><button type="button" class="amp-hist-close" aria-label="Cerrar historial">Cerrar ×</button></div><div id="ampHistorialCostosDetalle"></div>';
   document.body.append(panel);
   panel.querySelector('button').addEventListener('click',e=>{e.stopPropagation();ampCerrarHistorialCostos();});
  }
@@ -1257,6 +1276,8 @@ function ampAbrirHistorialCostos(p,boton,tactil){
     (porcentajeCambio===null?'':' ('+ampPorcentaje(porcentajeCambio)+')');
    ampLineaHistorial(detalle,'Último cambio de precio ('+ampFechaLegible(ampFechaFactura(cambio))+')',
     descripcionCambio,diferenciaCambio>0?'amp-hist-alza':'amp-hist-baja');
+  }else{
+   ampLineaHistorial(detalle,'Último cambio de precio','Aún no hay cambios de costo registrados para este producto.');
   }
   const delta=resumen.delta,pct=resumen.porcentaje;
   const estadoCambio=Math.abs(delta)<.00005?'Sin cambio':
@@ -1276,6 +1297,7 @@ function ampAbrirHistorialCostos(p,boton,tactil){
   const sinDatos=document.createElement('p');sinDatos.className='amp-hist-nota';
   sinDatos.textContent=resumen.reciente?'Solo hay una compra registrada; todavía no existe otra factura para comparar.':'No hay compras registradas para este producto.';
   detalle.append(sinDatos);
+  ampLineaHistorial(detalle,'Último cambio de precio','Sin factura anterior para comparar.');
  }
  if(resumen.reciente&&Math.abs(actual-resumen.nuevo)>0.00011){
   const alerta=document.createElement('p');alerta.className='amp-hist-alerta';
@@ -1310,6 +1332,8 @@ function ampAbrirHistorialCostos(p,boton,tactil){
  }
 }
 function ampVincularHistorialCostos(boton,p){
+ boton.tabIndex=0;boton.setAttribute('role','button');
+ boton.title='Pasá el cursor por todo este recuadro para consultar el historial de costos.';
  boton.setAttribute('aria-label','Ver historial de costos de '+p.detalles);
  boton.setAttribute('aria-controls','ampHistorialCostos');boton.setAttribute('aria-expanded','false');
  const tactil=()=>matchMedia('(hover:none), (pointer:coarse)').matches;
@@ -1329,6 +1353,9 @@ function ampVincularHistorialCostos(boton,p){
   e.stopPropagation();
   if(ampHistorialCostosActivo?.boton===boton&&ampHistorialCostosActivo.tactil){ampCerrarHistorialCostos();return;}
   ampAbrirHistorialCostos(p,boton,tactil());
+ });
+ boton.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();boton.click();}
  });
 }
 function ampAvisoPrecioHistorico(insignia,p){
@@ -1382,10 +1409,11 @@ function configurarEditorFila(p,compra,superficie,movil){
    const output=document.createElement('strong');output.className=movil?'sheet-result':'';
    derivados[clave]=output;
    if(clave==='costo'){
-    const boton=document.createElement('button');boton.type='button';boton.className='amp-historial-trigger';
+    cell.classList.add('amp-historial-celda');
+    const resumen=document.createElement('span');resumen.className='amp-historial-trigger';
     const insignia=document.createElement('span');insignia.className='amp-historial-badge';
-    boton.append(output,insignia);cell.append(boton);
-    ampAvisoPrecioHistorico(insignia,p);ampVincularHistorialCostos(boton,p);
+    resumen.append(output,insignia);cell.append(resumen);
+    ampAvisoPrecioHistorico(insignia,p);ampVincularHistorialCostos(cell,p);
    }else cell.append(output);
   }
   superficie.append(cell);

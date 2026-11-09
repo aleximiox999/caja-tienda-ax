@@ -675,6 +675,45 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 #ampHistorialCostos .amp-hist-item:last-child{border-bottom:0}
 #ampHistorialCostos.amp-hist-touch{max-width:440px}
 #ampHistorialCostos.amp-hist-touch{pointer-events:auto;left:10px!important;top:50%!important;transform:translateY(-50%);width:calc(100vw - 20px);max-width:420px;max-height:80vh}
+
+/* AMPHX: color predeterminado titanio en cuatro campos editables de COSTOS.
+   No altera datos, cálculos, controles de edición ni campos de otros formularios. */
+#listado td.amp-campo-titanio,
+#listado .sheet-card .sheet-mobile-row.amp-campo-titanio{
+ background-image:var(--amp-metal-reflejo),var(--amp-titanio)!important;
+ background-color:#08131e!important;color:#f7fbff!important;
+ border:1px solid #7c94a6!important;border-top-color:#c2d2df!important;
+ border-radius:10px;
+ box-shadow:inset 0 1px 0 #ffffff34,0 2px 8px #14273724;
+}
+#listado .sheet-card .sheet-mobile-row.amp-campo-titanio label{
+ color:#f7fbff!important;font-weight:900;text-shadow:0 1px 2px #000b;
+}
+#listado .amp-campo-titanio input.sheet-input{
+ background:#101f2d!important;color:#ffffff!important;
+ border:1.5px solid #96b0c3!important;border-radius:7px;
+ -webkit-text-fill-color:#ffffff!important;
+ font-weight:850!important;caret-color:#ffffff;
+ box-shadow:inset 0 1px 2px #0008;
+}
+#listado .amp-campo-titanio input.sheet-input::placeholder{
+ color:#b8ccd9;opacity:1;-webkit-text-fill-color:#b8ccd9;
+}
+#listado .amp-campo-titanio input.sheet-input:focus{
+ outline:2px solid #a9d8fa!important;outline-offset:1px;
+ border-color:#e1f0ff!important;background:#173249!important;
+}
+#listado .amp-campo-titanio input.sheet-input.sheet-dirty{
+ background:#403112!important;border-color:#e5ba59!important;
+}
+#listado .amp-campo-titanio input.sheet-input::selection{background:#5d95b6;color:white}
+@media(forced-colors:active){
+ #listado .amp-campo-titanio,
+ #listado .amp-campo-titanio input.sheet-input{
+  background:Canvas!important;color:CanvasText!important;border-color:CanvasText!important;
+  -webkit-text-fill-color:CanvasText!important;
+ }
+}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><span class="pill">DATOS REALES · ACCESO RESTRINGIDO</span> <button id="salir" class="alt hidden">Salir</button></div></header>
 <section id="login"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
 <section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si vuelves a comprar el mismo producto, utiliza su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿Cómo se vende este producto?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">UNIDADES</option><option value="kg">KILOGRAMOS (KG)</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min="1" step="1" inputmode="numeric" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
@@ -1031,10 +1070,12 @@ function ultimaCompraHoja(p){
 function nombreFilaHoja(p){
  const b=document.createElement('button');b.type='button';b.className='nombre-con-foto';
  b.textContent=String(p.detalles||'').toLocaleUpperCase('es');
- b.title='Ver fotografía del producto';
+ b.title='En PC: pasar el cursor para ver la fotografía. En celular: tocar el nombre.';
+ ampVincularHoverFoto(p,b);
  b.onclick=e=>{
   const card=b.closest('.sheet-card');
-  if(card&&matchMedia('(hover:none), (pointer:coarse)').matches){
+  const toque=e.pointerType==='touch'||(!e.pointerType&&matchMedia('(hover:none)').matches);
+  if(card&&toque){
    e.preventDefault();e.stopPropagation();
    ampAlternarVistaFotoTarjeta(p,b);
   }else{ampOcultarVistaFotoTarjeta();abrirFotoProducto(p);}
@@ -1167,24 +1208,10 @@ function accionesFilaHoja(p){
   const btn=document.createElement('button');btn.type='button';btn.dataset.accion=clave;
   btn.className='alt';btn.innerHTML=ampIconSvg(clave);
   if(clave==='foto'){
-   // La cámara conserva el clic para editar, pero en PC el hover muestra la foto.
-   btn.title=label;btn.setAttribute('aria-label',label);
-   btn.addEventListener('mouseenter',()=>{
-    if(matchMedia('(hover:hover) and (pointer:fine)').matches)
-     ampMostrarVistaFotoTarjeta(p,btn,'pc');
-   });
-   btn.addEventListener('mouseleave',()=>{
-    if(ampVistaFotoActual?.origen===btn&&ampVistaFotoActual.modo==='pc')
-     ampOcultarVistaFotoTarjeta();
-   });
-   btn.addEventListener('focus',()=>{
-    if(matchMedia('(hover:hover) and (pointer:fine)').matches)
-     ampMostrarVistaFotoTarjeta(p,btn,'pc');
-   });
-   btn.addEventListener('blur',()=>{
-    if(ampVistaFotoActual?.origen===btn&&ampVistaFotoActual.modo==='pc')
-     ampOcultarVistaFotoTarjeta();
-   });
+   // La camarita se mantiene para editar con clic; hover con mouse muestra vista previa.
+   btn.title='En PC: pasar el cursor para ver la fotografía. Clic para agregar o cambiar la foto.';
+   btn.setAttribute('aria-label',label);
+   ampVincularHoverFoto(p,btn);
   }else ampAyudaBoton(btn,label);
   btn.onclick=()=>{ampOcultarVistaFotoTarjeta();accion();};
   tools.append(btn);
@@ -1395,6 +1422,8 @@ function configurarEditorFila(p,compra,superficie,movil){
   const cell=document.createElement(movil?'div':'td');if(movil)cell.className='sheet-mobile-row'+(clave==='proveedor'?' sheet-provider-row':'');
   if(movil){const lbl=document.createElement('label');lbl.textContent=titulo;cell.append(lbl);}
   if(['compra','unidades','venta','proveedor'].includes(clave)){
+   cell.classList.add('amp-campo-titanio');
+   cell.dataset.ampCampo=clave;
    const input=document.createElement('input');input.className='sheet-input';input.autocomplete='off';
    input.setAttribute('aria-label',titulo+' de '+p.detalles);
    if(clave==='proveedor'){input.type='text';input.maxLength=180;input.value=compra.proveedor||'';}
@@ -1640,6 +1669,31 @@ function ampOcultarVistaFotoTarjeta(){
  if(panel?.isConnected)panel.remove();
  if(card?.isConnected)card.classList.remove('amp-foto-vista-abierta');
  ampVistaFotoActual=null;
+}
+/* Usar pointerType real para que una PC táctil con mouse tenga hover de escritorio. */
+function ampVincularHoverFoto(p,origen){
+ const mostrar=()=>ampMostrarVistaFotoTarjeta(p,origen,'pc');
+ const ocultar=()=>{
+  if(ampVistaFotoActual?.origen===origen&&ampVistaFotoActual?.modo==='pc')
+   ampOcultarVistaFotoTarjeta();
+ };
+ if('PointerEvent' in window){
+  origen.addEventListener('pointerenter',e=>{
+   if(e.pointerType==='mouse'||e.pointerType==='pen')mostrar();
+  });
+  origen.addEventListener('pointerleave',e=>{
+   if(e.pointerType==='mouse'||e.pointerType==='pen')ocultar();
+  });
+ }else{
+  origen.addEventListener('mouseenter',()=>{
+   if(matchMedia('(any-hover: hover)').matches)mostrar();
+  });
+  origen.addEventListener('mouseleave',ocultar);
+ }
+ origen.addEventListener('focus',()=>{
+  if(matchMedia('(any-hover: hover)').matches)mostrar();
+ });
+ origen.addEventListener('blur',ocultar);
 }
 function ampAlternarVistaFotoTarjeta(p,origen){
  if(ampVistaFotoActual?.modo==='movil' &&

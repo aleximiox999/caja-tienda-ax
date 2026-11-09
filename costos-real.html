@@ -616,6 +616,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  outline:3px solid #84b5da;outline-offset:1px;
 }
 /* AMPHX: índice de letras discreto y táctil, fijado al margen derecho. */
+#listado .sheet-card{scroll-margin-top:9px}
 @media(max-width:760px), (hover:none) and (pointer:coarse){
  #listado .busqueda-wrap{flex:1 1 100%;width:100%;min-width:0}
  #listado .listado-con-indice-costos{display:block}
@@ -1196,6 +1197,28 @@ function proveedoresProducto(p){return proveedoresPorProducto.get(Number(p.id))|
 
 /* Filtros visuales combinables; no cambian los datos almacenados. */
 let letraActivaCostos='';
+/* Índice rápido móvil: las tarjetas existentes se conservan (no se reconstruyen al deslizar).
+   Cada inicial apunta a su primera ficha visible, evitando bloqueos y saltos al formulario. */
+const ampAnclasIndiceCostos=new Map();
+function ampMoverIndiceCostos(letra){
+ const todas='ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
+ const cards=$('tarjetas');
+ if(!cards||!cards.children.length)return;
+ let destino=letra?ampAnclasIndiceCostos.get(letra):cards.firstElementChild;
+ if(!destino&&letra){
+  const pos=todas.indexOf(letra);
+  for(let i=pos+1;i<todas.length;i++){
+   destino=ampAnclasIndiceCostos.get(todas[i]);if(destino)break;
+  }
+  if(!destino)for(let i=pos-1;i>=0;i--){
+   destino=ampAnclasIndiceCostos.get(todas[i]);if(destino)break;
+  }
+ }
+ if(destino){
+  // Movimiento inmediato y estable: sin animaciones ni re-renderizado masivo.
+  destino.scrollIntoView({block:'start',behavior:'instant'});
+ }
+}
 function inicialNombreCostos(nombre){
  const c=String(nombre??'').trim().charAt(0).toLocaleUpperCase('es');
  return c==='Ñ'?'Ñ':c.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -1225,6 +1248,14 @@ function prepararIndiceAlfabeticoCostos(){
   const nueva=alternar&&letraActivaCostos===valor?'':valor;
   if(letraActivaCostos===nueva)return;
   letraActivaCostos=nueva;
+  if(modoTactil()){
+   // En celular se navega por las fichas ya dibujadas: no llamar a dibujar()
+   // por cada milímetro del dedo (causaba cuelgues y pérdidas del listado).
+   for(const b of nav.querySelectorAll('button'))
+    b.setAttribute('aria-pressed',String(b.dataset.letra===nueva));
+   ampMoverIndiceCostos(nueva);
+   return;
+  }
   dibujar();
  };
  let ultimoGesto=0;
@@ -1827,8 +1858,10 @@ function dibujar(){
  dibujarAlertas();mostrarSugerencias();
  const campo=$('buscar').value.trim(),q=normalizarBusqueda(campo),proveedorFiltro=$('filtrarProveedorCostos').value;
  const base=(normalizarFlexible(q).length<2?productos:buscarCoincidenciasCostos(q));
+ const indiceNavegacionMovil=matchMedia('(max-width:760px), (hover:none) and (pointer:coarse)').matches;
  const encontrados=base.filter(p=>{
-  if(letraActivaCostos&&inicialNombreCostos(p.detalles)!==letraActivaCostos)return false;
+  // En PC el índice puede filtrar; en el móvil siempre conserva todas las fichas para saltar.
+  if(!indiceNavegacionMovil&&letraActivaCostos&&inicialNombreCostos(p.detalles)!==letraActivaCostos)return false;
   const nombres=proveedoresProducto(p);
   return !proveedorFiltro||
    (proveedorFiltro==='__SIN_PROVEEDOR__'?nombres.length===0:
@@ -1837,11 +1870,12 @@ function dibujar(){
  for(const b of $('indiceAlfabeticoCostos').querySelectorAll('button'))
   b.setAttribute('aria-pressed',String(b.dataset.letra===letraActivaCostos));
  $('filas').replaceChildren();$('tarjetas').replaceChildren();
+ ampAnclasIndiceCostos.clear();
  const aviso=$('resultadoBusqueda');
  if(aviso){
   const filtros=[];
   if(normalizarFlexible(q).length>=2)filtros.push('búsqueda: «'+campo+'»');
-  if(letraActivaCostos)filtros.push('letra: '+letraActivaCostos);
+  if(letraActivaCostos&&!indiceNavegacionMovil)filtros.push('letra: '+letraActivaCostos);
   if(proveedorFiltro)filtros.push('proveedor: '+$('filtrarProveedorCostos').selectedOptions[0]?.textContent);
   aviso.textContent=encontrados.length+' de '+productos.length+' productos'+(filtros.length?' · '+filtros.join(' · '):' registrados')+'.';
  }
@@ -1861,6 +1895,8 @@ function dibujar(){
   }
   $('filas').append(tr);
   const card=document.createElement('article');card.className='card sheet-card';card.dataset.productoId=String(p.id);
+  const inicial=inicialNombreCostos(p.detalles);
+  if(!ampAnclasIndiceCostos.has(inicial))ampAnclasIndiceCostos.set(inicial,card);
   const h=document.createElement('h3');h.className='sheet-card-title';h.append(nombreFilaHoja(p));card.append(h);
   const dato=document.createElement('p');dato.className='sheet-card-details';
   dato.textContent='Existencias: '+conMedida(d.stock,p)+(p.codigo_barras?' · Código: '+p.codigo_barras:'');

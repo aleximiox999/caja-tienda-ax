@@ -847,6 +847,13 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  #app #productoForm .field>label{color:CanvasText}
 }
 
+/* Nunca superponer el abecedario sobre imágenes o vistas previas abiertas. */
+@media(max-width:760px), (hover:none) and (pointer:coarse){
+ body:has(#fotoProductoDialog[open]) #listado .indice-alfabetico-costos,
+ #listado:has(.amp-foto-vista-abierta) .indice-alfabetico-costos{
+  visibility:hidden!important;pointer-events:none!important;opacity:0!important;
+ }
+}
 /* Imagen ampliable sin cambiar los datos del producto ni el archivo. */
 #fotoProductoDialog .amp-zoom-escena{
  position:relative;width:100%;height:min(52dvh,460px);max-height:460px;

@@ -1263,6 +1263,30 @@ function ampAbrirHistorialCostos(p,boton,tactil){
   sinDatos.textContent=resumen.reciente?'Solo hay una compra registrada; todavía no existe otra factura para comparar.':'No hay compras registradas para este producto.';
   detalle.append(sinDatos);
  }
+ // La última factura con cambio puede ser anterior a las dos más recientes.
+ const ultimaVariacion=resumen.historial.findIndex((factura,i,lista)=>
+  i+1<lista.length&&Math.abs(ampCostoFactura(factura)-ampCostoFactura(lista[i+1]))>=.00005);
+ if(ultimaVariacion>=0){
+  const factura=resumen.historial[ultimaVariacion],previa=resumen.historial[ultimaVariacion+1];
+  const actualFactura=ampCostoFactura(factura),antes=ampCostoFactura(previa),diferencia=actualFactura-antes;
+  const bloque=document.createElement('div');bloque.className='amp-hist-alerta';
+  const encabezado=document.createElement('strong');encabezado.textContent='ÚLTIMA FACTURA CON CAMBIO DE PRECIO';
+  bloque.append(encabezado);
+  ampLineaHistorial(bloque,'Fecha de la factura',ampFechaLegible(ampFechaFactura(factura)));
+  ampLineaHistorial(bloque,'Costo anterior',ampMontoUnit(antes)+' / '+unidadCorta(p));
+  ampLineaHistorial(bloque,'Costo en esa factura',ampMontoUnit(actualFactura)+' / '+unidadCorta(p));
+  ampLineaHistorial(bloque,'Variación', (diferencia>0?'Subió ':'Bajó ')+ampMontoUnit(Math.abs(diferencia))+
+   (antes>0?' · '+ampPorcentaje(Math.abs(diferencia)/antes*100):''),
+   diferencia>0?'amp-hist-alza':'amp-hist-baja');
+  if(factura.proveedor)ampLineaHistorial(bloque,'Proveedor',String(factura.proveedor));
+  if(factura.precio_compra!==null&&factura.precio_compra!==undefined)
+   ampLineaHistorial(bloque,'Total de esa factura',bs(factura.precio_compra));
+  detalle.append(bloque);
+ }else if(resumen.historial.length>=2){
+  const notaSinCambio=document.createElement('p');notaSinCambio.className='amp-hist-nota';
+  notaSinCambio.textContent='No se encontraron cambios de costo entre las facturas registradas.';
+  detalle.append(notaSinCambio);
+ }
  if(resumen.reciente&&Math.abs(actual-resumen.nuevo)>0.00011){
   const alerta=document.createElement('p');alerta.className='amp-hist-alerta';
   alerta.textContent='Atención: el costo vigente no coincide con el de la factura más reciente. Puede haber un ajuste manual o una compra cargada fuera de orden. Revisalo antes de actualizar precios.';

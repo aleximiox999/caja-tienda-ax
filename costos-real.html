@@ -579,8 +579,9 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 #listado .listado-con-indice-costos{
  display:flex;align-items:stretch;gap:12px;width:100%;min-width:0;
 }
-#listado .listado-contenido-costos{flex:1 1 0;min-width:0}
+#listado .listado-contenido-costos{flex:1 1 0;min-width:0;order:1}
 #listado .indice-alfabetico-costos{
+ order:2; /* Indice a la derecha exclusivamente en el diseno de escritorio */
  position:sticky;top:10px;align-self:flex-start;
  display:flex;flex:0 0 43px;flex-direction:column;gap:4px;
  width:43px;max-height:calc(100dvh - 22px);overflow-y:auto;

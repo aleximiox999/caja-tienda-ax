@@ -865,6 +865,38 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 #ampEditarMenu [data-editar-opcion="compra"] .amp-edit-simbolo{
  background:linear-gradient(130deg,#46708e,#244357);
 }
+/* Visor simple para fotografías. El botón de cámara conserva el editor completo. */
+#fotoProductoDialog #ampCerrarSoloFoto{display:none}
+#fotoProductoDialog.amp-solo-imagen{
+ position:relative;width:min(98vw,900px);max-width:98vw;
+ height:min(94dvh,1000px);max-height:94dvh;
+ padding:0;overflow:hidden;background:#07131d;color:#fff;
+ border-radius:13px;box-shadow:0 18px 64px #000b;
+}
+#fotoProductoDialog.amp-solo-imagen > :not(#ampMarcoZoomFoto):not(#ampCerrarSoloFoto){
+ display:none!important;
+}
+#fotoProductoDialog.amp-solo-imagen #ampMarcoZoomFoto{
+ width:100%;height:100%;max-height:none;min-height:0;
+ padding:0;margin:0;overflow:hidden;border:0;border-radius:0;background:#07131d;
+}
+#fotoProductoDialog.amp-solo-imagen #ampMarcoZoomFoto img{
+ display:block;width:100%;height:100%;max-height:none;object-fit:contain;
+}
+#fotoProductoDialog.amp-solo-imagen #ampMarcoZoomFoto img.hidden{display:none}
+#fotoProductoDialog.amp-solo-imagen #ampCerrarSoloFoto{
+ display:grid!important;place-items:center;position:absolute;z-index:10;
+ top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));
+ width:38px;height:38px;min-height:38px;padding:0;
+ border:1px solid #ffffff66;border-radius:50%;background:#101d2dbb;
+ color:#fff;font-size:27px;font-weight:500;line-height:1;
+ touch-action:manipulation;cursor:pointer;
+}
+#fotoProductoDialog.amp-solo-imagen:has(#imagenFotoProducto.hidden) #estatusFotoProducto{
+ display:block!important;position:absolute;bottom:10px;left:8px;right:8px;
+ padding:5px;background:#09121ecc;color:#fff;text-align:center;font-size:12px;
+ pointer-events:none;
+}
 /* Imagen ampliable sin cambiar los datos del producto ni el archivo. */
 #fotoProductoDialog .amp-zoom-escena{
  position:relative;width:100%;height:min(52dvh,460px);max-height:460px;
@@ -888,6 +920,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 
 <section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Productos que llegaron al stock mínimo o tienen menos existencias. Se actualiza al cargar o actualizar los datos.</p><div id="listaAlertas"></div></section><section id="listado" class="hidden"><h2>COSTOS · Fichas de productos</h2><p class="muted" style="margin:8px 0 12px">Los productos aparecen uno debajo de otro, de la A a la Z, sin deslizar a los lados. Corregí los campos blancos, revisá los cálculos automáticos y tocá <strong>Guardar cambios</strong>. Las unidades o kilos son los de la compra, no las existencias actuales.</p><div class="actions"><div class="busqueda-wrap"><input id="buscar" placeholder="Buscar producto, código o proveedor (ej.: FINI)" autocomplete="off" aria-controls="sugerencias" aria-expanded="false" aria-autocomplete="list"><div id="sugerencias" class="sugerencias hidden" style="display:none" role="listbox" aria-label="Sugerencias de productos y proveedores"></div><div class="filtro-proveedor-costos"><label for="filtrarProveedorCostos">FILTRAR POR PROVEEDOR</label><select id="filtrarProveedorCostos" aria-label="Filtrar productos por proveedor"><option value="">TODOS LOS PROVEEDORES</option></select></div></div><div id="resultadoBusqueda" role="status" aria-live="polite" style="margin:8px 0;font-weight:600"></div><button class="alt" id="recargar">Actualizar</button></div><div class="listado-con-indice-costos"><nav id="indiceAlfabeticoCostos" class="indice-alfabetico-costos" aria-label="Filtrar por letra inicial"></nav><div class="listado-contenido-costos"><div class="scroll"><table><thead><tr><th>PRODUCTO</th><th>PRECIO DE COMPRA</th><th>UNIDADES / KG</th><th>COSTO UNITARIO</th><th>PRECIO DE VENTA</th><th>UTILIDAD POR UNIDAD</th><th>UTILIDAD TOTAL</th><th>PROVEEDOR</th><th>ACCIONES</th></tr></thead><tbody id="filas"></tbody></table></div><div id="tarjetas" class="cards"></div></div></div></section>
 <dialog id="fotoProductoDialog" aria-labelledby="tituloFotoProducto">
+<button id="ampCerrarSoloFoto" type="button" aria-label="Cerrar fotografía" title="Cerrar fotografía">×</button>
 <h2 id="tituloFotoProducto">Fotografía del producto</h2>
 <p id="nombreFotoProducto" class="muted"></p>
 <div id="ampMarcoZoomFoto" class="amp-zoom-escena" aria-label="Fotografía ampliable con dos dedos">
@@ -1295,7 +1328,7 @@ function nombreFilaHoja(p){
   // En móvil abrir directamente el visor real; la vista previa se cerraba al tocarla.
   e.preventDefault();e.stopPropagation();
   ampOcultarVistaFotoTarjeta();
-  abrirFotoProducto(p);
+  abrirFotoProducto(p,true);
  };
  return b;
 }
@@ -1950,7 +1983,7 @@ function ampMostrarVistaFotoTarjeta(p,origen,modo){
  if(modo==='movil')panel.addEventListener('click',e=>{
   e.stopPropagation();
   ampOcultarVistaFotoTarjeta();
-  abrirFotoProducto(p);
+  abrirFotoProducto(p,true);
  });
  panel.setAttribute('role','status');
  panel.setAttribute('aria-label','Vista previa de '+String(p.detalles||'producto'));
@@ -1979,7 +2012,8 @@ function ampMostrarVistaFotoTarjeta(p,origen,modo){
   img.decoding='async';
   img.onload=()=>{
    if(version!==ampVistaFotoVersion||ampVistaFotoActual?.panel!==panel)return;
-   nota.textContent=String(p.detalles||'');
+   // La vista previa no agrega texto debajo de la imagen.
+   nota.textContent='';nota.hidden=true;
    panel.prepend(img);
   };
   img.onerror=()=>{
@@ -2090,8 +2124,11 @@ async function cargarImagenFoto(p,solicitud){
  if(error||!data?.signedUrl){marcarEstadoFoto('No se pudo cargar la foto: '+(error?.message||'sin conexión'),true);$('mensajeSinFoto').textContent='La fotografía no está disponible en este momento.';return;}
  ponerImagenFoto(data.signedUrl,'Fotografía de '+p.detalles);marcarEstadoFoto('');
 }
-function abrirFotoProducto(p){
+function abrirFotoProducto(p,soloImagenSolicitada=false){
  if(fotoGuardando||fotoWebImportando)return;
+ // Al tocar la fotografía, mostrar únicamente la imagen; la cámara mantiene su editor completo.
+ const soloImagen=Boolean(soloImagenSolicitada&&p.foto_path);
+ $('fotoProductoDialog').classList.toggle('amp-solo-imagen',soloImagen);
  fotoProductoActivo=p;
  fotoWebSolicitud++;
  $('fotoWebPanel').classList.add('hidden');
@@ -2113,6 +2150,7 @@ function cerrarFotoDialogo(){
  fotoProductoActivo=null;fotoSolicitud++;fotoWebSolicitud++;
 }
 $('cerrarFotoProducto').onclick=cerrarFotoDialogo;
+$('ampCerrarSoloFoto').onclick=cerrarFotoDialogo;
 // No cerrar por toques sobre el fondo del diálogo: un gesto de dos dedos no debe cerrarlo.
 // Se cierra únicamente con el botón Cerrar o Escape.
 $('fotoProductoDialog').addEventListener('cancel',e=>{if(fotoGuardando||fotoWebImportando){e.preventDefault();return;}fotoProductoActivo=null;fotoSolicitud++;fotoWebSolicitud++;});

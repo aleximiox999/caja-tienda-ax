@@ -854,6 +854,17 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
   visibility:hidden!important;pointer-events:none!important;opacity:0!important;
  }
 }
+/* COSTOS: ninguna casilla editable admite toque ni teclado antes del lapicito. */
+#listado .amp-campo-titanio input.sheet-input[readonly]{
+ pointer-events:none!important;caret-color:transparent!important;cursor:default!important;
+ user-select:none;-webkit-user-select:none;
+}
+#listado .amp-campo-titanio.amp-campo-habilitado{
+ outline:2px solid #84b5da;outline-offset:2px;
+}
+#ampEditarMenu [data-editar-opcion="compra"] .amp-edit-simbolo{
+ background:linear-gradient(130deg,#46708e,#244357);
+}
 /* Imagen ampliable sin cambiar los datos del producto ni el archivo. */
 #fotoProductoDialog .amp-zoom-escena{
  position:relative;width:100%;height:min(52dvh,460px);max-height:460px;
@@ -910,6 +921,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
   <p id="ampEditarNombre" class="muted amp-edit-subtitle"></p>
   <div class="amp-edit-opciones">
     <button type="button" class="amp-edit-choice" data-editar-opcion="precio"><span class="amp-edit-simbolo">Bs</span><span><strong>Precio de venta</strong><small>Cambiar el precio al que vendés</small></span></button>
+    <button type="button" class="amp-edit-choice" data-editar-opcion="compra"><span class="amp-edit-simbolo">$</span><span><strong>Compra y unidades</strong><small>Corregir el costo de compra y la cantidad</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="existencias"><span class="amp-edit-simbolo">#</span><span><strong>Existencias</strong><small>Corregir el stock actual</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="nombre"><span class="amp-edit-simbolo">✎</span><span><strong>Nombre del producto</strong><small>Corregir el título del artículo</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="proveedor"><span class="amp-edit-simbolo">P</span><span><strong>Proveedor</strong><small>Modificar el nombre del proveedor</small></span></button>
@@ -1280,12 +1292,10 @@ function nombreFilaHoja(p){
  b.title='En PC: pasar el cursor para ver la fotografía. En celular: tocar el nombre.';
  ampVincularHoverFoto(p,b);
  b.onclick=e=>{
-  const card=b.closest('.sheet-card');
-  const toque=e.pointerType==='touch'||(!e.pointerType&&matchMedia('(hover:none)').matches);
-  if(card&&toque){
-   e.preventDefault();e.stopPropagation();
-   ampAlternarVistaFotoTarjeta(p,b);
-  }else{ampOcultarVistaFotoTarjeta();abrirFotoProducto(p);}
+  // En móvil abrir directamente el visor real; la vista previa se cerraba al tocarla.
+  e.preventDefault();e.stopPropagation();
+  ampOcultarVistaFotoTarjeta();
+  abrirFotoProducto(p);
  };
  return b;
 }
@@ -1368,20 +1378,27 @@ function cerrarMenuEdicion(){
 $('ampEditarCancelar').onclick=cerrarMenuEdicion;
 $('ampEditarMenu').addEventListener('close',()=>{ampProductoMenu=null;});
 function ampEnfocarCampo(p,clave){
- const card=[...document.querySelectorAll('#tarjetas .sheet-card')].find(c=>c.dataset.productoId===String(p.id));
- const input=card?.querySelector('[data-amp-campo="'+clave+'"]');
+ const id=String(p.id);
+ const card=[...document.querySelectorAll('#tarjetas .sheet-card')].find(c=>c.dataset.productoId===id);
+ const fila=[...document.querySelectorAll('#filas tr')].find(c=>c.dataset.productoId===id);
+ // Activar solo la superficie que está visible: ficha del móvil o fila de PC.
+ const superficie=[card,fila].find(el=>el&&el.getClientRects().length>0)||card||fila;
+ const input=superficie?.querySelector('input[data-amp-campo="'+clave+'"]');
  if(!input){
   if(clave==='venta'){elegirEdicion(p);$('editorPrecio').focus();$('editorPrecio').select();}
-  else estado('Para editar el proveedor de «'+p.detalles+'» primero debe existir una compra registrada.',true);
+  else estado('Para editar estos datos debe existir una compra registrada para «'+p.detalles+'».',true);
   return;
  }
- card.scrollIntoView({block:'center',behavior:'smooth'});
+ const claves=clave==='compra'?['compra','unidades']:[clave];
+ superficie.ampDesbloquearCostos?.(claves);
+ superficie.scrollIntoView({block:'center',behavior:'smooth'});
  input.classList.add('amp-edit-destacado');
- const viejo=card.querySelector('.amp-edit-instruction');if(viejo)viejo.remove();
+ const viejo=superficie.querySelector('.amp-edit-instruction');if(viejo)viejo.remove();
  const aviso=document.createElement('small');aviso.className='amp-edit-instruction';
  aviso.textContent=clave==='proveedor'
-   ?'Escribí el proveedor y después tocá «Guardar cambios» en este mismo cuadro.'
-   :'Escribí el precio de venta y después tocá «Guardar cambios» en este mismo cuadro.';
+  ?'Editá el proveedor y tocá «Guardar cambios».'
+  :clave==='compra'?'Podés editar compra y unidades. Después tocá «Guardar cambios».'
+  :'Editá el precio de venta y tocá «Guardar cambios».';
  input.parentElement.append(aviso);
  try{input.focus({preventScroll:true});input.select();}catch(e){input.focus();}
  input.addEventListener('input',()=>{input.classList.remove('amp-edit-destacado');aviso.remove()},{once:true});
@@ -1393,6 +1410,7 @@ for(const btn of document.querySelectorAll('#ampEditarMenu [data-editar-opcion]'
   cerrarMenuEdicion();
   if(opcion==='nombre'){abrirEditarNombre(p);return;}
   if(opcion==='existencias'){elegirEdicion(p);$('editorStock').focus();$('editorStock').select();return;}
+  if(opcion==='compra'){ampEnfocarCampo(p,'compra');return;}
   if(opcion==='precio'||opcion==='proveedor')ampEnfocarCampo(p,opcion==='precio'?'venta':'proveedor');
  };
 }
@@ -1639,6 +1657,8 @@ function configurarEditorFila(p,compra,superficie,movil){
     input.step=clave==='unidades'?(p.unidad_medida==='kg'?'0.001':'1'):'0.01';
     input.value=clave==='compra'?original.compra.toFixed(2):clave==='venta'?original.venta.toFixed(2):String(original.unidades);
    }
+   // COSTOS es de solo lectura hasta que se pulse el lapicito y se elija qué editar.
+   input.readOnly=true;input.tabIndex=-1;input.setAttribute('aria-readonly','true');
    input.dataset.ampCampo=clave;inputs[clave]=input;cell.append(input);
   }else{
    if(!movil)cell.className='sheet-derived';
@@ -1662,7 +1682,16 @@ function configurarEditorFila(p,compra,superficie,movil){
  const err=document.createElement('p');err.className='sheet-message';err.setAttribute('role','status');
  const tools=accionesFilaHoja(p);
  action.append(save,tools,err);superficie.append(action);
- let guardando=false;
+ let guardando=false,edicionAutorizada=false;
+ superficie.ampDesbloquearCostos=claves=>{
+  edicionAutorizada=true;
+  for(const clave of claves){
+   const campo=inputs[clave];if(!campo)continue;
+   campo.readOnly=false;campo.tabIndex=0;campo.removeAttribute('aria-readonly');
+   campo.closest('.amp-campo-titanio')?.classList.add('amp-campo-habilitado');
+  }
+  estadoFila();
+ };
  function valor(clave){
   const raw=inputs[clave].value.trim();return raw===''?NaN:Number(raw);
  }
@@ -1707,7 +1736,7 @@ function configurarEditorFila(p,compra,superficie,movil){
     derivados[key].classList.remove('sheet-negative');
    }
   }
-  save.disabled=guardando||!valid||!dif;
+  save.disabled=guardando||!valid||!dif||!edicionAutorizada;
   save.textContent=guardando?'Guardando…':(dif?'💾 Guardar cambios':'✓ Guardado');
   if(!guardando&&!err.classList.contains('sheet-error'))err.textContent=!valid?'Ingresá precio de compra, unidades o kg, precio de venta y proveedor válidos.':dif?'Cambios sin guardar.':'';
   return {valid,dif,comp,unid,vent,prov};
@@ -1715,7 +1744,7 @@ function configurarEditorFila(p,compra,superficie,movil){
  Object.values(inputs).forEach(input=>{for(const ev of ['input','change'])input.addEventListener(ev,()=>{err.classList.remove('sheet-error');estadoFila();});});
  save.onclick=async()=>{
   const valores=estadoFila();
-  if(!valores.valid||!valores.dif||guardando)return;
+  if(!valores.valid||!valores.dif||guardando||!edicionAutorizada)return;
   const msg='¿Guardar COSTOS de «'+p.detalles+'»? Precio de compra: '+bs(valores.comp)+
    ' · Cantidad de compra: '+valores.unid+' '+unidadCorta(p)+
    ' · Precio de venta: '+bs(valores.vent)+
@@ -1741,7 +1770,7 @@ function configurarEditorFila(p,compra,superficie,movil){
    err.classList.add('sheet-error');
    err.textContent='No se guardó: '+(e.message||String(e))+'. Pulsá Actualizar y revisá los datos antes de intentar de nuevo.';
    estado('Error al corregir COSTOS: '+(e.message||String(e)),true);
-  }finally{guardando=false;if(!err.classList.contains('sheet-error'))estadoFila();else save.disabled=false;}
+  }finally{guardando=false;estadoFila();}
  };
  estadoFila();
 }
@@ -1770,6 +1799,7 @@ function dibujar(){
  for(const p of encontrados){
   const compra=ultimaCompraHoja(p),d=datosProducto(p),nombreVisible=String(p.detalles||'').toLocaleUpperCase('es');
   const tr=document.createElement('tr'),tdNombre=document.createElement('td');
+  tr.dataset.productoId=String(p.id);
   tdNombre.append(nombreFilaHoja(p));
   const existencia=document.createElement('small');existencia.className='sheet-stock-note';
   existencia.textContent='Existencias: '+conMedida(d.stock,p)+' · '+(p.codigo_barras?'Código: '+p.codigo_barras:'Sin código de barras');
@@ -2083,7 +2113,8 @@ function cerrarFotoDialogo(){
  fotoProductoActivo=null;fotoSolicitud++;fotoWebSolicitud++;
 }
 $('cerrarFotoProducto').onclick=cerrarFotoDialogo;
-$('fotoProductoDialog').addEventListener('click',e=>{if(e.target===$('fotoProductoDialog'))cerrarFotoDialogo();});
+// No cerrar por toques sobre el fondo del diálogo: un gesto de dos dedos no debe cerrarlo.
+// Se cierra únicamente con el botón Cerrar o Escape.
 $('fotoProductoDialog').addEventListener('cancel',e=>{if(fotoGuardando||fotoWebImportando){e.preventDefault();return;}fotoProductoActivo=null;fotoSolicitud++;fotoWebSolicitud++;});
 $('fotoProductoDialog').addEventListener('close',()=>{if(!fotoGuardando&&!fotoWebImportando){fotoProductoActivo=null;fotoSolicitud++;fotoWebSolicitud++;}});
 $('elegirGaleriaFoto').onclick=()=>$('archivoGaleriaFoto').click();

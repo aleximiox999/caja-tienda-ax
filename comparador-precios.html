@@ -75,7 +75,7 @@ tr:nth-child(even) td:not(:first-child){background:#20252d}
 <div><label for="orderFilter">FILTRO</label><select id="orderFilter"><option value="az">Fichas de productos (A–Z)</option><option value="recientes">Recién ingresados</option></select></div>
 <button type="button" id="refresh">Actualizar tabla</button></div>
 <nav id="alphaIndex" class="alphabet" aria-label="Ir a productos por letra"></nav>
-<p class="form-note">En cada empresa se muestra la fotografía que publica, si está disponible, su precio en bolivianos y el enlace <strong>Abrir</strong> para consultar la página. Tocá la fotografía para ampliarla. «Sin verificar» no significa agotado. La fecha corresponde a la última consulta guardada, no al stock en tiempo real.</p>
+<p class="form-note">En cada empresa se muestra la fotografía que publica, si está disponible, su precio en bolivianos y el enlace <strong>Abrir</strong> para consultar la página. Tocá la fotografía para ampliarla. «Catálogo» abre una lista de productos, mientras que «Abrir» va a una publicación individual. «Sin verificar» no significa agotado. La fecha corresponde a la última consulta guardada, no al stock en tiempo real.</p>
 <div id="desktopCatalogo" class="tablewrap"></div><div id="mobileCatalogo" class="mobile-cards"></div>
 </section>
 <section id="nuevos" class="panel hidden">
@@ -105,7 +105,7 @@ function celda(comp,empresa){
   ?'<a class="comp-img-link" href="'+txt(imagen)+'" target="_blank" rel="noopener noreferrer" aria-label="Ampliar foto de '+txt(empresa||'la empresa')+'"><img class="comp-img" loading="lazy" decoding="async" src="'+txt(imagen)+'" alt="'+txt(nombre)+'" title="'+txt(nombre)+'"></a>'
   :'<span class="comp-no-img">Sin foto publicada</span>';
  let detalles=comp.precio===null||comp.precio===undefined?'<span class="empty-price">Precio sin verificar</span>':'<span class="price">'+txt(precio(comp.precio))+'</span>';
- if(href)detalles+=' <a href="'+txt(href)+'" target="_blank" rel="noopener noreferrer" title="Abrir publicación original de la empresa">Abrir</a>';
+ if(href){const categoria=href.includes('/collections/')||href.includes('/categoria/')||href.includes('/seccion/')||new URL(href).pathname==='/';detalles+=' <a href="'+txt(href)+'" target="_blank" rel="noopener noreferrer" title="'+(categoria?'Ver catálogo de la empresa':'Abrir publicación del producto')+'">'+(categoria?'Catálogo':'Abrir')+'</a>';}
  const nota=comp.disponibilidad==='agotado'?'Agotado':comp.disponibilidad==='disponible'?'Disponible':'Stock no verificado';
  let fecha='';
  if(comp.consultado_en){const d=new Date(comp.consultado_en);if(!Number.isNaN(d.getTime()))fecha=' · '+d.toLocaleDateString('es-BO');}
@@ -139,7 +139,7 @@ function renderCatalogo(){
  $('countTotal').textContent='Productos: '+productos.length;
  $('countActive').textContent='Activos: '+productos.filter(x=>x.activo).length;
  $('countInactive').textContent='Inactivos: '+productos.filter(x=>!x.activo).length;
- $('countPrices').textContent='Precios con fuente: '+comparaciones.filter(x=>x.precio!==null&&x.precio!==undefined).length;
+ $('countPrices').textContent='Comparados: '+new Set(comparaciones.filter(x=>x.producto_id!==null&&x.producto_id!==undefined&&x.precio!==null).map(x=>x.producto_id)).size+' de '+productos.length+' productos · '+comparaciones.filter(x=>x.precio!==null&&x.precio!==undefined).length+' precios';
 }
 function renderNuevos(){
  const map=mapaComparaciones();

@@ -17,7 +17,7 @@ input,select{background:#11151b;color:#fff;border:1px solid #6c7581;border-radiu
 input{width:100%}label{display:block;font-weight:650;font-size:13px;margin-bottom:5px}
 button{background:var(--accent);color:#171308;font:inherit;font-weight:750;padding:10px 15px;min-height:43px;border:0;border-radius:9px;cursor:pointer}
 button.secondary{border:1px solid #8b8f99;color:white;background:var(--surface2)}button:disabled{opacity:.5;cursor:default}
-.controls{display:grid;grid-template-columns:minmax(200px,2fr) minmax(155px,1fr) auto;align-items:end;gap:12px;margin:12px 0}
+.controls{display:grid;grid-template-columns:minmax(200px,2fr) repeat(2,minmax(155px,1fr)) auto;align-items:end;gap:12px;margin:12px 0}
 .pill{display:inline-block;background:#39372f;color:#ffe3b1;border:1px solid #81704b;border-radius:100px;padding:5px 11px;font-size:12px;font-weight:750}
 .stats{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}.stat{padding:8px 11px;background:#272c35;border:1px solid #444b58;border-radius:10px;font-weight:650}
 .tabbar{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}.tabbar button.active{background:var(--accent);color:#171308}
@@ -42,6 +42,18 @@ tr:nth-child(even) td:not(:first-child){background:#20252d}
 .mcard .competitor-cell a{display:inline-block}
 @media(max-width:800px){.controls{grid-template-columns:1fr 1fr}.controls button{grid-column:1/-1}.tablewrap{display:none}.mobile-cards{display:block}.top{padding:11px}.new-form{grid-template-columns:1fr}.stats{gap:7px}main{padding:14px 10px}}
 @media(max-width:480px){.controls{grid-template-columns:1fr}.top nav{gap:9px}h1{font-size:19px}.panel{padding:12px}}
+.alphabet{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 14px;max-width:100%}
+.alphabet button{background:var(--surface2);color:#f7f0e5;border:1px solid #626a76;border-radius:7px;min-width:34px;min-height:35px;padding:5px 8px;font-size:12px}
+.alphabet button:focus-visible,.alphabet button:hover{background:var(--accent);color:#16130d}
+.comp-layout{display:flex;align-items:center;gap:9px;min-width:0}
+.comp-img-link{flex:0 0 62px;display:block;text-decoration:none!important}
+.comp-img{display:block;width:62px;height:70px;border:1px solid #686e78;background:#fff;border-radius:8px;object-fit:contain;cursor:zoom-in}
+.comp-details{min-width:0;white-space:normal}.comp-details a{margin-left:4px}
+.comp-no-img{display:block;font-size:11px;color:#b0bac7;max-width:86px;white-space:normal}
+.comp-nota{display:block;color:#c7cbd2;font-size:11px;margin-top:4px;line-height:1.3}
+.mcard,.tablewrap tr{scroll-margin-top:100px}
+@media(max-width:800px){.alphabet{flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}.alphabet button{flex:0 0 auto}
+.mcard .company{grid-template-columns:33% minmax(0,67%)}.comp-img{width:55px;height:62px}.comp-img-link{flex-basis:55px}.comp-layout{gap:7px}.comp-no-img{max-width:70px}}
 </style></head>
 <body>
 <header><div class="top"><h1>TIENDA AMPHX · COMPARADOR DE PRECIOS</h1>
@@ -60,8 +72,10 @@ tr:nth-child(even) td:not(:first-child){background:#20252d}
 <div class="stats"><div id="countTotal" class="stat">Productos: —</div><div id="countActive" class="stat">Activos: —</div><div id="countInactive" class="stat">Inactivos: —</div><div id="countPrices" class="stat">Precios verificados: —</div></div>
 <div class="controls"><div><label for="search">Buscar en tus productos</label><input id="search" type="search" placeholder="Nombre, marca, tamaño o presentación"></div>
 <div><label for="statusFilter">Estado</label><select id="statusFilter"><option value="todos">Todos (activos e inactivos)</option><option value="activos">Solo activos</option><option value="inactivos">Solo inactivos</option></select></div>
+<div><label for="orderFilter">FILTRO</label><select id="orderFilter"><option value="az">Fichas de productos (A–Z)</option><option value="recientes">Recién ingresados</option></select></div>
 <button type="button" id="refresh">Actualizar tabla</button></div>
-<p class="form-note">En cada empresa se muestra el precio en bolivianos y, a su lado, <strong>Abrir</strong> para consultar su página. «Sin verificar» no significa agotado. La fecha corresponde a la última consulta guardada, no al stock en tiempo real.</p>
+<nav id="alphaIndex" class="alphabet" aria-label="Ir a productos por letra"></nav>
+<p class="form-note">En cada empresa se muestra la fotografía que publica, si está disponible, su precio en bolivianos y el enlace <strong>Abrir</strong> para consultar la página. Tocá la fotografía para ampliarla. «Sin verificar» no significa agotado. La fecha corresponde a la última consulta guardada, no al stock en tiempo real.</p>
 <div id="desktopCatalogo" class="tablewrap"></div><div id="mobileCatalogo" class="mobile-cards"></div>
 </section>
 <section id="nuevos" class="panel hidden">
@@ -133,8 +147,8 @@ async function cargar(){
  if(cargando)return;cargando=true;$('refresh').disabled=true;mensaje('Cargando productos, estados y precios guardados…');
  try{
   const resp=await Promise.all([
-    db.from('productos').select('id,detalles,precio_venta,activo').order('detalles'),
-    db.from('comparador_precios').select('producto_id,por_comprar_id,empresa,precio,nombre_publicado,url_fuente,disponibilidad,consultado_en'),
+    db.from('productos').select('id,detalles,precio_venta,activo,fecha_creacion').order('detalles'),
+    db.from('comparador_precios').select('producto_id,por_comprar_id,empresa,precio,nombre_publicado,url_fuente,imagen_url,disponibilidad,consultado_en'),
     db.from('comparador_productos_por_comprar').select('id,nombre,creado_en').order('creado_en',{ascending:false})
   ]);
   const fallo=resp.find(x=>x.error);

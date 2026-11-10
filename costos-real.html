@@ -615,6 +615,20 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 #listado .indice-alfabetico-costos button:focus-visible{
  outline:3px solid #84b5da;outline-offset:1px;
 }
+/* Margen porcentual dentro del mismo recuadro de utilidad por unidad.
+   Lectura automática, sin inputs ni cambios en costos o inventario. */
+#listado .amp-utilidad-celda{min-width:0}
+#listado td.sheet-derived.amp-utilidad-celda{min-width:145px;white-space:normal}
+#listado .amp-margen-porcentaje{
+ display:block;width:100%;margin-top:5px;padding-top:4px;
+ border-top:1px solid #a9c2d555;
+ font-size:12px;font-weight:850;line-height:1.3;
+ color:#dbf5e6;letter-spacing:.1px;
+ font-variant-numeric:tabular-nums;overflow-wrap:anywhere;
+}
+#listado .amp-margen-porcentaje.sheet-negative{color:#ffb9c4!important}
+#listado .sheet-card .amp-utilidad-celda .amp-margen-porcentaje{text-align:left}
+@media(max-width:350px){#listado .amp-margen-porcentaje{font-size:11px}}
 /* Filtro de vista debajo del proveedor: ocupa exactamente el ancho del selector de arriba. */
 #listado .amp-filtro-vista-costos{display:block;position:relative;width:100%;max-width:100%;min-width:0;margin-top:12px;padding:0;border:0;background:none;box-shadow:none}
 #listado .amp-filtro-vista-costos label{display:block;color:#fff;font-size:12px;letter-spacing:.05em;font-weight:900;margin:0 0 7px;padding-left:7px}
@@ -1756,6 +1770,13 @@ function configurarEditorFila(p,compra,superficie,movil){
     const insignia=document.createElement('span');insignia.className='amp-historial-badge';
     resumen.append(output,insignia);cell.append(resumen);
     ampAvisoPrecioHistorico(insignia,p);ampVincularHistorialCostos(cell,p);
+   }else if(clave==='utilidad'){
+    cell.classList.add('amp-utilidad-celda');
+    const margen=document.createElement('span');
+    margen.className='amp-margen-porcentaje';
+    margen.setAttribute('aria-label','Margen de ganancia sobre el precio de venta');
+    derivados.margen=margen;
+    cell.append(output,margen);
    }else cell.append(output);
   }
   superficie.append(cell);
@@ -1801,6 +1822,9 @@ function configurarEditorFila(p,compra,superficie,movil){
    derivados.costo.textContent=costo.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:4})+' Bs / '+unidadCorta(p);
    if(vent===0){
     derivados.utilidad.textContent='Precio pendiente';
+    derivados.margen.textContent='MARGEN: Pendiente';
+    derivados.margen.classList.remove('sheet-negative');
+    derivados.margen.title='Necesitás definir un precio de venta mayor a cero para calcular el margen.';
     derivados.total.textContent='Precio pendiente';
     derivados.utilidad.classList.remove('sheet-negative');
     derivados.total.classList.remove('sheet-negative');
@@ -1810,6 +1834,10 @@ function configurarEditorFila(p,compra,superficie,movil){
     const utilidad=Number((vent-costo).toFixed(4));
     const total=Number((utilidad*unid).toFixed(2));
     derivados.utilidad.textContent=bs(utilidad);
+    const margen=Number(((vent-costo)/vent*100).toFixed(2));
+    derivados.margen.textContent='MARGEN: '+margen.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2})+' %';
+    derivados.margen.classList.toggle('sheet-negative',margen<0);
+    derivados.margen.title='Margen = (precio de venta − costo unitario) / precio de venta × 100';
     derivados.total.textContent=bs(total);
     derivados.utilidad.classList.toggle('sheet-negative',utilidad<0);
     derivados.total.classList.toggle('sheet-negative',total<0);
@@ -1821,6 +1849,8 @@ function configurarEditorFila(p,compra,superficie,movil){
     derivados[key].textContent='Revisá datos';
     derivados[key].classList.remove('sheet-negative');
    }
+   derivados.margen.textContent='MARGEN: Revisá datos';
+   derivados.margen.classList.remove('sheet-negative');
   }
   save.disabled=guardando||!valid||!dif||!edicionAutorizada;
   save.textContent=guardando?'Guardando…':(dif?'💾 Guardar cambios':'✓ Guardado');

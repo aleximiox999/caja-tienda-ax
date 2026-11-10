@@ -1212,6 +1212,7 @@ function selectTab(t){
  return cierreCamara;
 }
 let ultimoCodigoDetectado='',ultimaDeteccionCodigo=0,ultimoProductoEscaneadoId=null;
+let ampSesionLector=0;
 function actualizarResumenEscaneo(){
  const enteros=cart.filter(x=>!esKg(x.producto)).reduce((s,x)=>s+Number(x.cantidad),0);
  const kilos=cart.filter(x=>esKg(x.producto)).reduce((s,x)=>s+Number(x.cantidad),0);
@@ -1227,9 +1228,10 @@ function mostrarUltimoProductoEscaneado(p){
  actualizarResumenEscaneo();
 }
 async function detenerLector(){
+ ++ampSesionLector;
  const l=lector;lector=null;abriendo=false;
- if(l){try{await l.stop()}catch(e){}try{l.clear()}catch(e){}}
  show('lectorPanel',false);
+ if(l){try{await l.stop()}catch(e){}try{l.clear()}catch(e){}}
 }
 async function iniciarLector(m){
  if(abriendo||lector)return;
@@ -1237,6 +1239,7 @@ async function iniciarLector(m){
  if(typeof Html5Qrcode==='undefined'){estado('No se cargó la biblioteca del escáner. Comprueba la conexión.','error');return}
  if(m==='entrada'&&(cuenta?.rol!=='administrador'||offlineMode||!online())){estado('Las entradas requieren administrador e internet.','error');return}
  if(m==='venta'&&lockCart()){estado('Primero confirma la venta pendiente.','error');return}
+ const sesion=++ampSesionLector;
  abriendo=true;ultimoCodigoDetectado='';ultimaDeteccionCodigo=0;ultimoProductoEscaneadoId=null;
  show('lectorPanel',true);show('resumenEscaneo',m==='venta');
  if(m==='venta'){$('ultimoEscaneo').textContent='Apuntá al primer producto para comenzar.';actualizarResumenEscaneo();}
@@ -1244,7 +1247,7 @@ async function iniciarLector(m){
  try {
   const l=new Html5Qrcode('camara',{verbose:false});lector=l;
   await l.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},codigo=>{
-   if(lector!==l)return;
+   if(lector!==l||sesion!==ampSesionLector)return;
    const limpio=limpiarcodigo(codigo);
    if(m==='venta'){
     const ahora=Date.now();
@@ -1270,11 +1273,12 @@ async function iniciarLector(m){
    if(m==='precio'){selectTab('precio');$('buscarPrecio').value=p.codigo_barras||p.detalles;renderPrecio();estado('Precio encontrado: '+p.detalles,'success')}
    else if(m==='entrada'){seleccionarEntrada(p.id);estado('Producto seleccionado: '+p.detalles,'success')}
   },()=>{});
-  if(lector!==l){try{await l.stop()}catch(e){}return}
+  if(lector!==l||sesion!==ampSesionLector){try{await l.stop()}catch(e){}try{l.clear()}catch(e){}return}
   $('camaraInfo').textContent=m==='venta'?'Escaneá todos los productos. El total cambia aquí mismo. Para varios iguales, usá +1.':'Apuntá al código de barras del producto.';
   estado('Cámara iniciada.');
  }catch(e){
-  $('camaraInfo').textContent='No se pudo abrir la cámara. Revisa el permiso de Chrome: '+(e?.message||e);
+  if(sesion!==ampSesionLector)return;
+  $('camaraInfo').textContent='No se pudo abrir la cámara. Revisá el permiso de Chrome: '+(e?.message||e);
   estado('Error de cámara.','error');
   if(lector){try{lector.clear()}catch(e){}}
   lector=null;abriendo=false;

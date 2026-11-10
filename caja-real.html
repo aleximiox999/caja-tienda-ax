@@ -478,9 +478,11 @@ function selectTab(t){
  if(['entradas','empleados','reporte'].includes(t)&&(cuenta?.rol!=='administrador'||offlineMode))return;
  tab=t;document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
  ['venta','precio','inventario','entradas','empleados','reporte'].forEach(x=>show('panel'+x[0].toUpperCase()+x.slice(1),x===t));
- void detenerLector();
+ // Entregar la promesa de cierre evita iniciar otra cámara antes de liberar la anterior.
+ const cierreCamara=detenerLector();
  if(t==='precio')renderPrecio();if(t==='inventario')renderInventario();if(t==='entradas')renderEntradas();if(t==='empleados')void cargarEmpleados();
  if(t==='reporte')void cargarReporte();
+ return cierreCamara;
 }
 async function detenerLector(){
  const l=lector;lector=null;abriendo=false;
@@ -505,6 +507,8 @@ async function iniciarLector(m){
    else if(m==='entrada'){seleccionarEntrada(p.id);estado('Producto seleccionado: '+p.detalles,'success')}
    else {agregar(Number(p.id));}
   },()=>{});
+  // Si la pestaña cambió durante el permiso de cámara, cerrar el lector antiguo.
+  if(lector!==l){try{await l.stop()}catch(e){}return;}
   $('camaraInfo').textContent='Apunta al código de barras del producto.';estado('Cámara iniciada.');
  }catch(e){$('camaraInfo').textContent='No se pudo abrir la cámara. Revisa el permiso de Chrome: '+(e?.message||e);estado('Error de cámara.','error');if(lector){try{lector.clear()}catch(e){}}lector=null;abriendo=false;}
 }
@@ -601,7 +605,18 @@ $('formAlta').onsubmit=async e=>{e.preventDefault();const email=$('altaEmail').v
 $('formEmpleado').onsubmit=async e=>{e.preventDefault();if(cuenta?.rol!=='administrador')return;estado('Autorizando empleado…');const {error}=await db.rpc('vincular_empleado',{p_correo:$('correoNuevo').value.trim(),p_nombre:$('nombreNuevo').value.trim()});if(error){estado('No se pudo autorizar: '+error.message,'error');return}$('formEmpleado').reset();estado('Empleado autorizado. Ya puede ingresar desde su cuenta.','success');await cargarEmpleados()};
 $('btnSalir').onclick=async()=>{await detenerLector();await db.auth.signOut();cuenta=null;catalogo=[];cart=[];show('btnSalir',false);mostrarPantalla('login');estado('Sesión cerrada.')};
 $('btnComprobar').onclick=boot;
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>selectTab(b.dataset.tab));
+// Abrir el lector inmediatamente desde las pestañas verdes Vender y Consultar precio.
+ // No se abre automáticamente al iniciar sesión: solo con un toque explícito.
+ let ampSolicitudCamaraTab=0;
+ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=async()=>{
+  const destino=b.dataset.tab,solicitud=++ampSolicitudCamaraTab;
+  const cierre=selectTab(destino);
+  if(destino!=='venta'&&destino!=='precio')return;
+  await cierre;
+  // Un cambio de pestaña posterior cancela cualquier apertura pendiente.
+  if(solicitud!==ampSolicitudCamaraTab||tab!==destino||!cuenta||$('app').classList.contains('hidden'))return;
+  await iniciarLector(destino);
+ });
 $('buscarProducto').oninput=renderResultados;$('buscarPrecio').oninput=renderPrecio;
 $('escanearVenta').onclick=()=>iniciarLector('venta');
 $('escanearPrecio').onclick=()=>iniciarLector('precio');

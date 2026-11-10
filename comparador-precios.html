@@ -54,6 +54,49 @@ tr:nth-child(even) td:not(:first-child){background:#20252d}
 .mcard,.tablewrap tr{scroll-margin-top:100px}
 @media(max-width:800px){.alphabet{flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}.alphabet button{flex:0 0 auto}
 .mcard .company{grid-template-columns:33% minmax(0,67%)}.comp-img{width:55px;height:62px}.comp-img-link{flex-basis:55px}.comp-layout{gap:7px}.comp-no-img{max-width:70px}}
+
+/* AMPHX · Negro titanio y azul metalizado, como COSTOS. */
+:root{--bg:#08111b;--surface:#142331;--surface2:#203448;--border:#5b778b;--accent:#a9cbe3;--good:#aef0c8}
+header{background:repeating-linear-gradient(0deg,#ffffff04 0px,#ffffff04 1px,transparent 2px,transparent 3px),linear-gradient(112deg,#02070c,#172b3b 50%,#07131d);border-bottom:2px solid #adc3d5;box-shadow:0 6px 22px #0008}
+h1{color:#eaf2f8;text-shadow:0 1px 3px #000}
+.panel{background:linear-gradient(145deg,#182b3b,#101b27);border-color:#668093;box-shadow:0 4px 13px #0002}
+.mcard{background:linear-gradient(130deg,#1a3144,#112333);border-color:#70899c}
+input,select{background:#0a1926;border-color:#879eae}
+button.secondary{background:linear-gradient(120deg,#264863,#14283a);border-color:#8aa7b8}
+.product-link{color:#eef8ff;background:transparent;border:0;padding:0;min-height:0;text-align:left;font-size:inherit;font-weight:800;line-height:1.45;cursor:pointer;text-decoration:underline;text-decoration-color:#87b7d7;text-underline-offset:3px}
+.product-link:hover,.product-link:focus-visible{color:#bfe5ff}
+.cmp-acciones{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:7px}
+.cmp-mini{background:linear-gradient(135deg,#2a587b,#133148);color:#f5fbff;border:1px solid #7aa8c6;border-radius:8px;min-width:32px;min-height:32px;width:32px;height:32px;padding:0;display:inline-grid;place-items:center;font-size:17px;line-height:1;cursor:pointer}
+.cmp-mini.camara{background:linear-gradient(125deg,#275478,#0c2946)}
+.cmp-mini:hover{filter:brightness(1.25)}
+.cmp-img-button{display:block;border:0;background:#edf1f6;border-radius:9px;min-height:0;padding:0}
+.cmp-img-button img{object-fit:contain}
+.cmp-manual{color:#c0e7ff;font-weight:700}
+.cmp-dialog{width:min(94vw,630px);max-height:91dvh;overflow:auto;padding:18px;background:linear-gradient(135deg,#223e52,#101c29 65%,#0b1722);border:2px solid #96b4c8;border-radius:16px;color:#f5faff;box-shadow:0 18px 65px #000c}
+.cmp-dialog::backdrop{background:#000b}
+.cmp-dialog h2{font-size:20px;padding-right:38px}
+.cmp-dialog form label{margin-top:12px}
+.cmp-dialog input{margin-top:3px;width:100%}
+.cmp-dialog .cmp-close{float:right;background:#1a3448;color:#fff;border:1px solid #b7ccda;min-width:40px;min-height:40px;font-size:23px;padding:0}
+.cmp-dialog .cmp-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.cmp-dialog .cmp-toolbar button{flex:1 1 135px}
+.cmp-dialog .cmp-status{padding:8px;margin:9px 0;font-size:13px;color:#cbdde9;white-space:pre-wrap;overflow-wrap:anywhere}
+.cmp-dialog .cmp-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;max-height:44dvh;overflow:auto}
+.cmp-dialog .cmp-search-result{background:#183046;border:1px solid #647f92;border-radius:10px;padding:8px;min-width:0}
+.cmp-dialog .cmp-search-result img{width:100%;height:120px;background:#fff;object-fit:contain;border-radius:6px}
+.cmp-dialog .cmp-search-result p{font-size:12px;overflow-wrap:anywhere}
+.cmp-dialog .cmp-search-result button{width:100%;font-size:13px}
+.cmp-viewer{width:min(98vw,920px);max-width:98vw;height:min(94dvh,1000px);max-height:94dvh;padding:0;overflow:hidden;background:#06111b;border:1px solid #9eb6c8;border-radius:13px;color:#fff}
+.cmp-viewer::backdrop{background:#000d}
+.cmp-viewer .cmp-view-close{position:absolute;right:9px;top:8px;z-index:8;min-width:39px;width:39px;height:39px;min-height:39px;padding:0;background:#192f42bb;color:#fff;border:1px solid #a8b9c2;border-radius:50%;font-size:25px}
+.cmp-viewer .cmp-view-layout{height:100%;display:flex;flex-direction:column;align-items:stretch}
+.cmp-viewer .cmp-view-tabs{display:flex;flex-wrap:wrap;gap:6px;padding:10px 54px 7px 9px;max-height:85px;overflow:auto}
+.cmp-viewer .cmp-view-tabs button{min-height:34px;font-size:12px;background:#233e52;color:#fff;border:1px solid #6788a2;padding:5px 9px}
+.cmp-viewer .cmp-view-tabs button.active{background:#d4e9fa;color:#102737}
+.cmp-viewer .cmp-view-image{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden;touch-action:none;overscroll-behavior:contain;background:#091522}
+.cmp-viewer .cmp-view-image img{display:block;width:100%;height:100%;object-fit:contain;transform-origin:center center;user-select:none;-webkit-user-select:none;pointer-events:none}
+.cmp-viewer .cmp-view-empty{text-align:center;padding:20px;color:#d1e0ea}
+@media(max-width:480px){.cmp-dialog{padding:12px}.cmp-dialog .cmp-results{grid-template-columns:repeat(2,minmax(0,1fr))}.cmp-dialog .cmp-search-result img{height:92px}.cmp-img-button .comp-img{width:48px;height:57px}}
 </style></head>
 <body>
 <header><div class="top"><h1>TIENDA AMPHX · COMPARADOR DE PRECIOS</h1>
@@ -75,7 +118,7 @@ tr:nth-child(even) td:not(:first-child){background:#20252d}
 <div><label for="orderFilter">FILTRO</label><select id="orderFilter"><option value="az">Fichas de productos (A–Z)</option><option value="recientes">Recién ingresados</option></select></div>
 <button type="button" id="refresh">Actualizar tabla</button></div>
 <nav id="alphaIndex" class="alphabet" aria-label="Ir a productos por letra"></nav>
-<p class="form-note">En cada empresa se muestra la fotografía que publica, si está disponible, su precio en bolivianos y el enlace <strong>Abrir</strong> para consultar la página. Tocá la fotografía para ampliarla. «Catálogo» abre una lista de productos, mientras que «Abrir» va a una publicación individual. «Sin verificar» no significa agotado. La fecha corresponde a la última consulta guardada, no al stock en tiempo real.</p>
+<p class="form-note">Podés tocar el nombre del producto para ver las fotos de las empresas. La camarita permite buscar o agregar fotos y el lápiz editar precios. Cada empresa conserva sus datos por separado. Se muestra su precio en bolivianos y el enlace <strong>Abrir</strong> para consultar la página. Tocá la fotografía para ampliarla. «Catálogo» abre una lista de productos, mientras que «Abrir» va a una publicación individual. «Sin verificar» no significa agotado. La fecha corresponde a la última consulta guardada, no al stock en tiempo real.</p>
 <div id="desktopCatalogo" class="tablewrap"></div><div id="mobileCatalogo" class="mobile-cards"></div>
 </section>
 <section id="nuevos" class="panel hidden">
@@ -84,6 +127,41 @@ tr:nth-child(even) td:not(:first-child){background:#20252d}
 <div id="newCount" class="stats"></div><div id="desktopNuevos" class="tablewrap"></div><div id="mobileNuevos" class="mobile-cards"></div>
 </section>
 </div>
+
+<dialog id="cmpPriceDialog" class="cmp-dialog" aria-labelledby="cmpPriceTitle">
+<button type="button" class="cmp-close" data-cmp-close="cmpPriceDialog" aria-label="Cerrar">×</button>
+<h2 id="cmpPriceTitle">Editar precio de la empresa</h2>
+<p class="muted" id="cmpPriceContext"></p>
+<form id="cmpPriceForm">
+<label for="cmpPriceValue">Precio encontrado (Bs)</label>
+<input id="cmpPriceValue" type="number" min="0.01" max="9999999" step="0.01" inputmode="decimal" placeholder="Ej. 12.50" required>
+<label for="cmpPriceLink">Enlace de la publicación (opcional)</label>
+<input id="cmpPriceLink" type="url" placeholder="https://..." inputmode="url">
+<p class="form-note">Se guardará únicamente el precio de esta empresa para este producto. No modifica COSTOS, VENTAS ni existencias.</p>
+<p id="cmpPriceStatus" class="cmp-status" role="status"></p>
+<div class="cmp-toolbar"><button id="cmpPriceSave" type="submit">Guardar precio</button><button type="button" class="secondary" data-cmp-close="cmpPriceDialog">Cancelar</button></div>
+</form>
+</dialog>
+<dialog id="cmpPhotoDialog" class="cmp-dialog" aria-labelledby="cmpPhotoTitle">
+<button type="button" class="cmp-close" data-cmp-close="cmpPhotoDialog" aria-label="Cerrar">×</button>
+<h2 id="cmpPhotoTitle">Buscar fotografía</h2>
+<p id="cmpPhotoContext" class="muted"></p>
+<label for="cmpPhotoSearch">Buscar la fotografía de este producto</label>
+<input id="cmpPhotoSearch" type="search" maxlength="120" placeholder="Producto, marca y tamaño">
+<div class="cmp-toolbar"><button type="button" id="cmpPhotoSearchBtn">Buscar en Google Imágenes</button>
+<button type="button" class="secondary" id="cmpPhotoGalleryBtn">Galería</button>
+<button type="button" class="secondary" id="cmpPhotoCameraBtn">Cámara</button></div>
+<input id="cmpPhotoGallery" type="file" accept="image/*" class="hidden">
+<input id="cmpPhotoCamera" type="file" accept="image/*" capture="environment" class="hidden">
+<p id="cmpPhotoStatus" class="cmp-status" role="status">Elegí la imagen de la misma marca, contenido y presentación.</p>
+<div id="cmpPhotoResults" class="cmp-results"></div>
+<p class="form-note">La foto quedará asociada solamente a este producto en esta empresa. Las fotos de COSTOS permanecen separadas. Verificá los derechos de uso de imágenes encontradas en internet.</p>
+</dialog>
+<dialog id="cmpViewer" class="cmp-viewer" aria-label="Fotografías del producto">
+<button type="button" class="cmp-view-close" id="cmpViewClose" aria-label="Cerrar fotografía">×</button>
+<div class="cmp-view-layout"><nav id="cmpViewTabs" class="cmp-view-tabs" aria-label="Fotografías publicadas por empresa"></nav>
+<div id="cmpViewFrame" class="cmp-view-image"><img id="cmpBigImage" class="hidden" alt="Fotografía del producto" draggable="false"><p id="cmpViewEmpty" class="cmp-view-empty">No hay fotografía de este producto todavía. Usá la camarita junto a la empresa para agregarla.</p></div>
+</div></dialog>
 </main>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.0';
@@ -91,26 +169,43 @@ const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable
 const $=id=>document.getElementById(id);
 const EMPRESAS=['FARMACORP','AMARKET','HIPERMAXI','FIDALGA','SUPERMERCADO MIXTURA','SUPERMERCADO TÍA'];
 let productos=[],comparaciones=[],investigaciones=[],tab='catalogo',cargando=false;
+const FOTO_BUCKET='fotos-comparador-amphx';
+const firmasFoto=new Map();
+let editarPrecioActual=null,editarFotoActual=null,busquedaFotoSolicitud=0,guardarFotoEnProceso=false;
 function txt(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function precio(v){return 'Bs '+Number(v).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function linkSeguro(v){try{const u=new URL(String(v));return u.protocol==='https:'?u.href:null;}catch{return null;}}
 function mensaje(s,error=false){$('status').textContent=s;$('status').className='notice'+(error?' error':'');}
 function mostrar(id,si){$(id).classList.toggle('hidden',!si)}
-function celda(comp,empresa){
- if(!comp)return '<span class="empty-price">Sin verificar</span>';
- const href=linkSeguro(comp.url_fuente);
- const imagen=linkSeguro(comp.imagen_url);
- const nombre=String(comp.nombre_publicado||empresa||'Producto');
- const foto=imagen
-  ?'<a class="comp-img-link" href="'+txt(imagen)+'" target="_blank" rel="noopener noreferrer" aria-label="Ampliar foto de '+txt(empresa||'la empresa')+'"><img class="comp-img" loading="lazy" decoding="async" src="'+txt(imagen)+'" alt="'+txt(nombre)+'" title="'+txt(nombre)+'"></a>'
-  :'<span class="comp-no-img">Sin foto publicada</span>';
- let detalles=comp.precio===null||comp.precio===undefined?'<span class="empty-price">Precio sin verificar</span>':'<span class="price">'+txt(precio(comp.precio))+'</span>';
- if(href){const categoria=href.includes('/collections/')||href.includes('/categoria/')||href.includes('/seccion/')||new URL(href).pathname==='/';detalles+=' <a href="'+txt(href)+'" target="_blank" rel="noopener noreferrer" title="'+(categoria?'Ver catálogo de la empresa':'Abrir publicación del producto')+'">'+(categoria?'Catálogo':'Abrir')+'</a>';}
- const nota=comp.disponibilidad==='agotado'?'Agotado':comp.disponibilidad==='disponible'?'Disponible':'Stock no verificado';
- let fecha='';
- if(comp.consultado_en){const d=new Date(comp.consultado_en);if(!Number.isNaN(d.getTime()))fecha=' · '+d.toLocaleDateString('es-BO');}
- return '<span class="comp-layout">'+foto+'<span class="comp-details">'+detalles+'<span class="comp-nota">'+txt(nota+fecha)+'</span></span></span>';
+function fotoUrl(comp){
+ if(!comp)return null;
+ const firmado=comp.foto_path?firmasFoto.get(comp.foto_path):null;
+ return linkSeguro(firmado?.vence>Date.now()?firmado.url:null)||linkSeguro(comp.imagen_url);
 }
+function targetAttrs(tipo,id,empresa){return ' data-cmp-tipo="'+txt(tipo)+'" data-cmp-id="'+txt(id)+'" data-cmp-empresa="'+txt(empresa)+'"';}
+function celda(comp,empresa,tipo,id){
+ const src=fotoUrl(comp),href=linkSeguro(comp?.url_fuente),atr=targetAttrs(tipo,id,empresa);
+ const foto=src
+  ?'<button type="button" class="comp-img-link cmp-img-button" data-cmp-action="ver"'+atr+' title="Ver fotografía de este producto"><img class="comp-img" loading="lazy" decoding="async" src="'+txt(src)+'" alt="Foto del producto en '+txt(empresa)+'"></button>'
+  :'<span class="comp-no-img">Sin foto</span>';
+ let detalles=comp?.precio!==null&&comp?.precio!==undefined
+  ?'<span class="price">'+txt(precio(comp.precio))+'</span>'
+  :'<span class="empty-price">Sin verificar</span>';
+ if(href){
+  const url=new URL(href);
+  const categoria=href.includes('/collections/')||href.includes('/categoria/')||href.includes('/seccion/')||url.pathname==='/';
+  detalles+=' <a href="'+txt(href)+'" target="_blank" rel="noopener noreferrer">'+(categoria?'Catálogo':'Abrir')+'</a>';
+ }
+ const fuente=comp?.precio_origen==='manual'?' · Ingresado manualmente':'';
+ const nota=comp?.disponibilidad==='agotado'?'Agotado':comp?.disponibilidad==='disponible'?'Disponible':'Stock no verificado';
+ const fecha=comp?.consultado_en?new Date(comp.consultado_en).toLocaleDateString('es-BO'):'';
+ return '<span class="comp-layout">'+foto+'<span class="comp-details">'+detalles+
+  '<span class="comp-nota">'+txt(nota+fuente+(fecha?' · '+fecha:''))+'</span>'+
+  '<span class="cmp-acciones"><button type="button" class="cmp-mini" data-cmp-action="precio"'+atr+' title="Ingresar o corregir precio" aria-label="Editar precio de '+txt(empresa)+'">✎</button>'+
+  '<button type="button" class="cmp-mini camara" data-cmp-action="foto"'+atr+' title="Buscar y guardar foto" aria-label="Buscar fotografía de '+txt(empresa)+'">📷</button></span>'+
+  '</span></span>';
+}
+
 function inicialNombre(nombre){
  return String(nombre||'').trim().charAt(0).toLocaleUpperCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g,'')||'#';
 }
@@ -128,10 +223,10 @@ function renderCatalogo(){
   const c=map.get('p:'+p.id)||new Map();
   const estado=p.activo?'ACTIVO':'INACTIVO';
   const propio=Number(p.precio_venta)>0?precio(p.precio_venta):'Sin asignar';
-  const nombre='<span class="product">'+txt(p.detalles)+'</span>';
+  const nombre='<button type="button" class="product product-link" data-cmp-action="ver" data-cmp-tipo="p" data-cmp-id="'+txt(p.id)+'" aria-label="Ver fotografías de '+txt(p.detalles)+'">'+txt(p.detalles)+'</button>';
   const inicial=txt(inicialNombre(p.detalles));
-  const td='<tr data-inicial="'+inicial+'"><td>'+nombre+'</td><td>'+estado+'</td><td>'+txt(propio)+'</td>'+EMPRESAS.map(e=>'<td>'+celda(c.get(e),e)+'</td>').join('')+'</tr>';
-  const card='<article class="mcard" data-inicial="'+inicial+'"><div>'+nombre+'<span class="state'+(p.activo?'':' off')+'">'+estado+' · Mi precio: '+txt(propio)+'</span></div>'+EMPRESAS.map(e=>'<div class="company"><strong>'+txt(e)+'</strong><div>'+celda(c.get(e),e)+'</div></div>').join('')+'</article>';
+  const td='<tr data-inicial="'+inicial+'"><td>'+nombre+'</td><td>'+estado+'</td><td>'+txt(propio)+'</td>'+EMPRESAS.map(e=>'<td>'+celda(c.get(e),e,'p',p.id)+'</td>').join('')+'</tr>';
+  const card='<article class="mcard" data-inicial="'+inicial+'"><div>'+nombre+'<span class="state'+(p.activo?'':' off')+'">'+estado+' · Mi precio: '+txt(propio)+'</span></div>'+EMPRESAS.map(e=>'<div class="company"><strong>'+txt(e)+'</strong><div>'+celda(c.get(e),e,'p',p.id)+'</div></div>').join('')+'</article>';
   return {td,card};
  });
  $('desktopCatalogo').innerHTML='<table>'+cabecera()+'<tbody>'+rows.map(x=>x.td).join('')+'</tbody></table>';
@@ -145,10 +240,10 @@ function renderNuevos(){
  const map=mapaComparaciones();
  const rows=investigaciones.map(p=>{
   const c=map.get('n:'+p.id)||new Map();
-  const nombre='<span class="product">'+txt(p.nombre)+'</span>';
-  const tds=EMPRESAS.map(e=>'<td>'+celda(c.get(e),e)+'</td>').join('');
+  const nombre='<button type="button" class="product product-link" data-cmp-action="ver" data-cmp-tipo="n" data-cmp-id="'+txt(p.id)+'" aria-label="Ver fotografías de '+txt(p.nombre)+'">'+txt(p.nombre)+'</button>';
+  const tds=EMPRESAS.map(e=>'<td>'+celda(c.get(e),e,'n',p.id)+'</td>').join('');
   const td='<tr><td>'+nombre+'</td><td>Por investigar</td><td>No registrado</td>'+tds+'</tr>';
-  const card='<article class="mcard">'+nombre+'<span class="state">No registrado en inventario</span>'+EMPRESAS.map(e=>'<div class="company"><strong>'+txt(e)+'</strong><div>'+celda(c.get(e),e)+'</div></div>').join('')+'</article>';
+  const card='<article class="mcard">'+nombre+'<span class="state">No registrado en inventario</span>'+EMPRESAS.map(e=>'<div class="company"><strong>'+txt(e)+'</strong><div>'+celda(c.get(e),e,'n',p.id)+'</div></div>').join('')+'</article>';
   return {td,card};
  });
  $('desktopNuevos').innerHTML='<table>'+cabecera()+'<tbody>'+rows.map(x=>x.td).join('')+'</tbody></table>';
@@ -161,13 +256,14 @@ async function cargar(){
  try{
   const resp=await Promise.all([
     db.from('productos').select('id,detalles,precio_venta,activo,fecha_creacion').order('detalles'),
-    db.from('comparador_precios').select('producto_id,por_comprar_id,empresa,precio,nombre_publicado,url_fuente,imagen_url,disponibilidad,consultado_en'),
+    db.from('comparador_precios').select('id,producto_id,por_comprar_id,empresa,precio,nombre_publicado,url_fuente,imagen_url,foto_path,precio_origen,disponibilidad,consultado_en'),
     db.from('comparador_productos_por_comprar').select('id,nombre,creado_en').order('creado_en',{ascending:false})
   ]);
   const fallo=resp.find(x=>x.error);
   if(fallo)throw fallo.error;
   if(resp.some(x=>!Array.isArray(x.data)))throw Error('Respuesta incompleta');
   [productos,comparaciones,investigaciones]=resp.map(x=>x.data);
+  await resolverFotosPrivadas();
   renderCatalogo();renderNuevos();
   mensaje('Tabla cargada: '+productos.length+' productos, '+comparaciones.length+' precios con publicaciones guardadas.');
  }catch(e){mensaje('No se pudieron actualizar los datos: '+String(e.message||e)+'. La información anterior se conserva.',true);}
@@ -211,6 +307,246 @@ $('newForm').onsubmit=async e=>{
  }catch(err){mensaje('No se pudo agregar el producto: '+String(err.message||err),true);}
  finally{if(boton)boton.disabled=false;}
 };
+
+function cmpProducto(tipo,id){
+ return tipo==='p'?productos.find(p=>Number(p.id)===Number(id)):investigaciones.find(p=>Number(p.id)===Number(id));
+}
+function cmpNombre(tipo,id){const p=cmpProducto(tipo,id);return String(p?.detalles||p?.nombre||'Producto');}
+function cmpRegistro(tipo,id,empresa){return comparaciones.find(c=>c.empresa===empresa&&Number(tipo==='p'?c.producto_id:c.por_comprar_id)===Number(id));}
+function cmpObjetivo(tipo,id){return tipo==='p'?{producto_id:Number(id),por_comprar_id:null}:{producto_id:null,por_comprar_id:Number(id)};}
+async function resolverFotosPrivadas(){
+ const rutas=[...new Set(comparaciones.map(c=>c.foto_path).filter(Boolean))];
+ await Promise.all(rutas.map(async ruta=>{
+  const existente=firmasFoto.get(ruta);if(existente&&existente.vence>Date.now())return;
+  try{
+   const {data,error}=await db.storage.from(FOTO_BUCKET).createSignedUrl(ruta,600);
+   if(error||!data?.signedUrl)throw error||Error('Foto no disponible');
+   firmasFoto.set(ruta,{url:data.signedUrl,vence:Date.now()+8*60000});
+  }catch(e){firmasFoto.delete(ruta);}
+ }));
+}
+function cmpCerrar(id){
+ const modal=$(id);if(modal.open)modal.close();
+ if(id==='cmpPhotoDialog'){busquedaFotoSolicitud++;editarFotoActual=null;}
+ if(id==='cmpPriceDialog')editarPrecioActual=null;
+}
+document.querySelectorAll('[data-cmp-close]').forEach(b=>b.onclick=()=>cmpCerrar(b.dataset.cmpClose));
+function cmpAbrirPrecio(tipo,id,empresa){
+ const p=cmpProducto(tipo,id);if(!p)return;
+ editarPrecioActual={tipo,id,empresa};
+ const c=cmpRegistro(tipo,id,empresa);
+ $('cmpPriceContext').textContent=cmpNombre(tipo,id)+' · '+empresa;
+ $('cmpPriceValue').value=c?.precio!=null?Number(c.precio).toFixed(2):'';
+ $('cmpPriceLink').value=c?.url_fuente||'';
+ $('cmpPriceStatus').textContent='';
+ $('cmpPriceSave').disabled=false;
+ $('cmpPriceDialog').showModal();
+ $('cmpPriceValue').focus();
+}
+$('cmpPriceDialog').addEventListener('close',()=>{editarPrecioActual=null;});
+$('cmpPriceForm').onsubmit=async ev=>{
+ ev.preventDefault();const t=editarPrecioActual;if(!t)return;
+ const valor=Number($('cmpPriceValue').value),enlace=$('cmpPriceLink').value.trim();
+ if(!Number.isFinite(valor)||valor<0.01||valor>9999999||Math.abs(valor*100-Math.round(valor*100))>.001){
+  $('cmpPriceStatus').textContent='Ingresá un precio válido con hasta dos decimales.';return;
+ }
+ if(enlace&&!linkSeguro(enlace)){$('cmpPriceStatus').textContent='El enlace debe empezar con https://';return;}
+ const btn=$('cmpPriceSave');btn.disabled=true;$('cmpPriceStatus').textContent='Guardando en Supabase…';
+ try{
+  const anterior=cmpRegistro(t.tipo,t.id,t.empresa);
+  const payload={precio:valor,url_fuente:enlace||null,precio_origen:'manual',consultado_en:new Date().toISOString()};
+  const q=anterior
+   ?db.from('comparador_precios').update(payload).eq('id',anterior.id).select('id,precio').single()
+   :db.from('comparador_precios').insert({...cmpObjetivo(t.tipo,t.id),empresa:t.empresa,...payload,disponibilidad:'sin_verificar',nombre_publicado:cmpNombre(t.tipo,t.id)}).select('id,precio').single();
+  const {data,error}=await q;if(error||!data||Number(data.precio)!==valor)throw error||Error('No se confirmó el precio');
+  cmpCerrar('cmpPriceDialog');await cargar();
+  mensaje('Precio guardado: '+t.empresa+' · '+cmpNombre(t.tipo,t.id)+' · '+precio(valor)+'. No se modificó COSTOS.');
+ }catch(e){$('cmpPriceStatus').textContent='No se pudo guardar: '+String(e.message||e)+'. Revisá antes de volver a intentar.';}
+ finally{btn.disabled=false;}
+};
+function cmpAbrirEditorFoto(tipo,id,empresa){
+ if(!cmpProducto(tipo,id)||guardarFotoEnProceso)return;
+ editarFotoActual={tipo,id,empresa};
+ $('cmpPhotoContext').textContent=cmpNombre(tipo,id)+' · '+empresa;
+ $('cmpPhotoSearch').value=cmpNombre(tipo,id);
+ $('cmpPhotoStatus').textContent='Elegí la foto de la misma marca y presentación. Se guardará solamente en esta empresa.';
+ $('cmpPhotoResults').replaceChildren();
+ $('cmpPhotoDialog').showModal();
+}
+$('cmpPhotoDialog').addEventListener('close',()=>{busquedaFotoSolicitud++;editarFotoActual=null;});
+$('cmpPhotoSearchBtn').onclick=()=>void cmpBuscarEnGoogle();
+$('cmpPhotoSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();void cmpBuscarEnGoogle();}});
+$('cmpPhotoGalleryBtn').onclick=()=>$('cmpPhotoGallery').click();
+$('cmpPhotoCameraBtn').onclick=()=>$('cmpPhotoCamera').click();
+async function cmpBuscarEnGoogle(){
+ const t=editarFotoActual,consulta=$('cmpPhotoSearch').value.trim(),seq=++busquedaFotoSolicitud;
+ if(!t||consulta.length<3){$('cmpPhotoStatus').textContent='Escribí por lo menos tres letras para buscar.';return;}
+ const btn=$('cmpPhotoSearchBtn');btn.disabled=true;
+ $('cmpPhotoStatus').textContent='Buscando imágenes en Google…';$('cmpPhotoResults').replaceChildren();
+ try{
+  const {data,error}=await db.functions.invoke('imagenes-producto',{body:{accion:'buscar',consulta}});
+  if(seq!==busquedaFotoSolicitud||!editarFotoActual)return;
+  if(error)throw error;
+  if(data?.error)throw Error(data.error);
+  const imagenes=Array.isArray(data?.imagenes)?data.imagenes.filter(x=>x.proveedor==='google'): [];
+  $('cmpPhotoStatus').textContent=imagenes.length?'Elegí una foto que corresponda a la marca, sabor, tamaño y presentación.':'No se encontraron fotografías; podés seleccionar una desde tu galería.';
+  for(const item of imagenes){
+   if(typeof item.id!=='string'||!linkSeguro(item.miniatura))continue;
+   const card=document.createElement('article');card.className='cmp-search-result';
+   const img=document.createElement('img');img.src=item.miniatura;img.loading='lazy';img.referrerPolicy='no-referrer';
+   img.alt=String(item.titulo||'Resultado de Google Imágenes');
+   const nombre=document.createElement('p');nombre.textContent=String(item.titulo||'Imagen de producto');
+   const fuente=document.createElement('p');fuente.className='muted';fuente.textContent=String(item.fuente||'Google Imágenes');
+   const elegir=document.createElement('button');elegir.type='button';elegir.textContent='Guardar esta foto';
+   elegir.onclick=()=>void cmpImportarGoogle(item);
+   card.append(img,nombre,fuente,elegir);$('cmpPhotoResults').append(card);
+  }
+ }catch(e){
+  if(seq===busquedaFotoSolicitud)$('cmpPhotoStatus').textContent='No se pudo buscar: '+String(e.message||e)+'. Podés usar una foto de la galería.';
+ }finally{if(seq===busquedaFotoSolicitud)btn.disabled=false;}
+}
+function cmpTipoImagen(bytes){
+ if(bytes[0]===255&&bytes[1]===216)return 'image/jpeg';
+ if(bytes[0]===137&&bytes[1]===80&&bytes[2]===78&&bytes[3]===71)return 'image/png';
+ if(bytes[0]===82&&bytes[1]===73&&bytes[2]===70&&bytes[3]===70&&bytes[8]===87)return 'image/webp';
+ if(bytes[0]===71&&bytes[1]===73&&bytes[2]===70)return 'image/gif';
+ return null;
+}
+async function cmpImportarGoogle(item){
+ if(!editarFotoActual||guardarFotoEnProceso)return;
+ $('cmpPhotoStatus').textContent='Descargando fotografía…';
+ try{
+  const {data,error}=await db.functions.invoke('imagenes-producto',{body:{accion:'importar',proveedor:'google',id:item.id}});
+  if(error)throw error;
+  if(!(data instanceof Blob)||data.size>8*1024*1024)throw Error('No llegó una imagen válida.');
+  const bytes=new Uint8Array(await data.slice(0,16).arrayBuffer());
+  const mime=cmpTipoImagen(bytes);if(!mime)throw Error('La imagen no es JPG, PNG, WebP o GIF.');
+  await cmpGuardarFoto(new Blob([data],{type:mime}));
+ }catch(e){$('cmpPhotoStatus').textContent='No se pudo importar esta fotografía: '+String(e.message||e);}
+}
+async function cmpReducirFoto(blob){
+ if(!blob||blob.size>15*1024*1024||!String(blob.type).startsWith('image/'))throw Error('Elegí una imagen válida de menos de 15 MB.');
+ const url=URL.createObjectURL(blob),img=new Image();
+ try{
+  await new Promise((ok,fail)=>{img.onload=ok;img.onerror=()=>fail(Error('El navegador no pudo abrir esta imagen.'));img.src=url;});
+  const escala=Math.min(1,1400/Math.max(img.naturalWidth,img.naturalHeight));
+  const cv=document.createElement('canvas');cv.width=Math.max(1,Math.round(img.naturalWidth*escala));cv.height=Math.max(1,Math.round(img.naturalHeight*escala));
+  const ctx=cv.getContext('2d');if(!ctx)throw Error('No se pudo preparar la imagen.');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);ctx.imageSmoothingQuality='high';
+  ctx.drawImage(img,0,0,cv.width,cv.height);
+  const salida=await new Promise((ok,fail)=>cv.toBlob(x=>x?ok(x):fail(Error('No se pudo comprimir la foto.')),'image/jpeg',.81));
+  if(salida.size>2500000)throw Error('La imagen sigue siendo demasiado grande. Probá con otra foto.');
+  return salida;
+ }finally{URL.revokeObjectURL(url);}
+}
+async function cmpGuardarFoto(file){
+ const t=editarFotoActual;if(!t||guardarFotoEnProceso)return;
+ guardarFotoEnProceso=true;
+ const btns=[...$('cmpPhotoDialog').querySelectorAll('button')];btns.forEach(b=>b.disabled=true);
+ let path='';
+ try{
+  const blob=await cmpReducirFoto(file);
+  if(!editarFotoActual||editarFotoActual!==t)throw Error('El editor ya no está abierto.');
+  path=t.tipo+'/'+t.id+'/'+t.empresa.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9-]/g,'_')+'/'+crypto.randomUUID()+'.jpg';
+  $('cmpPhotoStatus').textContent='Guardando fotografía de '+t.empresa+'…';
+  const upload=await db.storage.from(FOTO_BUCKET).upload(path,blob,{contentType:'image/jpeg',upsert:false});
+  if(upload.error)throw upload.error;
+  const anterior=cmpRegistro(t.tipo,t.id,t.empresa);
+  const datos=anterior
+   ?db.from('comparador_precios').update({foto_path:path,consultado_en:new Date().toISOString()}).eq('id',anterior.id).select('id,foto_path').single()
+   :db.from('comparador_precios').insert({...cmpObjetivo(t.tipo,t.id),empresa:t.empresa,precio:null,url_fuente:null,disponibilidad:'sin_verificar',nombre_publicado:cmpNombre(t.tipo,t.id),foto_path:path}).select('id,foto_path').single();
+  const {data,error}=await datos;
+  if(error||data?.foto_path!==path)throw error||Error('No se confirmó la fotografía');
+  cmpCerrar('cmpPhotoDialog');
+  await cargar();
+  mensaje('Fotografía guardada para '+t.empresa+' · '+cmpNombre(t.tipo,t.id)+'. No se modificó COSTOS.');
+  if(anterior?.foto_path&&anterior.foto_path!==path)void db.storage.from(FOTO_BUCKET).remove([anterior.foto_path]);
+ }catch(e){
+  if(path)await db.storage.from(FOTO_BUCKET).remove([path]).catch(()=>{});
+  $('cmpPhotoStatus').textContent='No se pudo guardar la foto: '+String(e.message||e);
+ }finally{guardarFotoEnProceso=false;btns.forEach(b=>b.disabled=false);}
+}
+for(const [id,elid] of [['cmpPhotoGallery','cmpPhotoGallery'],['cmpPhotoCamera','cmpPhotoCamera']]){
+ $(id).onchange=e=>{const file=e.target.files?.[0];e.target.value='';if(file)void cmpGuardarFoto(file);};
+}
+let vistaGaleria=null;
+const zoomGaleria={puntos:new Map(),escala:1,x:0,y:0,base:null};
+function cmpReiniciarZoom(){
+ zoomGaleria.escala=1;zoomGaleria.x=0;zoomGaleria.y=0;zoomGaleria.puntos.clear();zoomGaleria.base=null;
+ $('cmpBigImage').style.transform='';
+}
+function cmpPonerFotoVista(indice){
+ const v=vistaGaleria;if(!v||!v.fotos.length)return;
+ v.indice=indice;cmpReiniciarZoom();
+ const item=v.fotos[indice],imagen=$('cmpBigImage');
+ imagen.src=item.url;imagen.alt='Fotografía de '+v.nombre+' en '+item.empresa;
+ imagen.classList.remove('hidden');$('cmpViewEmpty').classList.add('hidden');
+ $('cmpViewTabs').replaceChildren();
+ if(v.fotos.length>1)for(let i=0;i<v.fotos.length;i++){
+  const b=document.createElement('button');b.type='button';b.textContent=v.fotos[i].empresa;
+  b.classList.toggle('active',i===indice);b.onclick=()=>cmpPonerFotoVista(i);
+  $('cmpViewTabs').append(b);
+ }
+}
+function cmpVerFotos(tipo,id,empresa=null){
+ const nombre=cmpNombre(tipo,id);
+ const fotos=EMPRESAS.map(e=>({empresa:e,url:fotoUrl(cmpRegistro(tipo,id,e))})).filter(x=>x.url);
+ vistaGaleria={nombre,fotos,indice:0};
+ const img=$('cmpBigImage');img.classList.add('hidden');img.removeAttribute('src');
+ $('cmpViewEmpty').classList.toggle('hidden',fotos.length>0);
+ $('cmpViewTabs').replaceChildren();
+ if(fotos.length){const i=empresa?fotos.findIndex(x=>x.empresa===empresa):-1;cmpPonerFotoVista(i<0?0:i);}
+ $('cmpViewer').showModal();
+}
+$('cmpViewClose').onclick=()=>$('cmpViewer').close();
+$('cmpViewer').addEventListener('close',()=>{cmpReiniciarZoom();vistaGaleria=null;});
+$('cmpBigImage').onerror=()=>{$('cmpBigImage').classList.add('hidden');$('cmpViewEmpty').textContent='No se pudo abrir esta fotografía.';$('cmpViewEmpty').classList.remove('hidden');};
+$('cmpViewer').addEventListener('click',e=>{e.stopPropagation();});
+document.querySelector('#app').addEventListener('click',e=>{
+ const b=e.target.closest('[data-cmp-action]');if(!b)return;
+ const tipo=b.dataset.cmpTipo,id=Number(b.dataset.cmpId),empresa=b.dataset.cmpEmpresa,accion=b.dataset.cmpAction;
+ if(!Number.isFinite(id)||!cmpProducto(tipo,id))return;
+ if(accion==='ver')cmpVerFotos(tipo,id,empresa);
+ if(accion==='precio')cmpAbrirPrecio(tipo,id,empresa);
+ if(accion==='foto')cmpAbrirEditorFoto(tipo,id,empresa);
+});
+(function prepararPinchVista(){
+ const frame=$('cmpViewFrame'),z=zoomGaleria;
+ function base(){
+  const p=[...z.puntos.values()];
+  if(p.length===2){const [a,b]=p;z.base={dos:true,d:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y)),escala:z.escala,x:z.x,y:z.y,mx:(a.x+b.x)/2,my:(a.y+b.y)/2};}
+  else if(p.length===1)z.base={dos:false,x:p[0].x,y:p[0].y,dx:z.x,dy:z.y};
+  else z.base=null;
+ }
+ function dibujar(){
+  if(z.escala<=1){z.escala=1;z.x=0;z.y=0}
+  const w=frame.clientWidth*(z.escala-1)/2,h=frame.clientHeight*(z.escala-1)/2;
+  z.x=Math.min(w,Math.max(-w,z.x));z.y=Math.min(h,Math.max(-h,z.y));
+  $('cmpBigImage').style.transform='translate('+z.x+'px,'+z.y+'px) scale('+z.escala+')';
+ }
+ frame.addEventListener('pointerdown',e=>{
+  if($('cmpBigImage').classList.contains('hidden')||(e.pointerType==='mouse'&&e.button!==0))return;
+  z.puntos.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{frame.setPointerCapture(e.pointerId)}catch{}
+  base();e.preventDefault();
+ });
+ frame.addEventListener('pointermove',e=>{
+  if(!z.puntos.has(e.pointerId))return;
+  z.puntos.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const p=[...z.puntos.values()],b=z.base;
+  if(p.length===2&&b?.dos){
+   const [a,c]=p,centro={x:(a.x+c.x)/2,y:(a.y+c.y)/2};
+   z.escala=Math.min(6,Math.max(1,b.escala*Math.hypot(a.x-c.x,a.y-c.y)/b.d));
+   z.x=centro.x-(b.mx-b.x)*z.escala/b.escala;
+   z.y=centro.y-(b.my-b.y)*z.escala/b.escala;
+  }else if(p.length===1&&b&&!b.dos&&z.escala>1){z.x=b.dx+p[0].x-b.x;z.y=b.dy+p[0].y-b.y;}
+  dibujar();e.preventDefault();
+ });
+ function terminar(e){if(!z.puntos.has(e.pointerId))return;z.puntos.delete(e.pointerId);try{frame.releasePointerCapture(e.pointerId)}catch{}base();e.preventDefault();}
+ frame.addEventListener('pointerup',terminar);frame.addEventListener('pointercancel',terminar);
+ frame.addEventListener('dblclick',e=>{cmpReiniciarZoom();e.preventDefault();});
+})();
+
 cambiarTab('catalogo');
 await inicio();
 </script></body></html>

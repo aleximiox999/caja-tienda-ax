@@ -1,5 +1,5 @@
 /* TIENDA AMPHX - app shell offline; nunca intercepta solicitudes a Supabase. */
-const VERSION='amphx-caja-offline-v2';
+const VERSION='amphx-caja-offline-v3';
 const HOME='./caja-real.html';
 const JS_MODULE='https://esm.sh/@supabase/supabase-js@2.57.0';
 const SCANNER='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';

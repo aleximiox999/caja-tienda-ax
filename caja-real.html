@@ -724,8 +724,8 @@ main #btnVender:hover:not(:disabled){filter:brightness(1.15);}
 <div id="lectorPanel" class="scanner hidden"><div class="scanner-title"><strong>Cámara dentro de la aplicación</strong><button class="btn" id="cerrarCamara">Terminar escaneo</button></div><div id="resumenEscaneo" class="resumen-escaneo hidden" aria-live="polite"><div class="resumen-etiqueta">TOTAL ACUMULADO · ESTA VENTA</div><div id="totalEscaneo" class="resumen-total">Bs 0,00</div><div id="conteoEscaneo" class="resumen-conteo">0 unidades · 0 productos distintos</div><div id="ultimoEscaneo" class="resumen-ultimo">Apuntá al primer producto para comenzar.</div><button class="btn" type="button" id="repetirUltimoEscaneo" disabled>+1 unidad del último producto</button></div><div id="camara"></div><p class="muted mini" id="camaraInfo">Apunta al código de barras.</p></div>
 <section id="panelVenta">
 <div class="grid">
-<div class="card"><h2>Productos</h2><p class="mini muted">Escanea o busca. Se utiliza el precio registrado en Supabase.</p>
-<div class="actions"><button class="btn primary" id="escanearVenta">Escanear código</button><button class="btn" id="actualizarCatalogo">Actualizar productos</button></div>
+<div class="card"><h2>Productos</h2><p class="mini muted">Tocá «Vender» para abrir directamente la cámara o buscá un producto por nombre. Se utiliza el precio registrado en Supabase.</p>
+<div class="actions"><button class="btn" id="actualizarCatalogo">Actualizar productos</button></div>
 <div class="field"><label for="buscarProducto">Nombre o código de barras</label><input id="buscarProducto" placeholder="Ej.: maní, AFOXOPET o código" autocomplete="off" list="sugerenciasProductos" spellcheck="false"><datalist id="sugerenciasProductos"></datalist><p class="mini muted" style="margin:7px 0 0">Aparecen coincidencias mientras escribes, con o sin tildes.</p></div>
 <div id="busquedaResultados" class="productResults"></div></div>
 <div class="card"><h2>Carrito de venta</h2><div id="carrito"></div><div class="total" id="totalVenta">Bs 0,00</div>
@@ -737,7 +737,7 @@ main #btnVender:hover:not(:disabled){filter:brightness(1.15);}
 <button id="btnVender" class="btn primary" style="width:100%">COBRAR Y REGISTRAR VENTA</button>
 </div></div>
 </section>
-<section id="panelPrecio" class="hidden"><div class="card"><h2>Consultar precio</h2><p class="lead">Esta consulta no registra venta ni modifica existencias.</p><div class="actions"><button class="btn primary" id="escanearPrecio">Escanear código</button><button class="btn" id="actualizarPrecio">Actualizar precios</button></div><div class="field"><label>Nombre o código</label><input id="buscarPrecio" placeholder="Escribe o escanea un producto" autocomplete="off"></div><div id="resultadoPrecio"></div></div></section>
+<section id="panelPrecio" class="hidden"><div class="card"><h2>Consultar precio</h2><p class="lead">Al tocar «Consultar precio» se abre directamente la cámara. No registra ventas ni modifica existencias.</p><div class="actions"><button class="btn" id="actualizarPrecio">Actualizar precios</button></div><div class="field"><label>Nombre o código</label><input id="buscarPrecio" placeholder="Escribe o escanea un producto" autocomplete="off"></div><div id="resultadoPrecio"></div></div></section>
 <section id="panelInventario" class="hidden"><div class="card"><h2>Inventario</h2><p class="lead">Existencias calculadas de entradas y salidas reales. Las alertas indican los productos que alcanzaron su mínimo.</p><div id="alertas"></div><div class="tablewrap"><table><thead><tr><th>CÓDIGO</th><th>PRODUCTO</th><th>PRECIO</th><th>EXISTENCIAS</th><th>MÍNIMO</th><th>ESTADO</th></tr></thead><tbody id="tablaInventario"></tbody></table></div><div class="actions"><button class="btn" id="actualizarInventario">Actualizar existencias</button></div></div></section>
 <section id="panelEntradas" class="hidden"><div class="grid"><div class="card">
 <h2>Ingresar mercadería</h2><p class="lead">Solo administrador. Escanea aquí mismo el código o busca el producto ya registrado.</p>
@@ -1440,21 +1440,29 @@ $('copiarAcceso').onclick=async()=>{
 };
 $('btnSalir').onclick=async()=>{await detenerLector();await db.auth.signOut();cuenta=null;catalogo=[];cart=[];limpiarCredenciales();show('btnSalir',false);mostrarPantalla('login');estado('Sesión cerrada.')};
 $('btnComprobar').onclick=boot;
-// Abrir el lector inmediatamente desde las pestañas verdes Vender y Consultar precio.
- // No se abre automáticamente al iniciar sesión: solo con un toque explícito.
+// Abrir el lector directamente con un único toque en VENDER o CONSULTAR PRECIO.
+ // Si el escáner ya está abierto en la pestaña, conservarlo.
  let ampSolicitudCamaraTab=0;
- document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=async()=>{
+ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{
   const destino=b.dataset.tab,solicitud=++ampSolicitudCamaraTab;
+  const necesitaCamara=destino==='venta'||destino==='precio';
+  if(necesitaCamara&&tab===destino&&(lector||abriendo)){
+   $('lectorPanel').scrollIntoView({block:'start',behavior:'auto'});
+   return;
+  }
+  const habiaLector=Boolean(lector||abriendo);
   const cierre=selectTab(destino);
-  if(destino!=='venta'&&destino!=='precio')return;
-  await cierre;
-  // Un cambio de pestaña posterior cancela cualquier apertura pendiente.
-  if(solicitud!==ampSolicitudCamaraTab||tab!==destino||!cuenta||$('app').classList.contains('hidden'))return;
-  await iniciarLector(destino);
+  if(!necesitaCamara)return;
+  void (async()=>{
+   // Sin escáner anterior, iniciar cámara inmediatamente durante el gesto.
+   if(habiaLector)await cierre;
+   if(solicitud!==ampSolicitudCamaraTab||tab!==destino||!cuenta||$('app').classList.contains('hidden'))return;
+   await iniciarLector(destino);
+   if(solicitud===ampSolicitudCamaraTab&&!$('lectorPanel').classList.contains('hidden'))
+    $('lectorPanel').scrollIntoView({block:'start',behavior:'auto'});
+  })();
  });
 $('buscarProducto').oninput=renderResultados;$('buscarPrecio').oninput=renderPrecio;
-$('escanearVenta').onclick=()=>iniciarLector('venta');
-$('escanearPrecio').onclick=()=>iniciarLector('precio');
 $('escanearEntrada').onclick=()=>iniciarLector('entrada');
 $('recargarEntrada').onclick=cargarCatalogo;
 $('buscarEntrada').oninput=()=>{$('entradaProductoId').value='';$('entradaSeleccion').textContent='Selecciona un producto de la lista.';renderEntradas();previoEntrada()};

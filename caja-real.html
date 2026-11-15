@@ -700,6 +700,21 @@ main #btnVender:hover:not(:disabled){filter:brightness(1.15);}
   background:ButtonFace;color:ButtonText;border-color:ButtonText;
  }
 }
+/* CONSULTAR PRECIO · Foto propia en recuadro igual al del precio. */
+#panelPrecio .card>h2{margin-bottom:6px}
+#panelPrecio .lead{font-size:12px;line-height:1.35;margin:2px 0 8px}
+#panelPrecio .actions{margin:6px 0 9px}
+#panelPrecio .field{margin-bottom:8px}
+#panelPrecio .foto-consulta-precio{
+ display:flex;align-items:center;justify-content:center;
+ min-height:195px;height:min(44dvh,320px);
+ padding:12px;margin:12px 0 8px;overflow:hidden
+}
+#panelPrecio .foto-consulta-precio.hidden{display:none!important}
+#fotoConsultaPrecioImagen{width:100%;height:100%;object-fit:contain;border-radius:8px}
+#fotoConsultaPrecioImagen.hidden{display:none!important}
+#fotoConsultaPrecioMensaje{font-size:13px;text-align:center;line-height:1.4}
+#panelPrecio #resultadoPrecio>.result:first-child{margin-top:10px}
 </style>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
@@ -737,7 +752,7 @@ main #btnVender:hover:not(:disabled){filter:brightness(1.15);}
 <button id="btnVender" class="btn primary" style="width:100%">COBRAR Y REGISTRAR VENTA</button>
 </div></div>
 </section>
-<section id="panelPrecio" class="hidden"><div class="card"><h2>Consultar precio</h2><p class="lead">Al tocar «Consultar precio» se abre directamente la cámara. No registra ventas ni modifica existencias.</p><div class="actions"><button class="btn" id="actualizarPrecio">Actualizar precios</button></div><div class="field"><label>Nombre o código</label><input id="buscarPrecio" placeholder="Escribe o escanea un producto" autocomplete="off"></div><div id="resultadoPrecio"></div></div></section>
+<section id="panelPrecio" class="hidden"><div class="card"><h2>Consultar precio</h2><p class="lead">La cámara se abre automáticamente. La consulta no modifica existencias.</p><div class="actions"><button class="btn" id="actualizarPrecio">Actualizar precios</button></div><div class="field"><label for="buscarPrecio">Nombre o código</label><input id="buscarPrecio" placeholder="Escribe o escanea un producto" autocomplete="off"></div><div id="fotoConsultaPrecio" class="result foto-consulta-precio hidden" aria-live="polite"><img id="fotoConsultaPrecioImagen" alt="" class="hidden"><span id="fotoConsultaPrecioMensaje" class="muted">Cargando fotografía…</span></div><div id="resultadoPrecio"></div></div></section>
 <section id="panelInventario" class="hidden"><div class="card"><h2>Inventario</h2><p class="lead">Existencias calculadas de entradas y salidas reales. Las alertas indican los productos que alcanzaron su mínimo.</p><div id="alertas"></div><div class="tablewrap"><table><thead><tr><th>CÓDIGO</th><th>PRODUCTO</th><th>PRECIO</th><th>EXISTENCIAS</th><th>MÍNIMO</th><th>ESTADO</th></tr></thead><tbody id="tablaInventario"></tbody></table></div><div class="actions"><button class="btn" id="actualizarInventario">Actualizar existencias</button></div></div></section>
 <section id="panelEntradas" class="hidden"><div class="grid"><div class="card">
 <h2>Ingresar mercadería</h2><p class="lead">Solo administrador. Escanea aquí mismo el código o busca el producto ya registrado.</p>
@@ -1187,10 +1202,48 @@ function renderCarrito(){
  $('btnVender').disabled=procesando||(!pending&&!cart.length);
  actualizarResumenEscaneo();pintarColaOffline();
 }
+// Foto del mismo producto y bucket privado utilizados en COSTOS.
+let fotoConsultaPeticion=0;
+const fotoConsultaCache=new Map();
+function mostrarFotoConsultaPrecio(p){
+ const solicitud=++fotoConsultaPeticion;
+ const marco=$('fotoConsultaPrecio'),img=$('fotoConsultaPrecioImagen'),mensaje=$('fotoConsultaPrecioMensaje');
+ img.onload=null;img.onerror=null;img.removeAttribute('src');img.classList.add('hidden');
+ marco.classList.toggle('hidden',!p);
+ if(!p)return;
+ mensaje.classList.remove('hidden');
+ if(!p.foto_path){mensaje.textContent='Este producto todavía no tiene fotografía en COSTOS.';return}
+ if(!navigator.onLine){mensaje.textContent='Necesitás conexión para ver la fotografía del producto.';return}
+ mensaje.textContent='Cargando fotografía…';
+ void (async()=>{
+  try{
+   const ruta=String(p.foto_path);
+   const guardada=fotoConsultaCache.get(ruta);
+   let url=guardada&&guardada.expira>Date.now()?guardada.url:null;
+   if(!url){
+    const {data,error}=await db.storage.from(FOTOS_PRODUCTOS_BUCKET).createSignedUrl(ruta,600);
+    if(error||!data?.signedUrl)throw Error(error?.message||'No se pudo generar la dirección de la fotografía.');
+    url=data.signedUrl;
+    fotoConsultaCache.set(ruta,{url,expira:Date.now()+540000});
+   }
+   if(solicitud!==fotoConsultaPeticion)return;
+   img.onload=()=>{if(solicitud!==fotoConsultaPeticion)return;img.classList.remove('hidden');mensaje.classList.add('hidden');};
+   img.onerror=()=>{if(solicitud!==fotoConsultaPeticion)return;img.classList.add('hidden');mensaje.classList.remove('hidden');mensaje.textContent='No se pudo mostrar la fotografía.';};
+   img.alt='Fotografía de '+p.detalles;
+   img.src=url;
+  }catch(error){
+   if(solicitud!==fotoConsultaPeticion)return;
+   mensaje.textContent='No se pudo cargar la fotografía de COSTOS.';
+   console.info('[AMPHX consulta precio] Foto no disponible:',String(error?.message||error));
+  }
+ })();
+}
 function renderPrecio(){
  const q=limpiarcodigo($('buscarPrecio').value).toLocaleLowerCase('es');
- if(!q){$('resultadoPrecio').innerHTML='<p class="muted">Escanea un código o escribe un nombre para consultar su precio.</p>';return}
+ if(!q){mostrarFotoConsultaPrecio(null);$('resultadoPrecio').innerHTML='<p class="muted">Escanea un código o escribe un nombre para consultar su precio.</p>';return}
  const list=buscarProductos(q);
+ const exacto=list.find(p=>limpiarcodigo(p.codigo_barras||'').toLocaleLowerCase('es')===q);
+ mostrarFotoConsultaPrecio(exacto||(list.length===1?list[0]:null));
  $('resultadoPrecio').innerHTML=list.length?list.map(p=>'<div class="result">'+botonVerFoto(p)+'<div class="bigprice">'+(precio(p)>0?moneda(p.precio_venta)+' / '+unidadCorta(p):'PRECIO PENDIENTE')+'</div><span class="stock '+(stock(p)<=Number(p.stock_minimo)?'low':'')+'">Existencias: '+cantidadMedida(stock(p),p)+'</span><p class="itemcode">Código: '+safe(p.codigo_barras||'Sin asignar')+'</p></div>').join(''):'<p class="note red">Producto no encontrado en el catálogo.</p>';
  activarBotonesFoto('resultadoPrecio');
 }

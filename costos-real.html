@@ -2810,6 +2810,26 @@ async function detenerLectorAsociar(){
  const lector=lectorAsociar;lectorAsociar=null;
  if(lector){try{await lector.stop()}catch(e){}try{lector.clear()}catch(e){}}
 }
+/* Enfoque continuo opcional para los dos lectores de COSTOS.
+   Sólo se solicita si la cámara anuncia compatibilidad. No altera formularios. */
+async function ampActivarEnfoqueContinuo(lector){
+ try{
+  const capacidades=lector.getRunningTrackCapabilities?.();
+  const modos=capacidades?.focusMode;
+  if(!Array.isArray(modos)||!modos.includes('continuous'))return false;
+  if(lector.getRunningTrackSettings?.()?.focusMode==='continuous')return true;
+  await lector.applyVideoConstraints({
+   width:{ideal:3840},height:{ideal:2160},
+   advanced:[{focusMode:'continuous'}]
+  });
+  console.info('[AMPHX COSTOS] Enfoque continuo solicitado.');
+  return true;
+ }catch(error){
+  // Mantener cámara y lectura aunque Chrome no deje controlar el enfoque.
+  console.info('[AMPHX COSTOS] Enfoque continuo no configurable:',String(error?.message||error));
+  return false;
+ }
+}
 async function iniciarCamaraAsociar(){
  if(!productoCodigoEnEdicion||lectorAsociar||abriendoAsociar||guardandoAsociar)return;
  const p=productoCodigoEnEdicion;abriendoAsociar=true;
@@ -2829,6 +2849,7 @@ async function iniciarCamaraAsociar(){
    await guardarAsociacionCodigo();
   },()=>{});
   if(productoCodigoEnEdicion!==p){await detenerLectorAsociar();return;}
+  void ampActivarEnfoqueContinuo(lector);
   $('mensajeCodigoAsociar').textContent='Apuntá al código de barras: al leerlo se guardará directamente en este producto.';
  }catch(err){
   $('mensajeCodigoAsociar').textContent='No se pudo abrir la cámara. Revisá el permiso o escribí el código. '+(err?.message||String(err));
@@ -2954,6 +2975,7 @@ $('abrirEscaner').onclick=async()=>{
    }
   },()=>{});
   if(sesion!==ampxEscanerSesion){await detenerLector();return}
+  void ampActivarEnfoqueContinuo(lector);
   $('mensajeEscaner').textContent='Apuntá la cámara al código de barras del producto.';
  }catch(e){
   if(sesion===ampxEscanerSesion){

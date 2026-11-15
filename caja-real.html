@@ -1233,7 +1233,27 @@ async function detenerLector(){
  show('lectorPanel',false);
  if(l){try{await l.stop()}catch(e){}try{l.clear()}catch(e){}}
 }
-async function iniciarLector(m){
+// Enfoque automático continuo, cuando Chrome y la cámara trasera lo exponen.
+ // La función es opcional: no afecta el escaneo si el dispositivo no lo permite.
+ async function ampActivarEnfoqueContinuo(esc){
+  try {
+   const capacidades=esc.getRunningTrackCapabilities?.();
+   const modos=capacidades?.focusMode;
+   if(!Array.isArray(modos)||!modos.includes('continuous'))return false;
+   if(esc.getRunningTrackSettings?.()?.focusMode==='continuous')return true;
+   await esc.applyVideoConstraints({
+    width:{ideal:3840},height:{ideal:2160},
+    advanced:[{focusMode:'continuous'}]
+   });
+   console.info('[AMPHX escáner] Enfoque continuo solicitado.');
+   return true;
+  } catch(error) {
+   // No bloquear ventas ni desconectar la cámara cuando el modo no está disponible.
+   console.info('[AMPHX escáner] Enfoque continuo no configurable:',String(error?.message||error));
+   return false;
+  }
+ }
+ async function iniciarLector(m){
  if(abriendo||lector)return;
  if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){estado('La cámara requiere HTTPS y un navegador con permisos.','error');return}
  if(typeof Html5Qrcode==='undefined'){estado('No se cargó la biblioteca del escáner. Comprueba la conexión.','error');return}
@@ -1289,6 +1309,8 @@ async function iniciarLector(m){
     const v=l.getRunningTrackSettings?.();
     if(v?.width&&v?.height)console.info('[AMPHX escáner] Cámara: '+v.width+' × '+v.height+' píxeles (preferencia 3840 × 2160).');
    } catch (_) {}
+   // Aplicar foco automático continuo sin bloquear ni esperar el primer código.
+   void ampActivarEnfoqueContinuo(l);
    $('camaraInfo').textContent=m==='venta'?'Escaneá todos los productos. El total cambia aquí mismo. Para varios iguales, usá +1.':'Apuntá al código de barras del producto.';
   estado('Cámara iniciada.');
  }catch(e){

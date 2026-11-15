@@ -1246,7 +1246,17 @@ async function iniciarLector(m){
  $('camaraInfo').textContent='Solicitando cámara…';
  try {
   const l=new Html5Qrcode('camara',{verbose:false});lector=l;
-  await l.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},codigo=>{
+  // Priorizar 4K UHD en la cámara trasera para TODOS los códigos.
+   // Ideal: si Chrome no admite 3840x2160, selecciona una resolución compatible.
+   await l.start({facingMode:'environment'},{
+    fps:10,
+    qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))}),
+    videoConstraints:{
+     facingMode:'environment',
+     width:{ideal:3840},
+     height:{ideal:2160}
+    }
+   },codigo=>{
    if(lector!==l||sesion!==ampSesionLector)return;
    const limpio=limpiarcodigo(codigo);
    if(m==='venta'){
@@ -1274,7 +1284,12 @@ async function iniciarLector(m){
    else if(m==='entrada'){seleccionarEntrada(p.id);estado('Producto seleccionado: '+p.detalles,'success')}
   },()=>{});
   if(lector!==l||sesion!==ampSesionLector){try{await l.stop()}catch(e){}try{l.clear()}catch(e){}return}
-  $('camaraInfo').textContent=m==='venta'?'Escaneá todos los productos. El total cambia aquí mismo. Para varios iguales, usá +1.':'Apuntá al código de barras del producto.';
+  // Diagnóstico interno para conocer la resolución real autorizada por Chrome.
+   try {
+    const v=l.getRunningTrackSettings?.();
+    if(v?.width&&v?.height)console.info('[AMPHX escáner] Cámara: '+v.width+' × '+v.height+' píxeles (preferencia 3840 × 2160).');
+   } catch (_) {}
+   $('camaraInfo').textContent=m==='venta'?'Escaneá todos los productos. El total cambia aquí mismo. Para varios iguales, usá +1.':'Apuntá al código de barras del producto.';
   estado('Cámara iniciada.');
  }catch(e){
   if(sesion!==ampSesionLector)return;

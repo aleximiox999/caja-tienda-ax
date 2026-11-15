@@ -2818,7 +2818,12 @@ async function iniciarCamaraAsociar(){
  if(typeof Html5Qrcode==='undefined'){$('mensajeCodigoAsociar').textContent='El lector no terminó de cargar. Podés escribir el código manualmente.';abriendoAsociar=false;return;}
  try{
   const lector=new Html5Qrcode('lectorCodigoAsociar',{verbose:false});lectorAsociar=lector;
-  await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},async codigo=>{
+  await lector.start({facingMode:'environment'},{
+   fps:10,
+   qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))}),
+   // 4K preferido; resolución inferior automática cuando no esté disponible.
+   videoConstraints:{facingMode:'environment',width:{ideal:3840},height:{ideal:2160}}
+  },async codigo=>{
    if(lectorAsociar!==lector||guardandoAsociar||productoCodigoEnEdicion!==p)return;
    $('codigoAsociar').value=String(codigo).trim();
    await guardarAsociacionCodigo();
@@ -2927,10 +2932,15 @@ $('abrirEscaner').onclick=async()=>{
   if(sesion!==ampxEscanerSesion)return;
   $('mensajeEscaner').textContent='Solicitando permiso para usar la cámara…';
   const lector=new Html5Qrcode('lectorCodigo',{verbose:false});lectorActivo=lector;
-  await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({
-   width:Math.min(280,Math.floor(w*.8)),
-   height:Math.min(180,Math.floor(h*.7))
-  })},async codigo=>{
+  await lector.start({facingMode:'environment'},{
+   fps:10,
+   qrbox:(w,h)=>({
+    width:Math.min(280,Math.floor(w*.8)),
+    height:Math.min(180,Math.floor(h*.7))
+   }),
+   // Misma configuración en el lector para registrar nuevos productos.
+   videoConstraints:{facingMode:'environment',width:{ideal:3840},height:{ideal:2160}}
+  },async codigo=>{
    if(lectorActivo!==lector||sesion!==ampxEscanerSesion)return;
    const valor=String(codigo||'').trim();
    if(!valor)return;

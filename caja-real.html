@@ -643,7 +643,7 @@ if('serviceWorker' in navigator){
   void navigator.serviceWorker.register('./sw-amphx.js',{scope:'./'}).catch(e=>console.warn('Modo instalable no disponible',e));
  });
 }
-const {data:{session}}=await db.auth.getSession();
-if(!session) {mostrarPantalla('login');estado('Ingresa con tu cuenta de administrador o empleado.')}
-else await boot();
+// La misma sesión de Supabase se reutiliza al entrar desde COSTOS o COMPARADOR.
+// boot decide si debe mostrarse el acceso, sin una segunda validación inicial.
+await boot();
 </script></body></html>

@@ -174,8 +174,13 @@ async function cargar(){
  finally{cargando=false;$('refresh').disabled=false;}
 }
 async function inicio(){
+ // Reutilizar la sesión persistente de los demás módulos, sin pedir credenciales otra vez.
+ const {data:{session},error:se}=await db.auth.getSession();
+ if(se){mostrar('auth',false);mostrar('app',false);mensaje('No se pudo comprobar la sesión. Revisá la conexión y actualizá.',true);return}
+ if(!session){mostrar('auth',true);mostrar('app',false);mensaje('Iniciá sesión para consultar el comparador.');return}
  const {data:{user},error}=await db.auth.getUser();
- if(error||!user){mostrar('auth',true);mostrar('app',false);mensaje('Iniciá sesión para consultar el comparador.');return}
+ if(error){mostrar('auth',false);mostrar('app',false);mensaje('No se pudo verificar la sesión. Revisá la conexión y actualizá.',true);return}
+ if(!user){mostrar('auth',true);mostrar('app',false);mensaje('La sesión terminó. Iniciá sesión nuevamente.');return}
  const {data:emp,error:er}=await db.from('empleados').select('rol,activo').eq('auth_user_id',user.id).maybeSingle();
  if(er||!emp||emp.rol!=='administrador'||!emp.activo){mostrar('auth',false);mostrar('app',false);mensaje('Acceso reservado al administrador de Tienda AMPHX.',true);return}
  mostrar('auth',false);mostrar('app',true);await cargar();

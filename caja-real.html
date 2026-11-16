@@ -142,6 +142,36 @@ details{border-top:1px solid #d7dfe7}
 @media(max-width:850px){body{font-size:16px}.lead,.muted{font-size:14px}.item strong{font-size:15px}.btn{font-size:16px}.card{box-shadow:0 3px 14px rgba(38,51,69,.055)}}
 @media(max-width:440px){.hrow{padding:12px}.card{padding:16px}.actions .btn{width:100%}}
 </style>
+<!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
+<style id="amp-texto-mayusculas">
+input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }
+input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
+</style>
+<script id="amp-texto-mayusculas-js">
+(function(){
+  const campos='input:not([type]),input[type="text"],input[type="search"],textarea';
+  function convertir(e){
+    const campo=e.target;
+    if(!(campo instanceof HTMLInputElement || campo instanceof HTMLTextAreaElement)
+       || !campo.matches(campos) || campo.matches('[name="codigo_barras"],#codigoAsociar,[data-conservar-mayusculas]')
+       || e.isComposing) return;
+    const anterior=campo.value;
+    const nuevo=anterior.toLocaleUpperCase('es');
+    if(anterior===nuevo) return;
+    const inicio=campo.selectionStart, fin=campo.selectionEnd;
+    campo.value=nuevo;
+    try{
+      campo.setSelectionRange(
+        inicio==null?nuevo.length:anterior.slice(0,inicio).toLocaleUpperCase('es').length,
+        fin==null?nuevo.length:anterior.slice(0,fin).toLocaleUpperCase('es').length
+      );
+    }catch(_){}
+  }
+  document.addEventListener('input',convertir,true);
+  document.addEventListener('change',convertir,true);
+  document.addEventListener('compositionend',convertir,true);
+})();
+</script>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark">A</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
 <main>

@@ -1581,7 +1581,6 @@ if('serviceWorker' in navigator){
   void navigator.serviceWorker.register('./sw-amphx.js',{scope:'./'}).catch(e=>console.warn('Modo instalable no disponible',e));
  });
 }
-const {data:{session}}=await db.auth.getSession();
-if(!session) {mostrarPantalla('login');estado('Ingresa con tu cuenta de administrador o empleado.')}
-else await boot();
+// Reutilizar la sesión persistente de Supabase sin doble comprobación inicial.
+await boot();
 </script></body></html>

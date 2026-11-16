@@ -54,7 +54,37 @@ tr:nth-child(even) td:not(:first-child){background:#20252d}
 .mcard,.tablewrap tr{scroll-margin-top:100px}
 @media(max-width:800px){.alphabet{flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}.alphabet button{flex:0 0 auto}
 .mcard .company{grid-template-columns:33% minmax(0,67%)}.comp-img{width:55px;height:62px}.comp-img-link{flex-basis:55px}.comp-layout{gap:7px}.comp-no-img{max-width:70px}}
-</style></head>
+</style><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
+<style id="amp-texto-mayusculas">
+input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }
+input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
+</style>
+<script id="amp-texto-mayusculas-js">
+(function(){
+  const campos='input:not([type]),input[type="text"],input[type="search"],textarea';
+  function convertir(e){
+    const campo=e.target;
+    if(!(campo instanceof HTMLInputElement || campo instanceof HTMLTextAreaElement)
+       || !campo.matches(campos) || campo.matches('[name="codigo_barras"],#codigoAsociar,[data-conservar-mayusculas]')
+       || e.isComposing) return;
+    const anterior=campo.value;
+    const nuevo=anterior.toLocaleUpperCase('es');
+    if(anterior===nuevo) return;
+    const inicio=campo.selectionStart, fin=campo.selectionEnd;
+    campo.value=nuevo;
+    try{
+      campo.setSelectionRange(
+        inicio==null?nuevo.length:anterior.slice(0,inicio).toLocaleUpperCase('es').length,
+        fin==null?nuevo.length:anterior.slice(0,fin).toLocaleUpperCase('es').length
+      );
+    }catch(_){}
+  }
+  document.addEventListener('input',convertir,true);
+  document.addEventListener('change',convertir,true);
+  document.addEventListener('compositionend',convertir,true);
+})();
+</script>
+</head>
 <body>
 <header><div class="top"><h1>TIENDA AMPHX · COMPARADOR DE PRECIOS</h1>
 <nav aria-label="Módulos"><a href="./costos-real.html">COSTOS</a><a href="./caja-real.html">VENTAS</a></nav></div></header>

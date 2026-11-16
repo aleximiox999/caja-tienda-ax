@@ -946,7 +946,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  #fotoProductoDialog .amp-zoom-escena{height:min(47dvh,420px)}
 }
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><span class="pill">DATOS REALES · ACCESO RESTRINGIDO</span> <button id="salir" class="alt hidden">Salir</button></div></header>
-<section id="accesoCargando" aria-live="polite"><p class="muted">Abriendo fichas de productos…</p></section><section id="login" class="hidden"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
+<section id="accesoCargando" aria-live="polite"><p class="muted">Abriendo fichas de productos…</p><button id="reintentarAcceso" type="button" class="alt hidden">REINTENTAR ACCESO</button></section><section id="login" class="hidden"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
 <section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="listado" class="hidden"><h2 id="tituloListadoCostos">COSTOS · Fichas de productos</h2><div class="actions"><div class="busqueda-wrap"><input id="buscar" placeholder="Buscar producto, código o proveedor (ej.: FINI)" autocomplete="off" aria-controls="sugerencias" aria-expanded="false" aria-autocomplete="list"><div id="sugerencias" class="sugerencias hidden" style="display:none" role="listbox" aria-label="Sugerencias de productos y proveedores"></div><div class="filtro-proveedor-costos"><label for="filtrarProveedorCostos">FILTRAR POR PROVEEDOR</label><select id="filtrarProveedorCostos" aria-label="Filtrar productos por proveedor"><option value="">TODOS LOS PROVEEDORES</option></select></div><div class="amp-filtro-vista-costos"><label for="ampVistaCostos">FILTRO</label><select id="ampVistaCostos" aria-label="Filtrar fichas de COSTOS"><option value="fichas">FICHAS DE PRODUCTOS</option><option value="recientes">RECIÉN INGRESADOS</option></select></div></div><div id="resultadoBusqueda" role="status" aria-live="polite" style="margin:8px 0;font-weight:600"></div><button class="alt" id="recargar">Actualizar</button></div><div class="listado-con-indice-costos"><nav id="indiceAlfabeticoCostos" class="indice-alfabetico-costos" aria-label="Filtrar por letra inicial"></nav><div class="listado-contenido-costos"><div class="scroll"><table><thead><tr><th>PRODUCTO</th><th>PRECIO DE COMPRA</th><th>UNIDADES / KG</th><th>COSTO UNITARIO</th><th>PRECIO DE VENTA</th><th>UTILIDAD POR UNIDAD</th><th>UTILIDAD TOTAL</th><th>PROVEEDOR</th><th>ACCIONES</th></tr></thead><tbody id="filas"></tbody></table></div><div id="tarjetas" class="cards"></div></div></div></section>
 
 <section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Productos que llegaron al stock mínimo o tienen menos existencias. Se actualiza al cargar o actualizar los datos.</p><div id="listaAlertas"></div></section>
@@ -1038,7 +1038,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 <div id="ampIconHelp" class="amp-icon-help" role="status" aria-live="polite"></div>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
-const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh');
+const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 window.dispatchEvent(new Event('amphx-costos-ready'));
 const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
 let productos=[],compras=[],costos=[],movimientos=[];
@@ -1052,7 +1052,57 @@ function mostrarExitoProductoNuevo(){
 }
 function estado(m,error=false){$('estado').textContent=m;$('estado').classList.toggle('error',error)}
 let recuperando=false;function mostrar(ok){$('accesoCargando').classList.add('hidden');if(!ok)$('alertasInventario').classList.add('hidden');$('login').classList.toggle('hidden',ok);$('app').classList.toggle('hidden',!ok);$('listado').classList.toggle('hidden',!ok);$('salir').classList.toggle('hidden',!ok)}
-async function revisar(){if(recuperando)return;const {data:{user}}=await db.auth.getUser();if(!user){mostrar(false);estado('Inicia sesión para continuar.');return}const {data,error}=await db.from('productos').select('id').limit(1);if(error){mostrar(false);estado('Cuenta iniciada, pero todavía no autorizada como administrador. Pide activar tu acceso. Detalle: '+error.message,true);return}const {data:permiso,error:pe}=await db.rpc('soy_administrador');if(pe||permiso!==true){mostrar(false);estado('Cuenta registrada. Falta autorizarla como administrador antes de ver COSTOS.',true);return}mostrar(true);await cargar()}
+let ampVerificandoAcceso=false;
+function ampErrorAcceso(mensaje){
+ $('accesoCargando').classList.remove('hidden');
+ $('reintentarAcceso').classList.remove('hidden');
+ for(const id of ['login','app','listado','alertasInventario','salir'])$(id).classList.add('hidden');
+ estado(mensaje,true);
+}
+async function revisar(){
+ if(recuperando||ampVerificandoAcceso)return;
+ ampVerificandoAcceso=true;
+ $('accesoCargando').classList.remove('hidden');
+ $('reintentarAcceso').classList.add('hidden');
+ $('login').classList.add('hidden');
+ estado('Comprobando sesión guardada de TIENDA AMPHX…');
+ try{
+  const sesion=await db.auth.getSession();
+  if(sesion.error)throw sesion.error;
+  if(!sesion.data?.session){
+   mostrar(false);
+   estado('Iniciá sesión una vez en este navegador. COSTOS, VENTAS y COMPARADOR usarán esa sesión.');
+   return;
+  }
+  let identidad=await db.auth.getUser();
+  const esRed=e=>/Failed to fetch|fetch failed|NetworkError|Load failed|timeout|connection|network|abort/i.test(String(e?.message||e||''));
+  if(identidad.error&&esRed(identidad.error)){
+   await new Promise(r=>setTimeout(r,950));
+   identidad=await db.auth.getUser();
+  }
+  if(identidad.error||!identidad.data?.user){
+   const detalle=String(identidad.error?.message||'No se confirmó la identidad');
+   if(/Auth session missing|refresh token not found|invalid refresh token|session not found/i.test(detalle)){
+    mostrar(false);estado('La sesión terminó. Iniciá sesión una vez para continuar.');
+   }else ampErrorAcceso('Tu sesión está guardada, pero no se pudo verificar: '+detalle+'. Tocá REINTENTAR ACCESO; no ingreses otra vez la contraseña.');
+   return;
+  }
+  const permiso=await db.rpc('soy_administrador');
+  if(permiso.error){
+   ampErrorAcceso('Tu sesión está guardada, pero no se pudo verificar el permiso de administrador: '+permiso.error.message+'. Tocá REINTENTAR ACCESO.');
+   return;
+  }
+  if(permiso.data!==true){
+   ampErrorAcceso('La cuenta está iniciada, pero no tiene permiso de administrador. Revisá el rol; repetir la contraseña no lo soluciona.');
+   return;
+  }
+  mostrar(true);
+  await cargar();
+ }catch(e){
+  ampErrorAcceso('No se pudo validar la sesión guardada: '+(e?.message||String(e))+'. Tocá REINTENTAR ACCESO.');
+ }finally{ampVerificandoAcceso=false}
+}
+$('reintentarAcceso').onclick=()=>void revisar();
 /* AMPHX COSTOS 2026-11-08 - lectura resistente a cortes cortos de conexión.
    Nunca guardar costos en caché local sin cifrar ni repetir operaciones de escritura. */
 const fallaTransitoriaAMPHX=e=>/Failed to fetch|fetch failed|NetworkError|Load failed|timeout|timed out|connection|network|abort/i.test(String(e?.message||e||''));

@@ -42,5 +42,13 @@ const {data:rec,error:re}=await db.from('comprobantes_costos').insert({proveedor
 const {error:le}=await db.from('comprobantes_lineas').insert(rows.map(x=>({...x,comprobante_id:reciboId})));if(le)throw le;
 estado('Factura guardada con su imagen y '+rows.length+' producto(s).');$('formulario').reset();$('lineas').replaceChildren();agregarLinea();await cargar();
 }catch(err){estado('No se completó: '+err.message,true);if(reciboId){await db.from('comprobantes_costos').delete().eq('id',reciboId)}if(ruta){await db.storage.from('comprobantes-costos-amphx').remove([ruta])}}finally{btn.disabled=false}};
-(async()=>{try{const {data:{user},error}=await db.auth.getUser();if(error||!user)throw Error('Iniciá sesión como administrador desde Costos.');const p=await db.rpc('soy_administrador');if(p.error||p.data!==true)throw Error('Esta pantalla es solo para administradores.');const ps=await db.from('productos').select('id,detalles').order('detalles');if(ps.error)throw ps.error;catalogo=ps.data||[];$('admin').classList.remove('hidden');agregarLinea();await cargar();estado('Sesión de administrador verificada.')}catch(err){estado(err.message,true)}})();
+(async()=>{try{const {data:{user},error}=await db.auth.getUser();if(error||!user)throw Error('Iniciá sesión como administrador desde Costos.');const p=await db.rpc('soy_administrador');if(p.error||p.data!==true)throw Error('Esta pantalla es solo para administradores.');const ps=await db.from('productos').select('id,detalles').order('detalles');if(ps.error)throw ps.error;catalogo=ps.data||[];$('admin').classList.remove('hidden');agregarLinea();await cargar();estado('Sesión de administrador verificada.');
+const productoParam=new URLSearchParams(location.search).get('producto');
+if(productoParam&&/^\\d+$/.test(productoParam)){
+ const {data:relaciones,error:relError}=await db.from('comprobantes_lineas').select('comprobante_id').eq('producto_id',Number(productoParam)).order('id',{ascending:false}).limit(1);
+ if(relError)throw relError;
+ const receipt=relaciones?.length?recibos.find(r=>r.id===relaciones[0].comprobante_id):null;
+ if(receipt){await abrir(receipt.id);$('verProductos').click();}
+ else estado('Este producto todavía no tiene un recibo con imagen vinculado. Podés seguir consultando Costos.');
+}}catch(err){estado(err.message,true)}})();
 </script></body></html>

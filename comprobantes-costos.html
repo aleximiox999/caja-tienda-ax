@@ -7,12 +7,12 @@
 <header><a href="./costos-real.html">← Volver a COSTOS</a><h1>RECIBOS / FACTURAS</h1><p class="muted">Cada factura se guarda una sola vez. Sus productos pueden verse uno debajo de otro, aunque todavía no estén en el catálogo.</p></header>
 <p id="estado" role="status">Verificando sesión del administrador…</p>
 <div id="admin" class="hidden">
-<section><h2>Adjuntar comprobante</h2><form id="formulario">
-<div class="grid"><div><label>Proveedor</label><input id="proveedor" required maxlength="200"></div><div><label>Número de factura</label><input id="numero" maxlength="100"></div><div><label>Fecha</label><input id="fecha" type="date"></div><div><label>Total (Bs)</label><input id="total" type="number" min="0" step=".01"></div></div>
-<label>Imagen recortada de la factura (JPG, PNG o WebP, máximo 8 MB)</label><input id="foto" type="file" accept="image/jpeg,image/png,image/webp" required>
-<label>Observaciones</label><textarea id="notas" rows="2"></textarea>
+<section><h2>SUBIR FOTO DEL RECIBO</h2><p>Elegí la foto de tu galería. No es necesario escribir productos, precios ni proveedor.</p><form id="formulario"><details><summary>Datos opcionales del recibo</summary>
+<div class="grid"><div><label>Proveedor</label><input id="proveedor" maxlength="180"></div><div><label>Número de factura</label><input id="numero" maxlength="80"></div><div><label>Fecha</label><input id="fecha" type="date"></div><div><label>Total (Bs)</label><input id="total" type="number" min="0" step=".01"></div></div>
+</details><label>Seleccionar foto (JPG, PNG o WebP, máximo 8 MB)</label><input id="foto" type="file" accept="image/jpeg,image/png,image/webp" required><img id="preview" class="receipt hidden" alt="Vista previa"><details><summary>Productos y observaciones (opcional)</summary>
+<label>Observaciones</label><textarea id="notas" rows="2" maxlength="500"></textarea>
 <h3>Productos de este recibo</h3><div id="lineas"></div><button type="button" class="secondary" id="agregar">+ Agregar producto al recibo</button>
-<p class="muted">Podés elegir un producto existente de Costos o dejarlo sin vincular hasta que lo registres. Registrar una factura no modifica el stock ni crea compras duplicadas.</p><button id="guardar" type="submit">Guardar factura y productos</button>
+<p class="muted">Podés elegir un producto existente de Costos o dejarlo sin vincular hasta que lo registres. Registrar una factura no modifica el stock ni crea compras duplicadas.</p></details><button id="guardar" type="submit" style="width:100%;margin-top:16px">GUARDAR FOTO</button>
 </form></section>
 <section><h2>Facturas registradas</h2><div id="recibos">Cargando…</div></section>
 </div>
@@ -22,7 +22,7 @@ import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 const $=id=>document.getElementById(id);let catalogo=[],recibos=[],visorId=null;
 function estado(s,error=false){$('estado').textContent=s;$('estado').className=error?'error':'muted'}
-const texto=(v)=>v==null?'':String(v);
+const texto=(v)=>v==null?'':String(v);let previewUrl=null;$('foto').onchange=()=>{if(previewUrl)URL.revokeObjectURL(previewUrl);const f=$('foto').files[0];$('preview').classList.toggle('hidden',!f);if(f){previewUrl=URL.createObjectURL(f);$('preview').src=previewUrl;}};
 function agregarLinea(datos={}){
 const d=document.createElement('div');d.className='line';d.innerHTML='<div class="grid"><div><label>Descripción</label><input class="desc" required maxlength="300"></div><div><label>Vincular producto existente</label><select class="prod"><option value="">Sin vincular</option></select></div><div><label>Cantidad</label><input class="qty" type="number" step=".001" min=".001"></div><div><label>Precio unitario Bs</label><input class="price" type="number" min="0" step=".0001"></div><div><label>Subtotal Bs</label><input class="amount" type="number" min="0" step=".01"></div></div><button type="button" class="secondary remove">Quitar línea</button>';
 const sel=d.querySelector('.prod');for(const p of catalogo){const o=document.createElement('option');o.value=p.id;o.textContent=p.detalles;sel.append(o)}
@@ -34,21 +34,21 @@ $('verProductos').onclick=async()=>{const el=$('visorLineas');if(!el.classList.c
 $('cerrar').onclick=()=>$('visor').close();$('agregar').onclick=()=>agregarLinea();
 $('formulario').onsubmit=async e=>{e.preventDefault();const btn=$('guardar');btn.disabled=true;let ruta=null,reciboId=null;try{
 const f=$('foto').files[0];if(!f||f.size>8*1024*1024||!['image/jpeg','image/png','image/webp'].includes(f.type))throw Error('Seleccioná JPG, PNG o WebP de hasta 8 MB.');
-const rows=[...$('lineas').querySelectorAll('.line')].map(d=>({descripcion:d.querySelector('.desc').value.trim(),producto_id:d.querySelector('.prod').value?Number(d.querySelector('.prod').value):null,cantidad:d.querySelector('.qty').value?Number(d.querySelector('.qty').value):null,precio_unitario:d.querySelector('.price').value?Number(d.querySelector('.price').value):null,total:d.querySelector('.amount').value?Number(d.querySelector('.amount').value):null}));if(!rows.length||rows.some(x=>!x.descripcion))throw Error('Agregá al menos un producto con descripción.');
-const proveedor=$('proveedor').value.trim();if(!proveedor)throw Error('El proveedor es obligatorio');
+const rows=[...$('lineas').querySelectorAll('.line')].map(d=>({descripcion:d.querySelector('.desc').value.trim(),producto_id:d.querySelector('.prod').value?Number(d.querySelector('.prod').value):null,cantidad:d.querySelector('.qty').value?Number(d.querySelector('.qty').value):null,precio_unitario:d.querySelector('.price').value?Number(d.querySelector('.price').value):null,total:d.querySelector('.amount').value?Number(d.querySelector('.amount').value):null}));if(rows.some(x=>!x.descripcion))throw Error('Completá o quitá las líneas de productos opcionales.');
+const proveedor=$('proveedor').value.trim()||'POR IDENTIFICAR';
 const n=$('numero').value.trim();if(n){const {data:duplicado,error:de}=await db.from('comprobantes_costos').select('id').eq('numero',n).ilike('proveedor',proveedor).limit(1);if(de)throw de;if(duplicado?.length)throw Error('Ya existe una factura con ese número y proveedor. No se duplicó.')}
 ruta='facturas/'+crypto.randomUUID()+'.'+(f.type==='image/png'?'png':f.type==='image/webp'?'webp':'jpg');estado('Subiendo imagen…');const uploaded=await db.storage.from('comprobantes-costos-amphx').upload(ruta,f,{contentType:f.type,upsert:false});if(uploaded.error)throw uploaded.error;
-const {data:rec,error:re}=await db.from('comprobantes_costos').insert({proveedor,numero:n||null,fecha:$('fecha').value||new Date().toISOString().slice(0,10),total:$('total').value?Number($('total').value):null,archivo_path:ruta,archivo_nombre:f.name,archivo_tipo:f.type,nota:$('notas').value||null}).select('id').single();if(re)throw re;reciboId=rec.id;
-const {error:le}=await db.from('comprobantes_lineas').insert(rows.map(x=>({...x,comprobante_id:reciboId})));if(le)throw le;
-estado('Factura guardada con su imagen y '+rows.length+' producto(s).');$('formulario').reset();$('lineas').replaceChildren();agregarLinea();await cargar();
+const {data:rec,error:re}=await db.from('comprobantes_costos').insert({proveedor,numero:n||null,fecha:$('fecha').value||new Intl.DateTimeFormat('en-CA',{timeZone:'America/La_Paz',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()),total:$('total').value?Number($('total').value):null,archivo_path:ruta,archivo_nombre:f.name,archivo_tipo:f.type,nota:$('notas').value||(!$('fecha').value?'Fecha provisional de carga; verificar fecha del comprobante.':null)}).select('id').single();if(re)throw re;reciboId=rec.id;
+if(rows.length){const {error:le}=await db.from('comprobantes_lineas').insert(rows.map(x=>({...x,comprobante_id:reciboId})));if(le)throw le;}
+const guardadoId=reciboId;reciboId=null;ruta=null;$('formulario').reset();$('lineas').replaceChildren();$('preview').classList.add('hidden');await cargar();estado('FOTO GUARDADA CORRECTAMENTE · Recibo #'+guardadoId+(rows.length?' · '+rows.length+' productos':' · Pendiente de identificar y vincular'));
 }catch(err){estado('No se completó: '+err.message,true);if(reciboId){await db.from('comprobantes_costos').delete().eq('id',reciboId)}if(ruta){await db.storage.from('comprobantes-costos-amphx').remove([ruta])}}finally{btn.disabled=false}};
-(async()=>{try{const {data:{user},error}=await db.auth.getUser();if(error||!user)throw Error('Iniciá sesión como administrador desde Costos.');const p=await db.rpc('soy_administrador');if(p.error||p.data!==true)throw Error('Esta pantalla es solo para administradores.');const ps=await db.from('productos').select('id,detalles').order('detalles');if(ps.error)throw ps.error;catalogo=ps.data||[];$('admin').classList.remove('hidden');agregarLinea();await cargar();estado('Sesión de administrador verificada.');
+(async()=>{try{const {data:{user},error}=await db.auth.getUser();if(error||!user)throw Error('Iniciá sesión como administrador desde Costos.');const p=await db.rpc('soy_administrador');if(p.error||p.data!==true)throw Error('Esta pantalla es solo para administradores.');const ps=await db.from('productos').select('id,detalles').order('detalles');if(ps.error)throw ps.error;catalogo=ps.data||[];$('admin').classList.remove('hidden');await cargar();estado('Sesión de administrador verificada.');
 const productoParam=new URLSearchParams(location.search).get('producto');
-if(productoParam&&/^\\d+$/.test(productoParam)){
+if(productoParam&&/^\d+$/.test(productoParam)){
  const {data:relaciones,error:relError}=await db.from('comprobantes_lineas').select('comprobante_id').eq('producto_id',Number(productoParam)).order('id',{ascending:false}).limit(1);
  if(relError)throw relError;
  const receipt=relaciones?.length?recibos.find(r=>r.id===relaciones[0].comprobante_id):null;
- if(receipt){await abrir(receipt.id);$('verProductos').click();}
+ if(receipt){await abrir(receipt.id);}
  else estado('Este producto todavía no tiene un recibo con imagen vinculado. Podés seguir consultando Costos.');
 }}catch(err){estado(err.message,true)}})();
 </script></body></html>

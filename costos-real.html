@@ -3081,7 +3081,7 @@ async function ampListarComprobantes(){
   item.append(title,details,btn);cont.append(item);
  }
 }
-$('ampAbrirComprobantes').onclick=()=>{ampSeleccionComprobantes.clear();ampDibujarProductosComprobantes();ampMensajeComprobantes('');ampDialogComprobantes.showModal();void ampListarComprobantes();};
+$('ampAbrirComprobantes').onclick=()=>{window.location.assign('./comprobantes-costos.html?v=2610837');};
 $('ampCerrarComprobantes').onclick=()=>ampDialogComprobantes.close();
 $('ampBuscarComprobanteProducto').oninput=ampDibujarProductosComprobantes;
 $('ampActualizarComprobantes').onclick=()=>void ampListarComprobantes();

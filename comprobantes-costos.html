@@ -3,6 +3,7 @@
 <title>Recibos y facturas · Tienda AMPHX</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#0c1420;color:#f1f5f8;font:15px system-ui,Arial}.wrap{max-width:950px;margin:auto;padding:18px}h1{font-size:23px}h2{font-size:18px}a{color:#aee8cb}section{background:#172334;border:1px solid #38495b;border-radius:14px;margin:15px 0;padding:16px}label{display:block;font-size:13px;margin:12px 0 5px}input,select,textarea{width:100%;padding:11px;background:#f5f8fa;color:#16283b;border:0;border-radius:7px;font:inherit}button{background:#16825e;color:white;padding:11px 14px;border:0;border-radius:9px;font:inherit;font-weight:700;cursor:pointer}button:disabled{opacity:.5}.secondary{background:#384c61}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1 1 150px}.receipt{width:min(100%,420px);max-height:70vh;object-fit:contain;display:block;margin:12px auto;border-radius:6px;background:#fff}.line{padding:12px;margin:9px 0;border:1px solid #42556b;border-radius:9px}.muted{color:#b8c9d5}.error{color:#ffc3b7}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}.hidden{display:none!important}#visor{border:0;border-radius:12px;max-width:96vw;width:min(92vw,700px);max-height:95vh;overflow:auto;background:#152131;color:#fff;padding:16px}#visor::backdrop{background:#000c}#visor img{width:100%;max-height:65vh;object-fit:contain}#visor .line{color:#fff}#visor .close{float:right}.receipt-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.receipt-actions .remove-receipt{background:#55313a;color:#ffdfe2;border:1px solid #a15b68;padding:7px 10px;font-size:13px;min-width:38px}.receipt-actions .remove-receipt:hover{background:#8c3042}.receipt-actions .remove-receipt:focus-visible{outline:2px solid #fff;outline-offset:2px}.receipt-actions button:disabled{opacity:.5}.bulk-bar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0;padding:10px;border:1px solid #42556b;border-radius:9px}.bulk-bar button{background:#9d3444;font-size:13px;padding:9px 11px}.bulk-bar button:disabled{background:#42556b}.selection-label{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:14px}.selection-label input{width:21px;height:21px;accent-color:#54c49e;cursor:pointer;flex:none}.line.seleccionada{border-color:#54c49e;background:#173a39}.line .receipt-actions{margin-left:30px}
+.supplier-box{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px;border:1px solid #76ac97;border-radius:12px;background:linear-gradient(115deg,#173c35,#15302b);color:#effff5}.supplier-box strong{font-size:19px}.supplier-box span{font-size:13px;color:#cfe1d6}.supplier-invoices{margin-top:12px}.supplier-invoices[hidden]{display:none}.assign-puma{background:#2a4b64;padding:7px 10px;font-size:12px}.receipt-actions button{flex:0 1 auto}.note-small{font-size:12px;color:#c0cfd8}.supplier-badge{font-size:12px;color:#bde7d1}.receipt-actions .assign-puma[disabled]{opacity:.5}
 </style></head><body><div class="wrap">
 <header><a href="./costos-real.html">← Volver a COSTOS</a><h1>RECIBOS / FACTURAS</h1><p class="muted">Subí tus fotos. Los datos y productos se identificarán posteriormente.</p></header>
 <p id="estado" role="status">Verificando sesión del administrador…</p>
@@ -14,6 +15,7 @@
 <p id="seleccion" class="muted">Ninguna foto seleccionada.</p>
 <button id="guardar" type="submit" style="width:100%;margin-top:12px">SUBIR FOTOS</button>
 </form></section>
+<section><h2>FACTURAS POR PROVEEDOR</h2><button id="abrirPuma" type="button" class="supplier-box" aria-expanded="false"><strong>PUMA</strong><span id="contadorPuma">Ver facturas ›</span></button><div id="panelPuma" class="supplier-invoices" hidden><p class="note-small">Orden: fecha de factura, de la más nueva a la más antigua. Los comprobantes sin fecha confirmada aparecen aparte, por fecha de carga.</p><div id="facturasPuma"></div></div></section>
 <section><h2>Facturas registradas</h2><div class="bulk-bar"><label class="selection-label"><input id="seleccionarTodos" type="checkbox"> Seleccionar todas las fotos visibles</label><span id="contadorSeleccion" class="muted">0 seleccionadas</span><button id="eliminarSeleccionadas" type="button" disabled>🗑 ELIMINAR SELECCIONADAS</button></div><div id="recibos">Cargando…</div></section>
 </div>
 <dialog id="visor"><button class="secondary close" id="cerrar">Cerrar ×</button><h2 id="visorTitulo"></h2><img id="visorFoto" alt="Fotografía de la factura"><button id="verProductos" class="secondary">Ver productos de este recibo</button><div id="visorLineas" class="hidden"></div></dialog>
@@ -23,6 +25,42 @@ const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable
 const $=id=>document.getElementById(id);let catalogo=[],recibos=[],visorId=null;const seleccionados=new Set();
 function estado(s,error=false){$('estado').textContent=s;$('estado').className=error?'error':'muted'}
 $('foto').onchange=()=>{const fs=[...$('foto').files];$('seleccion').textContent=fs.length?fs.length+' foto(s) seleccionada(s)':'Ninguna foto seleccionada.';};
+let pumaAbierto=false;
+$('abrirPuma').onclick=()=>{
+ pumaAbierto=!pumaAbierto;
+ $('panelPuma').hidden=!pumaAbierto;
+ $('abrirPuma').setAttribute('aria-expanded',String(pumaAbierto));
+ if(pumaAbierto)dibujarPuma();
+};
+function fechaConfirmada(r){return !String(r.nota||'').includes('Fecha provisional')&&/^\\d{4}-\\d{2}-\\d{2}$/.test(String(r.fecha||''));}
+function dibujarPuma(){
+ const panel=$('facturasPuma');panel.replaceChildren();
+ const lista=recibos.filter(r=>/^PUMA(?:\\b|\\s|$)/i.test(String(r.proveedor||'').trim())).sort((a,b)=>{
+  const aa=fechaConfirmada(a),bb=fechaConfirmada(b);
+  if(aa!==bb)return aa?-1:1;
+  if(aa)return String(b.fecha).localeCompare(String(a.fecha))||Number(b.id)-Number(a.id);
+  return String(b.creado_en||'').localeCompare(String(a.creado_en||'') )||Number(b.id)-Number(a.id);
+ });
+ $('contadorPuma').textContent=lista.length+' factura'+(lista.length===1?'':'s')+' · Ver ›';
+ if(!lista.length){panel.textContent='Todavía no hay facturas identificadas como PUMA. Podés asignarlas desde el listado de abajo.';return;}
+ for(const r of lista){
+  const fila=document.createElement('div');fila.className='line';
+  const titulo=document.createElement('p');titulo.textContent='Factura #'+r.id+' · '+(fechaConfirmada(r)?'Fecha: '+r.fecha:'Fecha de factura pendiente · orden por carga');
+  const b=document.createElement('button');b.type='button';b.textContent='VER FACTURA';b.onclick=()=>abrir(r.id);
+  fila.append(titulo,b);panel.append(fila);
+ }
+}
+async function asignarPuma(r,boton){
+ if(eliminandoComprobante)return;
+ if(!confirm('¿Confirmás que la foto #'+r.id+' pertenece al proveedor PUMA? No se modifican los productos ni las existencias.'))return;
+ boton.disabled=true;
+ try{
+  const {data,error}=await db.from('comprobantes_costos').update({proveedor:'PUMA'}).eq('id',r.id).eq('archivo_path',r.archivo_path).select('id');
+  if(error)throw error;
+  if(!data||data.length!==1)throw Error('No se confirmó el cambio. Revisá tus permisos.');
+  await cargar();estado('Factura #'+r.id+' asignada a PUMA, pendiente de confirmar su fecha real.');
+ }catch(err){estado('No se pudo asignar a PUMA: '+(err.message||String(err)),true);boton.disabled=false;}
+}
 function actualizarSeleccion(){
  const ids=new Set(recibos.map(r=>r.id));
  for(const id of [...seleccionados])if(!ids.has(id))seleccionados.delete(id);
@@ -43,7 +81,7 @@ async function cargar(){
  if(error)throw error;
  recibos=data||[];
  $('recibos').replaceChildren();
- if(!recibos.length){$('recibos').textContent='Todavía no hay facturas guardadas.';actualizarSeleccion();return;}
+ if(!recibos.length){$('recibos').textContent='Todavía no hay facturas guardadas.';actualizarSeleccion();dibujarPuma();return;}
  for(const r of recibos){
   const item=document.createElement('div');item.className='line';item.dataset.reciboId=String(r.id);
   const marca=document.createElement('label');marca.className='selection-label';
@@ -55,9 +93,12 @@ async function cargar(){
   const ver=document.createElement('button');ver.type='button';ver.textContent='Ver recibo / factura';ver.onclick=()=>abrir(r.id);
   const borrar=document.createElement('button');borrar.type='button';borrar.className='remove-receipt';borrar.textContent='🗑';borrar.title='Eliminar esta fotografía';borrar.setAttribute('aria-label','Eliminar foto número '+r.id);borrar.onclick=()=>void eliminarComprobante(r,borrar);
   const acciones=document.createElement('div');acciones.className='receipt-actions';acciones.append(ver,borrar);
+  if(String(r.proveedor||'').trim().toUpperCase()==='POR IDENTIFICAR'){
+    const clasificar=document.createElement('button');clasificar.type='button';clasificar.className='assign-puma';clasificar.textContent='Asignar a PUMA';clasificar.onclick=()=>void asignarPuma(r,clasificar);acciones.append(clasificar);
+  }
   item.append(marca,acciones);$('recibos').append(item);
  }
- actualizarSeleccion();
+ actualizarSeleccion();dibujarPuma();
 }
 let eliminandoComprobante=false;
 $('eliminarSeleccionadas').onclick=async()=>{

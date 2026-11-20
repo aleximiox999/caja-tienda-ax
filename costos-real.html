@@ -2065,11 +2065,6 @@ function dibujar(){
    }
   }
   card.append(dato);
-  const reciboEnlace=document.createElement('a');
-  reciboEnlace.href='./comprobantes-costos.html?producto='+encodeURIComponent(String(p.id));
-  reciboEnlace.textContent='🧾 Ver recibo / factura';
-  reciboEnlace.style.cssText='display:inline-block;grid-column:1/-1;margin:4px 0;padding:10px 12px;border-radius:9px;background:#e8f5ee;color:#126047;font-weight:750;text-decoration:none;border:1px solid #b7d9c9';
-  card.append(reciboEnlace);
   if(compra)configurarEditorFila(p,compra,card,true);
   else{
    const note=document.createElement('p');note.className='muted';note.textContent='Sin compra registrada. Añadí una compra para habilitar esta fila.';card.append(note,accionesFilaHoja(p));

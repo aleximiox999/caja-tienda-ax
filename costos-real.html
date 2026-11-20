@@ -1811,8 +1811,8 @@ document.addEventListener('scroll',e=>{
 /* Calculadora segura para los importes editables: + - * / y paréntesis.
    No evalúa código y nunca escribe datos sin pulsar Guardar cambios. */
 function ampEvaluarOperacion(texto){
- const str=String(texto??'').trim().replace(/\\s+/g,'').replace(/[×xX]/g,'*').replace(/÷/g,'/').replace(/[−–]/g,'-');
- if(!str||str.length>80||/[^0-9.,+*/()\\-]/.test(str))return NaN;
+ const str=String(texto??'').trim().replace(/\s+/g,'').replace(/[×xX]/g,'*').replace(/÷/g,'/').replace(/[−–]/g,'-');
+ if(!str||str.length>80||/[^0-9.,+*/()-]/.test(str))return NaN;
  let i=0,operaciones=0;
  const falla=()=>{throw Error('Expresión incompleta')};
  function factor(prof=0){
@@ -1823,7 +1823,7 @@ function ampEvaluarOperacion(texto){
   if(str[i]==='('){
    i++;const n=suma(prof+1);if(str[i]!==')')falla();i++;return n;
   }
-  const m=/^(?:\\d+(?:[.,]\\d*)?|[.,]\\d+)/.exec(str.slice(i));
+  const m=/^(?:\d+(?:[.,]\d*)?|[.,]\d+)/.exec(str.slice(i));
   if(!m)falla();
   i+=m[0].length;
   const n=Number(m[0].replace(',','.'));

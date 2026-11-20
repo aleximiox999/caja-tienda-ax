@@ -2,7 +2,7 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Recibos y facturas · Tienda AMPHX</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0c1420;color:#f1f5f8;font:15px system-ui,Arial}.wrap{max-width:950px;margin:auto;padding:18px}h1{font-size:23px}h2{font-size:18px}a{color:#aee8cb}section{background:#172334;border:1px solid #38495b;border-radius:14px;margin:15px 0;padding:16px}label{display:block;font-size:13px;margin:12px 0 5px}input,select,textarea{width:100%;padding:11px;background:#f5f8fa;color:#16283b;border:0;border-radius:7px;font:inherit}button{background:#16825e;color:white;padding:11px 14px;border:0;border-radius:9px;font:inherit;font-weight:700;cursor:pointer}button:disabled{opacity:.5}.secondary{background:#384c61}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1 1 150px}.receipt{width:min(100%,420px);max-height:70vh;object-fit:contain;display:block;margin:12px auto;border-radius:6px;background:#fff}.line{padding:12px;margin:9px 0;border:1px solid #42556b;border-radius:9px}.muted{color:#b8c9d5}.error{color:#ffc3b7}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}.hidden{display:none!important}#visor{border:0;border-radius:12px;max-width:96vw;width:min(92vw,700px);max-height:95vh;overflow:auto;background:#152131;color:#fff;padding:16px}#visor::backdrop{background:#000c}#visor img{width:100%;max-height:65vh;object-fit:contain}#visor .line{color:#fff}#visor .close{float:right}.receipt-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.receipt-actions .remove-receipt{background:#55313a;color:#ffdfe2;border:1px solid #a15b68;padding:7px 10px;font-size:13px;min-width:38px}.receipt-actions .remove-receipt:hover{background:#8c3042}.receipt-actions .remove-receipt:focus-visible{outline:2px solid #fff;outline-offset:2px}.receipt-actions button:disabled{opacity:.5}
+*{box-sizing:border-box}body{margin:0;background:#0c1420;color:#f1f5f8;font:15px system-ui,Arial}.wrap{max-width:950px;margin:auto;padding:18px}h1{font-size:23px}h2{font-size:18px}a{color:#aee8cb}section{background:#172334;border:1px solid #38495b;border-radius:14px;margin:15px 0;padding:16px}label{display:block;font-size:13px;margin:12px 0 5px}input,select,textarea{width:100%;padding:11px;background:#f5f8fa;color:#16283b;border:0;border-radius:7px;font:inherit}button{background:#16825e;color:white;padding:11px 14px;border:0;border-radius:9px;font:inherit;font-weight:700;cursor:pointer}button:disabled{opacity:.5}.secondary{background:#384c61}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1 1 150px}.receipt{width:min(100%,420px);max-height:70vh;object-fit:contain;display:block;margin:12px auto;border-radius:6px;background:#fff}.line{padding:12px;margin:9px 0;border:1px solid #42556b;border-radius:9px}.muted{color:#b8c9d5}.error{color:#ffc3b7}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}.hidden{display:none!important}#visor{border:0;border-radius:12px;max-width:96vw;width:min(92vw,700px);max-height:95vh;overflow:auto;background:#152131;color:#fff;padding:16px}#visor::backdrop{background:#000c}#visor img{width:100%;max-height:65vh;object-fit:contain}#visor .line{color:#fff}#visor .close{float:right}.receipt-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.receipt-actions .remove-receipt{background:#55313a;color:#ffdfe2;border:1px solid #a15b68;padding:7px 10px;font-size:13px;min-width:38px}.receipt-actions .remove-receipt:hover{background:#8c3042}.receipt-actions .remove-receipt:focus-visible{outline:2px solid #fff;outline-offset:2px}.receipt-actions button:disabled{opacity:.5}.bulk-bar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0;padding:10px;border:1px solid #42556b;border-radius:9px}.bulk-bar button{background:#9d3444;font-size:13px;padding:9px 11px}.bulk-bar button:disabled{background:#42556b}.selection-label{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:14px}.selection-label input{width:21px;height:21px;accent-color:#54c49e;cursor:pointer;flex:none}.line.seleccionada{border-color:#54c49e;background:#173a39}.line .receipt-actions{margin-left:30px}
 </style></head><body><div class="wrap">
 <header><a href="./costos-real.html">← Volver a COSTOS</a><h1>RECIBOS / FACTURAS</h1><p class="muted">Subí tus fotos. Los datos y productos se identificarán posteriormente.</p></header>
 <p id="estado" role="status">Verificando sesión del administrador…</p>
@@ -14,21 +14,81 @@
 <p id="seleccion" class="muted">Ninguna foto seleccionada.</p>
 <button id="guardar" type="submit" style="width:100%;margin-top:12px">SUBIR FOTOS</button>
 </form></section>
-<section><h2>Facturas registradas</h2><div id="recibos">Cargando…</div></section>
+<section><h2>Facturas registradas</h2><div class="bulk-bar"><label class="selection-label"><input id="seleccionarTodos" type="checkbox"> Seleccionar todas las fotos visibles</label><span id="contadorSeleccion" class="muted">0 seleccionadas</span><button id="eliminarSeleccionadas" type="button" disabled>🗑 ELIMINAR SELECCIONADAS</button></div><div id="recibos">Cargando…</div></section>
 </div>
 <dialog id="visor"><button class="secondary close" id="cerrar">Cerrar ×</button><h2 id="visorTitulo"></h2><img id="visorFoto" alt="Fotografía de la factura"><button id="verProductos" class="secondary">Ver productos de este recibo</button><div id="visorLineas" class="hidden"></div></dialog>
 </div><script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
-const $=id=>document.getElementById(id);let catalogo=[],recibos=[],visorId=null;
+const $=id=>document.getElementById(id);let catalogo=[],recibos=[],visorId=null;const seleccionados=new Set();
 function estado(s,error=false){$('estado').textContent=s;$('estado').className=error?'error':'muted'}
 $('foto').onchange=()=>{const fs=[...$('foto').files];$('seleccion').textContent=fs.length?fs.length+' foto(s) seleccionada(s)':'Ninguna foto seleccionada.';};
-async function cargar(){const {data,error}=await db.from('comprobantes_costos').select('id,proveedor,numero,fecha,total,archivo_path,creado_en,nota').order('id',{ascending:false}).limit(150);if(error)throw error;recibos=data||[];$('recibos').replaceChildren();if(!recibos.length){$('recibos').textContent='Todavía no hay facturas guardadas.';return;}for(const r of recibos){const item=document.createElement('div');item.className='line';const t=document.createElement('p');t.textContent='Foto #'+r.id+' · '+(r.proveedor==='POR IDENTIFICAR'?'Pendiente de identificar':r.proveedor)+' · '+(r.nota?.includes('Fecha provisional')?'Fecha pendiente':(r.fecha||'Fecha pendiente'));const b=document.createElement('button');b.textContent='Ver recibo / factura';b.onclick=()=>abrir(r.id);const acciones=document.createElement('div');acciones.className='receipt-actions';const borrar=document.createElement('button');borrar.type='button';borrar.className='remove-receipt';borrar.textContent='🗑';borrar.title='Eliminar esta fotografía';borrar.setAttribute('aria-label','Eliminar foto número '+r.id);borrar.onclick=()=>void eliminarComprobante(r,borrar);acciones.append(b,borrar);item.append(t,acciones);$('recibos').append(item)}}
+function actualizarSeleccion(){
+ const ids=new Set(recibos.map(r=>r.id));
+ for(const id of [...seleccionados])if(!ids.has(id))seleccionados.delete(id);
+ const n=seleccionados.size,total=recibos.length;
+ $('contadorSeleccion').textContent=n+' seleccionada'+(n===1?'':'s');
+ $('eliminarSeleccionadas').disabled=n===0||eliminandoComprobante;
+ $('seleccionarTodos').checked=total>0&&n===total;
+ $('seleccionarTodos').indeterminate=n>0&&n<total;
+ for(const el of $('recibos').querySelectorAll('[data-recibo-id]'))el.classList.toggle('seleccionada',seleccionados.has(Number(el.dataset.reciboId)));
+}
+$('seleccionarTodos').onchange=e=>{
+ if(e.target.checked)recibos.forEach(r=>seleccionados.add(r.id));else seleccionados.clear();
+ for(const check of $('recibos').querySelectorAll('input[data-seleccion]'))check.checked=seleccionados.has(Number(check.dataset.seleccion));
+ actualizarSeleccion();
+};
+async function cargar(){
+ const {data,error}=await db.from('comprobantes_costos').select('id,proveedor,numero,fecha,total,archivo_path,creado_en,nota').order('id',{ascending:false}).limit(150);
+ if(error)throw error;
+ recibos=data||[];
+ $('recibos').replaceChildren();
+ if(!recibos.length){$('recibos').textContent='Todavía no hay facturas guardadas.';actualizarSeleccion();return;}
+ for(const r of recibos){
+  const item=document.createElement('div');item.className='line';item.dataset.reciboId=String(r.id);
+  const marca=document.createElement('label');marca.className='selection-label';
+  const check=document.createElement('input');check.type='checkbox';check.dataset.seleccion=String(r.id);check.checked=seleccionados.has(r.id);
+  const titulo=document.createElement('span');
+  titulo.textContent='Foto #'+r.id+' · '+(r.proveedor==='POR IDENTIFICAR'?'Pendiente de identificar':r.proveedor)+' · '+(r.nota?.includes('Fecha provisional')?'Fecha pendiente':(r.fecha||'Fecha pendiente'));
+  check.onchange=()=>{if(check.checked)seleccionados.add(r.id);else seleccionados.delete(r.id);actualizarSeleccion()};
+  marca.append(check,titulo);
+  const ver=document.createElement('button');ver.type='button';ver.textContent='Ver recibo / factura';ver.onclick=()=>abrir(r.id);
+  const borrar=document.createElement('button');borrar.type='button';borrar.className='remove-receipt';borrar.textContent='🗑';borrar.title='Eliminar esta fotografía';borrar.setAttribute('aria-label','Eliminar foto número '+r.id);borrar.onclick=()=>void eliminarComprobante(r,borrar);
+  const acciones=document.createElement('div');acciones.className='receipt-actions';acciones.append(ver,borrar);
+  item.append(marca,acciones);$('recibos').append(item);
+ }
+ actualizarSeleccion();
+}
 let eliminandoComprobante=false;
+$('eliminarSeleccionadas').onclick=async()=>{
+ if(eliminandoComprobante||!seleccionados.size)return;
+ const elegidos=recibos.filter(r=>seleccionados.has(r.id));
+ if(!elegidos.length)return;
+ if(!confirm('¿Eliminar DEFINITIVAMENTE '+elegidos.length+' fotografías seleccionadas? Esta acción no se puede deshacer. No modifica precios, productos ni existencias.'))return;
+ eliminandoComprobante=true;actualizarSeleccion();
+ let borrados=0,fallos=[];
+ try{
+  for(const r of elegidos){
+   estado('Eliminando '+(borrados+fallos.length+1)+' de '+elegidos.length+' fotos seleccionadas…');
+   try{
+    const {data,error}=await db.from('comprobantes_costos').delete().eq('id',r.id).eq('archivo_path',r.archivo_path).select('id');
+    if(error)throw error;
+    if(!Array.isArray(data)||data.length!==1)throw Error('No se confirmó la eliminación; revisá permisos o productos vinculados');
+    seleccionados.delete(r.id);borrados++;
+    const {error:archivoError}=await db.storage.from('comprobantes-costos-amphx').remove([r.archivo_path]);
+    if(archivoError)fallos.push('#'+r.id+' (registro borrado, imagen pendiente): '+archivoError.message);
+    if(visorId===r.id&&$('visor').open){$('visor').close();visorId=null;}
+   }catch(err){fallos.push('#'+r.id+': '+(err.message||String(err)));}
+  }
+  await cargar();
+  estado(borrados+' comprobante(s) eliminado(s).'+(fallos.length?' Problemas: '+fallos.join(' | '):' Las demás fotos y los productos permanecen sin cambios.'),fallos.length>0);
+ }catch(err){estado('Se eliminaron '+borrados+' fotos, pero falló la actualización del listado: '+(err.message||String(err)),true);}
+ finally{eliminandoComprobante=false;actualizarSeleccion();}
+};
 async function eliminarComprobante(r,boton){
  if(eliminandoComprobante)return;
  if(!confirm('¿Eliminar definitivamente la foto #'+r.id+'? Esta acción no se puede deshacer. No se modificarán productos, precios, compras ni existencias.'))return;
- eliminandoComprobante=true;boton.disabled=true;
+ eliminandoComprobante=true;boton.disabled=true;actualizarSeleccion();
  estado('Eliminando foto #'+r.id+'…');
  try{
   const {data,error}=await db.from('comprobantes_costos').delete().eq('id',r.id).eq('archivo_path',r.archivo_path).select('id');
@@ -36,12 +96,12 @@ async function eliminarComprobante(r,boton){
   if(!Array.isArray(data)||data.length!==1)throw Error('No se confirmó la eliminación en la base de datos. Revisá tus permisos.');
   const archivo=await db.storage.from('comprobantes-costos-amphx').remove([r.archivo_path]);
   if(visorId===r.id&&$('visor').open){$('visor').close();visorId=null;}
-  await cargar();
+  seleccionados.delete(r.id);await cargar();
   if(archivo.error)estado('Se quitó el registro #'+r.id+', pero la imagen quedó pendiente de borrar del almacenamiento: '+archivo.error.message,true);
   else estado('Foto #'+r.id+' eliminada. Los productos, costos y existencias permanecen iguales.');
  }catch(err){
   estado('No se eliminó la foto #'+r.id+': '+(err.message||String(err))+'. Si tiene productos vinculados, debe revisarse antes de eliminar el comprobante.',true);
- }finally{eliminandoComprobante=false;boton.disabled=false;}
+ }finally{eliminandoComprobante=false;boton.disabled=false;actualizarSeleccion();}
 }
 async function abrir(id){const r=recibos.find(x=>x.id===id);if(!r)return;visorId=id;$('visorTitulo').textContent=r.proveedor+' · Factura '+(r.numero||'sin número');$('visorLineas').replaceChildren();$('visorLineas').classList.add('hidden');$('verProductos').textContent='Ver productos de este recibo';$('visorFoto').removeAttribute('src');const {data,error}=await db.storage.from('comprobantes-costos-amphx').createSignedUrl(r.archivo_path,1800);if(error){estado('No se pudo mostrar la imagen: '+error.message,true)}else $('visorFoto').src=data.signedUrl;$('visor').showModal()}
 $('verProductos').onclick=async()=>{const el=$('visorLineas');if(!el.classList.contains('hidden')){el.classList.add('hidden');$('verProductos').textContent='Ver productos de este recibo';return}el.textContent='Cargando productos…';const {data,error}=await db.from('comprobantes_lineas').select('descripcion,cantidad,precio_unitario,total,producto_id').eq('comprobante_id',visorId).order('id');el.replaceChildren();if(error){el.textContent=error.message}else if(!data.length)el.textContent='Este recibo todavía no tiene productos asociados.';else for(const l of data){const p=document.createElement('div');p.className='line';const title=document.createElement('strong');title.textContent=l.descripcion;const detail=document.createElement('p');detail.textContent='Cantidad: '+(l.cantidad??'—')+' · Precio Bs '+(l.precio_unitario??'—')+' · Subtotal Bs '+(l.total??'—')+(l.producto_id?' · Vinculado a Costos':' · Por vincular a Costos');p.append(title,detail);el.append(p)}el.classList.remove('hidden');$('verProductos').textContent='Ocultar productos'};

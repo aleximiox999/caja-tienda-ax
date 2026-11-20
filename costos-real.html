@@ -992,10 +992,12 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
   <div class="amp-edit-opciones">
     <button type="button" class="amp-edit-choice" data-editar-opcion="precio"><span class="amp-edit-simbolo">Bs</span><span><strong>Precio de venta</strong><small>Cambiar el precio al que vendés</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="compra"><span class="amp-edit-simbolo">$</span><span><strong>Compra y unidades</strong><small>Corregir el costo de compra y la cantidad</small></span></button>
+    <button type="button" class="amp-edit-choice" data-editar-opcion="costo"><span class="amp-edit-simbolo">÷</span><span><strong>Costo unitario actual</strong><small>Corregir el costo vigente sin tocar compras antiguas</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="existencias"><span class="amp-edit-simbolo">#</span><span><strong>Existencias</strong><small>Corregir el stock actual</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="nombre"><span class="amp-edit-simbolo">✎</span><span><strong>Nombre del producto</strong><small>Corregir el título del artículo</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="proveedor"><span class="amp-edit-simbolo">P</span><span><strong>Proveedor</strong><small>Modificar el nombre del proveedor</small></span></button>
   </div>
+  <p class="muted" style="margin:13px 0 0;font-size:12px">Para editar un importe elegí su opción; podés escribir operaciones como <strong>120/6</strong>, <strong>15+5</strong> o <strong>10*3</strong>. COSTO UNITARIO y UTILIDADES se calculan automáticamente.</p>
   <button id="ampEditarCancelar" class="alt amp-edit-cancel" type="button">Cancelar</button>
 </dialog>
 <dialog id="editorNombreProducto" aria-labelledby="nombreProductoTitulo"><form id="formEditarNombre"><h2 id="nombreProductoTitulo">Editar nombre del producto</h2><p class="muted">Corregí el nombre que aparece en COSTOS y en la caja. El código de barras, las existencias, los precios y las compras anteriores no cambian.</p><div class="field"><label for="nombreProductoOriginal">Nombre actual</label><div id="nombreProductoOriginal" class="calculo" style="font-weight:650;background:#f3f6fa;color:#17283b;border-color:#d9e3eb"></div></div><div class="field"><label for="nombreProductoNuevo">Nuevo nombre del producto</label><input id="nombreProductoNuevo" type="text" maxlength="180" autocomplete="off" spellcheck="false" required></div><p id="nombreProductoError" role="alert"></p><div class="actions"><button id="nombreProductoGuardar" type="submit">Guardar nombre</button><button id="nombreProductoCancelar" type="button" class="alt">Cancelar</button></div></form></dialog><dialog id="seleccionarKgDialog" aria-labelledby="seleccionarKgTitulo"><h2 id="seleccionarKgTitulo">Gestionar kilos y bolsas</h2><p id="seleccionarKgNombre" style="font-weight:700"></p><p class="aviso-kg">Si vendés bolsas cerradas y también kilos sueltos, elegí «Abrir bolsa». Así se administran dos inventarios independientes.</p><div class="actions" style="display:flex;flex-direction:column"><button id="opcionAbrirBolsa" type="button">Abrir bolsa y vender por kg</button><button id="opcionConvertirKg" type="button" class="alt">Convertir este producto a kg</button><button id="cancelarSeleccionKg" type="button" class="alt">Cancelar</button></div></dialog>
@@ -1574,8 +1576,8 @@ function ampEnfocarCampo(p,clave){
  const aviso=document.createElement('small');aviso.className='amp-edit-instruction';
  aviso.textContent=clave==='proveedor'
   ?'Editá el proveedor y tocá «Guardar cambios».'
-  :clave==='compra'?'Podés editar compra y unidades. Después tocá «Guardar cambios».'
-  :'Editá el precio de venta y tocá «Guardar cambios».';
+  :clave==='compra'?'Editá compra y unidades (admite 120/6, 15+5). Los totales se actualizan solos. Tocá «Guardar cambios».'
+  :'Editá el precio (admite 15+5, 120/6). Las utilidades se actualizan solas. Tocá «Guardar cambios».';
  input.parentElement.append(aviso);
  try{input.focus({preventScroll:true});input.select();}catch(e){input.focus();}
  input.addEventListener('input',()=>{input.classList.remove('amp-edit-destacado');aviso.remove()},{once:true});
@@ -1587,6 +1589,7 @@ for(const btn of document.querySelectorAll('#ampEditarMenu [data-editar-opcion]'
   cerrarMenuEdicion();
   if(opcion==='nombre'){abrirEditarNombre(p);return;}
   if(opcion==='existencias'){elegirEdicion(p);$('editorStock').focus();$('editorStock').select();return;}
+  if(opcion==='costo'){abrirEditorCostos(p,'actual');return;}
   if(opcion==='compra'){ampEnfocarCampo(p,'compra');return;}
   if(opcion==='precio'||opcion==='proveedor')ampEnfocarCampo(p,opcion==='precio'?'venta':'proveedor');
  };
@@ -1805,6 +1808,59 @@ document.addEventListener('scroll',e=>{
  if(ampHistorialCostosActivo&&!document.getElementById('ampHistorialCostos')?.contains(e.target))ampCerrarHistorialCostos();
 },true);
 
+/* Calculadora segura para los importes editables: + - * / y paréntesis.
+   No evalúa código y nunca escribe datos sin pulsar Guardar cambios. */
+function ampEvaluarOperacion(texto){
+ const str=String(texto??'').trim().replace(/\\s+/g,'').replace(/[×xX]/g,'*').replace(/÷/g,'/').replace(/[−–]/g,'-');
+ if(!str||str.length>80||/[^0-9.,+*/()\\-]/.test(str))return NaN;
+ let i=0,operaciones=0;
+ const falla=()=>{throw Error('Expresión incompleta')};
+ function factor(prof=0){
+  if(++operaciones>80||prof>20)falla();
+  if(str[i]==='+'||str[i]==='-'){
+   const signo=str[i++];const n=factor(prof+1);return signo==='-'?-n:n;
+  }
+  if(str[i]==='('){
+   i++;const n=suma(prof+1);if(str[i]!==')')falla();i++;return n;
+  }
+  const m=/^(?:\\d+(?:[.,]\\d*)?|[.,]\\d+)/.exec(str.slice(i));
+  if(!m)falla();
+  i+=m[0].length;
+  const n=Number(m[0].replace(',','.'));
+  if(!Number.isFinite(n))falla();
+  return n;
+ }
+ function producto(prof=0){
+  let n=factor(prof);
+  while(str[i]==='*'||str[i]==='/'){
+   if(++operaciones>80)falla();
+   const op=str[i++],v=factor(prof);
+   if(op==='/'&&v===0)falla();
+   n=op==='*'?n*v:n/v;
+  }
+  return n;
+ }
+ function suma(prof=0){
+  let n=producto(prof);
+  while(str[i]==='+'||str[i]==='-'){
+   if(++operaciones>80)falla();
+   const op=str[i++],v=producto(prof);
+   n=op==='+'?n+v:n-v;
+  }
+  return n;
+ }
+ try{const n=suma();return i===str.length&&Number.isFinite(n)&&Math.abs(n)<=10000000000?n:NaN}
+ catch(_){return NaN}
+}
+function ampValorOperacion(texto,decimales){
+ const n=ampEvaluarOperacion(texto);if(!Number.isFinite(n))return NaN;
+ const raw=String(texto);
+ const esOperacion=/[+*/()×÷xX]/.test(raw)||(raw.trim().slice(1).includes('-'));
+ if(!esOperacion)return n;
+ const multi=10**decimales;
+ return Math.round((n+Number.EPSILON)*multi)/multi;
+}
+
 function configurarEditorFila(p,compra,superficie,movil){
  const lista=[
   ['compra','PRECIO DE COMPRA'],
@@ -1830,8 +1886,8 @@ function configurarEditorFila(p,compra,superficie,movil){
    input.setAttribute('aria-label',titulo+' de '+p.detalles);
    if(clave==='proveedor'){input.type='text';input.maxLength=180;input.value=compra.proveedor||'';}
    else{
-    input.type='number';input.inputMode='decimal';input.min=clave==='unidades'?(p.unidad_medida==='kg'?'0.001':'1'):'0';
-    input.step=clave==='unidades'?(p.unidad_medida==='kg'?'0.001':'1'):'0.01';
+    input.type='text';input.inputMode='decimal';input.maxLength=70;
+    input.title='Se admiten sumas, restas, multiplicaciones y divisiones. Ejemplo: 120/6 o 15+5.';
     input.value=clave==='compra'?original.compra.toFixed(2):clave==='venta'?original.venta.toFixed(2):String(original.unidades);
    }
    // COSTOS es de solo lectura hasta que se pulse el lapicito y se elija qué editar.
@@ -1877,7 +1933,8 @@ function configurarEditorFila(p,compra,superficie,movil){
   estadoFila();
  };
  function valor(clave){
-  const raw=inputs[clave].value.trim();return raw===''?NaN:Number(raw);
+  const raw=inputs[clave].value.trim();
+  return raw===''?NaN:ampValorOperacion(raw,clave==='unidades'?(p.unidad_medida==='kg'?3:6):2);
  }
  function estadoFila(){
   const comp=valor('compra'),unid=valor('unidades'),vent=valor('venta'),
@@ -1934,7 +1991,20 @@ function configurarEditorFila(p,compra,superficie,movil){
   if(!guardando&&!err.classList.contains('sheet-error'))err.textContent=!valid?'Ingresá precio de compra, unidades o kg, precio de venta y proveedor válidos.':dif?'Cambios sin guardar.':'';
   return {valid,dif,comp,unid,vent,prov};
  }
- Object.values(inputs).forEach(input=>{for(const ev of ['input','change'])input.addEventListener(ev,()=>{err.classList.remove('sheet-error');estadoFila();});});
+ Object.entries(inputs).forEach(([clave,input])=>{
+  for(const ev of ['input','change'])input.addEventListener(ev,()=>{err.classList.remove('sheet-error');estadoFila();});
+  if(clave!=='proveedor'){
+   input.addEventListener('blur',()=>{
+    if(input.readOnly)return;
+    const n=valor(clave);
+    if(Number.isFinite(n)){
+     input.value=clave==='unidades'?String(n):n.toFixed(2);
+     estadoFila();
+    }
+   });
+   input.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();input.blur();}});
+  }
+ });
  save.onclick=async()=>{
   const valores=estadoFila();
   if(!valores.valid||!valores.dif||guardando||!edicionAutorizada)return;

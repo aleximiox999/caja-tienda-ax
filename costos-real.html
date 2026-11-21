@@ -1093,8 +1093,8 @@ input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-forma
 })();
 </script>
 
-</head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button type="button" id="configCuentaAMPHX" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
-<dialog id="configCuentaDialogAMPHX" style="border:1px solid #ccd8e0;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label for="correoCuentaAMPHX">Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
+</head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><button id="salir" class="alt hidden">Salir</button></div></header>
+
 <section id="accesoCargando" aria-live="polite"><p class="muted">Abriendo fichas de productos…</p><button id="reintentarAcceso" type="button" class="alt hidden">REINTENTAR ACCESO</button></section><section id="login" class="hidden"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
 <section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Hasta 3 productos: primero los que llegaron al mínimo y después los más cercanos. Se actualiza con el inventario.</p><div id="listaAlertas"></div></section>
 
@@ -1205,12 +1205,12 @@ function mostrarExitoProductoNuevo(){
  tiempoAvisoExitoProducto=setTimeout(()=>aviso.classList.add('hidden'),3600);
 }
 function estado(m,error=false){$('estado').textContent=m;$('estado').classList.toggle('error',error)}
-let recuperando=false;function mostrar(ok){$('accesoCargando').classList.add('hidden');if(!ok){$('alertasInventario').classList.add('hidden');if($('configCuentaDialogAMPHX').open)$('configCuentaDialogAMPHX').close();}$('login').classList.toggle('hidden',ok);$('app').classList.toggle('hidden',!ok);$('listado').classList.toggle('hidden',!ok);$('salir').classList.toggle('hidden',!ok);$('estadoRolAMPHX').classList.toggle('hidden',!ok);$('configCuentaAMPHX').classList.toggle('hidden',!ok)}
+let recuperando=false;function mostrar(ok){$('accesoCargando').classList.add('hidden');if(!ok){$('alertasInventario').classList.add('hidden');}$('login').classList.toggle('hidden',ok);$('app').classList.toggle('hidden',!ok);$('listado').classList.toggle('hidden',!ok);$('salir').classList.toggle('hidden',!ok);}
 let ampVerificandoAcceso=false;
 function ampErrorAcceso(mensaje){
  $('accesoCargando').classList.remove('hidden');
  $('reintentarAcceso').classList.remove('hidden');
- for(const id of ['login','app','listado','alertasInventario','salir','estadoRolAMPHX','configCuentaAMPHX'])$(id).classList.add('hidden');
+ for(const id of ['login','app','listado','alertasInventario','salir'])$(id).classList.add('hidden');
  estado(mensaje,true);
 }
 async function revisar(){
@@ -1257,26 +1257,6 @@ async function revisar(){
  }finally{ampVerificandoAcceso=false}
 }
 $('reintentarAcceso').onclick=()=>void revisar();
-
-$('configCuentaAMPHX').onclick=async()=>{
- const {data,error}=await db.auth.getUser();
- if(error||!data?.user){estado('No se pudo verificar la cuenta. Volvé a iniciar sesión.',true);return;}
- const permiso=await db.rpc('soy_administrador');
- if(permiso.error||permiso.data!==true){estado('No se confirmó el permiso de administrador.',true);return;}
- $('correoCuentaAMPHX').value=data.user.email||'';
- $('mensajeConfigAMPHX').textContent='';
- $('configCuentaDialogAMPHX').showModal();
-};
-$('cerrarConfigAMPHX').onclick=()=>$('configCuentaDialogAMPHX').close();
-$('cambiarClaveAMPHX').onclick=async()=>{
- const email=$('correoCuentaAMPHX').value;if(!email)return;
- const boton=$('cambiarClaveAMPHX');boton.disabled=true;
- try{
-  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://aleximiox999.github.io/caja-tienda-ax/costos-real.html'});
-  $('mensajeConfigAMPHX').textContent=error?'No se pudo enviar: '+error.message:'Si la cuenta está habilitada, recibirás un enlace para establecer una nueva contraseña. Revisá también Spam.';
- }catch(e){$('mensajeConfigAMPHX').textContent='Error de conexión: '+(e.message||e)}
- finally{boton.disabled=false}
-};
 
 /* AMPHX COSTOS 2026-11-08 - lectura resistente a cortes cortos de conexión.
    Nunca guardar costos en caché local sin cifrar ni repetir operaciones de escritura. */

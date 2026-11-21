@@ -1027,6 +1027,56 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  #app>h2,#alertasInventario>h2,#app #productoForm .field>label{color:CanvasText}
 }
 
+
+/* Índice A–Z: una sola franja continua de titanio negro con línea azul.
+   Se conserva el botón de restablecer (↺) y la selección por letra. */
+#listado .indice-alfabetico-costos{
+ box-sizing:border-box;gap:0!important;
+ padding:3px 2px!important;
+ border:1px solid #5c83a2;
+ border-left:2px solid #5aa0d5;
+ border-radius:11px;
+ background:linear-gradient(105deg,#18334b 0%,#0b1a29 23%,#071019 60%,#152f45 100%);
+ box-shadow:inset 1px 0 #c8e9ff35,inset -1px 0 #0008,0 3px 12px #030d1780;
+ overflow-x:hidden;
+}
+#listado .indice-alfabetico-costos button{
+ box-sizing:border-box;
+ width:100%!important;min-width:0!important;
+ margin:0!important;padding:0!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ color:#e7f1fa!important;
+}
+#listado .indice-alfabetico-costos button+button{
+ border-top:0!important;
+}
+#listado .indice-alfabetico-costos button[aria-pressed="true"]{
+ background:linear-gradient(90deg,#448fc447,#1632492d)!important;
+ color:#ffffff!important;
+ box-shadow:inset 3px 0 0 #7dc9ff!important;
+ outline:0!important;border-radius:0!important;
+}
+#listado .indice-alfabetico-costos button[data-letra=""]{
+ font-size:16px!important;letter-spacing:0!important;
+ color:#aad4f1!important;
+}
+#listado .indice-alfabetico-costos button:focus-visible{
+ outline:2px solid #9bd7ff!important;outline-offset:-2px!important;
+}
+@media(max-width:760px), (hover:none) and (pointer:coarse){
+ #listado .indice-alfabetico-costos{
+  padding:2px 1px!important;
+  border-left:2px solid #5aa0d5;
+ }
+ #listado .indice-alfabetico-costos button{
+  flex:1 1 0!important;
+  height:auto!important;min-height:0!important;
+ }
+ #listado .indice-alfabetico-costos button[data-letra=""]{
+  font-size:12px!important;
+ }
+}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
 <!-- Escritura automática en MAYÚSCULAS en todos los campos de texto de COSTOS.
      No transformar credenciales, códigos de barras ni fórmulas numéricas. -->
@@ -1557,7 +1607,7 @@ function prepararIndiceAlfabeticoCostos(){
  for(const letra of ['TODAS',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ']){
   const btn=document.createElement('button');btn.type='button';
   const valor=letra==='TODAS'?'':letra;
-  btn.textContent=letra==='TODAS'?'TODO':letra;
+  btn.textContent=letra==='TODAS'?'↺':letra;
   btn.title=valor?'Filtrar por la letra '+valor:'Mostrar todas las letras';
   btn.setAttribute('aria-label',btn.title);
   btn.dataset.letra=valor;

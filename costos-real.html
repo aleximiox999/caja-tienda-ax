@@ -1205,7 +1205,22 @@ function mostrarExitoProductoNuevo(){
  tiempoAvisoExitoProducto=setTimeout(()=>aviso.classList.add('hidden'),3600);
 }
 function estado(m,error=false){$('estado').textContent=m;$('estado').classList.toggle('error',error)}
-let recuperando=false;function mostrar(ok){$('accesoCargando').classList.add('hidden');if(!ok){$('alertasInventario').classList.add('hidden');}$('login').classList.toggle('hidden',ok);$('app').classList.toggle('hidden',!ok);$('listado').classList.toggle('hidden',!ok);$('salir').classList.toggle('hidden',!ok);}
+let recuperando=false;
+function mostrar(ok){
+ $('accesoCargando').classList.add('hidden');
+ if(!ok)$('alertasInventario').classList.add('hidden');
+ // Al entrar, las fichas de productos tienen prioridad visual sobre el alta.
+ // Reordenar nodos existentes no modifica sus campos, funciones ni registros.
+ if(ok){
+  const fichas=$('listado'),registro=$('app');
+  if(fichas&&registro&&fichas.nextElementSibling!==registro)
+   registro.parentNode.insertBefore(fichas,registro);
+ }
+ $('login').classList.toggle('hidden',ok);
+ $('app').classList.toggle('hidden',!ok);
+ $('listado').classList.toggle('hidden',!ok);
+ $('salir').classList.toggle('hidden',!ok);
+}
 let ampVerificandoAcceso=false;
 function ampErrorAcceso(mensaje){
  $('accesoCargando').classList.remove('hidden');
@@ -1251,7 +1266,12 @@ async function revisar(){
    return;
   }
   mostrar(true);
-  await cargar();
+  const cargaCorrecta=await cargar();
+  // Si la sesión se recuperó, abrir directamente las fichas, no el formulario.
+  // No desplazar ante errores ni tapar advertencias de sesión/carga.
+  if(cargaCorrecta&&document.visibilityState!=='hidden'){
+   requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
+  }
  }catch(e){
   ampErrorAcceso('No se pudo validar la sesión guardada: '+(e?.message||String(e))+'. Tocá REINTENTAR ACCESO.');
  }finally{ampVerificandoAcceso=false}

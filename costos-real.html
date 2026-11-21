@@ -946,115 +946,86 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  #fotoProductoDialog .amp-zoom-escena{height:min(47dvh,420px)}
 }
 
-/* COSTOS: restituir el formulario claro y resultados oscuros del 8-XI-2026.
-   Alcance exclusivo de registro; no altera otras fichas ni movimientos. */
+
+/* AMPHX: negro metalizado y blanco en registro y alertas.
+   Se conservan el orden de captura, los cálculos y la semántica del mínimo de stock. */
+#app,#alertasInventario{
+ background-image:var(--amp-metal-reflejo),var(--amp-titanio);
+ background-color:#08131e;
+ border:1px solid #869caf;
+ border-top-color:#c3d2df;
+ color:#f7fbff;
+ box-shadow:inset 0 1px 0 #ffffff29,0 5px 20px #0916233d;
+}
+#app>h2,#alertasInventario>h2{color:#fff;text-shadow:0 1px 2px #000c}
+#app>p.muted,#alertasInventario>p.muted{color:#d4e0eb}
 #app #productoForm .field{
- padding:5px 0;background:transparent;background-image:none;border:0;box-shadow:none;
- color:#17283b;border-radius:0;
+ background-image:var(--amp-metal-reflejo),var(--amp-titanio);
+ background-color:#08131e;
+ border:1px solid #7c94a6;
+ border-top-color:#c2d2df;
+ border-radius:12px;
+ padding:12px;
+ color:#f7fbff;
+ box-shadow:inset 0 1px 0 #ffffff34,0 2px 8px #14273724;
 }
 #app #productoForm .field>label{
- color:#566a7a;font-size:16px;font-weight:750;line-height:1.4;
- margin:0 0 9px;text-shadow:none;
+ color:#fff;text-shadow:0 1px 2px #000c;
+ font-weight:800;
 }
 #app #productoForm .field input:not([type="hidden"]),
 #app #productoForm .field select{
- background:#fff;color:#17283b;-webkit-text-fill-color:#17283b;
- caret-color:#17283b;color-scheme:light;border:1px solid #cbd6dc;
- border-radius:12px;box-shadow:none;font-size:18px;font-weight:450;
- min-height:56px;
+ background:#101f2d;background-image:none;
+ color:#fff;-webkit-text-fill-color:#fff;caret-color:#fff;
+ color-scheme:dark;
+ border:1.5px solid #96b0c3;border-radius:8px;
+ box-shadow:inset 0 1px 2px #0008;
+ font-weight:700;min-height:50px;
 }
-#app #productoForm .field select option{background:#fff;color:#17283b;font-weight:450}
-#app #productoForm .field input::placeholder{
- color:#6a7b8c;-webkit-text-fill-color:#6a7b8c;
-}
+#app #productoForm .field select option{background:#101f2d;color:#fff}
+#app #productoForm .field input::placeholder{color:#bacbd9;-webkit-text-fill-color:#bacbd9}
 #app #productoForm .field input:focus,
 #app #productoForm .field select:focus{
- background:#fff;border-color:#162635;outline:2px solid #162635;outline-offset:0;
+ background:#173249;background-image:none;
+ border-color:#e1f0ff;outline:2px solid #b4c5d0;outline-offset:1px;
 }
-#app #productoForm .field .calculo{
- background:linear-gradient(140deg,#020a11,#071725);
- background-image:linear-gradient(140deg,#020a11,#071725);
- color:#fff;-webkit-text-fill-color:#fff;min-height:62px;
- padding:14px 18px;border:1px solid #94aab7;border-radius:12px;
- box-shadow:0 3px 9px #0f233629;font-size:20px;font-weight:850;
- text-shadow:0 1px 1px #000;
-}
-
-
-/* AMPHX: azul eléctrico uniforme para el formulario de registro.
-   Solo cambia la apariencia; el orden, las fórmulas y Supabase permanecen iguales. */
-#app{
-  background:linear-gradient(145deg,#f5f9ff,#eaf3ff 55%,#f7faff);
-  border-color:#9ac2ff;
-  box-shadow:0 5px 21px #1258b426;
-}
-#app>h2{
-  color:#0b408e;
-  border-left:5px solid #167eff;
-  padding-left:12px;
-}
-#app #productoForm .field>label{color:#264d7c}
-#app #productoForm .field input:not([type="hidden"]),
-#app #productoForm .field select{
-  background:#102d58;
-  background-image:linear-gradient(130deg,#153969,#092244);
-  color:#fff;
-  -webkit-text-fill-color:#fff;
-  caret-color:#fff;
-  color-scheme:dark;
-  border:2px solid #1685ff;
-  border-radius:12px;
-  box-shadow:inset 0 1px 2px #0005,0 2px 9px #0e5ab035;
-  font-weight:600;
-}
-#app #productoForm .field select option{background:#102d58;color:#fff;font-weight:600}
-#app #productoForm .field input::placeholder{
-  color:#c4d9f4;
-  -webkit-text-fill-color:#c4d9f4;
-}
-#app #productoForm .field input:focus,
-#app #productoForm .field select:focus{
-  background:#19477f;
-  background-image:linear-gradient(130deg,#1c4b84,#0a2a53);
-  border-color:#64bbff;
-  outline:2px solid #6ac2ff;
-  outline-offset:2px;
-}
-#app #productoForm .field .calculo{
-  background:linear-gradient(135deg,#061a34,#0e3876 70%,#104f9b);
-  background-image:linear-gradient(135deg,#061a34,#0e3876 70%,#104f9b);
-  color:#fff;
-  -webkit-text-fill-color:#fff;
-  border:2px solid #1685ff;
-  box-shadow:0 3px 10px #0d4c9d38;
-}
+#app #productoForm .field .calculo,
 #app #productoForm #guardar{
-  background:linear-gradient(110deg,#075ad9,#1689ff);
-  border:1px solid #7bc6ff;
-  box-shadow:0 3px 9px #1766ce50;
+ background-image:var(--amp-metal-reflejo),var(--amp-titanio);
+ background-color:#08131e;
+ color:#fff;-webkit-text-fill-color:#fff;
+ border:1px solid #9aafbe;border-top-color:#d7e5ef;
+ box-shadow:inset 0 1px 0 #ffffff34,0 3px 10px #0005;
+ text-shadow:0 1px 2px #000b;
 }
-@media(forced-colors:active){
-  #app #productoForm .field input:not([type="hidden"]),
-  #app #productoForm .field select,
-  #app #productoForm .field .calculo{
-    background:Canvas;background-image:none;
-    color:CanvasText;-webkit-text-fill-color:CanvasText;
-    border-color:CanvasText;box-shadow:none;
-  }
-}
-
-
-/* Alertas: rojo solo para mínimos alcanzados; azul para cercanos al mínimo. */
 #alertasInventario .alerta-item{
- background:#fff1f1;border:1px solid #ee9d9d;border-left:5px solid #cc2f32;
- color:#772024;
+ background-image:var(--amp-metal-reflejo),var(--amp-titanio);
+ background-color:#08131e;
+ color:#fff;
+ border:1px solid #9caebe;border-left:5px solid #e36b70;
+ box-shadow:inset 0 1px #ffffff1c,0 2px 8px #0004;
 }
-#alertasInventario .alerta-item strong{color:#9d2328}
+#alertasInventario .alerta-item strong{color:#fff}
 #alertasInventario .alerta-item.alerta-proxima{
- background:#edf5ff;border-color:#9fc6ff;border-left:5px solid #177ef3;
- color:#144078;
+ background-image:var(--amp-metal-reflejo),var(--amp-titanio);
+ background-color:#08131e;
+ color:#fff;
+ border-color:#9caebe;
+ border-left:5px solid #659ccf;
 }
-#alertasInventario .alerta-item.alerta-proxima strong{color:#0d4b9c}
+#alertasInventario .alerta-item.alerta-proxima strong{color:#fff}
+@media(forced-colors:active){
+ #app,#alertasInventario,#app #productoForm .field,
+ #app #productoForm .field input:not([type="hidden"]),
+ #app #productoForm .field select,
+ #app #productoForm .field .calculo,
+ #alertasInventario .alerta-item{
+   background:Canvas;background-image:none;
+   color:CanvasText;-webkit-text-fill-color:CanvasText;
+   border-color:CanvasText;box-shadow:none;
+ }
+ #app>h2,#alertasInventario>h2,#app #productoForm .field>label{color:CanvasText}
+}
 
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
 <!-- Escritura automática en MAYÚSCULAS en todos los campos de texto de COSTOS.

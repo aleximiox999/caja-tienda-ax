@@ -980,6 +980,69 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  text-shadow:0 1px 1px #000;
 }
 
+
+/* AMPHX: azul eléctrico uniforme para el formulario de registro.
+   Solo cambia la apariencia; el orden, las fórmulas y Supabase permanecen iguales. */
+#app{
+  background:linear-gradient(145deg,#f5f9ff,#eaf3ff 55%,#f7faff);
+  border-color:#9ac2ff;
+  box-shadow:0 5px 21px #1258b426;
+}
+#app>h2{
+  color:#0b408e;
+  border-left:5px solid #167eff;
+  padding-left:12px;
+}
+#app #productoForm .field>label{color:#264d7c}
+#app #productoForm .field input:not([type="hidden"]),
+#app #productoForm .field select{
+  background:#102d58;
+  background-image:linear-gradient(130deg,#153969,#092244);
+  color:#fff;
+  -webkit-text-fill-color:#fff;
+  caret-color:#fff;
+  color-scheme:dark;
+  border:2px solid #1685ff;
+  border-radius:12px;
+  box-shadow:inset 0 1px 2px #0005,0 2px 9px #0e5ab035;
+  font-weight:600;
+}
+#app #productoForm .field select option{background:#102d58;color:#fff;font-weight:600}
+#app #productoForm .field input::placeholder{
+  color:#c4d9f4;
+  -webkit-text-fill-color:#c4d9f4;
+}
+#app #productoForm .field input:focus,
+#app #productoForm .field select:focus{
+  background:#19477f;
+  background-image:linear-gradient(130deg,#1c4b84,#0a2a53);
+  border-color:#64bbff;
+  outline:2px solid #6ac2ff;
+  outline-offset:2px;
+}
+#app #productoForm .field .calculo{
+  background:linear-gradient(135deg,#061a34,#0e3876 70%,#104f9b);
+  background-image:linear-gradient(135deg,#061a34,#0e3876 70%,#104f9b);
+  color:#fff;
+  -webkit-text-fill-color:#fff;
+  border:2px solid #1685ff;
+  box-shadow:0 3px 10px #0d4c9d38;
+}
+#app #productoForm #guardar{
+  background:linear-gradient(110deg,#075ad9,#1689ff);
+  border:1px solid #7bc6ff;
+  box-shadow:0 3px 9px #1766ce50;
+}
+@media(forced-colors:active){
+  #app #productoForm .field input:not([type="hidden"]),
+  #app #productoForm .field select,
+  #app #productoForm .field .calculo{
+    background:Canvas;background-image:none;
+    color:CanvasText;-webkit-text-fill-color:CanvasText;
+    border-color:CanvasText;box-shadow:none;
+  }
+}
+
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
 <!-- Escritura automática en MAYÚSCULAS en todos los campos de texto de COSTOS.
      No transformar credenciales, códigos de barras ni fórmulas numéricas. -->
@@ -1391,8 +1454,6 @@ campoNombre.addEventListener('focus',mostrarSugerenciasRegistro);
 $('comprarProductoExistente').onclick=()=>{if(productoSeleccionadoRegistro)otraCompra(productoSeleccionadoRegistro)};
 
 function dibujarAlertas(){const caja=$('alertasInventario'),lista=$('listaAlertas');lista.replaceChildren();const alertas=productos.filter(p=>p.activo!==false&&Number(p.stock_minimo)>0&&!datosProducto(p).sinMovimientosConCompra&&datosProducto(p).stock<=Number(p.stock_minimo)).map(p=>({p,stock:datosProducto(p).stock})).sort((a,b)=>a.stock-b.stock);$('contadorAlertas').textContent='('+alertas.length+')';caja.classList.remove('hidden');if(alertas.length===0){const sin=document.createElement('p');sin.className='muted';sin.textContent='Sin alertas de inventario por el momento.';lista.append(sin);}for(const {p,stock} of alertas){const item=document.createElement('div');item.className='alerta-item';const nombre=document.createElement('strong');nombre.textContent=p.detalles;const info=document.createElement('span');info.textContent='Quedan '+stock+' · Mínimo '+p.stock_minimo;item.append(nombre,info);lista.append(item)}
- const inciertos=productos.filter(p=>datosProducto(p).sinMovimientosConCompra);
- if(inciertos.length){const aviso=document.createElement('p');aviso.style.cssText='color:#8a3c14;background:#fff3e5;border:1px solid #dcae83;border-radius:9px;padding:10px 12px;font-weight:750';aviso.textContent='⚠️ '+inciertos.length+' productos tienen compras pero ningún movimiento de inventario. Sus existencias figuran POR VERIFICAR; no son cero confirmado. Revisá sus fichas antes de ajustar el stock.';lista.append(aviso);}
 }
 function ultimaCompra(p){return compras.find(x=>Number(x.producto_id)===Number(p.id))||null}
 function comprasDeProducto(p){return compras.filter(x=>Number(x.producto_id)===Number(p.id))}

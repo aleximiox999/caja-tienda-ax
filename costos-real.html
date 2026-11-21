@@ -1064,6 +1064,13 @@ input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-forma
 })();
 </script>
 
+
+<style id="amphx-formulario-vertical-pc">
+/* El formulario se presenta en una unica columna tambien en escritorio */
+#app #productoForm .fields {display:grid !important;grid-template-columns:minmax(0,1fr) !important;width:100% !important;gap:12px !important}
+#app #productoForm .fields > * {grid-column:1 / -1 !important;width:100% !important;min-width:0 !important;max-width:none !important}
+#app #productoForm .fields input,#app #productoForm .fields select,#app #productoForm .fields textarea {width:100%;max-width:100%;box-sizing:border-box}
+</style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><button id="salir" class="alt hidden">Salir</button></div></header>
 
 <section id="accesoCargando" aria-live="polite"><p class="muted">Abriendo fichas de productos…</p><button id="reintentarAcceso" type="button" class="alt hidden">REINTENTAR ACCESO</button></section><section id="login" class="hidden"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>

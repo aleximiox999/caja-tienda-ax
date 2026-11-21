@@ -1104,6 +1104,36 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 @media(prefers-reduced-motion:reduce){
  #ampLupaIndiceCostos{transition:none}
 }
+
+/* Táctil híbrido: no hay barra gris, no hay recuadros celestes ni scroll de página al arrastrar A–Z. */
+#listado .indice-alfabetico-costos{
+ overflow:hidden!important;scrollbar-width:none!important;-ms-overflow-style:none;
+ touch-action:none!important;overscroll-behavior:contain;
+ user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+}
+#listado .indice-alfabetico-costos::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+#listado .indice-alfabetico-costos button{
+ flex:1 1 0!important;height:auto!important;min-height:0!important;
+ width:100%!important;min-width:0!important;padding:0!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;touch-action:none!important;
+ user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+}
+#listado .indice-alfabetico-costos button[aria-pressed="true"]{
+ background:transparent!important;border:0!important;
+ box-shadow:none!important;outline:0!important;
+ color:#fff!important;text-shadow:0 0 5px #75b9e7;
+}
+@media(min-width:761px){
+ #listado .indice-alfabetico-costos{
+  height:min(690px,calc(100dvh - 22px));max-height:calc(100dvh - 22px);
+  padding:3px 2px!important;gap:0!important;
+ }
+ #listado .indice-alfabetico-costos button{
+  font-size:clamp(10px,1.5vh,13px)!important;line-height:1!important;
+ }
+}
+
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
 <!-- Escritura automática en MAYÚSCULAS en todos los campos de texto de COSTOS.
      No transformar credenciales, códigos de barras ni fórmulas numéricas. -->
@@ -1645,7 +1675,7 @@ function prepararIndiceAlfabeticoCostos(){
   btn.setAttribute('aria-pressed',String(!valor));
   btn.addEventListener('click',e=>{
    // El gesto táctil ya cambió la letra: evitar que el click la desactive.
-   if(modoTactil()&&e.detail!==0&&Date.now()-ultimoGesto<700)return;
+   if(e.detail!==0&&Date.now()-ultimoGesto<700)return;
    elegir(valor,true);
   });
   nav.append(btn);botones.push(btn);
@@ -1674,7 +1704,8 @@ function prepararIndiceAlfabeticoCostos(){
   lupa.classList.add('amp-lupa-activa');
  };
  nav.addEventListener('pointerdown',e=>{
-  if(!modoTactil()||!e.isPrimary||(e.pointerType==='mouse'&&e.button!==0))return;
+  // En portátiles Windows con pantalla táctil, el puntero puede ser táctil aunque haya ratón.
+  if(!e.isPrimary||(e.pointerType!=='touch'&&e.pointerType!=='pen'))return;
   activo=e.pointerId;ultimoGesto=Date.now();
   try{nav.setPointerCapture(activo)}catch(_){}
   e.preventDefault();aplicarY(e.clientY);

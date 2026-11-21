@@ -1043,6 +1043,19 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
   }
 }
 
+
+/* Alertas: rojo solo para mínimos alcanzados; azul para cercanos al mínimo. */
+#alertasInventario .alerta-item{
+ background:#fff1f1;border:1px solid #ee9d9d;border-left:5px solid #cc2f32;
+ color:#772024;
+}
+#alertasInventario .alerta-item strong{color:#9d2328}
+#alertasInventario .alerta-item.alerta-proxima{
+ background:#edf5ff;border-color:#9fc6ff;border-left:5px solid #177ef3;
+ color:#144078;
+}
+#alertasInventario .alerta-item.alerta-proxima strong{color:#0d4b9c}
+
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
 <!-- Escritura automática en MAYÚSCULAS en todos los campos de texto de COSTOS.
      No transformar credenciales, códigos de barras ni fórmulas numéricas. -->
@@ -1083,7 +1096,7 @@ input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-forma
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button type="button" id="configCuentaAMPHX" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
 <dialog id="configCuentaDialogAMPHX" style="border:1px solid #ccd8e0;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label for="correoCuentaAMPHX">Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
 <section id="accesoCargando" aria-live="polite"><p class="muted">Abriendo fichas de productos…</p><button id="reintentarAcceso" type="button" class="alt hidden">REINTENTAR ACCESO</button></section><section id="login" class="hidden"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
-<section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Productos que llegaron al stock mínimo o tienen menos existencias. Se actualiza al cargar o actualizar los datos.</p><div id="listaAlertas"></div></section>
+<section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Hasta 3 productos: primero los que llegaron al mínimo y después los más cercanos. Se actualiza con el inventario.</p><div id="listaAlertas"></div></section>
 
 
 <section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si volvés a comprar el mismo producto, utilizá su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿Cómo se vende este producto?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">Unidades</option><option value="botellas">Botellas</option><option value="kg">Kilogramos (kg)</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio de venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step="0.01" inputmode="decimal" required></div><div class="field"><label id="labelPrecioCompraRegistro">Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step="0.01" inputmode="decimal" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min="1" step="1" inputmode="numeric" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label id="labelGananciaTotalRegistro">Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
@@ -1453,7 +1466,38 @@ campoNombre.addEventListener('input',()=>{
 campoNombre.addEventListener('focus',mostrarSugerenciasRegistro);
 $('comprarProductoExistente').onclick=()=>{if(productoSeleccionadoRegistro)otraCompra(productoSeleccionadoRegistro)};
 
-function dibujarAlertas(){const caja=$('alertasInventario'),lista=$('listaAlertas');lista.replaceChildren();const alertas=productos.filter(p=>p.activo!==false&&Number(p.stock_minimo)>0&&!datosProducto(p).sinMovimientosConCompra&&datosProducto(p).stock<=Number(p.stock_minimo)).map(p=>({p,stock:datosProducto(p).stock})).sort((a,b)=>a.stock-b.stock);$('contadorAlertas').textContent='('+alertas.length+')';caja.classList.remove('hidden');if(alertas.length===0){const sin=document.createElement('p');sin.className='muted';sin.textContent='Sin alertas de inventario por el momento.';lista.append(sin);}for(const {p,stock} of alertas){const item=document.createElement('div');item.className='alerta-item';const nombre=document.createElement('strong');nombre.textContent=p.detalles;const info=document.createElement('span');info.textContent='Quedan '+stock+' · Mínimo '+p.stock_minimo;item.append(nombre,info);lista.append(item)}
+function dibujarAlertas(){
+ const caja=$('alertasInventario'),lista=$('listaAlertas');
+ lista.replaceChildren();
+ // Solo existencias verificables: no avisar sobre compras sin movimientos de inventario.
+ const candidatos=productos
+  .filter(p=>p.activo!==false&&Number(p.stock_minimo)>0)
+  .map(p=>({p,stock:datosProducto(p).stock,porVerificar:datosProducto(p).sinMovimientosConCompra,minimo:Number(p.stock_minimo)}))
+  .filter(x=>!x.porVerificar&&Number.isFinite(x.stock));
+ // Los que llegaron al mínimo tienen prioridad, sin reducir ni subir umbrales.
+ const bajos=candidatos.filter(x=>x.stock<=x.minimo)
+  .sort((a,b)=>a.stock-b.stock||String(a.p.detalles).localeCompare(String(b.p.detalles),'es'));
+ // Si no hay 3 en mínimo, completar con los más cercanos; no presentarlos como agotados.
+ const cercanos=candidatos.filter(x=>x.stock>x.minimo)
+  .sort((a,b)=>(a.stock-a.minimo)-(b.stock-b.minimo)||a.stock-b.stock||String(a.p.detalles).localeCompare(String(b.p.detalles),'es'));
+ const visibles=[...bajos,...cercanos].slice(0,3);
+ $('contadorAlertas').textContent='('+bajos.length+' en mínimo · '+visibles.length+' mostrados)';
+ caja.classList.remove('hidden');
+ if(visibles.length===0){
+  const sin=document.createElement('p');sin.className='muted';
+  sin.textContent='No hay productos con existencias confirmadas para mostrar.';
+  lista.append(sin);
+ }
+ for(const {p,stock,minimo} of visibles){
+  const enMinimo=stock<=minimo;
+  const item=document.createElement('div');
+  item.className='alerta-item'+(enMinimo?'':' alerta-proxima');
+  const nombre=document.createElement('strong');nombre.textContent=p.detalles;
+  const info=document.createElement('span');
+  info.textContent='Quedan '+stock+' · Mínimo '+minimo+
+   (enMinimo?' · STOCK BAJO':' · A '+(stock-minimo)+' del mínimo');
+  item.append(nombre,info);lista.append(item);
+ }
 }
 function ultimaCompra(p){return compras.find(x=>Number(x.producto_id)===Number(p.id))||null}
 function comprasDeProducto(p){return compras.filter(x=>Number(x.producto_id)===Number(p.id))}

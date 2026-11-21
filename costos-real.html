@@ -1231,7 +1231,7 @@ function actualizarCostoPrevio(){
  const venta=ampValorOperacion(f.elements.precio_venta.value,2);
  const hayCosto=f.elements.precio_compra.value.trim()!==''&&Number.isFinite(total)&&total>=0&&f.elements.unidades.value.trim()!==''&&Number.isFinite(unidades)&&unidades>0;
  const costo=hayCosto?total/unidades:null;
- $('costoUnitarioPrevio').textContent=costo===null?'Introduce el costo total y las unidades':bs(costo)+' por '+u;
+ $('costoUnitarioPrevio').textContent=costo===null?(f.elements.precio_compra.value.trim()&&!f.elements.unidades.value.trim()?'FALTA UNIDADES COMPRADAS para calcular el costo por '+u:'Introduce el costo total y las unidades'):bs(costo)+' por '+u;
  $('gananciaUnidadPrevia').textContent=costo===null||f.elements.precio_venta.value.trim()===''||!Number.isFinite(venta)?'—':bs(venta-costo)+' por '+u;
  $('gananciaTotalPrevia').textContent=costo===null||f.elements.precio_venta.value.trim()===''||!Number.isFinite(venta)?'—':bs((venta-costo)*unidades)+' por paquete';
 }
@@ -1313,7 +1313,7 @@ function mostrarSugerenciasRegistro(){
   const boton=document.createElement('button');boton.type='button';boton.className='sugerencia';
   const nombre=document.createElement('strong');nombre.textContent=p.detalles;
   const detalle=document.createElement('small');
-  detalle.textContent=(p.activo===false?'RETIRADO · ':'REGISTRADO · ')+'Precio '+bs(p.precio_venta)+' · Existencias '+datosProducto(p).stock;
+  detalle.textContent=(p.activo===false?'RETIRADO · ':'REGISTRADO · ')+'Precio '+bs(p.precio_venta)+' · Existencias '+(datosProducto(p).sinMovimientosConCompra?'POR VERIFICAR':datosProducto(p).stock);
   boton.append(nombre,detalle);
   boton.onclick=()=>{
    campoNombre.value=p.detalles;productoSeleccionadoRegistro=p;panel.classList.add('hidden');campoNombre.setAttribute('aria-expanded','false');
@@ -1332,10 +1332,20 @@ campoNombre.addEventListener('input',()=>{
 campoNombre.addEventListener('focus',mostrarSugerenciasRegistro);
 $('comprarProductoExistente').onclick=()=>{if(productoSeleccionadoRegistro)otraCompra(productoSeleccionadoRegistro)};
 
-function dibujarAlertas(){const caja=$('alertasInventario'),lista=$('listaAlertas');lista.replaceChildren();const alertas=productos.filter(p=>p.activo!==false&&Number(p.stock_minimo)>0&&datosProducto(p).stock<=Number(p.stock_minimo)).map(p=>({p,stock:datosProducto(p).stock})).sort((a,b)=>a.stock-b.stock);$('contadorAlertas').textContent='('+alertas.length+')';caja.classList.remove('hidden');if(alertas.length===0){const sin=document.createElement('p');sin.className='muted';sin.textContent='Sin alertas de inventario por el momento.';lista.append(sin);}for(const {p,stock} of alertas){const item=document.createElement('div');item.className='alerta-item';const nombre=document.createElement('strong');nombre.textContent=p.detalles;const info=document.createElement('span');info.textContent='Quedan '+stock+' · Mínimo '+p.stock_minimo;item.append(nombre,info);lista.append(item)}}
+function dibujarAlertas(){const caja=$('alertasInventario'),lista=$('listaAlertas');lista.replaceChildren();const alertas=productos.filter(p=>p.activo!==false&&Number(p.stock_minimo)>0&&!datosProducto(p).sinMovimientosConCompra&&datosProducto(p).stock<=Number(p.stock_minimo)).map(p=>({p,stock:datosProducto(p).stock})).sort((a,b)=>a.stock-b.stock);$('contadorAlertas').textContent='('+alertas.length+')';caja.classList.remove('hidden');if(alertas.length===0){const sin=document.createElement('p');sin.className='muted';sin.textContent='Sin alertas de inventario por el momento.';lista.append(sin);}for(const {p,stock} of alertas){const item=document.createElement('div');item.className='alerta-item';const nombre=document.createElement('strong');nombre.textContent=p.detalles;const info=document.createElement('span');info.textContent='Quedan '+stock+' · Mínimo '+p.stock_minimo;item.append(nombre,info);lista.append(item)}
+ const inciertos=productos.filter(p=>datosProducto(p).sinMovimientosConCompra);
+ if(inciertos.length){const aviso=document.createElement('p');aviso.style.cssText='color:#8a3c14;background:#fff3e5;border:1px solid #dcae83;border-radius:9px;padding:10px 12px;font-weight:750';aviso.textContent='⚠️ '+inciertos.length+' productos tienen compras pero ningún movimiento de inventario. Sus existencias figuran POR VERIFICAR; no son cero confirmado. Revisá sus fichas antes de ajustar el stock.';lista.append(aviso);}
+}
 function ultimaCompra(p){return compras.find(x=>Number(x.producto_id)===Number(p.id))||null}
 function comprasDeProducto(p){return compras.filter(x=>Number(x.producto_id)===Number(p.id))}
-function datosProducto(p){const c=costos.find(x=>x.producto_id===p.id),mov=movimientos.filter(x=>x.producto_id===p.id);const stock=mov.reduce((a,x)=>a+(x.tipo==='entrada'||x.tipo==='ajuste_positivo'?1:-1)*Number(x.cantidad),0);const unit=Number(c?.costo_unitario||0);return{stock,unit,ganancia:Number(p.precio_venta)-unit,proveedor:c?.proveedor||'',ultimaCompra:ultimaCompra(p)}}
+function datosProducto(p){
+ const c=costos.find(x=>Number(x.producto_id)===Number(p.id));
+ const mov=movimientos.filter(x=>Number(x.producto_id)===Number(p.id));
+ const stock=mov.reduce((a,x)=>a+(x.tipo==='entrada'||x.tipo==='ajuste_positivo'?1:-1)*Number(x.cantidad),0);
+ const sinMovimientosConCompra=mov.length===0&&compras.some(x=>Number(x.producto_id)===Number(p.id));
+ const unit=Number(c?.costo_unitario||0);
+ return{stock,unit,ganancia:Number(p.precio_venta)-unit,proveedor:c?.proveedor||'',ultimaCompra:ultimaCompra(p),sinMovimientosConCompra};
+}
 /* Buscar por proveedores de todas las compras. */
 let proveedoresPorProducto=new Map();
 function actualizarIndiceProveedores(){
@@ -1500,7 +1510,7 @@ function mostrarSugerencias(){
   const boton=document.createElement('button');boton.type='button';boton.className='sugerencia';
   const nombre=document.createElement('strong');nombre.textContent=String(p.detalles||'').toLocaleUpperCase('es');
   const detalle=document.createElement('small');
-  detalle.textContent=(p.activo===false?'RETIRADO · ':'')+'Precio '+bs(p.precio_venta)+' · Existencias '+datosProducto(p).stock+(proveedoresProducto(p).length?' · Proveedor: '+proveedoresProducto(p).join(', '):'');
+  detalle.textContent=(p.activo===false?'RETIRADO · ':'')+'Precio '+bs(p.precio_venta)+' · Existencias '+(datosProducto(p).sinMovimientosConCompra?'POR VERIFICAR':datosProducto(p).stock)+(proveedoresProducto(p).length?' · Proveedor: '+proveedoresProducto(p).join(', '):'');
   boton.append(nombre,detalle);
   boton.addEventListener('click',()=>{campo.value=nombre.textContent;dibujar();campo.focus();});panel.append(boton);
  }
@@ -1510,9 +1520,12 @@ $('buscar').addEventListener('focus',mostrarSugerencias);
 const normalizarBusqueda=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es');
 /* Una fila de COSTOS corresponde a la compra más reciente de ese producto. El stock se gestiona aparte. */
 function ultimaCompraHoja(p){
+ // Ordenar por FECHA DE FACTURA, no por la fecha en que se cargó la foto.
  return comprasDeProducto(p).sort((a,b)=>{
-  const t=String(b.fecha_registro||'').localeCompare(String(a.fecha_registro||''));
-  return t||Number(b.id)-Number(a.id);
+  const fecha=String(b.fecha||'').localeCompare(String(a.fecha||''));
+  if(fecha)return fecha;
+  const registro=String(b.fecha_registro||'').localeCompare(String(a.fecha_registro||''));
+  return registro||Number(b.id)-Number(a.id);
  })[0]||null;
 }
 function nombreFilaHoja(p){
@@ -2158,7 +2171,7 @@ function dibujar(){
   tr.dataset.productoId=String(p.id);
   tdNombre.append(nombreFilaHoja(p));
   const existencia=document.createElement('small');existencia.className='sheet-stock-note';
-  existencia.textContent='Existencias: '+conMedida(d.stock,p)+' · '+(p.codigo_barras?'Código: '+p.codigo_barras:'Sin código de barras');
+  existencia.textContent='Existencias: '+(d.sinMovimientosConCompra?'POR VERIFICAR (compra sin entrada de inventario)':conMedida(d.stock,p))+' · '+(p.codigo_barras?'Código: '+p.codigo_barras:'Sin código de barras');
   tdNombre.append(existencia);tr.append(tdNombre);
   if(compra){configurarEditorFila(p,compra,tr,false);}
   else{
@@ -2172,7 +2185,7 @@ function dibujar(){
   if(!ampAnclasIndiceCostos.has(inicial))ampAnclasIndiceCostos.set(inicial,card);
   const h=document.createElement('h3');h.className='sheet-card-title';h.append(nombreFilaHoja(p));card.append(h);
   const dato=document.createElement('p');dato.className='sheet-card-details';
-  dato.textContent='Existencias: '+conMedida(d.stock,p)+(p.codigo_barras?' · Código: '+p.codigo_barras:'');
+  dato.textContent='Existencias: '+(d.sinMovimientosConCompra?'POR VERIFICAR (compra sin movimientos de inventario)':conMedida(d.stock,p))+(p.codigo_barras?' · Código: '+p.codigo_barras:'');
   if(recientes){
    const fechaRegistro=registroReciente.registros.get(Number(p.id))?.fecha;
    if(fechaRegistro){
@@ -2180,8 +2193,19 @@ function dibujar(){
     dato.textContent+=' · Ingresado: '+fecha.toLocaleDateString('es-BO')+' '+fecha.toLocaleTimeString('es-BO',{hour:'2-digit',minute:'2-digit'});
    }
   }
+  if(compra)dato.textContent+=' · Factura: '+ampFechaLegible(compra.fecha);
   card.append(dato);
-  if(compra)configurarEditorFila(p,compra,card,true);
+  if(compra){
+   const costoVigente=costos.find(c=>Number(c.producto_id)===Number(p.id));
+   const costoFactura=Number(compra.costo_unitario);
+   if(costoVigente&&Number.isFinite(costoFactura)&&Math.abs(Number(costoVigente.costo_unitario)-costoFactura)>0.01){
+    const nota=document.createElement('p');
+    nota.style.cssText='grid-column:1/-1;margin:0;padding:9px 12px;background:#fff4e2;border:1px solid #e4b375;border-radius:9px;font-size:12px;font-weight:700;color:#82430d';
+    nota.textContent='⚠️ COSTO VIGENTE '+bs(costoVigente.costo_unitario)+' ≠ COSTO DE ESTA FACTURA '+bs(costoFactura)+'. Las utilidades de esta ficha se calculan según la factura mostrada. No se cambió ningún costo.';
+    card.append(nota);
+   }
+   configurarEditorFila(p,compra,card,true);
+  }
   else{
    const note=document.createElement('p');note.className='muted';note.textContent='Sin compra registrada. Añadí una compra para habilitar esta fila.';card.append(note,accionesFilaHoja(p));
   }

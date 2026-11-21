@@ -945,6 +945,11 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 @media(max-width:760px){
  #fotoProductoDialog .amp-zoom-escena{height:min(47dvh,420px)}
 }
+
+/* AMPHX: formulario de registro en una sola columna y ancho completo, PC y móvil. */
+#app #productoForm .fields{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;width:100%}
+#app #productoForm .fields>.field,
+#app #productoForm .fields>.field.wide{grid-column:1/-1;width:100%;min-width:0}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
 <style id="amp-texto-mayusculas">
 input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }

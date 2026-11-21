@@ -1604,21 +1604,27 @@ const ampAnclasIndiceCostos=new Map();
 function ampMoverIndiceCostos(letra){
  const todas='ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
  const cards=$('tarjetas');
- if(!cards||!cards.children.length)return;
- let destino=letra?ampAnclasIndiceCostos.get(letra):cards.firstElementChild;
+ // En PC táctil las fichas son filas de tabla; en móvil son tarjetas.
+ const mostrarTarjetas=!!cards&&getComputedStyle(cards).display!=='none';
+ const elementos=mostrarTarjetas?[...cards.children]:[...document.querySelectorAll('#filas tr[data-indice-inicial]')];
+ if(!elementos.length)return;
+ const anclas=mostrarTarjetas?ampAnclasIndiceCostos:new Map();
+ if(!mostrarTarjetas){
+  for(const fila of elementos){
+   if(!anclas.has(fila.dataset.indiceInicial))anclas.set(fila.dataset.indiceInicial,fila);
+  }
+ }
+ let destino=letra?anclas.get(letra):elementos[0];
  if(!destino&&letra){
   const pos=todas.indexOf(letra);
   for(let i=pos+1;i<todas.length;i++){
-   destino=ampAnclasIndiceCostos.get(todas[i]);if(destino)break;
+   destino=anclas.get(todas[i]);if(destino)break;
   }
   if(!destino)for(let i=pos-1;i>=0;i--){
-   destino=ampAnclasIndiceCostos.get(todas[i]);if(destino)break;
+   destino=anclas.get(todas[i]);if(destino)break;
   }
  }
- if(destino){
-  // Movimiento inmediato y estable: sin animaciones ni re-renderizado masivo.
-  destino.scrollIntoView({block:'start',behavior:'instant'});
- }
+ if(destino)destino.scrollIntoView({block:'start',inline:'nearest',behavior:'instant'});
 }
 function inicialNombreCostos(nombre){
  const c=String(nombre??'').trim().charAt(0).toLocaleUpperCase('es');
@@ -1645,11 +1651,12 @@ function prepararIndiceAlfabeticoCostos(){
  const nav=$('indiceAlfabeticoCostos');
  if(nav.childElementCount)return;
  const modoTactil=()=>matchMedia('(max-width:760px), (hover:none) and (pointer:coarse)').matches;
+ let navegacionPorGestoIndice=false;
  const elegir=(valor,alternar=false)=>{
   const nueva=alternar&&letraActivaCostos===valor?'':valor;
   if(letraActivaCostos===nueva)return;
   letraActivaCostos=nueva;
-  if(modoTactil()){
+  if(modoTactil()||navegacionPorGestoIndice){
    // En celular se navega por las fichas ya dibujadas: no llamar a dibujar()
    // por cada milímetro del dedo (causaba cuelgues y pérdidas del listado).
    for(const b of nav.querySelectorAll('button'))
@@ -1706,6 +1713,9 @@ function prepararIndiceAlfabeticoCostos(){
  nav.addEventListener('pointerdown',e=>{
   // En portátiles Windows con pantalla táctil, el puntero puede ser táctil aunque haya ratón.
   if(!e.isPrimary||(e.pointerType!=='touch'&&e.pointerType!=='pen'))return;
+  // Al iniciar un gesto en PC, quitar un filtro anterior y mantener todo el catálogo visible.
+  if(!modoTactil()&&letraActivaCostos){letraActivaCostos='';dibujar();}
+  navegacionPorGestoIndice=true;
   activo=e.pointerId;ultimoGesto=Date.now();
   try{nav.setPointerCapture(activo)}catch(_){}
   e.preventDefault();aplicarY(e.clientY);
@@ -1722,6 +1732,12 @@ function prepararIndiceAlfabeticoCostos(){
   if(frame){cancelAnimationFrame(frame);frame=0}
   if(e.type==='pointerup')aplicarY(e.clientY);
   activo=null;
+  navegacionPorGestoIndice=false;
+  // El dedo no debe dejar aplicado un filtro alfabético en computadoras híbridas.
+  if(!modoTactil()){
+   letraActivaCostos='';
+   for(const b of nav.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b.dataset.letra===''));
+  }
   ocultarLupa();
   try{nav.releasePointerCapture(e.pointerId)}catch(_){}
  };
@@ -2421,6 +2437,7 @@ function dibujar(){
   const compra=ultimaCompraHoja(p),d=datosProducto(p),nombreVisible=String(p.detalles||'').toLocaleUpperCase('es');
   const tr=document.createElement('tr'),tdNombre=document.createElement('td');
   tr.dataset.productoId=String(p.id);
+  tr.dataset.indiceInicial=inicialNombreCostos(p.detalles);
   tdNombre.append(nombreFilaHoja(p));
   const existencia=document.createElement('small');existencia.className='sheet-stock-note';
   existencia.textContent='Existencias: '+(d.sinMovimientosConCompra?'POR VERIFICAR (compra sin entrada de inventario)':conMedida(d.stock,p))+' · '+(p.codigo_barras?'Código: '+p.codigo_barras:'Sin código de barras');

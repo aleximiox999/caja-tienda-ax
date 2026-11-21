@@ -1270,7 +1270,7 @@ async function revisar(){
   // Si la sesión se recuperó, abrir directamente las fichas, no el formulario.
   // No desplazar ante errores ni tapar advertencias de sesión/carga.
   if(cargaCorrecta&&document.visibilityState!=='hidden'){
-   requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
+   requestAnimationFrame(()=>$('listado').scrollIntoView({block:'start',behavior:'instant'}));
   }
  }catch(e){
   ampErrorAcceso('No se pudo validar la sesión guardada: '+(e?.message||String(e))+'. Tocá REINTENTAR ACCESO.');

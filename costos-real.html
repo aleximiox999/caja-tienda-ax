@@ -1077,6 +1077,33 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
   font-size:12px!important;
  }
 }
+
+/* Lupa de letra durante el deslizamiento táctil del índice A–Z. */
+#ampLupaIndiceCostos{
+ position:fixed;z-index:1102;
+ box-sizing:border-box;width:72px;height:72px;
+ display:grid;place-items:center;
+ border:1px solid #a5c7dd;border-radius:21px;
+ background:linear-gradient(135deg,#385c79 0%,#142b40 34%,#07111d 78%,#294863 100%);
+ color:#f7fbff;font:900 43px/1 system-ui,Arial,sans-serif;
+ text-shadow:0 2px 4px #0009;
+ box-shadow:inset 0 1px 0 #ffffff75,inset 0 -2px 0 #030b15,0 9px 25px #020a11a8;
+ pointer-events:none;user-select:none;
+ visibility:hidden;opacity:0;transform:translateY(-50%) scale(.88);
+ transition:opacity .10s ease,transform .10s ease,visibility .10s;
+}
+#ampLupaIndiceCostos.amp-lupa-activa{
+ visibility:visible;opacity:1;transform:translateY(-50%) scale(1);
+}
+#ampLupaIndiceCostos::after{
+ content:"";position:absolute;left:calc(100% - 1px);top:50%;
+ transform:translateY(-50%);
+ border-top:9px solid transparent;border-bottom:9px solid transparent;
+ border-left:11px solid #294863;
+}
+@media(prefers-reduced-motion:reduce){
+ #ampLupaIndiceCostos{transition:none}
+}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
 <!-- Escritura automática en MAYÚSCULAS en todos los campos de texto de COSTOS.
      No transformar credenciales, códigos de barras ni fórmulas numéricas. -->
@@ -1603,6 +1630,10 @@ function prepararIndiceAlfabeticoCostos(){
   dibujar();
  };
  let ultimoGesto=0;
+ const lupa=document.createElement('div');
+ lupa.id='ampLupaIndiceCostos';
+ lupa.setAttribute('aria-hidden','true');
+ document.body.append(lupa);
  const botones=[];
  for(const letra of ['TODAS',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ']){
   const btn=document.createElement('button');btn.type='button';
@@ -1627,12 +1658,20 @@ function prepararIndiceAlfabeticoCostos(){
   io.observe($('listado'));
  }else nav.classList.add('amp-indice-activo');
  let activo=null,frame=0,pendienteY=0;
+ const ocultarLupa=()=>lupa.classList.remove('amp-lupa-activa');
  const aplicarY=y=>{
   const r=nav.getBoundingClientRect();
   if(!r.height)return;
   const fraccion=Math.max(0,Math.min(.99999,(y-r.top)/r.height));
   const posicion=Math.floor(fraccion*botones.length);
-  elegir(botones[posicion].dataset.letra);
+  const letra=botones[posicion].dataset.letra;
+  elegir(letra);
+  // La burbuja sigue la posición de la letra, sin interceptar el dedo.
+  const centro=r.top+(posicion+.5)*r.height/botones.length;
+  lupa.textContent=letra||'↺';
+  lupa.style.left=Math.max(6,r.left-84)+'px';
+  lupa.style.top=Math.max(44,Math.min(window.innerHeight-44,centro))+'px';
+  lupa.classList.add('amp-lupa-activa');
  };
  nav.addEventListener('pointerdown',e=>{
   if(!modoTactil()||!e.isPrimary||(e.pointerType==='mouse'&&e.button!==0))return;
@@ -1652,10 +1691,13 @@ function prepararIndiceAlfabeticoCostos(){
   if(frame){cancelAnimationFrame(frame);frame=0}
   if(e.type==='pointerup')aplicarY(e.clientY);
   activo=null;
+  ocultarLupa();
   try{nav.releasePointerCapture(e.pointerId)}catch(_){}
  };
  nav.addEventListener('pointerup',terminar);
  nav.addEventListener('pointercancel',terminar);
+ window.addEventListener('blur',ocultarLupa);
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)ocultarLupa()});
 }
 
 function buscarCoincidenciasCostos(texto){

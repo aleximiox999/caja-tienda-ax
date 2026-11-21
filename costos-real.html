@@ -988,7 +988,7 @@ input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-forma
 <section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Productos que llegaron al stock mínimo o tienen menos existencias. Se actualiza al cargar o actualizar los datos.</p><div id="listaAlertas"></div></section>
 
 
-<section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si volvés a comprar el mismo producto, utilizá «Registrar otra compra». En los importes también podés escribir operaciones como 120/6, 15+5 o 8*3; el resultado se calcula automáticamente.</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿Cómo se vende este producto?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">UNIDADES</option><option value="kg">KILOGRAMOS (KG)</option></select></div><div class="field"><label for="modoPrecioVentaRegistro">¿El precio de venta es por unidad o por paquete?</label><select id="modoPrecioVentaRegistro" name="modo_precio_venta" required><option value="paquete" selected>POR PAQUETE COMPLETO</option><option value="unidad">POR UNIDAD / KILO</option></select><small class="muted" style="display:block;margin-top:7px;color:#dce8f1">Elegí PAQUETE si cobrás Bs 120 por las 10 unidades juntas. Elegí UNIDAD si cada una se vende a Bs 120.</small></div><div class="field"><label id="labelPrecioVentaRegistro">Precio de venta del paquete (Bs)</label><input name="precio_venta" type="text" inputmode="decimal" maxlength="70" autocomplete="off" title="Admite + - * / y paréntesis (ejemplo 120/6)" required><small id="ayudaPrecioVentaRegistro" style="display:block;margin-top:6px;color:#dce8f1">Se dividirá entre las unidades compradas para calcular el precio de cada una.</small></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="text" inputmode="decimal" maxlength="70" autocomplete="off" title="Admite + - * / y paréntesis (ejemplo 120/6)" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="text" inputmode="decimal" maxlength="70" autocomplete="off" title="Admite + - * / y paréntesis (ejemplo 120/6)" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelVentaUnidadRegistro">Precio de venta calculado por unidad</label><output id="ventaUnidadPrevia" class="calculo">—</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia por cada unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label id="labelGananciaTotalRegistro">Ganancia total de las unidades del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
+<section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si volvés a comprar el mismo producto, utilizá «Registrar otra compra». En los importes también podés escribir operaciones como 120/6, 15+5 o 8*3; el resultado se calcula automáticamente.</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿Cómo se vende este producto?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">UNIDADES</option><option value="kg">KILOGRAMOS (KG)</option></select></div><div class="field"><label for="modoPrecioVentaRegistro">¿El precio de venta es por unidad o por paquete?</label><select id="modoPrecioVentaRegistro" name="modo_precio_venta" required><option value="unidad" selected>POR CADA UNIDAD / KILO</option><option value="paquete">POR PAQUETE COMPLETO</option></select><small class="muted" style="display:block;margin-top:7px;color:#dce8f1">POR CADA UNIDAD: si vendés cada artículo a Bs 120. POR PAQUETE: si Bs 120 es el precio de venta de las diez unidades juntas.</small></div><div class="field"><label id="labelPrecioVentaRegistro">PRECIO DE VENTA DE CADA UNIDAD (Bs)</label><input name="precio_venta" type="text" inputmode="decimal" maxlength="70" autocomplete="off" title="Admite + - * / y paréntesis (ejemplo 120/6)" required><small id="ayudaPrecioVentaRegistro" style="display:block;margin-top:6px;color:#dce8f1">Este importe es el precio de VENTA de una unidad, no del paquete.</small></div><div class="field"><label for="modoPrecioCompraRegistro">¿El precio de compra es por unidad o por paquete?</label><select id="modoPrecioCompraRegistro" name="modo_precio_compra" required><option value="unidad" selected>POR CADA UNIDAD / KILO</option><option value="paquete">POR PAQUETE COMPLETO</option></select><small style="display:block;margin-top:7px;color:#dce8f1">POR CADA UNIDAD: si cada una te costó Bs 68. POR PAQUETE: si las diez juntas costaron Bs 68.</small></div><div class="field"><label id="labelPrecioCompraRegistro">PRECIO DE COMPRA DE CADA UNIDAD (Bs)</label><input name="precio_compra" type="text" inputmode="decimal" maxlength="70" autocomplete="off" title="Admite + - * / y paréntesis (ejemplo 120/6)" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="text" inputmode="decimal" maxlength="70" autocomplete="off" title="Admite + - * / y paréntesis (ejemplo 120/6)" required></div><div class="field"><label id="labelCostoUnitarioRegistro">COSTO DE CADA UNIDAD</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelVentaUnidadRegistro">PRECIO DE VENTA DE CADA UNIDAD</label><output id="ventaUnidadPrevia" class="calculo">—</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">GANANCIA DE CADA UNIDAD</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label id="labelGananciaTotalRegistro">GANANCIA TOTAL DE LAS 10 UNIDADES / PAQUETE</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
 <section id="listado" class="hidden"><h2 id="tituloListadoCostos">COSTOS · Fichas de productos</h2><div class="actions"><div class="busqueda-wrap"><input id="buscar" placeholder="Buscar producto, código o proveedor (ej.: FINI)" autocomplete="off" aria-controls="sugerencias" aria-expanded="false" aria-autocomplete="list"><div id="sugerencias" class="sugerencias hidden" style="display:none" role="listbox" aria-label="Sugerencias de productos y proveedores"></div><div class="filtro-proveedor-costos"><label for="filtrarProveedorCostos">FILTRAR POR PROVEEDOR</label><select id="filtrarProveedorCostos" aria-label="Filtrar productos por proveedor"><option value="">TODOS LOS PROVEEDORES</option></select></div><div class="amp-filtro-vista-costos"><label for="ampVistaCostos">FILTRO</label><select id="ampVistaCostos" aria-label="Filtrar fichas de COSTOS"><option value="fichas">FICHAS DE PRODUCTOS</option><option value="recientes">RECIÉN INGRESADOS</option></select></div></div><div id="resultadoBusqueda" role="status" aria-live="polite" style="margin:8px 0;font-weight:600"></div><button class="alt" id="recargar">Actualizar</button><button type="button" class="alt hidden" id="ampAbrirComprobantes" hidden aria-hidden="true" tabindex="-1" style="display:none!important"></button>
 <dialog id="ampComprobantesDialog" style="width:min(92vw,760px);max-height:85vh;overflow:auto"><h2>COMPROBANTES DE COMPRA</h2><button type="button" class="alt" id="ampCerrarComprobantes">Cerrar</button><form id="ampComprobantesForm"><div class="field"><label>Proveedor</label><input name="proveedor" required></div><div class="field"><label>Fecha de factura</label><input type="date" name="fecha" required></div><div class="field"><label>Número de factura (opcional)</label><input name="numero"></div><div class="field"><label>Fotografías (cada imagen se guarda como un comprobante)</label><input id="ampArchivosComprobantes" type="file" name="archivos" accept="image/*" multiple></div><div class="field"><label>Tomar fotografía</label><input id="ampCamaraComprobante" type="file" accept="image/*" capture="environment"></div><div class="field"><label>Buscar productos para vincular los comprobantes</label><input id="ampBuscarComprobanteProducto" autocomplete="off" placeholder="Nombre del producto"><div id="ampProductosComprobante" style="max-height:220px;overflow:auto"></div></div><p class="muted" id="ampVinculadosComprobante"></p><button type="submit" id="ampGuardarComprobantes">Guardar fotografías</button></form><p id="ampEstadoComprobantes" role="status" aria-live="polite"></p><hr><h3>Comprobantes guardados</h3><button type="button" class="alt" id="ampActualizarComprobantes">Actualizar comprobantes</button><div id="ampListaComprobantes"></div></dialog></div><div class="listado-con-indice-costos"><nav id="indiceAlfabeticoCostos" class="indice-alfabetico-costos" aria-label="Filtrar por letra inicial"></nav><div class="listado-contenido-costos"><div class="scroll"><table><thead><tr><th>PRODUCTO</th><th>PRECIO DE COMPRA</th><th>UNIDADES / KG</th><th>COSTO UNITARIO</th><th>PRECIO DE VENTA</th><th>UTILIDAD POR UNIDAD</th><th>UTILIDAD TOTAL</th><th>PROVEEDOR</th><th>ACCIONES</th></tr></thead><tbody id="filas"></tbody></table></div><div id="tarjetas" class="cards"></div></div></div></section>
 
@@ -1227,55 +1227,55 @@ async function cargar(){
 // Mostrar siempre la ganancia de CADA UNIDAD y la ganancia de TODO EL PAQUETE.
 // El backend y las fichas almacenan el precio de VENTA POR UNIDAD; para un
 // precio ingresado por paquete se convierte una sola vez antes de guardar.
+/* COSTOS · REGISTRO: los precios ingresados por unidad no se dividen por la cantidad.
+   La cantidad solo multiplica la ganancia de UNA UNIDAD para hallar la ganancia total.
+   La base de datos mantiene precio_venta UNITARIO y precio_compra TOTAL para compras. */
 function ampValoresRegistro(){
  const f=$('productoForm');
  const medida=f.elements.unidad_medida.value==='kg'?'kg':'unidad';
  const cantidad=ampValorOperacion(f.elements.unidades.value,medida==='kg'?3:6);
- const costoPaquete=ampValorOperacion(f.elements.precio_compra.value,2);
+ const compraIngresada=ampValorOperacion(f.elements.precio_compra.value,2);
  const ventaIngresada=ampValorOperacion(f.elements.precio_venta.value,2);
- const porPaquete=$('modoPrecioVentaRegistro').value==='paquete';
- const ventaUnidad=porPaquete&&cantidad>0?ventaIngresada/cantidad:ventaIngresada;
- const costoUnidad=cantidad>0?costoPaquete/cantidad:NaN;
+ const compraPorPaquete=$('modoPrecioCompraRegistro').value==='paquete';
+ const ventaPorPaquete=$('modoPrecioVentaRegistro').value==='paquete';
+ const cantidadValida=Number.isFinite(cantidad)&&cantidad>0;
+ const costoUnidad=compraPorPaquete?(cantidadValida?compraIngresada/cantidad:NaN):compraIngresada;
+ const ventaUnidad=ventaPorPaquete?(cantidadValida?ventaIngresada/cantidad:NaN):ventaIngresada;
+ const costoPaquete=cantidadValida?(compraPorPaquete?compraIngresada:compraIngresada*cantidad):NaN;
+ const ventaPaquete=cantidadValida?(ventaPorPaquete?ventaIngresada:ventaIngresada*cantidad):NaN;
  const gananciaUnidad=ventaUnidad-costoUnidad;
- const gananciaPaquete=porPaquete?ventaIngresada-costoPaquete:ventaUnidad*cantidad-costoPaquete;
- const valido=Number.isFinite(cantidad)&&cantidad>0&&Number.isFinite(costoPaquete)&&costoPaquete>=0&&Number.isFinite(ventaIngresada)&&ventaIngresada>=0;
- return{medida,cantidad,costoPaquete,ventaIngresada,porPaquete,ventaUnidad,costoUnidad,gananciaUnidad,gananciaPaquete,valido};
+ const gananciaPaquete=ventaPaquete-costoPaquete;
+ const valido=cantidadValida&&Number.isFinite(compraIngresada)&&compraIngresada>=0&&Number.isFinite(ventaIngresada)&&ventaIngresada>=0&&Number.isFinite(costoUnidad)&&Number.isFinite(ventaUnidad);
+ return {medida,cantidad,compraIngresada,ventaIngresada,compraPorPaquete,ventaPorPaquete,costoUnidad,costoPaquete,ventaUnidad,ventaPaquete,gananciaUnidad,gananciaPaquete,valido};
 }
 function actualizarCostoPrevio(){
- const f=$('productoForm');
- const v=ampValoresRegistro();
+ const f=$('productoForm'),v=ampValoresRegistro();
  const ventaPresente=f.elements.precio_venta.value.trim()!=='';
  const costoPresente=f.elements.precio_compra.value.trim()!=='';
  const cantidadPresente=f.elements.unidades.value.trim()!=='';
- const costoValido=costoPresente&&cantidadPresente&&Number.isFinite(v.costoUnidad)&&v.costoPaquete>=0&&v.cantidad>0;
+ const costoValido=costoPresente&&cantidadPresente&&Number.isFinite(v.costoUnidad)&&Number.isFinite(v.costoPaquete)&&v.costoUnidad>=0;
  const ventaValida=costoValido&&ventaPresente&&v.valido;
  const etiqueta=v.medida==='kg'?'kg':'unidad';
- $('costoUnitarioPrevio').textContent=costoValido
-  ?bs(v.costoUnidad)+' por '+etiqueta
-  :costoPresente&&!cantidadPresente?'FALTA LA CANTIDAD COMPRADA':'Introducí el costo total y la cantidad';
+ $('costoUnitarioPrevio').textContent=costoValido?bs(v.costoUnidad)+' por '+etiqueta:costoPresente&&!cantidadPresente?'FALTA LA CANTIDAD COMPRADA':'INTRODUCÍ PRECIO DE COMPRA Y CANTIDAD';
  $('ventaUnidadPrevia').textContent=ventaValida?bs(v.ventaUnidad)+' por '+etiqueta:'—';
  $('gananciaUnidadPrevia').textContent=ventaValida?bs(v.gananciaUnidad)+' por '+etiqueta:'—';
- $('gananciaTotalPrevia').textContent=ventaValida?bs(v.gananciaPaquete)+' por las '+v.cantidad+' '+(v.medida==='kg'?'kg':'unidades'):'—';
- const dif=ventaValida&&v.porPaquete?Math.abs(Math.round(v.ventaUnidad*100)/100*v.cantidad-v.ventaIngresada):0;
+ $('gananciaTotalPrevia').textContent=ventaValida?bs(v.gananciaPaquete)+' POR EL PAQUETE DE '+v.cantidad+' '+(v.medida==='kg'?'KG':'UNIDADES'):'—';
  const aviso=$('ayudaPrecioVentaRegistro');
- aviso.textContent=v.porPaquete
-  ?!cantidadPresente?'Ingresá la cantidad del paquete para calcular cuánto vale cada unidad.'
-   :dif>0.005?'Atención: el total no permite un precio exacto por unidad con dos decimales. Ajustá el total o elegí POR UNIDAD / KILO.'
-   :'Se divide el precio de venta del paquete entre '+v.cantidad+' '+(v.medida==='kg'?'kg':'unidades')+'.'
-  :'El precio ingresado corresponde a CADA '+(v.medida==='kg'?'KILO':'UNIDAD')+'; el total multiplica ese precio por la cantidad.';
- aviso.style.color=dif>0.005?'#ffb9c4':'#dce8f1';
+ aviso.textContent=v.ventaPorPaquete?'EL PRECIO DE VENTA TOTAL SE DIVIDE ENTRE LA CANTIDAD PARA CALCULAR EL VALOR DE CADA UNO.':'ESTE PRECIO SE COBRA POR CADA '+(v.medida==='kg'?'KILO':'UNIDAD')+'. NO SE DIVIDE.';
+ aviso.style.color='#dce8f1';
 }
 function actualizarEtiquetasRegistro(){
- const med=$('unidadMedidaRegistro').value,u=med==='kg'?'kg':'unidad';
- const paquete=$('modoPrecioVentaRegistro').value==='paquete';
- $('labelPrecioVentaRegistro').textContent=paquete?'Precio de venta de TODO EL PAQUETE (Bs)':'Precio de venta por '+u+' (Bs)';
- $('labelVentaUnidadRegistro').textContent='Precio de venta calculado por '+u;
- $('labelCantidadRegistro').textContent=med==='kg'?'Kilogramos comprados (kg)':'Unidades compradas';
- $('labelCostoUnitarioRegistro').textContent='Costo calculado por '+u;
- $('labelGananciaUnitarioRegistro').textContent='Ganancia por CADA '+u;
- $('labelGananciaTotalRegistro').textContent=med==='kg'?'Ganancia TOTAL de todos los kg comprados':'Ganancia TOTAL de todas las unidades del paquete';
+ const med=$('unidadMedidaRegistro').value,u=med==='kg'?'KG':'UNIDAD';
+ const ventaPaquete=$('modoPrecioVentaRegistro').value==='paquete';
+ const compraPaquete=$('modoPrecioCompraRegistro').value==='paquete';
+ $('labelPrecioVentaRegistro').textContent=ventaPaquete?'PRECIO DE VENTA DEL PAQUETE COMPLETO (Bs)':'PRECIO DE VENTA DE CADA '+u+' (Bs)';
+ $('labelPrecioCompraRegistro').textContent=compraPaquete?'PRECIO DE COMPRA DEL PAQUETE COMPLETO (Bs)':'PRECIO DE COMPRA DE CADA '+u+' (Bs)';
+ $('labelVentaUnidadRegistro').textContent='PRECIO DE VENTA DE CADA '+u;
+ $('labelCantidadRegistro').textContent=med==='kg'?'KILOGRAMOS COMPRADOS (KG)':'UNIDADES COMPRADAS';
+ $('labelCostoUnitarioRegistro').textContent='COSTO DE CADA '+u;
+ $('labelGananciaUnitarioRegistro').textContent='GANANCIA DE CADA '+u;
+ $('labelGananciaTotalRegistro').textContent=med==='kg'?'GANANCIA TOTAL DEL PAQUETE EN KG':'GANANCIA TOTAL DE TODAS LAS UNIDADES DEL PAQUETE';
  const cantidad=$('productoForm').elements.unidades;
- // La base de validación debe coincidir con el incremento, o 1, 5, 12 no pasan.
  cantidad.min=med==='kg'?'0.001':'1';
  cantidad.step=med==='kg'?'0.001':'1';
  cantidad.inputMode=med==='kg'?'decimal':'numeric';
@@ -1283,6 +1283,7 @@ function actualizarEtiquetasRegistro(){
 }
 $('unidadMedidaRegistro').addEventListener('change',actualizarEtiquetasRegistro);
 $('modoPrecioVentaRegistro').addEventListener('change',actualizarEtiquetasRegistro);
+$('modoPrecioCompraRegistro').addEventListener('change',actualizarEtiquetasRegistro);
 /* Mostrar qué campo impide guardar; conservar la validación HTML nativa. */
 $('productoForm').addEventListener('invalid',ev=>{
  const campo=ev.target,form=$('productoForm');
@@ -3258,14 +3259,22 @@ $('abrirEscaner').onclick=async()=>{
 };
 $('cerrarEscaner').onclick=detenerLector;
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&(lectorActivo||abriendoLector))void detenerLector()});
-$('productoForm').onsubmit=async e=>{e.preventDefault();const formulario=e.currentTarget;const f=new FormData(formulario);const p={detalles:String(f.get('detalles')).trim().toLocaleUpperCase('es'),unidad_medida:String(f.get('unidad_medida')||'unidad'),codigo_barras:String(f.get('codigo_barras')).trim()||null,categoria:String(f.get('categoria')).trim()||null,precio_venta:0,stock_minimo:Number(f.get('stock_minimo')||0),stock_ideal:Number(f.get('stock_ideal')||0)};const unidades=ampValorOperacion(f.get('unidades'),p.unidad_medida==='kg'?3:6),compra=ampValorOperacion(f.get('precio_compra'),2);
-const ventaIngresada=ampValorOperacion(f.get('precio_venta'),2);
-const paqueteVenta=String(f.get('modo_precio_venta'))==='paquete';
-const ventaExacta=paqueteVenta&&unidades>0?ventaIngresada/unidades:ventaIngresada;
-p.precio_venta=Math.round((ventaExacta+Number.EPSILON)*100)/100;
-if(paqueteVenta&&Number.isFinite(ventaIngresada)&&Number.isFinite(unidades)&&unidades>0
- &&Math.abs(p.precio_venta*unidades-ventaIngresada)>0.005){
- estado('El precio total del paquete no se puede dividir en precios unitarios exactos de 2 decimales. Ajustá el precio total o elegí POR UNIDAD / KILO. No se guardó nada.',true);
+$('productoForm').onsubmit=async e=>{e.preventDefault();const formulario=e.currentTarget;const f=new FormData(formulario);const p={detalles:String(f.get('detalles')).trim().toLocaleUpperCase('es'),unidad_medida:String(f.get('unidad_medida')||'unidad'),codigo_barras:String(f.get('codigo_barras')).trim()||null,categoria:String(f.get('categoria')).trim()||null,precio_venta:0,stock_minimo:Number(f.get('stock_minimo')||0),stock_ideal:Number(f.get('stock_ideal')||0)};const v=ampValoresRegistro();
+const unidades=v.cantidad,compra=Math.round((v.costoPaquete+Number.EPSILON)*100)/100;
+const ventaIngresada=v.ventaIngresada;
+p.precio_venta=Math.round((v.ventaUnidad+Number.EPSILON)*100)/100;
+// Supabase guarda precio_compra TOTAL de la compra y precio_venta UNITARIO.
+// Si el usuario escribió valores por unidad, convertirlos sin confundirlos con totales.
+if(!v.valido||!Number.isFinite(compra)||compra<0||!Number.isFinite(p.precio_venta)||p.precio_venta<0){
+ estado('REVISÁ LOS IMPORTES: ingresá precio de venta, precio de compra y cantidad válidos. No se guardó nada.',true);
+ return;
+}
+if(v.ventaPorPaquete&&Math.abs(p.precio_venta*unidades-v.ventaIngresada)>0.005){
+ estado('El precio de venta del paquete no se puede dividir en un precio exacto por unidad con dos decimales. Elegí POR CADA UNIDAD o ajustá el importe.',true);
+ return;
+}
+if(!v.compraPorPaquete&&Math.abs(compra-v.compraIngresada*unidades)>0.005){
+ estado('El precio total de compra requiere más de dos decimales. Ajustá el importe o elegí POR PAQUETE COMPLETO.',true);
  return;
 }
 if(productos.some(x=>normalizarBusqueda(x.detalles)===normalizarBusqueda(p.detalles))){estado('Este producto ya está registrado. Seleccionalo en las sugerencias y usá «Registrar otra compra». No se creó ningún producto duplicado.',true);return;}if(!p.detalles||!Number.isFinite(unidades)||unidades<=0||!Number.isFinite(compra)||compra<0||Math.abs(compra*100-Math.round(compra*100))>0.00001||!Number.isFinite(ventaIngresada)||ventaIngresada<0||!Number.isFinite(p.precio_venta)||p.precio_venta<0||Math.abs(p.precio_venta*100-Math.round(p.precio_venta*100))>0.00001||(p.unidad_medida!=='kg'&&!Number.isInteger(unidades))||(p.unidad_medida==='kg'&&Math.abs(unidades*1000-Math.round(unidades*1000))>0.00001)){estado('Revisa los datos del producto.',true);return} $('guardar').disabled=true;estado('Guardando…');let avisoDemora=setTimeout(()=>estado('La operación está tardando más de 20 segundos. No vuelvas a guardar ni cierres esta página: estamos esperando confirmación de Supabase.'),20000);try{const {data,error}=await db.from('productos').insert(p).select('id').single();if(error){estado('No se guardó: '+error.message,true);$('guardar').disabled=false;return}const {error:ce}=await db.rpc('registrar_compra',{p_producto_id:data.id,p_fecha:String(f.get('fecha')),p_precio_compra:compra,p_unidades:unidades,p_proveedor:String(f.get('proveedor')||'')});$('guardar').disabled=false;if(ce){estado('Producto creado, pero la compra falló. No lo vuelvas a crear; registra la compra desde la lista. Detalle: '+ce.message,true);await cargar();return}formulario.reset();for(const campo of formulario.querySelectorAll('input[name]'))campo.value='';actualizarEtiquetasRegistro();productoSeleccionadoRegistro=null;$('avisoProductoExistente').textContent='';$('comprarProductoExistente').classList.add('hidden');mostrarSugerenciasRegistro();actualizarCostoPrevio();mostrarExitoProductoNuevo();await cargar();estado('Producto y compra guardados correctamente. Formulario limpio para registrar otro producto.')}catch(err){estado('No se pudo confirmar el registro: '+(err?.message||String(err))+'. Antes de intentar otra vez, pulsa Actualizar y comprueba si aparece el producto para evitar duplicados.',true)}finally{clearTimeout(avisoDemora);$('guardar').disabled=false}};

@@ -949,6 +949,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 <!-- Escritura automática en MAYÚSCULAS en todos los campos de texto de COSTOS.
      No transformar credenciales, códigos de barras ni fórmulas numéricas. -->
 <style id="amphx-mayusculas-globales">
+input:not([type]):not([name="codigo_barras"]):not([data-conservar-formato]),
 input[type="text"]:not([name="codigo_barras"]):not(#codigoAsociar):not([data-conservar-formato]),
 input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-formato]){
   text-transform:uppercase;
@@ -957,7 +958,7 @@ input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-forma
 <script id="amphx-mayusculas-globales-js">
 (function(){
   'use strict';
-  const textSelector='input[type="text"],input[type="search"],textarea,[contenteditable="true"]';
+  const textSelector='input:not([type]),input[type="text"],input[type="search"],textarea,[contenteditable="true"]';
   const excluded='[name="codigo_barras"],#codigoAsociar,[data-conservar-formato],[type="email"],[type="password"],[type="number"],[type="url"],[type="tel"]';
   function convertirMayusculas(evento){
     const el=evento.target;

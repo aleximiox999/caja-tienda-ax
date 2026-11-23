@@ -2776,12 +2776,6 @@ function configurarEditorFila(p,compra,superficie,movil){
  save.onclick=async()=>{
   const valores=estadoFila();
   if(!valores.valid||!valores.dif||guardando||!edicionAutorizada)return;
-  const msg='¿Guardar COSTOS de «'+p.detalles+'»? Precio de compra: '+bs(valores.comp)+
-   ' · Cantidad de compra: '+valores.unid+' '+unidadCorta(p)+
-   ' · Precio de venta: '+bs(valores.vent)+
-   ' · Proveedor: '+(valores.prov||'Sin indicar')+
-   '. Las existencias físicas actuales permanecerán iguales.';
-  if(!confirm(msg))return;
   guardando=true;save.disabled=true;err.textContent='Guardando cambios en Supabase…';
   try{
    const args={
@@ -3372,7 +3366,6 @@ async function buscarImagenesProductoWeb(){
 }
 async function importarFotoProductoWeb(item,boton){
  const p=fotoProductoActivo;if(!p||fotoWebImportando||fotoGuardando)return;
- if(!confirm('¿Guardar esta foto para «'+p.detalles+'»? Se encuadrará en cuadrado, se comprimirá y reemplazará la anterior, si la hay.'))return;
  fotoWebImportando=true;
  boton.disabled=true;
  $('cerrarFotoProducto').disabled=true;
@@ -3542,7 +3535,6 @@ $('convertirKgForm').onsubmit=async e=>{
  e.preventDefault();const p=productoMedida;if(!p)return;
  const fac=Number($('convertirKgFactor').value),kilos=Number($('convertirKgStock').value),precio=Number($('convertirKgPrecio').value);
  if(!Number.isFinite(fac)||fac<.001||fac>1000||!Number.isFinite(kilos)||kilos<0||kilos>1000000||!Number.isFinite(precio)||precio<0||Math.abs(fac*1000-Math.round(fac*1000))>.00001||Math.abs(kilos*1000-Math.round(kilos*1000))>.00001){$('convertirKgError').textContent='Revisá kilos, equivalencia y precio.';return;}
- if(!confirm('¿Convertir «'+p.detalles+'» a kg? Se registrará un ajuste de existencias: '+conMedida(datosProducto(p).stock,p)+' → '+kilos+' kg. Los movimientos históricos se conservarán.'))return;
  $('convertirKgGuardar').disabled=true;$('convertirKgError').textContent='Guardando en Supabase…';
  try{
   const {data,error}=await db.rpc('convertir_producto_a_kilos',{p_producto_id:p.id,p_kilos_por_unidad:fac,p_precio_venta_kg:precio,p_stock_final_kg:kilos});
@@ -3583,7 +3575,6 @@ $('abrirBolsaForm').onsubmit=async e=>{
  if(nombre.length<3||!Number.isFinite(factor)||factor<=0||factor>1000||!Number.isInteger(bolsas)||bolsas<1||bolsas>datosProducto(p).stock||!Number.isFinite(precio)||precio<0||Math.abs(factor*1000-Math.round(factor*1000))>.00001){
   $('abrirBolsaError').textContent='Revisá el nombre, el peso y las bolsas disponibles. No se puede abrir más stock del que tenés.';return;
  }
- if(!confirm('¿Abrir '+bolsas+' bolsa(s) de «'+p.detalles+'» y transferir '+(bolsas*factor)+' kg a «'+nombre+'»? No se duplicará el inventario.'))return;
  $('abrirBolsaGuardar').disabled=true;$('abrirBolsaError').textContent='Guardando en Supabase…';
  try{
   const {data,error}=await db.rpc('abrir_bolsas_para_granel',{p_producto_bolsa:p.id,p_nombre_granel:nombre,p_kg_por_bolsa:factor,p_bolsas:bolsas,p_precio_kg:precio,p_clave_sincronizacion:claveApertura});
@@ -3677,10 +3668,6 @@ $('formEditarCostos').onsubmit=async e=>{
  if(esCompra&&Math.abs(redondearCosto(valor/Number(c.unidades),4)-unidad)>.00011){
   $('errorEditorCostos').textContent='El costo por unidad y el costo total no coinciden con la cantidad de la compra. Revisá ambos campos.';return;
  }
- const frase=esCompra?
-  '¿Corregir la compra #'+c.id+' de «'+p.detalles+'» a '+bs(valor)+' en total? Costo unitario: '+bs(unidad)+'. '+(aplicar?'También se actualizará el costo actual.':'El costo actual permanecerá igual.')+' No se cambiarán cantidades ni existencias.':
-  '¿Cambiar el costo unitario actual de «'+p.detalles+'» a '+bs(valor)+'? Las compras anteriores quedarán intactas.';
- if(!confirm(frase))return;
  costoGuardando=true;$('guardarEditorCostos').disabled=true;
  $('cancelarEditorCostos').disabled=true;$('errorEditorCostos').textContent='Guardando corrección en Supabase…';
  try{

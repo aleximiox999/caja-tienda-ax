@@ -1873,16 +1873,156 @@ window.addEventListener('resize',ampOcultarAyuda);
 
 /* Menú de edición unificado: no altera ninguna compra ni inventario al abrirlo. */
 let ampProductoMenu=null;
-function abrirMenuEdicion(p){
+/* AMPHX: lápiz único para editar toda la ficha en un solo guardado. */
+let ampFichaProducto=null,ampFichaOriginal=null,ampFichaInputs={},ampFichaGuardando=false;
+function ampCrearEditorFicha(){
+ let d=document.getElementById('ampEditorFichaCompleta');
+ if(d)return d;
+ const estilo=document.createElement('style');
+ estilo.textContent='#ampEditorFichaCompleta{width:min(96vw,760px);max-width:96vw;max-height:92dvh;overflow:auto;border:1px solid #a4bac9;border-radius:17px;padding:22px;background:#f8fbfe;color:#192c41;box-shadow:0 18px 65px #02091495}#ampEditorFichaCompleta::backdrop{background:#071626bd}#ampEditorFichaCompleta .amp-ficha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#ampEditorFichaCompleta .amp-ficha-campo{display:block;min-width:0}#ampEditorFichaCompleta label{display:block;font-weight:750;margin-bottom:5px}#ampEditorFichaCompleta input,#ampEditorFichaCompleta select,#ampEditorFichaCompleta textarea{width:100%;padding:11px;border:1px solid #b9c9d4;border-radius:9px;background:white;color:#182d40;font:inherit}#ampEditorFichaCompleta .amp-ficha-ancho{grid-column:1/-1}#ampEditorFichaCompleta fieldset{min-width:0;margin:15px 0;padding:14px;border:1px solid #c5d4df;border-radius:12px}#ampEditorFichaCompleta legend{font-weight:800;padding:0 7px}#ampEditorFichaCompleta .amp-ficha-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}#ampEditorFichaCompleta .amp-ficha-error{color:#a22720;font-weight:750;white-space:pre-wrap}#ampEditorFichaCompleta .amp-ficha-aviso{color:#4f6275;font-size:13px;margin:8px 0}#ampEditorFichaCompleta .amp-ficha-preview{background:#eaf3ef;padding:12px;border-radius:10px;margin-top:12px;font-weight:700}@media(max-width:560px){#ampEditorFichaCompleta{padding:13px}#ampEditorFichaCompleta .amp-ficha-grid{grid-template-columns:1fr}}';
+ document.head.append(estilo);
+ d=document.createElement('dialog');d.id='ampEditorFichaCompleta';
+ const h=document.createElement('h2');h.textContent='EDITAR TODA LA FICHA';h.style.margin='0 0 6px';
+ const guia=document.createElement('p');guia.className='amp-ficha-aviso';guia.textContent='Modificá cualquier campo y guardá todos los cambios juntos. Al cambiar KG/UND, escribí vos las nuevas cantidades y precios: no hay conversión automática.';
+ const form=document.createElement('form');form.id='ampFormFichaCompleta';form.noValidate=true;
+ const grid=document.createElement('div');grid.className='amp-ficha-grid';
+ function campo(id,label,tipo,ancho,contenedor){
+  const caja=document.createElement('div');caja.className='amp-ficha-campo'+(ancho?' amp-ficha-ancho':'');
+  const lab=document.createElement('label');lab.textContent=label;lab.htmlFor='ampFicha_'+id;
+  let ctl;
+  if(tipo==='select'){
+   ctl=document.createElement('select');
+   for(const [valor,titulo] of [['unidad','UNIDADES (UND)'],['kg','KILOGRAMOS (KG)'],['botella','BOTELLAS (existente)']]){
+    const opt=document.createElement('option');opt.value=valor;opt.textContent=titulo;ctl.append(opt);
+   }
+  }else if(tipo==='textarea'){ctl=document.createElement('textarea');ctl.rows=2;}
+  else{ctl=document.createElement('input');ctl.type=tipo;if(tipo==='number'){ctl.min='0';ctl.step='any';ctl.inputMode='decimal';}ctl.autocomplete='off';}
+  ctl.id='ampFicha_'+id;ctl.required=!['codigo','categoria','proveedor','observaciones'].includes(id);
+  caja.append(lab,ctl);contenedor.append(caja);ampFichaInputs[id]=ctl;
+ }
+ campo('nombre','Nombre del producto','text',true,grid);
+ campo('codigo','Código de barras','text',false,grid);
+ campo('categoria','Categoría','text',false,grid);
+ campo('unidad','Cómo se vende','select',false,grid);
+ campo('stock','Existencias actuales (valor manual)','number',false,grid);
+ campo('minimo','Stock mínimo','number',false,grid);
+ campo('ideal','Stock ideal','number',false,grid);
+ campo('venta','Precio de venta (Bs)','number',false,grid);
+ campo('costoActual','Costo unitario actual (Bs)','number',false,grid);
+ campo('proveedor','Proveedor','text',true,grid);
+ form.append(grid);
+ const fact=document.createElement('fieldset');fact.id='ampFichaGrupoCompra';
+ const leg=document.createElement('legend');leg.textContent='Última compra registrada';fact.append(leg);
+ const compraGrid=document.createElement('div');compraGrid.className='amp-ficha-grid';
+ campo('precioCompra','Precio total de compra (Bs)','number',false,compraGrid);
+ campo('cantidadCompra','Cantidad comprada','number',false,compraGrid);
+ campo('fechaCompra','Fecha de compra','date',false,compraGrid);
+ campo('observaciones','Observaciones de la compra','textarea',true,compraGrid);
+ fact.append(compraGrid);form.append(fact);
+ const preview=document.createElement('div');preview.id='ampFichaVistaPrevia';preview.className='amp-ficha-preview';preview.setAttribute('aria-live','polite');form.append(preview);
+ const error=document.createElement('p');error.id='ampFichaError';error.className='amp-ficha-error';error.setAttribute('role','alert');form.append(error);
+ const acciones=document.createElement('div');acciones.className='amp-ficha-acciones';
+ const guardar=document.createElement('button');guardar.type='submit';guardar.id='ampFichaGuardar';guardar.textContent='💾 GUARDAR TODOS LOS CAMBIOS';
+ const cancelar=document.createElement('button');cancelar.type='button';cancelar.className='alt';cancelar.id='ampFichaCancelar';cancelar.textContent='Cancelar';cancelar.onclick=()=>{if(!ampFichaGuardando)d.close();};
+ acciones.append(guardar,cancelar);form.append(acciones);
+ d.append(h,guia,form);document.body.append(d);
+ const vista=()=>{
+  const venta=Number(ampFichaInputs.venta.value),costo=Number(ampFichaInputs.costoActual.value);
+  const total=Number(ampFichaInputs.precioCompra.value),cantidad=Number(ampFichaInputs.cantidadCompra.value);
+  const unidad=ampFichaInputs.unidad.value==='kg'?'kg':'unidad';
+  const partes=[];
+  if(!fact.disabled&&cantidad>0&&Number.isFinite(total))partes.push('Costo de la compra: '+bs(total/cantidad)+' / '+unidad);
+  if(Number.isFinite(venta)&&Number.isFinite(costo)){
+   partes.push('Utilidad por '+unidad+': '+bs(venta-costo));
+   partes.push('Margen: '+(venta>0?((venta-costo)/venta*100).toFixed(2)+' %':'pendiente'));
+  }
+  preview.textContent=partes.join('  ·  ')||'Introducí precios y cantidades para ver resultados.';
+ };
+ form.addEventListener('input',vista);form.addEventListener('change',vista);
+ form.addEventListener('submit',ampGuardarFichaCompleta);
+ d.addEventListener('close',()=>{ampFichaProducto=null;ampFichaOriginal=null;});
+ d.ampActualizarVista=vista;
+ return d;
+}
+function ampAbrirFichaCompleta(p){
  ampOcultarAyuda();
- ampProductoMenu=p;
- $('ampEditarNombre').textContent=p.detalles;
- const menu=$('ampEditarMenu');
- if(!menu.open){
-  if(typeof menu.showModal==='function')menu.showModal();
-  else menu.setAttribute('open','');
+ const d=ampCrearEditorFicha(),c=ultimaCompra(p),cost=costos.find(x=>Number(x.producto_id)===Number(p.id));
+ const stock=Number(datosProducto(p).stock.toFixed(6)),cu=Number(cost?.costo_unitario||0);
+ ampFichaProducto=p;
+ ampFichaOriginal={compra:c,stock,esperado:{
+  detalles:String(p.detalles||''),codigo_barras:String(p.codigo_barras||''),
+  categoria:String(p.categoria||''),unidad_medida:p.unidad_medida,
+  precio_venta:Number(p.precio_venta||0),stock_minimo:Number(p.stock_minimo||0),
+  stock_ideal:Number(p.stock_ideal||0),costo_unitario:cu,
+  proveedor:String(cost?.proveedor||''),
+  precio_compra:c?Number(c.precio_compra):null,unidades:c?Number(c.unidades):null,
+  fecha_compra:c?String(c.fecha||'').slice(0,10):null,
+  observaciones:c?String(c.observaciones||''):null
+ }};
+ const poner=(id,val)=>{ampFichaInputs[id].value=val===undefined||val===null?'':String(val);};
+ poner('nombre',p.detalles);poner('codigo',p.codigo_barras);poner('categoria',p.categoria);
+ poner('unidad',p.unidad_medida||'unidad');poner('stock',stock);
+ poner('minimo',p.stock_minimo??0);poner('ideal',p.stock_ideal??0);
+ poner('venta',p.precio_venta??0);poner('costoActual',cu);
+ poner('proveedor',c?.proveedor??cost?.proveedor??'');
+ poner('precioCompra',c?.precio_compra);poner('cantidadCompra',c?.unidades);
+ poner('fechaCompra',c?.fecha?String(c.fecha).slice(0,10):'');
+ poner('observaciones',c?.observaciones??'');
+ const grupo=document.getElementById('ampFichaGrupoCompra');grupo.disabled=!c;
+ grupo.querySelector('legend').textContent=c?'Última compra registrada #'+c.id:'Sin compra registrada (editá los datos del producto)';
+ document.getElementById('ampFichaError').textContent='';
+ document.getElementById('ampFichaGuardar').disabled=false;
+ document.getElementById('ampFichaGuardar').textContent='💾 GUARDAR TODOS LOS CAMBIOS';
+ d.ampActualizarVista();
+ if(!d.open){if(typeof d.showModal==='function')d.showModal();else d.setAttribute('open','');}
+ try{ampFichaInputs.nombre.focus({preventScroll:true});}catch(e){}
+}
+async function ampGuardarFichaCompleta(e){
+ e.preventDefault();
+ if(!ampFichaProducto||!ampFichaOriginal||ampFichaGuardando)return;
+ const form=e.currentTarget,err=document.getElementById('ampFichaError'),boton=document.getElementById('ampFichaGuardar');
+ err.textContent='';
+ const p=ampFichaProducto,original=ampFichaOriginal,c=original.compra;
+ const n=id=>{const val=ampFichaInputs[id].value.trim();return val===''?null:Number(val);};
+ const enteros=['stock','minimo','ideal','venta','costoActual'];
+ if(!form.reportValidity()||enteros.some(x=>!Number.isFinite(n(x))||n(x)<0)||
+    (c&&(!Number.isFinite(n('cantidadCompra'))||n('cantidadCompra')<=0||!Number.isFinite(n('precioCompra'))||n('precioCompra')<0))){
+  err.textContent='Revisá los campos marcados. La compra necesita cantidad mayor a cero; las existencias y precios no pueden ser negativos.';return;
+ }
+ if(!ampFichaInputs.nombre.value.trim()||ampFichaInputs.nombre.value.trim().length<2){
+  err.textContent='Escribí un nombre de producto válido.';return;
+ }
+ const args={
+  p_producto_id:p.id,p_compra_id:c?.id??null,
+  p_detalles:ampFichaInputs.nombre.value.trim().toLocaleUpperCase('es'),
+  p_codigo_barras:ampFichaInputs.codigo.value.trim(),
+  p_categoria:ampFichaInputs.categoria.value.trim(),
+  p_unidad_medida:ampFichaInputs.unidad.value,
+  p_stock_actual:n('stock'),p_stock_esperado:original.stock,
+  p_stock_minimo:n('minimo'),p_stock_ideal:n('ideal'),
+  p_precio_venta:n('venta'),p_precio_compra:c?n('precioCompra'):null,
+  p_unidades:c?n('cantidadCompra'):null,p_proveedor:ampFichaInputs.proveedor.value.trim(),
+  p_costo_unitario:n('costoActual'),p_fecha_compra:c?ampFichaInputs.fechaCompra.value:null,
+  p_observaciones:c?ampFichaInputs.observaciones.value:null,p_esperado:original.esperado
+ };
+ ampFichaGuardando=true;boton.disabled=true;boton.textContent='Guardando todos los cambios…';
+ try{
+  const {data,error}=await db.rpc('guardar_ficha_completa_costos_amphx',args);
+  if(error)throw error;
+  if(!data?.ok||Number(data.producto_id)!==Number(p.id))throw Error('El servidor no confirmó el guardado.');
+  const d=document.getElementById('ampEditorFichaCompleta');if(d.open)d.close();
+  const cargado=await cargar();
+  if(cargado)estado('Ficha completa guardada: '+args.p_detalles+'. Se actualizaron los datos, precios y existencias indicados.');
+  else estado('Los cambios fueron guardados en Supabase, pero no se pudo refrescar la lista. Tocá ACTUALIZAR.',true);
+ }catch(ex){
+  err.textContent='No se guardó: '+(ex.message||String(ex));
+  estado('No se pudo guardar la ficha: '+(ex.message||String(ex)),true);
+ }finally{
+  ampFichaGuardando=false;boton.disabled=false;boton.textContent='💾 GUARDAR TODOS LOS CAMBIOS';
  }
 }
+
+function abrirMenuEdicion(p){ampAbrirFichaCompleta(p);}
 function cerrarMenuEdicion(){
  const menu=$('ampEditarMenu');
  if(menu.open){
@@ -1935,7 +2075,7 @@ function accionesFilaHoja(p){
  const tools=document.createElement('div');tools.className='sheet-tools';
  const opciones=[
   ['foto','Ver o agregar fotografía',()=>abrirFotoProducto(p,'gestionar')],
-  ['editar','Editar producto: precio, existencias, nombre o proveedor',()=>abrirMenuEdicion(p)],
+  ['editar','Editar toda la ficha del producto',()=>abrirMenuEdicion(p)],
   ['codigo','Asociar código de barras',()=>abrirVinculador(p)],
   ['compra','Registrar otra compra',()=>otraCompra(p)],
   ['eliminar','Eliminar registro del producto',()=>eliminarProducto(p)]
@@ -2488,7 +2628,7 @@ function crearBotonEditarNombre(p){
  boton.textContent='📝';
  boton.title='Editar nombre del producto';
  boton.setAttribute('aria-label','Editar nombre de '+p.detalles);
- boton.onclick=()=>abrirEditarNombre(p);
+ boton.onclick=()=>abrirMenuEdicion(p);
  return boton;
 }
 let productoParaRenombrar=null;

@@ -1064,21 +1064,23 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  display:flex!important;flex-direction:row!important;align-items:center!important;
  grid-column:1/-1!important;gap:7px!important;padding:3px 8px!important;
  min-height:31px!important;margin:0!important;border-radius:7px!important;
- background:#eaf1f0!important;border:1px solid #c7d8d5!important;
+ background-image:var(--amp-metal-reflejo),var(--amp-titanio)!important;
+ background-color:#08131e!important;border:1px solid #7c94a6!important;
+ border-top-color:#c2d2df!important;
 }
 #listado .sheet-card .sheet-provider-row label{
  flex:none!important;font-size:11px!important;margin:0!important;
- color:#2d4d49!important;white-space:nowrap!important;
+ color:#f7fbff!important;white-space:nowrap!important;
 }
 #listado .sheet-card .sheet-provider-row .sheet-input{
  flex:1 1 auto!important;min-width:0!important;max-width:100%!important;
  width:100%!important;height:26px!important;min-height:26px!important;
  margin:0!important;padding:2px 5px!important;border:0!important;
- background:transparent!important;color:#1b4238!important;box-shadow:none!important;
+ background:transparent!important;color:#ffffff!important;box-shadow:none!important;
  font-size:13px!important;font-weight:750!important;
 }
 #listado .sheet-card .sheet-provider-row input:not([readonly]){
- background:#fff!important;border:1px solid #7da99e!important;
+ background:transparent!important;border:0!important;border-bottom:1px solid #c2d2df!important;
 }
 #listado .sheet-card .sheet-actions{
  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
@@ -1123,25 +1125,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 #listado .sheet-card .sheet-tools .amp-marcas-color button.amp-marca-btn:disabled{
  opacity:.5!important;cursor:wait!important;
 }
-/* ÚNICAMENTE sustituir el blanco del fondo exterior de la tarjeta.
-   Las celdas de datos, recuadros negro titanio y sus controles no cambian de color. */
-#listado .sheet-card.amp-card-verde{
- background-color:#1e4d3d!important;
- background-image:
-  linear-gradient(116deg,transparent 3%,#ffffff1e 20%,transparent 37%,#efffdf12 55%,transparent 77%),
-  linear-gradient(138deg,#10372c 0%,#265f48 29%,#3d795c 49%,#1d503d 72%,#11382f 100%)!important;
- border-color:#81a897!important;
- box-shadow:inset 0 1px 0 #e3ffe63d,0 5px 18px #091f1c49!important;
-}
-#listado .sheet-card.amp-card-verde>.sheet-card-title,
-#listado .sheet-card.amp-card-verde>.sheet-card-title button,
-#listado .sheet-card.amp-card-verde>.sheet-card-details,
-#listado .sheet-card.amp-card-verde>.muted{
- color:#f1fff3!important;text-shadow:0 1px 2px #041911a8!important;
-}
-#listado .sheet-card.amp-card-verde>.sheet-card-details{
- border-color:#bfd8c14b!important;
-}
+/* Fondo exterior original de las fichas intacto. El color verde es solo una marca. */
 
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
 <style id="amp-texto-mayusculas">
@@ -1977,10 +1961,7 @@ for(const btn of document.querySelectorAll('#ampEditarMenu [data-editar-opcion]'
 /* Marcadores independientes de costos: el verde pinta solo el fondo exterior blanco. */
 const ampMarcaColorGuardando=new Set();
 function ampActualizarMarcaVisual(p){
- const esVerde=p.marca_color_costos==='verde',id=String(p.id);
- for(const ficha of document.querySelectorAll('#tarjetas .sheet-card[data-producto-id="'+id+'"]')){
-  ficha.classList.toggle('amp-card-verde',esVerde);
- }
+ const id=String(p.id);
  for(const grupo of document.querySelectorAll('.amp-marcas-color[data-producto-id="'+id+'"]')){
   for(const btn of grupo.querySelectorAll('button[data-marca-color]')){
    const seleccionado=p.marca_color_costos===btn.dataset.marcaColor;
@@ -2479,7 +2460,6 @@ function dibujar(){
   }
   $('filas').append(tr);
   const card=document.createElement('article');card.className='card sheet-card';card.dataset.productoId=String(p.id);
-  card.classList.toggle('amp-card-verde',p.marca_color_costos==='verde');
   const inicial=inicialNombreCostos(p.detalles);
   if(!ampAnclasIndiceCostos.has(inicial))ampAnclasIndiceCostos.set(inicial,card);
   const h=document.createElement('h3');h.className='sheet-card-title';h.append(nombreFilaHoja(p));card.append(h);

@@ -1097,36 +1097,78 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  flex-wrap:wrap!important;padding:4px!important;gap:5px!important;
 }
 #listado .sheet-card .sheet-actions .sheet-message{grid-column:1/-1!important}
-#listado .sheet-tools .amp-marcas-color{
+#listado .amp-card-status-row .amp-marcas-color{
  display:inline-flex!important;flex:0 0 auto;align-items:center;
  gap:5px!important;padding:2px 9px 2px 3px!important;
  border-right:1px solid #8b9cab88;
 }
-#listado .sheet-card .sheet-tools .amp-marcas-color button.amp-marca-btn{
+#listado .sheet-card .amp-card-status-row .amp-marcas-color button.amp-marca-btn{
  flex:0 0 25px!important;width:25px!important;min-width:25px!important;
  max-width:25px!important;height:25px!important;min-height:25px!important;
  border:2px solid #f8fcff!important;border-radius:5px!important;
  padding:0!important;margin:0!important;cursor:pointer!important;
  box-shadow:inset 0 1px 1px #ffffff66,0 2px 4px #16283755!important;
 }
-#listado .sheet-card .sheet-tools .amp-marcas-color button.amp-marca-verde{
+#listado .sheet-card .amp-card-status-row .amp-marcas-color button.amp-marca-verde{
  background:linear-gradient(130deg,#176941,#4fbd7c,#174f35)!important;
 }
-#listado .sheet-card .sheet-tools .amp-marcas-color button.amp-marca-rojo{
+#listado .sheet-card .amp-card-status-row .amp-marcas-color button.amp-marca-rojo{
  background:linear-gradient(130deg,#9f1c2c,#e15a62,#79232c)!important;
 }
-#listado .sheet-card .sheet-tools .amp-marcas-color button.amp-marca-amarillo{
+#listado .sheet-card .amp-card-status-row .amp-marcas-color button.amp-marca-amarillo{
  background:linear-gradient(130deg,#b47f15,#f3d35d,#97721e)!important;
 }
-#listado .sheet-card .sheet-tools .amp-marcas-color button.amp-marca-btn[aria-pressed="true"]{
+#listado .sheet-card .amp-card-status-row .amp-marcas-color button.amp-marca-btn[aria-pressed="true"]{
  outline:2px solid #1e4253!important;outline-offset:2px!important;
  box-shadow:0 0 0 3px #ffffff,0 2px 6px #091b2899!important;
 }
-#listado .sheet-card .sheet-tools .amp-marcas-color button.amp-marca-btn:disabled{
+#listado .sheet-card .amp-card-status-row .amp-marcas-color button.amp-marca-btn:disabled{
  opacity:.5!important;cursor:wait!important;
 }
 /* Fondo exterior original de las fichas intacto. El color verde es solo una marca. */
 
+
+
+/* COSTOS móvil: estado "Guardado" y tres marcas de color en una sola fila,
+   herramientas separadas debajo; sin superposición de iconos. */
+#listado .sheet-card .sheet-actions .amp-card-status-row{
+ grid-column:1/-1!important;display:flex!important;flex-direction:row!important;
+ flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;
+ gap:8px!important;min-width:0!important;width:100%!important;
+ padding:0 3px!important;box-sizing:border-box!important;
+}
+#listado .sheet-card .sheet-actions .amp-card-status-row .sheet-save{
+ flex:0 1 auto!important;min-width:0!important;max-width:calc(100% - 108px)!important;
+ white-space:nowrap!important;margin:0!important;
+}
+#listado .sheet-card .sheet-actions .amp-card-status-row .amp-marcas-color{
+ display:inline-flex!important;flex:0 0 auto!important;
+ flex-wrap:nowrap!important;align-items:center!important;gap:5px!important;
+ margin:0!important;padding:2px!important;border:0!important;
+ width:auto!important;min-width:0!important;
+}
+#listado .sheet-card .sheet-actions .amp-card-status-row .amp-marca-btn{
+ flex:0 0 25px!important;width:25px!important;min-width:25px!important;
+ max-width:25px!important;height:25px!important;min-height:25px!important;
+ margin:0!important;padding:0!important;border-radius:5px!important;
+}
+#listado .sheet-card .sheet-actions>.sheet-tools{
+ grid-column:1/-1!important;display:flex!important;flex-direction:row!important;
+ flex-wrap:wrap!important;gap:6px!important;justify-content:flex-start!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ box-sizing:border-box!important;
+}
+#listado .sheet-card .sheet-actions .amp-sin-compra{
+ color:#435a6c;font-size:12px;font-weight:700;
+}
+@media(max-width:620px){
+ #listado .sheet-card .sheet-actions .amp-card-status-row{
+  gap:6px!important;justify-content:space-between!important;
+ }
+ #listado .sheet-card .sheet-actions>.sheet-tools{
+  justify-content:flex-start!important;gap:5px!important;
+ }
+}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
 <style id="amp-texto-mayusculas">
 input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }
@@ -2009,7 +2051,6 @@ function ampCrearMarcasColor(p){
 
 function accionesFilaHoja(p){
  const tools=document.createElement('div');tools.className='sheet-tools';
- tools.append(ampCrearMarcasColor(p));
  const opciones=[
   ['foto','Ver o agregar fotografía',()=>abrirFotoProducto(p,'gestionar')],
   ['editar','Editar toda la ficha del producto',()=>abrirMenuEdicion(p)],
@@ -2282,7 +2323,9 @@ function configurarEditorFila(p,compra,superficie,movil){
  save.textContent='✓ Guardado';save.disabled=true;
  const err=document.createElement('p');err.className='sheet-message';err.setAttribute('role','status');
  const tools=accionesFilaHoja(p);
- action.append(save,tools,err);superficie.append(action);
+ const statusRow=document.createElement('div');statusRow.className='amp-card-status-row';
+ statusRow.append(save,ampCrearMarcasColor(p));
+ action.append(statusRow,tools,err);superficie.append(action);
  let guardando=false,edicionAutorizada=false;
  superficie.ampDesbloquearCostos=claves=>{
   edicionAutorizada=true;
@@ -2456,7 +2499,9 @@ function dibujar(){
   else{
    const empty=document.createElement('td');empty.colSpan=7;empty.textContent='Este producto no tiene una compra registrada. Registrá una para editar los costos de su paquete.';
    tr.append(empty);
-   const action=document.createElement('td');action.append(accionesFilaHoja(p));tr.append(action);
+   const action=document.createElement('td');
+   const statusRow=document.createElement('div');statusRow.className='amp-card-status-row';statusRow.append(ampCrearMarcasColor(p));
+   action.append(statusRow,accionesFilaHoja(p));tr.append(action);
   }
   $('filas').append(tr);
   const card=document.createElement('article');card.className='card sheet-card';card.dataset.productoId=String(p.id);
@@ -2475,7 +2520,12 @@ function dibujar(){
   card.append(dato);
   if(compra)configurarEditorFila(p,compra,card,true);
   else{
-   const note=document.createElement('p');note.className='muted';note.textContent='Sin compra registrada. Añadí una compra para habilitar esta fila.';card.append(note,accionesFilaHoja(p));
+   const note=document.createElement('p');note.className='muted';note.textContent='Sin compra registrada. Añadí una compra para habilitar esta fila.';
+   const acciones=document.createElement('div');acciones.className='sheet-actions';
+   const statusRow=document.createElement('div');statusRow.className='amp-card-status-row';
+   const sinCompra=document.createElement('small');sinCompra.className='amp-sin-compra';sinCompra.textContent='Sin compra';
+   statusRow.append(sinCompra,ampCrearMarcasColor(p));
+   acciones.append(statusRow,accionesFilaHoja(p));card.append(note,acciones);
   }
   $('tarjetas').append(card);
  }

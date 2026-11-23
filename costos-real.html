@@ -1169,6 +1169,93 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
   justify-content:flex-start!important;gap:5px!important;
  }
 }
+
+/* AMPHX COSTOS · ajuste final móvil 2026-11-23.
+   Fila superior: GUARDADO + verde/rojo/amarillo. Debajo: 6 iconos en UNA fila.
+   Restauración del proveedor: MISMO negro titanio que los campos originales. */
+#listado .sheet-card .sheet-mobile-row.sheet-provider-row.amp-campo-titanio {
+ display:flex!important;flex-flow:row nowrap!important;align-items:center!important;
+ grid-column:1/-1!important;gap:6px!important;margin:0!important;
+ padding:3px 8px!important;min-height:30px!important;
+ background:var(--amp-metal-reflejo),var(--amp-titanio)!important;
+ background-color:#08131e!important;
+ border:1px solid #7c94a6!important;border-top-color:#c2d2df!important;
+ border-radius:10px!important;
+ box-shadow:inset 0 1px 0 #ffffff34,0 2px 8px #14273724!important;
+ color:#f7fbff!important;
+}
+#listado .sheet-card .sheet-mobile-row.sheet-provider-row.amp-campo-titanio label {
+ color:#f7fbff!important;-webkit-text-fill-color:#f7fbff!important;
+ flex:0 0 auto!important;white-space:nowrap!important;margin:0!important;
+ font-size:11px!important;font-weight:850!important;
+}
+#listado .sheet-card .sheet-mobile-row.sheet-provider-row.amp-campo-titanio input.sheet-input{
+ color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;
+ background:transparent!important;background-image:none!important;
+ flex:1 1 auto!important;min-width:0!important;max-width:100%!important;
+ width:100%!important;height:25px!important;min-height:25px!important;
+ padding:2px 4px!important;margin:0!important;
+ border:0!important;box-shadow:none!important;font-size:13px!important;
+}
+#listado .sheet-card .sheet-actions{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ gap:6px!important;padding:7px!important;min-width:0!important;
+}
+#listado .sheet-card .sheet-actions>.amp-card-status-row{
+ display:grid!important;grid-template-columns:minmax(0,1fr) max-content!important;
+ grid-column:1/-1!important;align-items:center!important;
+ width:100%!important;min-width:0!important;gap:6px!important;
+ padding:0 1px!important;margin:0!important;
+}
+#listado .sheet-card .sheet-actions>.amp-card-status-row>button.sheet-save{
+ justify-self:start!important;max-width:100%!important;min-width:0!important;
+ width:auto!important;min-height:30px!important;height:30px!important;
+ padding:4px 9px!important;font-size:11px!important;white-space:nowrap!important;
+}
+#listado .sheet-card .sheet-actions>.amp-card-status-row>.amp-marcas-color {
+ justify-self:end!important;display:flex!important;flex-flow:row nowrap!important;
+ align-items:center!important;gap:5px!important;white-space:nowrap!important;
+ width:max-content!important;margin:0!important;padding:0!important;border:0!important;
+}
+#listado .sheet-card .sheet-actions>.amp-card-status-row>.amp-marcas-color button.amp-marca-btn {
+ box-sizing:border-box!important;flex:0 0 24px!important;
+ width:24px!important;min-width:24px!important;max-width:24px!important;
+ height:24px!important;min-height:24px!important;
+ padding:0!important;margin:0!important;border-radius:5px!important;
+}
+#listado .sheet-card .sheet-actions>.sheet-tools {
+ grid-column:1/-1!important;display:grid!important;
+ grid-template-columns:repeat(6,minmax(0,1fr))!important;
+ grid-template-rows:1fr!important;grid-auto-flow:column!important;
+ place-items:center!important;align-items:center!important;
+ flex-wrap:nowrap!important;gap:clamp(2px,0.9vw,5px)!important;
+ margin:0!important;padding:4px!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ overflow:visible!important;box-sizing:border-box!important;
+}
+#listado .sheet-card .sheet-actions>.sheet-tools>button {
+ grid-row:1!important;
+ display:inline-flex!important;flex:none!important;
+ box-sizing:border-box!important;
+ width:100%!important;min-width:0!important;max-width:40px!important;
+ height:clamp(30px,9vw,40px)!important;min-height:30px!important;
+ padding:0!important;margin:0!important;justify-content:center!important;
+ align-items:center!important;aspect-ratio:1/1!important;
+}
+#listado .sheet-card .sheet-actions>.sheet-tools>button svg{
+ width:clamp(18px,5.4vw,22px)!important;
+ height:clamp(18px,5.4vw,22px)!important;max-width:80%!important;
+}
+@media(max-width:350px){
+ #listado .sheet-card .sheet-actions{padding:5px!important}
+ #listado .sheet-card .sheet-actions>.amp-card-status-row>.amp-marcas-color{gap:4px!important}
+ #listado .sheet-card .sheet-actions>.amp-card-status-row>.amp-marcas-color button.amp-marca-btn{
+  flex-basis:22px!important;width:22px!important;min-width:22px!important;max-width:22px!important;
+  height:22px!important;min-height:22px!important;
+ }
+ #listado .sheet-card .sheet-actions>.sheet-tools{padding:3px!important;gap:2px!important}
+}
+
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
 <style id="amp-texto-mayusculas">
 input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }

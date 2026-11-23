@@ -1293,7 +1293,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  border-color:rgba(255,255,255,.25)!important;
 }
 
-</style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
+\n#listado .sheet-card .amp-descuento-ficha{background:#eaf5ef;border-color:#9ccab2}#listado .sheet-card .amp-descuento-ficha .sheet-result{color:#166344}\n</style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
 <style id="amp-texto-mayusculas">
 input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }
 input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
@@ -1515,6 +1515,7 @@ async function cargar(){
  estado('Consultando inventario, compras y costos en Supabase…');
  try{
   const consultas=[
+   ()=>db.from('descuentos_compra').select('compra_id,monto'),
    ()=>db.from('productos').select('*').eq('activo',true).order('detalles'),
    ()=>db.from('compras').select('*').order('fecha_registro',{ascending:false}),
    ()=>db.from('costos_productos').select('*'),
@@ -1534,7 +1535,9 @@ async function cargar(){
    estado('Supabase devolvió datos incompletos. No se reemplazó ningún registro; tocá ACTUALIZAR.',true);
    return false;
   }
-  [productos,compras,costos,movimientos]=results.map(r=>r.data);
+  window.ampDescuentosCompra=new Map();
+  for(const d of results[0].data){const id=Number(d.compra_id);window.ampDescuentosCompra.set(id,(window.ampDescuentosCompra.get(id)||0)+Number(d.monto||0));}
+  [productos,compras,costos,movimientos]=results.slice(1).map(r=>r.data);
   actualizarIndiceProveedores();actualizarFiltroProveedoresCostos();dibujar();mostrarSugerencias();mostrarSugerenciasRegistro();
   estado(productos.length+' productos cargados correctamente desde Supabase.');
   return true;
@@ -2443,7 +2446,23 @@ function configurarEditorFila(p,compra,superficie,movil){
   }
   superficie.append(cell);
  }
- for(const [clave,titulo] of lista)incluirCampo(clave,titulo);
+ for(const [clave,titulo] of lista){
+  incluirCampo(clave,titulo);
+  if(clave==='compra' && movil){
+   const descuento=Number(window.ampDescuentosCompra?.get(Number(compra.id))||0);
+   const cell=document.createElement('div');cell.className='sheet-mobile-row amp-descuento-ficha';
+   const titulo=document.createElement('label');titulo.textContent='DESCUENTO DEL PROVEEDOR';
+   const monto=document.createElement('strong');monto.className='sheet-result';
+   monto.textContent=descuento>0?bs(descuento):'Sin descuento registrado';
+   cell.append(titulo,monto);superficie.append(cell);
+   if(descuento>0){
+    const bruto=document.createElement('div');bruto.className='sheet-mobile-row amp-descuento-ficha';
+    const etiqueta=document.createElement('label');etiqueta.textContent='COSTO ORIGINAL ANTES DEL DESCUENTO';
+    const valor=document.createElement('strong');valor.className='sheet-result';valor.textContent=bs(Number(compra.precio_compra)+descuento);
+    bruto.append(etiqueta,valor);superficie.append(bruto);
+   }
+  }
+ }
  const action=document.createElement(movil?'div':'td');action.className='sheet-actions';
  if(!compra)throw Error('La fila requiere una compra');
  const save=document.createElement('button');save.type='button';save.className='sheet-save';

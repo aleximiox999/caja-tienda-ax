@@ -2327,7 +2327,7 @@ function ampCrearMarcasColor(p){
  const grupo=document.createElement('span');grupo.className='amp-marcas-color';
  grupo.dataset.productoId=String(p.id);
  grupo.setAttribute('role','group');grupo.setAttribute('aria-label','Marcas de color de '+p.detalles);
- for(const [color,nombre] of [['verde','Verde'],['rojo','Rojo'],['amarillo','Amarillo']]){
+ for(const [color,nombre] of [['verde','Verde'],['amarillo','Amarillo'],['rojo','Rojo']]){
   const boton=document.createElement('button');boton.type='button';
   boton.className='amp-marca-btn amp-marca-'+color;
   boton.dataset.marcaColor=color;

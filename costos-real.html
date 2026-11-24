@@ -1324,7 +1324,15 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 })();
 </script>
 <!-- AMPHX despliegue 2026-11-20: alertas y registro antes de fichas; sin acceso a comprobantes -->
-</head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><a href="./comparador-precios.html" style="display:inline-block;text-decoration:none;background:#29313b;color:#fff6de;border:1px solid #c0aa79;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
+<style id="amp-descuentos-globales-css">
+#listado .amp-descuento-ficha{background:rgba(70,115,94,.10);border-color:rgba(90,145,117,.45)}
+#listado .amp-descuento-ficha label{display:block;font-weight:700;font-size:11px;letter-spacing:.02em}
+#listado .amp-descuentos-historial{position:relative;max-width:100%;font-size:12px}
+#listado .amp-descuentos-historial summary{cursor:pointer;font-weight:700;color:inherit;list-style:disclosure-closed;padding:5px 2px;white-space:normal}
+#listado .amp-descuentos-historial[open] summary{list-style:disclosure-open}
+#listado .amp-descuentos-historial p{margin:5px 0;padding:5px 3px;border-top:1px solid rgba(100,130,110,.25);font-size:12px}
+@media(hover:hover) and (pointer:fine){#listado .amp-descuentos-historial:hover{cursor:pointer}}
+</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><a href="./comparador-precios.html" style="display:inline-block;text-decoration:none;background:#29313b;color:#fff6de;border:1px solid #c0aa79;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
 <dialog id="configCuentaDialogAMPHX" style="border:1px solid #ccd8e0;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label>Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
 <section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si vuelves a comprar el mismo producto, utiliza su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿CÓMO SE VENDE ESTE PRODUCTO?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">UNIDADES</option><option value="kg">KILOGRAMOS (KG)</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min="1" step="1" inputmode="numeric" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
 
@@ -1515,7 +1523,7 @@ async function cargar(){
  estado('Consultando inventario, compras y costos en Supabase…');
  try{
   const consultas=[
-   ()=>db.from('descuentos_compra').select('compra_id,monto'),
+   ()=>db.from('descuentos_proveedores').select('id,proveedor,fecha,numero_comprobante,descuento,monto_bruto,monto_pagado').order('fecha',{ascending:false}),
    ()=>db.from('productos').select('*').eq('activo',true).order('detalles'),
    ()=>db.from('compras').select('*').order('fecha_registro',{ascending:false}),
    ()=>db.from('costos_productos').select('*'),
@@ -1535,8 +1543,7 @@ async function cargar(){
    estado('Supabase devolvió datos incompletos. No se reemplazó ningún registro; tocá ACTUALIZAR.',true);
    return false;
   }
-  window.ampDescuentosCompra=new Map();
-  for(const d of results[0].data){const id=Number(d.compra_id);window.ampDescuentosCompra.set(id,(window.ampDescuentosCompra.get(id)||0)+Number(d.monto||0));}
+  window.ampDescuentosFacturas=results[0].data;
   [productos,compras,costos,movimientos]=results.slice(1).map(r=>r.data);
   actualizarIndiceProveedores();actualizarFiltroProveedoresCostos();dibujar();mostrarSugerencias();mostrarSugerenciasRegistro();
   estado(productos.length+' productos cargados correctamente desde Supabase.');
@@ -2448,19 +2455,32 @@ function configurarEditorFila(p,compra,superficie,movil){
  }
  for(const [clave,titulo] of lista){
   incluirCampo(clave,titulo);
-  if(clave==='compra' && movil){
-   const descuento=Number(window.ampDescuentosCompra?.get(Number(compra.id))||0);
-   const cell=document.createElement('div');cell.className='sheet-mobile-row amp-descuento-ficha';
-   const titulo=document.createElement('label');titulo.textContent='DESCUENTO DEL PROVEEDOR';
-   const monto=document.createElement('strong');monto.className='sheet-result';
-   monto.textContent=descuento>0?bs(descuento):'Sin descuento registrado';
-   cell.append(titulo,monto);superficie.append(cell);
-   if(descuento>0){
-    const bruto=document.createElement('div');bruto.className='sheet-mobile-row amp-descuento-ficha';
-    const etiqueta=document.createElement('label');etiqueta.textContent='COSTO ORIGINAL ANTES DEL DESCUENTO';
-    const valor=document.createElement('strong');valor.className='sheet-result';valor.textContent=bs(Number(compra.precio_compra)+descuento);
-    bruto.append(etiqueta,valor);superficie.append(bruto);
+  if(clave==='compra'){
+   const normalizar=v=>String(v||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+   const facturas=(window.ampDescuentosFacturas||[]).filter(d=>{
+    const prov=normalizar(compra.proveedor),registrado=normalizar(d.proveedor);
+    const proveedorCoincide=prov&&registrado&&(prov.includes(registrado)||registrado.includes(prov));
+    if(!proveedorCoincide)return false;
+    return (compras||[]).some(c=>Number(c.producto_id)===Number(p.id)&&
+      normalizar(c.proveedor)===prov&&String(c.fecha||'').slice(0,10)===String(d.fecha||'').slice(0,10)&&
+      (!d.numero_comprobante||String(c.observaciones||'').includes(String(d.numero_comprobante))));
+   }).sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))||Number(b.id)-Number(a.id));
+   const cell=document.createElement(movil?'div':'td');
+   cell.className=(movil?'sheet-mobile-row ':'')+'amp-descuento-ficha';
+   const titulo=document.createElement('label');titulo.textContent='DESCUENTOS DEL PROVEEDOR (FACTURA COMPLETA)';
+   const detalles=document.createElement('details');detalles.className='amp-descuentos-historial';
+   const resumen=document.createElement('summary');
+   resumen.textContent=facturas.length?'ÚLTIMO: '+bs(Number(facturas[0].descuento||0))+' · '+String(facturas[0].fecha).slice(0,10):'SIN DESCUENTOS REGISTRADOS';
+   detalles.append(resumen);
+   if(facturas.length){
+    const nota=document.createElement('p');nota.textContent='BENEFICIO GENERAL DE LA TIENDA. NO SE RESTA DEL COSTO DE ESTE PRODUCTO.';detalles.append(nota);
+    for(const d of facturas){
+     const item=document.createElement('p');
+     item.textContent=String(d.fecha).slice(0,10)+' · FACTURA '+(d.numero_comprobante||'S/N')+' · DESCUENTO '+bs(Number(d.descuento||0))+' · TOTAL ORIGINAL '+bs(Number(d.monto_bruto||0));
+     detalles.append(item);
+    }
    }
+   cell.append(titulo,detalles);superficie.append(cell);
   }
  }
  const action=document.createElement(movil?'div':'td');action.className='sheet-actions';

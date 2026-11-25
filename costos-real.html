@@ -1293,7 +1293,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  border-color:rgba(255,255,255,.25)!important;
 }
 
-\n#listado .sheet-card .amp-descuento-ficha{background:#eaf5ef;border-color:#9ccab2}#listado .sheet-card .amp-descuento-ficha .sheet-result{color:#166344}\n</style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
+</style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
 <style id="amp-texto-mayusculas">
 input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }
 input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
@@ -1324,20 +1324,7 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 })();
 </script>
 <!-- AMPHX despliegue 2026-11-20: alertas y registro antes de fichas; sin acceso a comprobantes -->
-<style id="amp-descuentos-globales-css">
-#listado .amp-descuento-ficha{background:rgba(70,115,94,.10);border-color:rgba(90,145,117,.45)}
-#listado .amp-descuento-ficha label{display:block;font-weight:700;font-size:11px;letter-spacing:.02em}
-#listado .amp-descuentos-historial{position:relative;max-width:100%;font-size:12px}
-#listado .amp-descuentos-historial summary{cursor:pointer;font-weight:700;color:inherit;list-style:disclosure-closed;padding:5px 2px;white-space:normal}
-#listado .amp-descuentos-historial[open] summary{list-style:disclosure-open}
-#listado .amp-descuentos-historial p{margin:5px 0;padding:5px 3px;border-top:1px solid rgba(100,130,110,.25);font-size:12px}
-@media(hover:hover) and (pointer:fine){#listado .amp-descuentos-historial:hover{cursor:pointer}}
-</style><style id="amp-descuentos-panel-v2">
-#ampResumenDescuentosGlobal{margin:12px 0 18px;padding:12px 15px;border:1px solid #b2a36b;border-radius:10px;background:#20221d;color:#f6e8bc}
-#ampResumenDescuentosGlobal summary{cursor:pointer;font-size:14px;font-weight:800;line-height:1.6}
-#ampResumenDescuentosGlobal p{margin:9px 0;padding-top:7px;border-top:1px solid #55513e;font-size:12px}
-#listado td .amp-descuento-ficha{display:block;margin-top:8px;padding:8px;border-radius:6px}
-</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><a href="./comparador-precios.html" style="display:inline-block;text-decoration:none;background:#29313b;color:#fff6de;border:1px solid #c0aa79;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
+</head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><a href="./comparador-precios.html" style="display:inline-block;text-decoration:none;background:#29313b;color:#fff6de;border:1px solid #c0aa79;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
 <dialog id="configCuentaDialogAMPHX" style="border:1px solid #ccd8e0;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label>Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
 <section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si vuelves a comprar el mismo producto, utiliza su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿CÓMO SE VENDE ESTE PRODUCTO?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">UNIDADES</option><option value="kg">KILOGRAMOS (KG)</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min="1" step="1" inputmode="numeric" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
 
@@ -1429,36 +1416,8 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 })();
 </script>
 <div id="ampIconHelp" class="amp-icon-help" role="status" aria-live="polite"></div>
-<script id="ampInicioDiagnostico">
-(function(){
- let iniciado=false;
- const mostrarFallo=function(detalle){
-  const e=document.getElementById('estado');
-  const esperando=!!e && /Conectando de forma segura|Comprobando sesión guardada|Abriendo fichas/i.test(e.textContent||'');
-  if(iniciado&&!esperando)return;
-  const acceso=document.getElementById('accesoCargando');
-  const reintentar=document.getElementById('reintentarAcceso');
-  if(e){e.textContent='COSTOS no pudo completar el inicio. '+detalle+' Probá REINTENTAR ACCESO o recargá la página.';e.classList.add('error');}
-  if(acceso)acceso.classList.remove('hidden');
-  if(reintentar){reintentar.classList.remove('hidden');reintentar.onclick=()=>{const u=new URL(location.href);u.searchParams.set('v',String(Date.now()));location.replace(u.href);};}
- };
- window.addEventListener('amphx-costos-ready',()=>{iniciado=true;});
- window.addEventListener('error',e=>{mostrarFallo('Error al iniciar: '+(e.message||'recurso no disponible')+'.');});
- window.addEventListener('unhandledrejection',e=>{mostrarFallo('No se pudo cargar una dependencia: '+String(e.reason?.message||e.reason||'error de conexión')+'.');});
- setTimeout(()=>{mostrarFallo('El inicio está tardando o quedó interrumpido.');},12000);
-})();
-</script>
 <script type="module">
-let createClient;
-try {
- ({createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.0'));
-} catch (primaryError) {
- try {
-  ({createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/+esm'));
- } catch (backupError) {
-  throw new Error('No se pudo cargar Supabase desde los dos servidores. Revisá la conexión o bloqueadores de scripts. '+String(backupError?.message||backupError));
- }
-}
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 window.dispatchEvent(new Event('amphx-costos-ready'));
 const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -1548,22 +1507,6 @@ async function leerAMPHX(construirConsulta){
  }
  return {data:null,error:ultimoError||new Error('No se pudo completar la consulta.')};
 }
-function ampMostrarResumenDescuentos(){
- const raiz=document.getElementById('listado');if(!raiz)return;
- document.getElementById('ampResumenDescuentosGlobal')?.remove();
- const datos=(window.ampDescuentosFacturas||[]).slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))||Number(b.id)-Number(a.id));
- const panel=document.createElement('details');panel.id='ampResumenDescuentosGlobal';
- const sum=document.createElement('summary');
- sum.textContent=datos.length?'DESCUENTOS DE PROVEEDORES · ÚLTIMO '+bs(Number(datos[0].descuento||0))+' · '+String(datos[0].proveedor||''):'DESCUENTOS DE PROVEEDORES · SIN REGISTROS';
- panel.append(sum);
- const nota=document.createElement('p');nota.textContent='BENEFICIOS GENERALES DE FACTURA. NO MODIFICAN LOS COSTOS DE PRODUCTOS NI LOS PRECIOS DE VENTA.';panel.append(nota);
- for(const d of datos){
-  const p=document.createElement('p');
-  p.textContent=String(d.fecha).slice(0,10)+' · '+d.proveedor+' · FACTURA '+(d.numero_comprobante||'S/N')+' · DESCUENTO '+bs(Number(d.descuento||0));
-  panel.append(p);
- }
- raiz.prepend(panel);
-}
 async function cargar(){
  if(ampxCargandoDatos)return false;
  ampxCargandoDatos=true;
@@ -1572,7 +1515,6 @@ async function cargar(){
  estado('Consultando inventario, compras y costos en Supabase…');
  try{
   const consultas=[
-   ()=>db.from('descuentos_proveedores').select('id,proveedor,fecha,numero_comprobante,descuento,monto_bruto,monto_pagado').order('fecha',{ascending:false}),
    ()=>db.from('productos').select('*').eq('activo',true).order('detalles'),
    ()=>db.from('compras').select('*').order('fecha_registro',{ascending:false}),
    ()=>db.from('costos_productos').select('*'),
@@ -1592,9 +1534,8 @@ async function cargar(){
    estado('Supabase devolvió datos incompletos. No se reemplazó ningún registro; tocá ACTUALIZAR.',true);
    return false;
   }
-  window.ampDescuentosFacturas=results[0].data;
-  [productos,compras,costos,movimientos]=results.slice(1).map(r=>r.data);
-  actualizarIndiceProveedores();actualizarFiltroProveedoresCostos();dibujar();ampMostrarResumenDescuentos();mostrarSugerencias();mostrarSugerenciasRegistro();
+  [productos,compras,costos,movimientos]=results.map(r=>r.data);
+  actualizarIndiceProveedores();actualizarFiltroProveedoresCostos();dibujar();mostrarSugerencias();mostrarSugerenciasRegistro();
   estado(productos.length+' productos cargados correctamente desde Supabase.');
   return true;
  }catch(e){
@@ -1991,7 +1932,7 @@ function ampCrearEditorFicha(){
  let d=document.getElementById('ampEditorFichaCompleta');
  if(d)return d;
  const estilo=document.createElement('style');
- estilo.textContent='#ampEditorFichaCompleta{width:min(96vw,760px);max-width:96vw;max-height:92dvh;overflow:auto;border:1px solid #a4bac9;border-radius:17px;padding:22px;background:#f8fbfe;color:#192c41;box-shadow:0 18px 65px #02091495}#ampEditorFichaCompleta::backdrop{background:#071626bd}#ampEditorFichaCompleta .amp-ficha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#ampEditorFichaCompleta .amp-ficha-campo{display:block;min-width:0}#ampEditorFichaCompleta label{display:block;font-weight:750;margin-bottom:5px}#ampEditorFichaCompleta input,#ampEditorFichaCompleta select,#ampEditorFichaCompleta textarea{width:100%;padding:11px;border:1px solid #b9c9d4;border-radius:9px;background:white;color:#182d40;font:inherit}#ampEditorFichaCompleta .amp-ficha-ancho{grid-column:1/-1}#ampEditorFichaCompleta fieldset{min-width:0;margin:15px 0;padding:14px;border:1px solid #c5d4df;border-radius:12px}#ampEditorFichaCompleta legend{font-weight:800;padding:0 7px}#ampEditorFichaCompleta .amp-ficha-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}#ampEditorFichaCompleta .amp-ficha-error{color:#a22720;font-weight:750;white-space:pre-wrap}#ampEditorFichaCompleta .amp-ficha-aviso{color:#4f6275;font-size:13px;margin:8px 0}#ampEditorFichaCompleta .amp-ficha-preview{background:#eaf3ef;padding:12px;border-radius:10px;margin-top:12px;font-weight:700}#ampEditorFichaCompleta .amp-ficha-costo-resultado{display:block;min-height:45px;padding:12px;border:1px solid #8aa39e;border-radius:9px;background:linear-gradient(135deg,#354445 0%,#1a272a 50%,#344548 100%);color:#effdf7;font-weight:800;font-size:16px;box-shadow:inset 0 1px 1px #ffffff26;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#ampEditorFichaCompleta .amp-ficha-resultado{display:block;min-height:45px;padding:12px;border:1px solid #8aa39e;border-radius:9px;background:#f3f8f6;color:#183d35;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}#ampEditorFichaCompleta #ampFichaGrupoCompra{border-color:#94ada9;background:#e7f0ee}@media(max-width:560px){#ampEditorFichaCompleta{padding:13px}#ampEditorFichaCompleta .amp-ficha-grid{grid-template-columns:1fr}}';
+ estilo.textContent='#ampEditorFichaCompleta{width:min(96vw,760px);max-width:96vw;max-height:92dvh;overflow:auto;border:1px solid #a4bac9;border-radius:17px;padding:22px;background:#f8fbfe;color:#192c41;box-shadow:0 18px 65px #02091495}#ampEditorFichaCompleta::backdrop{background:#071626bd}#ampEditorFichaCompleta .amp-ficha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#ampEditorFichaCompleta .amp-ficha-campo{display:block;min-width:0}#ampEditorFichaCompleta label{display:block;font-weight:750;margin-bottom:5px}#ampEditorFichaCompleta input,#ampEditorFichaCompleta select,#ampEditorFichaCompleta textarea{width:100%;padding:11px;border:1px solid #b9c9d4;border-radius:9px;background:white;color:#182d40;font:inherit}#ampEditorFichaCompleta .amp-ficha-ancho{grid-column:1/-1}#ampEditorFichaCompleta fieldset{min-width:0;margin:15px 0;padding:14px;border:1px solid #c5d4df;border-radius:12px}#ampEditorFichaCompleta legend{font-weight:800;padding:0 7px}#ampEditorFichaCompleta .amp-ficha-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}#ampEditorFichaCompleta .amp-ficha-error{color:#a22720;font-weight:750;white-space:pre-wrap}#ampEditorFichaCompleta .amp-ficha-aviso{color:#4f6275;font-size:13px;margin:8px 0}#ampEditorFichaCompleta .amp-ficha-preview{background:#eaf3ef;padding:12px;border-radius:10px;margin-top:12px;font-weight:700}@media(max-width:560px){#ampEditorFichaCompleta{padding:13px}#ampEditorFichaCompleta .amp-ficha-grid{grid-template-columns:1fr}}';
  document.head.append(estilo);
  d=document.createElement('dialog');d.id='ampEditorFichaCompleta';
  const h=document.createElement('h2');h.textContent='EDITAR TODA LA FICHA';h.style.margin='0 0 6px';
@@ -2013,72 +1954,24 @@ function ampCrearEditorFicha(){
   caja.append(lab,ctl);contenedor.append(caja);ampFichaInputs[id]=ctl;
  }
  campo('nombre','Nombre del producto','text',true,grid);
+ campo('codigo','Código de barras','text',false,grid);
+ campo('categoria','Categoría','text',false,grid);
+ campo('unidad','Cómo se vende','select',false,grid);
+ campo('stock','Existencias actuales (valor manual)','number',false,grid);
+ campo('minimo','Stock mínimo','number',false,grid);
+ campo('ideal','Stock ideal','number',false,grid);
+ campo('venta','Precio de venta (Bs)','number',false,grid);
+ campo('costoActual','Costo unitario actual (Bs)','number',false,grid);
+ campo('proveedor','Proveedor','text',true,grid);
  form.append(grid);
  const fact=document.createElement('fieldset');fact.id='ampFichaGrupoCompra';
  const leg=document.createElement('legend');leg.textContent='Última compra registrada';fact.append(leg);
  const compraGrid=document.createElement('div');compraGrid.className='amp-ficha-grid';
  campo('precioCompra','Precio total de compra (Bs)','number',false,compraGrid);
  campo('cantidadCompra','Cantidad comprada','number',false,compraGrid);
- const costoCaja=document.createElement('div');costoCaja.className='amp-ficha-campo amp-ficha-ancho';
- const costoLabel=document.createElement('label');costoLabel.htmlFor='ampFichaCostoCalculado';costoLabel.textContent='COSTO UNITARIO DE LA ÚLTIMA COMPRA';
- const costoOutput=document.createElement('output');costoOutput.id='ampFichaCostoCalculado';costoOutput.className='amp-ficha-costo-resultado';
- costoOutput.setAttribute('aria-live','polite');costoOutput.textContent='Ingresá importe y cantidad';
- costoCaja.append(costoLabel,costoOutput);compraGrid.append(costoCaja);
- campo('venta','Precio de venta en tienda (Bs por unidad o kg)','number',true,compraGrid);
- for(const [id,titulo] of [['ampFichaUtilidadUnidad','UTILIDAD POR UNIDAD'],['ampFichaUtilidadTotal','UTILIDAD TOTAL DEL PAQUETE O CAJA']]){
-  const caja=document.createElement('div');caja.className='amp-ficha-campo';
-  const lab=document.createElement('label');lab.htmlFor=id;lab.textContent=titulo;
-  const output=document.createElement('output');output.id=id;output.className='amp-ficha-resultado';output.setAttribute('aria-live','polite');output.textContent='—';
-  caja.append(lab,output);compraGrid.append(caja);
- }
  campo('fechaCompra','Fecha de compra','date',false,compraGrid);
  campo('observaciones','Observaciones de la compra','textarea',true,compraGrid);
  fact.append(compraGrid);form.append(fact);
- const detallesGrid=document.createElement('div');detallesGrid.className='amp-ficha-grid';
- campo('codigo','Código de barras','text',false,detallesGrid);
- const codigoCaja=ampFichaInputs.codigo.parentElement;
- const camaraCodigo=document.createElement('button');camaraCodigo.type='button';camaraCodigo.className='alt';camaraCodigo.id='ampFichaAbrirCamara';camaraCodigo.textContent='📷 ABRIR CÁMARA';camaraCodigo.title='Leer código de barras con la cámara';camaraCodigo.style.cssText='width:100%;margin-top:8px;min-height:44px;font-weight:800';
- const zonaCamara=document.createElement('div');zonaCamara.id='ampFichaZonaCamara';zonaCamara.hidden=true;zonaCamara.style.cssText='margin-top:10px;max-width:100%;overflow:hidden';
- const visorCamara=document.createElement('div');visorCamara.id='ampFichaLectorBarras';
- const textoCamara=document.createElement('p');textoCamara.id='ampFichaEstadoCamara';textoCamara.setAttribute('role','status');
- const cerrarCamara=document.createElement('button');cerrarCamara.type='button';cerrarCamara.className='alt';cerrarCamara.textContent='DETENER CÁMARA';cerrarCamara.style.width='100%';
- zonaCamara.append(visorCamara,textoCamara,cerrarCamara);codigoCaja.append(camaraCodigo,zonaCamara);
- let lectorFicha=null,abriendoFicha=false,sesionFicha=0;
- const detenerCamaraFicha=async()=>{
-  ++sesionFicha;const lector=lectorFicha;lectorFicha=null;zonaCamara.hidden=true;abriendoFicha=false;camaraCodigo.disabled=false;
-  if(lector){try{await lector.stop();}catch(e){}try{lector.clear();}catch(e){}}
- };
- camaraCodigo.addEventListener('click',async()=>{
-  if(lectorFicha||abriendoFicha)return;
-  const sesion=++sesionFicha;abriendoFicha=true;camaraCodigo.disabled=true;zonaCamara.hidden=false;
-  textoCamara.textContent='Preparando cámara…';
-  try{
-   if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia)throw Error('La cámara requiere HTTPS y un navegador compatible.');
-   await prepararBibliotecaEscanerAMPHX();
-   if(sesion!==sesionFicha)return;
-   const lector=new Html5Qrcode('ampFichaLectorBarras',{verbose:false});lectorFicha=lector;
-   await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},codigo=>{
-    if(sesion!==sesionFicha)return;
-    ampFichaInputs.codigo.value=String(codigo).trim();
-    ampFichaInputs.codigo.dispatchEvent(new Event('input',{bubbles:true}));
-    textoCamara.textContent='Código leído. Guardá la ficha para registrar el cambio.';
-    void detenerCamaraFicha();
-   },()=>{});
-   if(sesion!==sesionFicha){await detenerCamaraFicha();return;}
-   textoCamara.textContent='Apuntá al código de barras del producto.';
-  }catch(e){
-   if(sesion===sesionFicha){textoCamara.textContent='No se pudo abrir la cámara: '+(e?.message||String(e));if(lectorFicha)await detenerCamaraFicha();}
-  }finally{if(sesion===sesionFicha){abriendoFicha=false;camaraCodigo.disabled=false;}}
- });
- cerrarCamara.addEventListener('click',()=>{void detenerCamaraFicha();});
- d.addEventListener('close',()=>{void detenerCamaraFicha();});
- campo('categoria','Categoría (rellenar manualmente)','text',false,detallesGrid);
- campo('unidad','Cómo se vende','select',false,detallesGrid);
- campo('stock','Existencias actuales (valor manual)','number',false,detallesGrid);
- campo('minimo','Stock mínimo','number',false,detallesGrid);
- campo('ideal','Stock ideal','number',false,detallesGrid);
- campo('proveedor','Proveedor','text',true,detallesGrid);
- form.append(detallesGrid);
  const preview=document.createElement('div');preview.id='ampFichaVistaPrevia';preview.className='amp-ficha-preview';preview.setAttribute('aria-live','polite');form.append(preview);
  const error=document.createElement('p');error.id='ampFichaError';error.className='amp-ficha-error';error.setAttribute('role','alert');form.append(error);
  const acciones=document.createElement('div');acciones.className='amp-ficha-acciones';
@@ -2087,31 +1980,16 @@ function ampCrearEditorFicha(){
  acciones.append(guardar,cancelar);form.append(acciones);
  d.append(h,guia,form);document.body.append(d);
  const vista=()=>{
-  const venta=Number(ampFichaInputs.venta.value);
+  const venta=Number(ampFichaInputs.venta.value),costo=Number(ampFichaInputs.costoActual.value);
   const total=Number(ampFichaInputs.precioCompra.value),cantidad=Number(ampFichaInputs.cantidadCompra.value);
   const unidad=ampFichaInputs.unidad.value==='kg'?'kg':'unidad';
-  const hayCompra=!!ampFichaOriginal?.compra&&ampFichaInputs.precioCompra.value.trim()!==''&&ampFichaInputs.cantidadCompra.value.trim()!==''&&Number.isFinite(total)&&total>=0&&Number.isFinite(cantidad)&&cantidad>0;
-  const costoCompra=hayCompra?Number((total/cantidad).toFixed(4)):null;
-  const costo=hayCompra?costoCompra:Number(ampFichaOriginal?.esperado?.costo_unitario||0);
-  const salidaCosto=document.getElementById('ampFichaCostoCalculado');
-  if(salidaCosto)salidaCosto.textContent=hayCompra
-   ?bs(costoCompra)+' / '+unidad+'  ('+bs(total)+' ÷ '+cantidad.toLocaleString('es-BO')+')'
-   :'Ingresá un precio total y cantidad mayor que cero';
-  const hayPrecio=ampFichaInputs.venta.value.trim()!==''&&Number.isFinite(venta)&&venta>0;
   const partes=[];
-  if(hayCompra)partes.push('Costo por '+unidad+' de la compra: '+bs(costoCompra));
-  else partes.push('Ingresá monto y cantidad para calcular el costo por '+unidad);
-  if(hayPrecio&&Number.isFinite(costo)&&costo>=0){
-   const utilidad=venta-costo;
-   partes.push('Ganancia por '+unidad+': '+bs(utilidad));
-   if(hayCompra)partes.push('Ganancia total del paquete: '+bs(utilidad*cantidad));
-   partes.push('Margen: '+((utilidad/venta)*100).toFixed(2)+' %');
-  }else partes.push('Ganancia pendiente: ingresá precio de venta válido');
-  const utilidadUnidad=document.getElementById('ampFichaUtilidadUnidad');
-  const utilidadTotal=document.getElementById('ampFichaUtilidadTotal');
-  if(utilidadUnidad)utilidadUnidad.textContent=hayCompra&&hayPrecio?bs(venta-costoCompra):'—';
-  if(utilidadTotal)utilidadTotal.textContent=hayCompra&&hayPrecio?bs((venta-costoCompra)*cantidad):'—';
-  preview.textContent='Costo = precio de compra ÷ cantidad comprada. Utilidad por unidad = precio de venta − costo unitario. Utilidad total = utilidad por unidad × cantidad. Los descuentos de proveedor se registran aparte.';
+  if(!fact.disabled&&cantidad>0&&Number.isFinite(total))partes.push('Costo de la compra: '+bs(total/cantidad)+' / '+unidad);
+  if(Number.isFinite(venta)&&Number.isFinite(costo)){
+   partes.push('Utilidad por '+unidad+': '+bs(venta-costo));
+   partes.push('Margen: '+(venta>0?((venta-costo)/venta*100).toFixed(2)+' %':'pendiente'));
+  }
+  preview.textContent=partes.join('  ·  ')||'Introducí precios y cantidades para ver resultados.';
  };
  form.addEventListener('input',vista);form.addEventListener('change',vista);
  form.addEventListener('submit',ampGuardarFichaCompleta);
@@ -2135,17 +2013,15 @@ function ampAbrirFichaCompleta(p){
   observaciones:c?String(c.observaciones||''):null
  }};
  const poner=(id,val)=>{ampFichaInputs[id].value=val===undefined||val===null?'':String(val);};
- poner('nombre',p.detalles);poner('codigo',p.codigo_barras);poner('categoria','');
+ poner('nombre',p.detalles);poner('codigo',p.codigo_barras);poner('categoria',p.categoria);
  poner('unidad',p.unidad_medida||'unidad');poner('stock',stock);
  poner('minimo',p.stock_minimo??0);poner('ideal',p.stock_ideal??0);
- poner('venta',p.precio_venta??0);
+ poner('venta',p.precio_venta??0);poner('costoActual',cu);
  poner('proveedor',c?.proveedor??cost?.proveedor??'');
  poner('precioCompra',c?.precio_compra);poner('cantidadCompra',c?.unidades);
  poner('fechaCompra',c?.fecha?String(c.fecha).slice(0,10):'');
  poner('observaciones',c?.observaciones??'');
- const grupo=document.getElementById('ampFichaGrupoCompra');
- grupo.disabled=false;
- for(const id of ['precioCompra','cantidadCompra','fechaCompra','observaciones'])ampFichaInputs[id].disabled=!c;
+ const grupo=document.getElementById('ampFichaGrupoCompra');grupo.disabled=!c;
  grupo.querySelector('legend').textContent=c?'Última compra registrada #'+c.id:'Sin compra registrada (editá los datos del producto)';
  document.getElementById('ampFichaError').textContent='';
  document.getElementById('ampFichaGuardar').disabled=false;
@@ -2161,7 +2037,7 @@ async function ampGuardarFichaCompleta(e){
  err.textContent='';
  const p=ampFichaProducto,original=ampFichaOriginal,c=original.compra;
  const n=id=>{const val=ampFichaInputs[id].value.trim();return val===''?null:Number(val);};
- const enteros=['stock','minimo','ideal','venta'];
+ const enteros=['stock','minimo','ideal','venta','costoActual'];
  if(!form.reportValidity()||enteros.some(x=>!Number.isFinite(n(x))||n(x)<0)||
     (c&&(!Number.isFinite(n('cantidadCompra'))||n('cantidadCompra')<=0||!Number.isFinite(n('precioCompra'))||n('precioCompra')<0))){
   err.textContent='Revisá los campos marcados. La compra necesita cantidad mayor a cero; las existencias y precios no pueden ser negativos.';return;
@@ -2169,8 +2045,6 @@ async function ampGuardarFichaCompleta(e){
  if(!ampFichaInputs.nombre.value.trim()||ampFichaInputs.nombre.value.trim().length<2){
   err.textContent='Escribí un nombre de producto válido.';return;
  }
- const costoCalculado=c?Math.round((n('precioCompra')/n('cantidadCompra'))*10000)/10000:Number(original.esperado.costo_unitario||0);
- if(!Number.isFinite(costoCalculado)||costoCalculado<0){err.textContent='Revisá precio y cantidad de compra para calcular el costo unitario.';return;}
  const args={
   p_producto_id:p.id,p_compra_id:c?.id??null,
   p_detalles:ampFichaInputs.nombre.value.trim().toLocaleUpperCase('es'),
@@ -2181,7 +2055,7 @@ async function ampGuardarFichaCompleta(e){
   p_stock_minimo:n('minimo'),p_stock_ideal:n('ideal'),
   p_precio_venta:n('venta'),p_precio_compra:c?n('precioCompra'):null,
   p_unidades:c?n('cantidadCompra'):null,p_proveedor:ampFichaInputs.proveedor.value.trim(),
-  p_costo_unitario:costoCalculado,p_fecha_compra:c?ampFichaInputs.fechaCompra.value:null,
+  p_costo_unitario:n('costoActual'),p_fecha_compra:c?ampFichaInputs.fechaCompra.value:null,
   p_observaciones:c?ampFichaInputs.observaciones.value:null,p_esperado:original.esperado
  };
  ampFichaGuardando=true;boton.disabled=true;boton.textContent='Guardando todos los cambios…';
@@ -2569,44 +2443,7 @@ function configurarEditorFila(p,compra,superficie,movil){
   }
   superficie.append(cell);
  }
- for(const [clave,titulo] of lista){
-  incluirCampo(clave,titulo);
-  if(clave==='compra'){
-   const normalizar=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'');
-   // Los descuentos de factura se muestran por proveedor y fecha aunque no exista compra_id.
-   // NO se reparten entre productos ni se restan del precio de compra.
-   const facturas=(window.ampDescuentosFacturas||[]).filter(d=>{
-    const proveedorFactura=normalizar(d.proveedor),fechaFactura=String(d.fecha||'').slice(0,10);
-    if(!proveedorFactura||!fechaFactura)return false;
-    return (compras||[]).some(c=>{
-     if(Number(c.producto_id)!==Number(p.id)||String(c.fecha||'').slice(0,10)!==fechaFactura)return false;
-     const proveedorCompra=normalizar(c.proveedor);
-     return !!proveedorCompra&&(proveedorCompra.includes(proveedorFactura)||proveedorFactura.includes(proveedorCompra));
-    });
-   }).sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))||Number(b.id)-Number(a.id));
-   const cell=document.createElement(movil?'div':'td');
-   cell.className=(movil?'sheet-mobile-row ':'')+'amp-descuento-ficha';
-   const titulo=document.createElement('label');titulo.textContent='DESCUENTOS DEL PROVEEDOR (FACTURA COMPLETA)';
-   const detalles=document.createElement('details');detalles.className='amp-descuentos-historial';
-   const resumen=document.createElement('summary');
-   resumen.textContent=facturas.length?'ÚLTIMO: '+bs(Number(facturas[0].descuento||0))+' · '+String(facturas[0].fecha).slice(0,10):'SIN DESCUENTOS REGISTRADOS';
-   detalles.append(resumen);
-   if(facturas.length){
-    const nota=document.createElement('p');nota.textContent='DESCUENTO DE FACTURA COMPLETA POR PROVEEDOR Y FECHA. NO SE RESTA DEL COSTO NI SE DISTRIBUYE ENTRE PRODUCTOS.';detalles.append(nota);
-    for(const d of facturas){
-     const item=document.createElement('p');
-     item.textContent=String(d.fecha).slice(0,10)+' · FACTURA '+(d.numero_comprobante||'S/N')+' · DESCUENTO '+bs(Number(d.descuento||0))+' · TOTAL ORIGINAL '+bs(Number(d.monto_bruto||0));
-     detalles.append(item);
-    }
-   }
-   cell.append(titulo,detalles);
-   if(!movil){
-    const anterior=superficie.lastElementChild;
-    if(anterior&&anterior.tagName==='TD'){anterior.append(cell);}
-    else superficie.append(cell);
-   }else superficie.append(cell);
-  }
- }
+ for(const [clave,titulo] of lista)incluirCampo(clave,titulo);
  const action=document.createElement(movil?'div':'td');action.className='sheet-actions';
  if(!compra)throw Error('La fila requiere una compra');
  const save=document.createElement('button');save.type='button';save.className='sheet-save';

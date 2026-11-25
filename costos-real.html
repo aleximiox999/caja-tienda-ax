@@ -1293,6 +1293,29 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  border-color:rgba(255,255,255,.25)!important;
 }
 
+
+/* AMPHX etiquetas chicas: controles arriba de los iconos de fichas */
+#listado .cards article.sheet-card{padding:16px!important;row-gap:10px!important}
+#listado .sheet-card .sheet-actions{padding:10px!important;row-gap:8px!important}
+#listado .sheet-card .sheet-actions>.amp-botones-etiquetas{
+ grid-column:1/-1!important;display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;
+ margin:0!important;padding:8px 0!important;
+ border-bottom:1px solid #b8cedd!important;
+}
+#listado .sheet-card .sheet-actions>.amp-botones-etiquetas>button{
+ display:block!important;width:100%!important;min-width:0!important;
+ max-width:none!important;height:auto!important;min-height:42px!important;
+ padding:8px 5px!important;white-space:normal!important;
+ font-size:11px!important;font-weight:800!important;line-height:1.25!important;
+ border-radius:9px!important;
+}
+#ampFichaCodigoInternoControles{grid-column:1/-1!important;min-width:0!important}
+@media(max-width:390px){
+ #listado .cards article.sheet-card{padding:13px!important}
+ #listado .sheet-card .sheet-actions>.amp-botones-etiquetas{gap:5px!important}
+}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
 <style id="amp-texto-mayusculas">
 input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }
@@ -1418,10 +1441,22 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 <div id="ampIconHelp" class="amp-icon-help" role="status" aria-live="polite"></div>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
+import {iniciarEtiquetasAmphx} from './amp-etiquetas-word.js?v=20261125-publicado-dev-1';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 window.dispatchEvent(new Event('amphx-costos-ready'));
 const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
 let productos=[],compras=[],costos=[],movimientos=[];
+const ampEtiquetasUI=iniciarEtiquetasAmphx({
+ db,getProductos:()=>productos,recargar:()=>cargar(),estado,
+ onCodigoGenerado:(p,codigo)=>{
+  if(ampFichaProducto&&Number(ampFichaProducto.id)===Number(p.id)){
+   ampFichaInputs.codigo.value=codigo;
+   if(ampFichaOriginal)ampFichaOriginal.esperado.codigo_barras=codigo;
+   const cont=document.getElementById('ampFichaCodigoInternoControles');
+   if(cont)cont.replaceChildren(ampEtiquetasUI.botones(p));
+  }
+ }
+});
 let tiempoAvisoExitoProducto=null;
 function mostrarExitoProductoNuevo(){
  const aviso=document.getElementById('exitoProductoNuevo');
@@ -1955,6 +1990,7 @@ function ampCrearEditorFicha(){
  }
  campo('nombre','Nombre del producto','text',true,grid);
  campo('codigo','Código de barras','text',false,grid);
+ const ampWordEnFicha=document.createElement('div');ampWordEnFicha.id='ampFichaCodigoInternoControles';ampWordEnFicha.className='amp-ficha-ancho';grid.append(ampWordEnFicha);
  campo('categoria','Categoría','text',false,grid);
  campo('unidad','Cómo se vende','select',false,grid);
  campo('stock','Existencias actuales (valor manual)','number',false,grid);
@@ -2002,6 +2038,8 @@ function ampAbrirFichaCompleta(p){
  const d=ampCrearEditorFicha(),c=ultimaCompra(p),cost=costos.find(x=>Number(x.producto_id)===Number(p.id));
  const stock=Number(datosProducto(p).stock.toFixed(6)),cu=Number(cost?.costo_unitario||0);
  ampFichaProducto=p;
+ const ampWordControles=d.querySelector('#ampFichaCodigoInternoControles');
+ if(ampWordControles)ampWordControles.replaceChildren(ampEtiquetasUI.botones(p));
  ampFichaOriginal={compra:c,stock,esperado:{
   detalles:String(p.detalles||''),codigo_barras:String(p.codigo_barras||''),
   categoria:String(p.categoria||''),unidad_medida:p.unidad_medida,
@@ -2452,7 +2490,7 @@ function configurarEditorFila(p,compra,superficie,movil){
  const tools=accionesFilaHoja(p);
  const statusRow=document.createElement('div');statusRow.className='amp-card-status-row';
  statusRow.append(save,ampCrearMarcasColor(p));
- action.append(statusRow,tools,err);superficie.append(action);
+ action.append(statusRow,ampEtiquetasUI.botones(p),tools,err);superficie.append(action);
  let guardando=false,edicionAutorizada=false;
  superficie.ampDesbloquearCostos=claves=>{
   edicionAutorizada=true;
@@ -2623,7 +2661,7 @@ function dibujar(){
    tr.append(empty);
    const action=document.createElement('td');
    const statusRow=document.createElement('div');statusRow.className='amp-card-status-row';statusRow.append(ampCrearMarcasColor(p));
-   action.append(statusRow,accionesFilaHoja(p));tr.append(action);
+   action.append(statusRow,ampEtiquetasUI.botones(p),accionesFilaHoja(p));tr.append(action);
   }
   $('filas').append(tr);
   const card=document.createElement('article');card.className='card sheet-card';card.dataset.productoId=String(p.id);
@@ -2648,7 +2686,7 @@ function dibujar(){
    const statusRow=document.createElement('div');statusRow.className='amp-card-status-row';
    const sinCompra=document.createElement('small');sinCompra.className='amp-sin-compra';sinCompra.textContent='Sin compra';
    statusRow.append(sinCompra,ampCrearMarcasColor(p));
-   acciones.append(statusRow,accionesFilaHoja(p));card.append(note,acciones);
+   acciones.append(statusRow,ampEtiquetasUI.botones(p),accionesFilaHoja(p));card.append(note,acciones);
   }
   $('tarjetas').append(card);
  }

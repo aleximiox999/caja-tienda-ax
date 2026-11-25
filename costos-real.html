@@ -946,88 +946,10 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  #fotoProductoDialog .amp-zoom-escena{height:min(47dvh,420px)}
 }
 
-
-/* AMPHX: negro metalizado y blanco en registro y alertas.
-   Se conservan el orden de captura, los cálculos y la semántica del mínimo de stock. */
-#app,#alertasInventario{
- background-image:var(--amp-metal-reflejo),var(--amp-titanio);
- background-color:#08131e;
- border:1px solid #869caf;
- border-top-color:#c3d2df;
- color:#f7fbff;
- box-shadow:inset 0 1px 0 #ffffff29,0 5px 20px #0916233d;
-}
-#app>h2,#alertasInventario>h2{color:#fff;text-shadow:0 1px 2px #000c}
-#app>p.muted,#alertasInventario>p.muted{color:#d4e0eb}
-#app #productoForm .field{
- background-image:var(--amp-metal-reflejo),var(--amp-titanio);
- background-color:#08131e;
- border:1px solid #7c94a6;
- border-top-color:#c2d2df;
- border-radius:12px;
- padding:12px;
- color:#f7fbff;
- box-shadow:inset 0 1px 0 #ffffff34,0 2px 8px #14273724;
-}
-#app #productoForm .field>label{
- color:#fff;text-shadow:0 1px 2px #000c;
- font-weight:800;
-}
-#app #productoForm .field input:not([type="hidden"]),
-#app #productoForm .field select{
- background:#101f2d;background-image:none;
- color:#fff;-webkit-text-fill-color:#fff;caret-color:#fff;
- color-scheme:dark;
- border:1.5px solid #96b0c3;border-radius:8px;
- box-shadow:inset 0 1px 2px #0008;
- font-weight:700;min-height:50px;
-}
-#app #productoForm .field select option{background:#101f2d;color:#fff}
-#app #productoForm .field input::placeholder{color:#bacbd9;-webkit-text-fill-color:#bacbd9}
-#app #productoForm .field input:focus,
-#app #productoForm .field select:focus{
- background:#173249;background-image:none;
- border-color:#e1f0ff;outline:2px solid #b4c5d0;outline-offset:1px;
-}
-#app #productoForm .field .calculo,
-#app #productoForm #guardar{
- background-image:var(--amp-metal-reflejo),var(--amp-titanio);
- background-color:#08131e;
- color:#fff;-webkit-text-fill-color:#fff;
- border:1px solid #9aafbe;border-top-color:#d7e5ef;
- box-shadow:inset 0 1px 0 #ffffff34,0 3px 10px #0005;
- text-shadow:0 1px 2px #000b;
-}
-#alertasInventario .alerta-item{
- background-image:var(--amp-metal-reflejo),var(--amp-titanio);
- background-color:#08131e;
- color:#fff;
- border:1px solid #9caebe;border-left:5px solid #e36b70;
- box-shadow:inset 0 1px #ffffff1c,0 2px 8px #0004;
-}
-#alertasInventario .alerta-item strong{color:#fff}
-#alertasInventario .alerta-item.alerta-proxima{
- background-image:var(--amp-metal-reflejo),var(--amp-titanio);
- background-color:#08131e;
- color:#fff;
- border-color:#9caebe;
- border-left:5px solid #659ccf;
-}
-#alertasInventario .alerta-item.alerta-proxima strong{color:#fff}
-@media(forced-colors:active){
- #app,#alertasInventario,#app #productoForm .field,
- #app #productoForm .field input:not([type="hidden"]),
- #app #productoForm .field select,
- #app #productoForm .field .calculo,
- #alertasInventario .alerta-item{
-   background:Canvas;background-image:none;
-   color:CanvasText;-webkit-text-fill-color:CanvasText;
-   border-color:CanvasText;box-shadow:none;
- }
- #app>h2,#alertasInventario>h2,#app #productoForm .field>label{color:CanvasText}
-}
-
-
+/* AMPHX: formulario de registro en una sola columna y ancho completo, PC y móvil. */
+#app #productoForm .fields{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;width:100%}
+#app #productoForm .fields>.field,
+#app #productoForm .fields>.field.wide{grid-column:1/-1;width:100%;min-width:0}
 /* Índice A–Z: una sola franja continua de titanio negro con línea azul.
    Se conserva el botón de restablecer (↺) y la selección por letra. */
 #listado .indice-alfabetico-costos{
@@ -1104,6 +1026,7 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 @media(prefers-reduced-motion:reduce){
  #ampLupaIndiceCostos{transition:none}
 }
+
 
 /* Táctil híbrido: no hay barra gris, no hay recuadros celestes ni scroll de página al arrastrar A–Z. */
 #listado .indice-alfabetico-costos{
@@ -1370,61 +1293,45 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  border-color:rgba(255,255,255,.25)!important;
 }
 
-</style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
-<!-- Escritura automática en MAYÚSCULAS en todos los campos de texto de COSTOS.
-     No transformar credenciales, códigos de barras ni fórmulas numéricas. -->
-<style id="amphx-mayusculas-globales">
-input:not([type]):not([name="codigo_barras"]):not([data-conservar-formato]),
-input[type="text"]:not([name="codigo_barras"]):not(#codigoAsociar):not([data-conservar-formato]),
-input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-formato]){
-  text-transform:uppercase;
-}
+</style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
+<style id="amp-texto-mayusculas">
+input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }
+input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 </style>
-<script id="amphx-mayusculas-globales-js">
+<script id="amp-texto-mayusculas-js">
 (function(){
-  'use strict';
-  const textSelector='input:not([type]),input[type="text"],input[type="search"],textarea,[contenteditable="true"]';
-  const excluded='[name="codigo_barras"],#codigoAsociar,[data-conservar-formato],[type="email"],[type="password"],[type="number"],[type="url"],[type="tel"]';
-  function convertirMayusculas(evento){
-    const el=evento.target;
-    if(!el || !el.matches || !el.matches(textSelector) || el.matches(excluded) || evento.isComposing)return;
-    if(el.isContentEditable && !(el instanceof HTMLInputElement) && !(el instanceof HTMLTextAreaElement)){
-      // La aplicación COSTOS no emplea editores enriquecidos; no tocar el DOM de contenteditable.
-      return;
-    }
-    const antes=el.value,despues=antes.toLocaleUpperCase('es');
-    if(antes===despues)return;
-    let start=null,end=null;
-    try{start=el.selectionStart;end=el.selectionEnd;}catch(_){}
-    el.value=despues;
-    if(start!==null && end!==null){
-      try{el.setSelectionRange(antes.slice(0,start).toLocaleUpperCase('es').length,antes.slice(0,end).toLocaleUpperCase('es').length);}catch(_){}
-    }
+  const campos='input:not([type]),input[type="text"],input[type="search"],textarea';
+  function convertir(e){
+    const campo=e.target;
+    if(!(campo instanceof HTMLInputElement || campo instanceof HTMLTextAreaElement)
+       || !campo.matches(campos) || campo.matches('[name="codigo_barras"],#codigoAsociar,[data-conservar-mayusculas]')
+       || e.isComposing) return;
+    const anterior=campo.value;
+    const nuevo=anterior.toLocaleUpperCase('es');
+    if(anterior===nuevo) return;
+    const inicio=campo.selectionStart, fin=campo.selectionEnd;
+    campo.value=nuevo;
+    try{
+      campo.setSelectionRange(
+        inicio==null?nuevo.length:anterior.slice(0,inicio).toLocaleUpperCase('es').length,
+        fin==null?nuevo.length:anterior.slice(0,fin).toLocaleUpperCase('es').length
+      );
+    }catch(_){}
   }
-  document.addEventListener('input',convertirMayusculas,true);
-  document.addEventListener('change',convertirMayusculas,true);
-  document.addEventListener('compositionend',convertirMayusculas,true);
+  document.addEventListener('input',convertir,true);
+  document.addEventListener('change',convertir,true);
+  document.addEventListener('compositionend',convertir,true);
 })();
 </script>
+<!-- AMPHX despliegue 2026-11-20: alertas y registro antes de fichas; sin acceso a comprobantes -->
+</head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><a href="./comparador-precios.html" style="display:inline-block;text-decoration:none;background:#29313b;color:#fff6de;border:1px solid #c0aa79;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
+<dialog id="configCuentaDialogAMPHX" style="border:1px solid #ccd8e0;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label>Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
+<section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si vuelves a comprar el mismo producto, utiliza su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿CÓMO SE VENDE ESTE PRODUCTO?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">UNIDADES</option><option value="kg">KILOGRAMOS (KG)</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min="1" step="1" inputmode="numeric" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
 
-
-<style id="amphx-formulario-vertical-pc">
-/* El formulario se presenta en una unica columna tambien en escritorio */
-#app #productoForm .fields {display:grid !important;grid-template-columns:minmax(0,1fr) !important;width:100% !important;gap:12px !important}
-#app #productoForm .fields > * {grid-column:1 / -1 !important;width:100% !important;min-width:0 !important;max-width:none !important}
-#app #productoForm .fields input,#app #productoForm .fields select,#app #productoForm .fields textarea {width:100%;max-width:100%;box-sizing:border-box}
-</style>
-</head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><button id="salir" class="alt hidden">Salir</button></div></header>
-
-<section id="accesoCargando" aria-live="polite"><p class="muted">Abriendo fichas de productos…</p><button id="reintentarAcceso" type="button" class="alt hidden">REINTENTAR ACCESO</button></section><section id="login" class="hidden"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
-<section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Hasta 3 productos: primero los que llegaron al mínimo y después los más cercanos. Se actualiza con el inventario.</p><div id="listaAlertas"></div></section>
-
-
-<section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si volvés a comprar el mismo producto, utilizá su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿CÓMO SE VENDE ESTE PRODUCTO?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">UNIDADES</option><option value="kg">KILOGRAMOS (KG)</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min="1" step="1" inputmode="numeric" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
-<section id="listado" class="hidden"><h2 id="tituloListadoCostos">COSTOS · Fichas de productos</h2><div class="actions"><div class="busqueda-wrap"><input id="buscar" placeholder="Buscar producto, código o proveedor (ej.: FINI)" autocomplete="off" aria-controls="sugerencias" aria-expanded="false" aria-autocomplete="list"><div id="sugerencias" class="sugerencias hidden" style="display:none" role="listbox" aria-label="Sugerencias de productos y proveedores"></div><div class="filtro-proveedor-costos"><label for="filtrarProveedorCostos">FILTRAR POR PROVEEDOR</label><select id="filtrarProveedorCostos" aria-label="Filtrar productos por proveedor"><option value="">TODOS LOS PROVEEDORES</option></select></div><div class="amp-filtro-vista-costos"><label for="ampVistaCostos">FILTRO</label><select id="ampVistaCostos" aria-label="Filtrar fichas de COSTOS"><option value="fichas">FICHAS DE PRODUCTOS</option><option value="recientes">RECIÉN INGRESADOS</option><option value="alfabetico">ORDEN ALFABÉTICO (A-Z)</option></select></div></div><div id="resultadoBusqueda" role="status" aria-live="polite" style="margin:8px 0;font-weight:600"></div><button class="alt" id="recargar">Actualizar</button><button type="button" class="alt hidden" id="ampAbrirComprobantes" hidden aria-hidden="true" tabindex="-1" style="display:none!important"></button>
-<dialog id="ampComprobantesDialog" style="width:min(92vw,760px);max-height:85vh;overflow:auto"><h2>COMPROBANTES DE COMPRA</h2><button type="button" class="alt" id="ampCerrarComprobantes">Cerrar</button><form id="ampComprobantesForm"><div class="field"><label>Proveedor</label><input name="proveedor" required></div><div class="field"><label>Fecha de factura</label><input type="date" name="fecha" required></div><div class="field"><label>Número de factura (opcional)</label><input name="numero"></div><div class="field"><label>Fotografías (cada imagen se guarda como un comprobante)</label><input id="ampArchivosComprobantes" type="file" name="archivos" accept="image/*" multiple></div><div class="field"><label>Tomar fotografía</label><input id="ampCamaraComprobante" type="file" accept="image/*" capture="environment"></div><div class="field"><label>Buscar productos para vincular los comprobantes</label><input id="ampBuscarComprobanteProducto" autocomplete="off" placeholder="Nombre del producto"><div id="ampProductosComprobante" style="max-height:220px;overflow:auto"></div></div><p class="muted" id="ampVinculadosComprobante"></p><button type="submit" id="ampGuardarComprobantes">Guardar fotografías</button></form><p id="ampEstadoComprobantes" role="status" aria-live="polite"></p><hr><h3>Comprobantes guardados</h3><button type="button" class="alt" id="ampActualizarComprobantes">Actualizar comprobantes</button><div id="ampListaComprobantes"></div></dialog></div><div class="listado-con-indice-costos"><nav id="indiceAlfabeticoCostos" class="indice-alfabetico-costos" aria-label="Filtrar por letra inicial"></nav><div class="listado-contenido-costos"><div class="scroll"><table><thead><tr><th>PRODUCTO</th><th>PRECIO DE VENTA</th><th>UNIDADES / KG</th><th>COSTO UNITARIO</th><th>PRECIO DE COMPRA</th><th>UTILIDAD POR UNIDAD</th><th>UTILIDAD TOTAL</th><th>PROVEEDOR</th><th>ACCIONES</th></tr></thead><tbody id="filas"></tbody></table></div><div id="tarjetas" class="cards"></div></div></div></section>
-
-
+<section id="alertasInventario" class="hidden" aria-live="polite"><h2>⚠️ Alertas de inventario <span id="contadorAlertas"></span></h2><p class="muted">Productos que llegaron al stock mínimo o tienen menos existencias. Se actualiza al cargar o actualizar los datos.</p><div id="listaAlertas"></div></section>
+<section id="accesoCargando" aria-live="polite"><p class="muted">Abriendo fichas de productos…</p><button id="reintentarAcceso" type="button" class="alt hidden">REINTENTAR ACCESO</button></section><section id="login" class="hidden"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
+<section id="restablecer" class="hidden" style="max-width:460px;margin:30px auto"><h2>Crear nueva contraseña</h2><p class="muted">Escribe tu nueva contraseña para TIENDA AMPHX.</p><form id="resetForm"><div class="field"><label>Nueva contraseña</label><input type="password" name="nueva" minlength="8" required autocomplete="new-password"></div><div class="actions"><button type="submit">Guardar nueva contraseña</button></div></form></section><!-- Registro y alertas al inicio, antes de las fichas de productos -->
+<section id="listado" class="hidden"><h2 id="tituloListadoCostos">COSTOS · Fichas de productos</h2><div class="actions"><div class="busqueda-wrap"><input id="buscar" placeholder="Buscar producto, código o proveedor (ej.: FINI)" autocomplete="off" aria-controls="sugerencias" aria-expanded="false" aria-autocomplete="list"><div id="sugerencias" class="sugerencias hidden" style="display:none" role="listbox" aria-label="Sugerencias de productos y proveedores"></div><div class="filtro-proveedor-costos"><label for="filtrarProveedorCostos">FILTRAR POR PROVEEDOR</label><select id="filtrarProveedorCostos" aria-label="Filtrar productos por proveedor"><option value="">TODOS LOS PROVEEDORES</option></select></div><div class="amp-filtro-vista-costos"><label for="ampVistaCostos">FILTRO</label><select id="ampVistaCostos" aria-label="Filtrar fichas de COSTOS"><option value="fichas">FICHAS DE PRODUCTOS</option><option value="recientes">RECIÉN INGRESADOS</option><option value="alfabetico">ORDEN ALFABÉTICO (A-Z)</option></select></div></div><div id="resultadoBusqueda" role="status" aria-live="polite" style="margin:8px 0;font-weight:600"></div><button class="alt" id="recargar">Actualizar</button></div><div class="listado-con-indice-costos"><nav id="indiceAlfabeticoCostos" class="indice-alfabetico-costos" aria-label="Filtrar por letra inicial"></nav><div class="listado-contenido-costos"><div class="scroll"><table><thead><tr><th>PRODUCTOS</th><th>PRECIO DE COMPRA DEL PAQUETE</th><th>UNIDADES O KILOS POR PAQUETE O BOLSA</th><th>COSTO UNITARIO DE UNIDADES O KILOS DEL PAQUETE</th><th>UTILIDAD POR UNIDADES O KILOS</th><th>UTILIDAD TOTAL</th><th>PRECIO DE VENTA EN TIENDA</th><th>PROVEEDOR</th><th>ACCIONES</th></tr></thead><tbody id="filas"></tbody></table></div><div id="tarjetas" class="cards"></div></div></div></section>
 <dialog id="fotoProductoDialog" aria-labelledby="tituloFotoProducto">
 <button id="ampCerrarSoloFoto" type="button" aria-label="Cerrar fotografía" title="Cerrar fotografía">×</button>
 <h2 id="tituloFotoProducto">Fotografía del producto</h2>
@@ -1461,12 +1368,10 @@ input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-forma
   <div class="amp-edit-opciones">
     <button type="button" class="amp-edit-choice" data-editar-opcion="precio"><span class="amp-edit-simbolo">Bs</span><span><strong>Precio de venta</strong><small>Cambiar el precio al que vendés</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="compra"><span class="amp-edit-simbolo">$</span><span><strong>Compra y unidades</strong><small>Corregir el costo de compra y la cantidad</small></span></button>
-    <button type="button" class="amp-edit-choice" data-editar-opcion="costo"><span class="amp-edit-simbolo">÷</span><span><strong>Costo unitario actual</strong><small>Corregir el costo vigente sin tocar compras antiguas</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="existencias"><span class="amp-edit-simbolo">#</span><span><strong>Existencias</strong><small>Corregir el stock actual</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="nombre"><span class="amp-edit-simbolo">✎</span><span><strong>Nombre del producto</strong><small>Corregir el título del artículo</small></span></button>
     <button type="button" class="amp-edit-choice" data-editar-opcion="proveedor"><span class="amp-edit-simbolo">P</span><span><strong>Proveedor</strong><small>Modificar el nombre del proveedor</small></span></button>
   </div>
-  <p class="muted" style="margin:13px 0 0;font-size:12px">Para editar un importe elegí su opción; podés escribir operaciones como <strong>120/6</strong>, <strong>15+5</strong> o <strong>10*3</strong>. COSTO UNITARIO y UTILIDADES se calculan automáticamente.</p>
   <button id="ampEditarCancelar" class="alt amp-edit-cancel" type="button">Cancelar</button>
 </dialog>
 <dialog id="editorNombreProducto" aria-labelledby="nombreProductoTitulo"><form id="formEditarNombre"><h2 id="nombreProductoTitulo">Editar nombre del producto</h2><p class="muted">Corregí el nombre que aparece en COSTOS y en la caja. El código de barras, las existencias, los precios y las compras anteriores no cambian.</p><div class="field"><label for="nombreProductoOriginal">Nombre actual</label><div id="nombreProductoOriginal" class="calculo" style="font-weight:650;background:#f3f6fa;color:#17283b;border-color:#d9e3eb"></div></div><div class="field"><label for="nombreProductoNuevo">Nuevo nombre del producto</label><input id="nombreProductoNuevo" type="text" maxlength="180" autocomplete="off" spellcheck="false" required></div><p id="nombreProductoError" role="alert"></p><div class="actions"><button id="nombreProductoGuardar" type="submit">Guardar nombre</button><button id="nombreProductoCancelar" type="button" class="alt">Cancelar</button></div></form></dialog><dialog id="seleccionarKgDialog" aria-labelledby="seleccionarKgTitulo"><h2 id="seleccionarKgTitulo">Gestionar kilos y bolsas</h2><p id="seleccionarKgNombre" style="font-weight:700"></p><p class="aviso-kg">Si vendés bolsas cerradas y también kilos sueltos, elegí «Abrir bolsa». Así se administran dos inventarios independientes.</p><div class="actions" style="display:flex;flex-direction:column"><button id="opcionAbrirBolsa" type="button">Abrir bolsa y vender por kg</button><button id="opcionConvertirKg" type="button" class="alt">Convertir este producto a kg</button><button id="cancelarSeleccionKg" type="button" class="alt">Cancelar</button></div></dialog>
@@ -1511,36 +1416,8 @@ input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-forma
 })();
 </script>
 <div id="ampIconHelp" class="amp-icon-help" role="status" aria-live="polite"></div>
-<script id="ampInicioDiagnostico">
-(function(){
- let iniciado=false;
- const mostrarFallo=function(detalle){
-  const e=document.getElementById('estado');
-  const esperando=!!e && /Conectando de forma segura|Comprobando sesión guardada|Abriendo fichas/i.test(e.textContent||'');
-  if(iniciado&&!esperando)return;
-  const acceso=document.getElementById('accesoCargando');
-  const reintentar=document.getElementById('reintentarAcceso');
-  if(e){e.textContent='COSTOS no pudo completar el inicio. '+detalle+' Probá REINTENTAR ACCESO o recargá la página.';e.classList.add('error');}
-  if(acceso)acceso.classList.remove('hidden');
-  if(reintentar){reintentar.classList.remove('hidden');reintentar.onclick=()=>{const u=new URL(location.href);u.searchParams.set('v',String(Date.now()));location.replace(u.href);};}
- };
- window.addEventListener('amphx-costos-ready',()=>{iniciado=true;});
- window.addEventListener('error',e=>{mostrarFallo('Error al iniciar: '+(e.message||'recurso no disponible')+'.');});
- window.addEventListener('unhandledrejection',e=>{mostrarFallo('No se pudo cargar una dependencia: '+String(e.reason?.message||e.reason||'error de conexión')+'.');});
- setTimeout(()=>{mostrarFallo('El inicio está tardando o quedó interrumpido.');},12000);
-})();
-</script>
 <script type="module">
-let createClient;
-try {
- ({createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.0'));
-} catch (primaryError) {
- try {
-  ({createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/+esm'));
- } catch (backupError) {
-  throw new Error('No se pudo cargar Supabase desde los dos servidores. Revisá la conexión o bloqueadores de scripts. '+String(backupError?.message||backupError));
- }
-}
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 window.dispatchEvent(new Event('amphx-costos-ready'));
 const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -1554,15 +1431,7 @@ function mostrarExitoProductoNuevo(){
  tiempoAvisoExitoProducto=setTimeout(()=>aviso.classList.add('hidden'),3600);
 }
 function estado(m,error=false){$('estado').textContent=m;$('estado').classList.toggle('error',error)}
-let recuperando=false;
-function mostrar(ok){
- $('accesoCargando').classList.add('hidden');
- if(!ok)$('alertasInventario').classList.add('hidden');
- $('login').classList.toggle('hidden',ok);
- $('app').classList.toggle('hidden',!ok);
- $('listado').classList.toggle('hidden',!ok);
- $('salir').classList.toggle('hidden',!ok);
-}
+let recuperando=false;function mostrar(ok){$('accesoCargando').classList.add('hidden');if(!ok)$('alertasInventario').classList.add('hidden');$('login').classList.toggle('hidden',ok);$('app').classList.toggle('hidden',!ok);$('listado').classList.toggle('hidden',!ok);$('salir').classList.toggle('hidden',!ok);$('estadoRolAMPHX').classList.toggle('hidden',!ok);$('configCuentaAMPHX').classList.toggle('hidden',!ok);if(!ok)$('configCuentaDialogAMPHX').close()}
 let ampVerificandoAcceso=false;
 function ampErrorAcceso(mensaje){
  $('accesoCargando').classList.remove('hidden');
@@ -1608,12 +1477,15 @@ async function revisar(){
    return;
   }
   mostrar(true);
-  const cargaCorrecta=await cargar();
+  await cargar();
  }catch(e){
   ampErrorAcceso('No se pudo validar la sesión guardada: '+(e?.message||String(e))+'. Tocá REINTENTAR ACCESO.');
  }finally{ampVerificandoAcceso=false}
 }
 $('reintentarAcceso').onclick=()=>void revisar();
+$('configCuentaAMPHX').onclick=async()=>{const {data,error}=await db.auth.getUser();if(error||!data?.user){estado('No se pudo verificar la cuenta. Volvé a iniciar sesión.',true);return}const permiso=await db.rpc('soy_administrador');if(permiso.error||permiso.data!==true){estado('No se confirmó el permiso de administrador.',true);return}$('correoCuentaAMPHX').value=data.user.email||'';$('mensajeConfigAMPHX').textContent='';$('configCuentaDialogAMPHX').showModal()};
+$('cerrarConfigAMPHX').onclick=()=>$('configCuentaDialogAMPHX').close();
+$('cambiarClaveAMPHX').onclick=async()=>{const email=$('correoCuentaAMPHX').value;if(!email)return;const boton=$('cambiarClaveAMPHX');boton.disabled=true;try{const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://aleximiox999.github.io/caja-tienda-ax/costos-real.html'});$('mensajeConfigAMPHX').textContent=error?'No se pudo enviar: '+error.message:'Si la cuenta está habilitada, recibirás un enlace para establecer una nueva contraseña. Revisá también Spam.'}catch(e){$('mensajeConfigAMPHX').textContent='Error de conexión: '+(e.message||e)}finally{boton.disabled=false}};
 
 /* AMPHX COSTOS 2026-11-08 - lectura resistente a cortes cortos de conexión.
    Nunca guardar costos en caché local sin cifrar ni repetir operaciones de escritura. */
@@ -1672,48 +1544,15 @@ async function cargar(){
  }finally{ampxCargandoDatos=false;recargar.disabled=false}
 }
 
-// Formulario clásico de noviembre: venta por unidad y COMPRA POR PAQUETE.
-// Costo unitario = costo del paquete / cantidad comprada.
-// Ganancia por unidad = venta unitaria - costo unitario.
-// Ganancia del paquete = venta unitaria * cantidad - costo del paquete.
-// Supabase conserva precio_venta unitario y precio_compra TOTAL del paquete.
-function ampValoresRegistro(){
- const f=$('productoForm');
- const medida=f.elements.unidad_medida.value==='kg'?'kg':'unidad';
- const cantidad=ampValorOperacion(f.elements.unidades.value,medida==='kg'?3:6);
- const presentacion=f.elements.unidad_medida.value;
- const costoPaquete=ampValorOperacion(f.elements.precio_compra.value,2);
- const ventaUnidad=ampValorOperacion(f.elements.precio_venta.value,2);
- const cantidadValida=Number.isFinite(cantidad)&&cantidad>0;
- const costoUnidad=cantidadValida?costoPaquete/cantidad:NaN;
- const gananciaUnidad=ventaUnidad-costoUnidad;
- const gananciaPaquete=cantidadValida?ventaUnidad*cantidad-costoPaquete:NaN;
- const valido=cantidadValida&&Number.isFinite(costoPaquete)&&costoPaquete>=0&&
-  Number.isFinite(ventaUnidad)&&ventaUnidad>=0;
- return {medida,presentacion,cantidad,costoUnidad,ventaUnidad,costoPaquete,gananciaUnidad,gananciaPaquete,valido};
-}
-function actualizarCostoPrevio(){
- const f=$('productoForm'),v=ampValoresRegistro();
- const costoPresente=f.elements.precio_compra.value.trim()!=='';
- const ventaPresente=f.elements.precio_venta.value.trim()!=='';
- const cantidadPresente=f.elements.unidades.value.trim()!=='';
- const costoValido=costoPresente&&cantidadPresente&&Number.isFinite(v.costoUnidad)&&v.costoUnidad>=0&&v.cantidad>0;
- const ventaValida=costoValido&&ventaPresente&&v.valido;
- const unidad=v.presentacion==='kg'?'kg':v.presentacion==='botellas'?'botella':'unidad';
- $('costoUnitarioPrevio').textContent=costoValido?bs(v.costoUnidad)+' por '+unidad:
-   costoPresente&&!cantidadPresente?'Falta la cantidad comprada':'Ingresá precio y cantidad';
- $('gananciaUnidadPrevia').textContent=ventaValida?bs(v.gananciaUnidad)+' por '+unidad:'—';
- $('gananciaTotalPrevia').textContent=ventaValida?bs(v.gananciaPaquete)+' por paquete':'—';
-}
+function actualizarCostoPrevio(){const f=$('productoForm');const u=f.elements.unidad_medida.value==='kg'?'kg':'unidad';const total=Number(f.elements.precio_compra.value),unidades=Number(f.elements.unidades.value),venta=Number(f.elements.precio_venta.value);const hayCosto=f.elements.precio_compra.value.trim()!==''&&Number.isFinite(total)&&total>=0&&f.elements.unidades.value.trim()!==''&&Number.isFinite(unidades)&&unidades>0;const costo=hayCosto?total/unidades:null;$('costoUnitarioPrevio').textContent=costo===null?'Introduce el costo total y las unidades':bs(costo)+' por '+u;$('gananciaUnidadPrevia').textContent=costo===null||f.elements.precio_venta.value.trim()===''||!Number.isFinite(venta)?'—':bs(venta-costo)+' por '+u;$('gananciaTotalPrevia').textContent=costo===null||f.elements.precio_venta.value.trim()===''||!Number.isFinite(venta)?'—':bs((venta-costo)*unidades)+' por paquete';}
 function actualizarEtiquetasRegistro(){
- const med=$('unidadMedidaRegistro').value,u=med==='kg'?'kg':med==='botellas'?'botella':'unidad';
- $('labelPrecioVentaRegistro').textContent='PRECIO DE VENTA EN TIENDA';
- $('labelPrecioCompraRegistro').textContent='PRECIO DE COMPRA DEL PAQUETE';
- $('labelCantidadRegistro').textContent='UNIDADES O KILOS POR PAQUETE';
- $('labelCostoUnitarioRegistro').textContent='COSTO UNITARIO DE UNIDADES O KILOS DEL PAQUETE';
- $('labelGananciaUnitarioRegistro').textContent='UTILIDAD POR UNIDAD';
- $('labelGananciaTotalRegistro').textContent='UTILIDAD TOTAL';
+ const med=$('unidadMedidaRegistro').value,u=med==='kg'?'kg':'unidad';
+ $('labelPrecioVentaRegistro').textContent='Precio de venta por '+u+' (Bs)';
+ $('labelCantidadRegistro').textContent=med==='kg'?'Kilogramos comprados (kg)':'Unidades compradas';
+ $('labelCostoUnitarioRegistro').textContent='Costo calculado por '+u;
+ $('labelGananciaUnitarioRegistro').textContent='Ganancia por '+u;
  const cantidad=$('productoForm').elements.unidades;
+ // La base de validación debe coincidir con el incremento, o 1, 5, 12 no pasan.
  cantidad.min=med==='kg'?'0.001':'1';
  cantidad.step=med==='kg'?'0.001':'1';
  cantidad.inputMode=med==='kg'?'decimal':'numeric';
@@ -1733,15 +1572,6 @@ $('productoForm').addEventListener('invalid',ev=>{
 },true);
 
 $('productoForm').addEventListener('input',actualizarCostoPrevio);
-for(const nombre of ['precio_venta','precio_compra','unidades']){
- const input=$('productoForm').elements[nombre];
- input.addEventListener('blur',()=>{
-  const decimales=nombre==='unidades'?($('unidadMedidaRegistro').value==='kg'?3:6):2;
-  const n=ampValorOperacion(input.value,decimales);
-  if(Number.isFinite(n)){input.value=nombre==='unidades'?String(n):n.toFixed(2);actualizarCostoPrevio();}
- });
- input.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();input.blur();}});
-}
 actualizarEtiquetasRegistro();
 
 const campoNombre=$('productoForm').elements.detalles;
@@ -1784,7 +1614,7 @@ function mostrarSugerenciasRegistro(){
   const boton=document.createElement('button');boton.type='button';boton.className='sugerencia';
   const nombre=document.createElement('strong');nombre.textContent=p.detalles;
   const detalle=document.createElement('small');
-  detalle.textContent=(p.activo===false?'RETIRADO · ':'REGISTRADO · ')+'Precio '+bs(p.precio_venta)+' · Existencias '+(datosProducto(p).sinMovimientosConCompra?'POR VERIFICAR':datosProducto(p).stock);
+  detalle.textContent=(p.activo===false?'RETIRADO · ':'REGISTRADO · ')+'Precio '+bs(p.precio_venta)+' · Existencias '+datosProducto(p).stock;
   boton.append(nombre,detalle);
   boton.onclick=()=>{
    campoNombre.value=p.detalles;productoSeleccionadoRegistro=p;panel.classList.add('hidden');campoNombre.setAttribute('aria-expanded','false');
@@ -1803,49 +1633,10 @@ campoNombre.addEventListener('input',()=>{
 campoNombre.addEventListener('focus',mostrarSugerenciasRegistro);
 $('comprarProductoExistente').onclick=()=>{if(productoSeleccionadoRegistro)otraCompra(productoSeleccionadoRegistro)};
 
-function dibujarAlertas(){
- const caja=$('alertasInventario'),lista=$('listaAlertas');
- lista.replaceChildren();
- // Solo existencias verificables: no avisar sobre compras sin movimientos de inventario.
- const candidatos=productos
-  .filter(p=>p.activo!==false&&Number(p.stock_minimo)>0)
-  .map(p=>({p,stock:datosProducto(p).stock,porVerificar:datosProducto(p).sinMovimientosConCompra,minimo:Number(p.stock_minimo)}))
-  .filter(x=>!x.porVerificar&&Number.isFinite(x.stock));
- // Los que llegaron al mínimo tienen prioridad, sin reducir ni subir umbrales.
- const bajos=candidatos.filter(x=>x.stock<=x.minimo)
-  .sort((a,b)=>a.stock-b.stock||String(a.p.detalles).localeCompare(String(b.p.detalles),'es'));
- // Si no hay 3 en mínimo, completar con los más cercanos; no presentarlos como agotados.
- const cercanos=candidatos.filter(x=>x.stock>x.minimo)
-  .sort((a,b)=>(a.stock-a.minimo)-(b.stock-b.minimo)||a.stock-b.stock||String(a.p.detalles).localeCompare(String(b.p.detalles),'es'));
- const visibles=[...bajos,...cercanos].slice(0,3);
- $('contadorAlertas').textContent='('+bajos.length+' en mínimo · '+visibles.length+' mostrados)';
- caja.classList.remove('hidden');
- if(visibles.length===0){
-  const sin=document.createElement('p');sin.className='muted';
-  sin.textContent='No hay productos con existencias confirmadas para mostrar.';
-  lista.append(sin);
- }
- for(const {p,stock,minimo} of visibles){
-  const enMinimo=stock<=minimo;
-  const item=document.createElement('div');
-  item.className='alerta-item'+(enMinimo?'':' alerta-proxima');
-  const nombre=document.createElement('strong');nombre.textContent=p.detalles;
-  const info=document.createElement('span');
-  info.textContent='Quedan '+stock+' · Mínimo '+minimo+
-   (enMinimo?' · STOCK BAJO':' · A '+(stock-minimo)+' del mínimo');
-  item.append(nombre,info);lista.append(item);
- }
-}
+function dibujarAlertas(){const caja=$('alertasInventario'),lista=$('listaAlertas');lista.replaceChildren();const alertas=productos.filter(p=>p.activo!==false&&Number(p.stock_minimo)>0&&datosProducto(p).stock<=Number(p.stock_minimo)).map(p=>({p,stock:datosProducto(p).stock})).sort((a,b)=>a.stock-b.stock);$('contadorAlertas').textContent='('+alertas.length+')';caja.classList.toggle('hidden',alertas.length===0);for(const {p,stock} of alertas){const item=document.createElement('div');item.className='alerta-item';const nombre=document.createElement('strong');nombre.textContent=p.detalles;const info=document.createElement('span');info.textContent='Quedan '+stock+' · Mínimo '+p.stock_minimo;item.append(nombre,info);lista.append(item)}}
 function ultimaCompra(p){return compras.find(x=>Number(x.producto_id)===Number(p.id))||null}
 function comprasDeProducto(p){return compras.filter(x=>Number(x.producto_id)===Number(p.id))}
-function datosProducto(p){
- const c=costos.find(x=>Number(x.producto_id)===Number(p.id));
- const mov=movimientos.filter(x=>Number(x.producto_id)===Number(p.id));
- const stock=mov.reduce((a,x)=>a+(x.tipo==='entrada'||x.tipo==='ajuste_positivo'?1:-1)*Number(x.cantidad),0);
- const sinMovimientosConCompra=mov.length===0&&compras.some(x=>Number(x.producto_id)===Number(p.id));
- const unit=Number(c?.costo_unitario||0);
- return{stock,unit,ganancia:Number(p.precio_venta)-unit,proveedor:c?.proveedor||'',ultimaCompra:ultimaCompra(p),sinMovimientosConCompra};
-}
+function datosProducto(p){const c=costos.find(x=>x.producto_id===p.id),mov=movimientos.filter(x=>x.producto_id===p.id);const stock=mov.reduce((a,x)=>a+(x.tipo==='entrada'||x.tipo==='ajuste_positivo'?1:-1)*Number(x.cantidad),0);const unit=Number(c?.costo_unitario||0);return{stock,unit,ganancia:Number(p.precio_venta)-unit,proveedor:c?.proveedor||'',ultimaCompra:ultimaCompra(p)}}
 /* Buscar por proveedores de todas las compras. */
 let proveedoresPorProducto=new Map();
 function actualizarIndiceProveedores(){
@@ -2042,7 +1833,7 @@ function mostrarSugerencias(){
   const boton=document.createElement('button');boton.type='button';boton.className='sugerencia';
   const nombre=document.createElement('strong');nombre.textContent=String(p.detalles||'').toLocaleUpperCase('es');
   const detalle=document.createElement('small');
-  detalle.textContent=(p.activo===false?'RETIRADO · ':'')+'Precio '+bs(p.precio_venta)+' · Existencias '+(datosProducto(p).sinMovimientosConCompra?'POR VERIFICAR':datosProducto(p).stock)+(proveedoresProducto(p).length?' · Proveedor: '+proveedoresProducto(p).join(', '):'');
+  detalle.textContent=(p.activo===false?'RETIRADO · ':'')+'Precio '+bs(p.precio_venta)+' · Existencias '+datosProducto(p).stock+(proveedoresProducto(p).length?' · Proveedor: '+proveedoresProducto(p).join(', '):'');
   boton.append(nombre,detalle);
   boton.addEventListener('click',()=>{campo.value=nombre.textContent;dibujar();campo.focus();});panel.append(boton);
  }
@@ -2052,12 +1843,9 @@ $('buscar').addEventListener('focus',mostrarSugerencias);
 const normalizarBusqueda=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es');
 /* Una fila de COSTOS corresponde a la compra más reciente de ese producto. El stock se gestiona aparte. */
 function ultimaCompraHoja(p){
- // Ordenar por FECHA DE FACTURA, no por la fecha en que se cargó la foto.
  return comprasDeProducto(p).sort((a,b)=>{
-  const fecha=String(b.fecha||'').localeCompare(String(a.fecha||''));
-  if(fecha)return fecha;
-  const registro=String(b.fecha_registro||'').localeCompare(String(a.fecha_registro||''));
-  return registro||Number(b.id)-Number(a.id);
+  const t=String(b.fecha_registro||'').localeCompare(String(a.fecha_registro||''));
+  return t||Number(b.id)-Number(a.id);
  })[0]||null;
 }
 function nombreFilaHoja(p){
@@ -2137,13 +1925,14 @@ window.addEventListener('resize',ampOcultarAyuda);
 
 /* Menú de edición unificado: no altera ninguna compra ni inventario al abrirlo. */
 let ampProductoMenu=null;
+
 /* AMPHX: lápiz único para editar toda la ficha en un solo guardado. */
 let ampFichaProducto=null,ampFichaOriginal=null,ampFichaInputs={},ampFichaGuardando=false;
 function ampCrearEditorFicha(){
  let d=document.getElementById('ampEditorFichaCompleta');
  if(d)return d;
  const estilo=document.createElement('style');
- estilo.textContent='#ampEditorFichaCompleta{width:min(96vw,760px);max-width:96vw;max-height:92dvh;overflow:auto;border:1px solid #a4bac9;border-radius:17px;padding:22px;background:#f8fbfe;color:#192c41;box-shadow:0 18px 65px #02091495}#ampEditorFichaCompleta::backdrop{background:#071626bd}#ampEditorFichaCompleta .amp-ficha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#ampEditorFichaCompleta .amp-ficha-campo{display:block;min-width:0}#ampEditorFichaCompleta label{display:block;font-weight:750;margin-bottom:5px}#ampEditorFichaCompleta input,#ampEditorFichaCompleta select,#ampEditorFichaCompleta textarea{width:100%;padding:11px;border:1px solid #b9c9d4;border-radius:9px;background:white;color:#182d40;font:inherit}#ampEditorFichaCompleta .amp-ficha-ancho{grid-column:1/-1}#ampEditorFichaCompleta fieldset{min-width:0;margin:15px 0;padding:14px;border:1px solid #c5d4df;border-radius:12px}#ampEditorFichaCompleta legend{font-weight:800;padding:0 7px}#ampEditorFichaCompleta .amp-ficha-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}#ampEditorFichaCompleta .amp-ficha-error{color:#a22720;font-weight:750;white-space:pre-wrap}#ampEditorFichaCompleta .amp-ficha-aviso{color:#4f6275;font-size:13px;margin:8px 0}#ampEditorFichaCompleta .amp-ficha-preview{background:#eaf3ef;padding:12px;border-radius:10px;margin-top:12px;font-weight:700}#ampEditorFichaCompleta .amp-ficha-costo-resultado{display:block;min-height:45px;padding:12px;border:1px solid #8aa39e;border-radius:9px;background:linear-gradient(135deg,#354445 0%,#1a272a 50%,#344548 100%);color:#effdf7;font-weight:800;font-size:16px;box-shadow:inset 0 1px 1px #ffffff26;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#ampEditorFichaCompleta .amp-ficha-resultado{display:block;min-height:45px;padding:12px;border:1px solid #8aa39e;border-radius:9px;background:#f3f8f6;color:#183d35;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}#ampEditorFichaCompleta #ampFichaGrupoCompra{border-color:#94ada9;background:#e7f0ee}@media(max-width:560px){#ampEditorFichaCompleta{padding:13px}#ampEditorFichaCompleta .amp-ficha-grid{grid-template-columns:1fr}}';
+ estilo.textContent='#ampEditorFichaCompleta{width:min(96vw,760px);max-width:96vw;max-height:92dvh;overflow:auto;border:1px solid #a4bac9;border-radius:17px;padding:22px;background:#f8fbfe;color:#192c41;box-shadow:0 18px 65px #02091495}#ampEditorFichaCompleta::backdrop{background:#071626bd}#ampEditorFichaCompleta .amp-ficha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#ampEditorFichaCompleta .amp-ficha-campo{display:block;min-width:0}#ampEditorFichaCompleta label{display:block;font-weight:750;margin-bottom:5px}#ampEditorFichaCompleta input,#ampEditorFichaCompleta select,#ampEditorFichaCompleta textarea{width:100%;padding:11px;border:1px solid #b9c9d4;border-radius:9px;background:white;color:#182d40;font:inherit}#ampEditorFichaCompleta .amp-ficha-ancho{grid-column:1/-1}#ampEditorFichaCompleta fieldset{min-width:0;margin:15px 0;padding:14px;border:1px solid #c5d4df;border-radius:12px}#ampEditorFichaCompleta legend{font-weight:800;padding:0 7px}#ampEditorFichaCompleta .amp-ficha-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}#ampEditorFichaCompleta .amp-ficha-error{color:#a22720;font-weight:750;white-space:pre-wrap}#ampEditorFichaCompleta .amp-ficha-aviso{color:#4f6275;font-size:13px;margin:8px 0}#ampEditorFichaCompleta .amp-ficha-preview{background:#eaf3ef;padding:12px;border-radius:10px;margin-top:12px;font-weight:700}@media(max-width:560px){#ampEditorFichaCompleta{padding:13px}#ampEditorFichaCompleta .amp-ficha-grid{grid-template-columns:1fr}}';
  document.head.append(estilo);
  d=document.createElement('dialog');d.id='ampEditorFichaCompleta';
  const h=document.createElement('h2');h.textContent='EDITAR TODA LA FICHA';h.style.margin='0 0 6px';
@@ -2165,72 +1954,24 @@ function ampCrearEditorFicha(){
   caja.append(lab,ctl);contenedor.append(caja);ampFichaInputs[id]=ctl;
  }
  campo('nombre','Nombre del producto','text',true,grid);
+ campo('codigo','Código de barras','text',false,grid);
+ campo('categoria','Categoría','text',false,grid);
+ campo('unidad','Cómo se vende','select',false,grid);
+ campo('stock','Existencias actuales (valor manual)','number',false,grid);
+ campo('minimo','Stock mínimo','number',false,grid);
+ campo('ideal','Stock ideal','number',false,grid);
+ campo('venta','Precio de venta (Bs)','number',false,grid);
+ campo('costoActual','Costo unitario actual (Bs)','number',false,grid);
+ campo('proveedor','Proveedor','text',true,grid);
  form.append(grid);
  const fact=document.createElement('fieldset');fact.id='ampFichaGrupoCompra';
  const leg=document.createElement('legend');leg.textContent='Última compra registrada';fact.append(leg);
  const compraGrid=document.createElement('div');compraGrid.className='amp-ficha-grid';
  campo('precioCompra','Precio total de compra (Bs)','number',false,compraGrid);
  campo('cantidadCompra','Cantidad comprada','number',false,compraGrid);
- const costoCaja=document.createElement('div');costoCaja.className='amp-ficha-campo amp-ficha-ancho';
- const costoLabel=document.createElement('label');costoLabel.htmlFor='ampFichaCostoCalculado';costoLabel.textContent='COSTO UNITARIO DE LA ÚLTIMA COMPRA';
- const costoOutput=document.createElement('output');costoOutput.id='ampFichaCostoCalculado';costoOutput.className='amp-ficha-costo-resultado';
- costoOutput.setAttribute('aria-live','polite');costoOutput.textContent='Ingresá importe y cantidad';
- costoCaja.append(costoLabel,costoOutput);compraGrid.append(costoCaja);
- campo('venta','Precio de venta en tienda (Bs por unidad o kg)','number',true,compraGrid);
- for(const [id,titulo] of [['ampFichaUtilidadUnidad','UTILIDAD POR UNIDAD'],['ampFichaUtilidadTotal','UTILIDAD TOTAL DEL PAQUETE O CAJA']]){
-  const caja=document.createElement('div');caja.className='amp-ficha-campo';
-  const lab=document.createElement('label');lab.htmlFor=id;lab.textContent=titulo;
-  const output=document.createElement('output');output.id=id;output.className='amp-ficha-resultado';output.setAttribute('aria-live','polite');output.textContent='—';
-  caja.append(lab,output);compraGrid.append(caja);
- }
  campo('fechaCompra','Fecha de compra','date',false,compraGrid);
  campo('observaciones','Observaciones de la compra','textarea',true,compraGrid);
  fact.append(compraGrid);form.append(fact);
- const detallesGrid=document.createElement('div');detallesGrid.className='amp-ficha-grid';
- campo('codigo','Código de barras','text',false,detallesGrid);
- const codigoCaja=ampFichaInputs.codigo.parentElement;
- const camaraCodigo=document.createElement('button');camaraCodigo.type='button';camaraCodigo.className='alt';camaraCodigo.id='ampFichaAbrirCamara';camaraCodigo.textContent='📷 ABRIR CÁMARA';camaraCodigo.title='Leer código de barras con la cámara';camaraCodigo.style.cssText='width:100%;margin-top:8px;min-height:44px;font-weight:800';
- const zonaCamara=document.createElement('div');zonaCamara.id='ampFichaZonaCamara';zonaCamara.hidden=true;zonaCamara.style.cssText='margin-top:10px;max-width:100%;overflow:hidden';
- const visorCamara=document.createElement('div');visorCamara.id='ampFichaLectorBarras';
- const textoCamara=document.createElement('p');textoCamara.id='ampFichaEstadoCamara';textoCamara.setAttribute('role','status');
- const cerrarCamara=document.createElement('button');cerrarCamara.type='button';cerrarCamara.className='alt';cerrarCamara.textContent='DETENER CÁMARA';cerrarCamara.style.width='100%';
- zonaCamara.append(visorCamara,textoCamara,cerrarCamara);codigoCaja.append(camaraCodigo,zonaCamara);
- let lectorFicha=null,abriendoFicha=false,sesionFicha=0;
- const detenerCamaraFicha=async()=>{
-  ++sesionFicha;const lector=lectorFicha;lectorFicha=null;zonaCamara.hidden=true;abriendoFicha=false;camaraCodigo.disabled=false;
-  if(lector){try{await lector.stop();}catch(e){}try{lector.clear();}catch(e){}}
- };
- camaraCodigo.addEventListener('click',async()=>{
-  if(lectorFicha||abriendoFicha)return;
-  const sesion=++sesionFicha;abriendoFicha=true;camaraCodigo.disabled=true;zonaCamara.hidden=false;
-  textoCamara.textContent='Preparando cámara…';
-  try{
-   if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia)throw Error('La cámara requiere HTTPS y un navegador compatible.');
-   await prepararBibliotecaEscanerAMPHX();
-   if(sesion!==sesionFicha)return;
-   const lector=new Html5Qrcode('ampFichaLectorBarras',{verbose:false});lectorFicha=lector;
-   await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},codigo=>{
-    if(sesion!==sesionFicha)return;
-    ampFichaInputs.codigo.value=String(codigo).trim();
-    ampFichaInputs.codigo.dispatchEvent(new Event('input',{bubbles:true}));
-    textoCamara.textContent='Código leído. Guardá la ficha para registrar el cambio.';
-    void detenerCamaraFicha();
-   },()=>{});
-   if(sesion!==sesionFicha){await detenerCamaraFicha();return;}
-   textoCamara.textContent='Apuntá al código de barras del producto.';
-  }catch(e){
-   if(sesion===sesionFicha){textoCamara.textContent='No se pudo abrir la cámara: '+(e?.message||String(e));if(lectorFicha)await detenerCamaraFicha();}
-  }finally{if(sesion===sesionFicha){abriendoFicha=false;camaraCodigo.disabled=false;}}
- });
- cerrarCamara.addEventListener('click',()=>{void detenerCamaraFicha();});
- d.addEventListener('close',()=>{void detenerCamaraFicha();});
- campo('categoria','Categoría (rellenar manualmente)','text',false,detallesGrid);
- campo('unidad','Cómo se vende','select',false,detallesGrid);
- campo('stock','Existencias actuales (valor manual)','number',false,detallesGrid);
- campo('minimo','Stock mínimo','number',false,detallesGrid);
- campo('ideal','Stock ideal','number',false,detallesGrid);
- campo('proveedor','Proveedor','text',true,detallesGrid);
- form.append(detallesGrid);
  const preview=document.createElement('div');preview.id='ampFichaVistaPrevia';preview.className='amp-ficha-preview';preview.setAttribute('aria-live','polite');form.append(preview);
  const error=document.createElement('p');error.id='ampFichaError';error.className='amp-ficha-error';error.setAttribute('role','alert');form.append(error);
  const acciones=document.createElement('div');acciones.className='amp-ficha-acciones';
@@ -2239,31 +1980,16 @@ function ampCrearEditorFicha(){
  acciones.append(guardar,cancelar);form.append(acciones);
  d.append(h,guia,form);document.body.append(d);
  const vista=()=>{
-  const venta=Number(ampFichaInputs.venta.value);
+  const venta=Number(ampFichaInputs.venta.value),costo=Number(ampFichaInputs.costoActual.value);
   const total=Number(ampFichaInputs.precioCompra.value),cantidad=Number(ampFichaInputs.cantidadCompra.value);
   const unidad=ampFichaInputs.unidad.value==='kg'?'kg':'unidad';
-  const hayCompra=!!ampFichaOriginal?.compra&&ampFichaInputs.precioCompra.value.trim()!==''&&ampFichaInputs.cantidadCompra.value.trim()!==''&&Number.isFinite(total)&&total>=0&&Number.isFinite(cantidad)&&cantidad>0;
-  const costoCompra=hayCompra?Number((total/cantidad).toFixed(4)):null;
-  const costo=hayCompra?costoCompra:Number(ampFichaOriginal?.esperado?.costo_unitario||0);
-  const salidaCosto=document.getElementById('ampFichaCostoCalculado');
-  if(salidaCosto)salidaCosto.textContent=hayCompra
-   ?bs(costoCompra)+' / '+unidad+'  ('+bs(total)+' ÷ '+cantidad.toLocaleString('es-BO')+')'
-   :'Ingresá un precio total y cantidad mayor que cero';
-  const hayPrecio=ampFichaInputs.venta.value.trim()!==''&&Number.isFinite(venta)&&venta>0;
   const partes=[];
-  if(hayCompra)partes.push('Costo por '+unidad+' de la compra: '+bs(costoCompra));
-  else partes.push('Ingresá monto y cantidad para calcular el costo por '+unidad);
-  if(hayPrecio&&Number.isFinite(costo)&&costo>=0){
-   const utilidad=venta-costo;
-   partes.push('Ganancia por '+unidad+': '+bs(utilidad));
-   if(hayCompra)partes.push('Ganancia total del paquete: '+bs(utilidad*cantidad));
-   partes.push('Margen: '+((utilidad/venta)*100).toFixed(2)+' %');
-  }else partes.push('Ganancia pendiente: ingresá precio de venta válido');
-  const utilidadUnidad=document.getElementById('ampFichaUtilidadUnidad');
-  const utilidadTotal=document.getElementById('ampFichaUtilidadTotal');
-  if(utilidadUnidad)utilidadUnidad.textContent=hayCompra&&hayPrecio?bs(venta-costoCompra):'—';
-  if(utilidadTotal)utilidadTotal.textContent=hayCompra&&hayPrecio?bs((venta-costoCompra)*cantidad):'—';
-  preview.textContent='Costo = precio de compra ÷ cantidad comprada. Utilidad por unidad = precio de venta − costo unitario. Utilidad total = utilidad por unidad × cantidad. Los descuentos de proveedor se registran aparte.';
+  if(!fact.disabled&&cantidad>0&&Number.isFinite(total))partes.push('Costo de la compra: '+bs(total/cantidad)+' / '+unidad);
+  if(Number.isFinite(venta)&&Number.isFinite(costo)){
+   partes.push('Utilidad por '+unidad+': '+bs(venta-costo));
+   partes.push('Margen: '+(venta>0?((venta-costo)/venta*100).toFixed(2)+' %':'pendiente'));
+  }
+  preview.textContent=partes.join('  ·  ')||'Introducí precios y cantidades para ver resultados.';
  };
  form.addEventListener('input',vista);form.addEventListener('change',vista);
  form.addEventListener('submit',ampGuardarFichaCompleta);
@@ -2287,17 +2013,15 @@ function ampAbrirFichaCompleta(p){
   observaciones:c?String(c.observaciones||''):null
  }};
  const poner=(id,val)=>{ampFichaInputs[id].value=val===undefined||val===null?'':String(val);};
- poner('nombre',p.detalles);poner('codigo',p.codigo_barras);poner('categoria','');
+ poner('nombre',p.detalles);poner('codigo',p.codigo_barras);poner('categoria',p.categoria);
  poner('unidad',p.unidad_medida||'unidad');poner('stock',stock);
  poner('minimo',p.stock_minimo??0);poner('ideal',p.stock_ideal??0);
- poner('venta',p.precio_venta??0);
+ poner('venta',p.precio_venta??0);poner('costoActual',cu);
  poner('proveedor',c?.proveedor??cost?.proveedor??'');
  poner('precioCompra',c?.precio_compra);poner('cantidadCompra',c?.unidades);
  poner('fechaCompra',c?.fecha?String(c.fecha).slice(0,10):'');
  poner('observaciones',c?.observaciones??'');
- const grupo=document.getElementById('ampFichaGrupoCompra');
- grupo.disabled=false;
- for(const id of ['precioCompra','cantidadCompra','fechaCompra','observaciones'])ampFichaInputs[id].disabled=!c;
+ const grupo=document.getElementById('ampFichaGrupoCompra');grupo.disabled=!c;
  grupo.querySelector('legend').textContent=c?'Última compra registrada #'+c.id:'Sin compra registrada (editá los datos del producto)';
  document.getElementById('ampFichaError').textContent='';
  document.getElementById('ampFichaGuardar').disabled=false;
@@ -2313,7 +2037,7 @@ async function ampGuardarFichaCompleta(e){
  err.textContent='';
  const p=ampFichaProducto,original=ampFichaOriginal,c=original.compra;
  const n=id=>{const val=ampFichaInputs[id].value.trim();return val===''?null:Number(val);};
- const enteros=['stock','minimo','ideal','venta'];
+ const enteros=['stock','minimo','ideal','venta','costoActual'];
  if(!form.reportValidity()||enteros.some(x=>!Number.isFinite(n(x))||n(x)<0)||
     (c&&(!Number.isFinite(n('cantidadCompra'))||n('cantidadCompra')<=0||!Number.isFinite(n('precioCompra'))||n('precioCompra')<0))){
   err.textContent='Revisá los campos marcados. La compra necesita cantidad mayor a cero; las existencias y precios no pueden ser negativos.';return;
@@ -2321,8 +2045,6 @@ async function ampGuardarFichaCompleta(e){
  if(!ampFichaInputs.nombre.value.trim()||ampFichaInputs.nombre.value.trim().length<2){
   err.textContent='Escribí un nombre de producto válido.';return;
  }
- const costoCalculado=c?Math.round((n('precioCompra')/n('cantidadCompra'))*10000)/10000:Number(original.esperado.costo_unitario||0);
- if(!Number.isFinite(costoCalculado)||costoCalculado<0){err.textContent='Revisá precio y cantidad de compra para calcular el costo unitario.';return;}
  const args={
   p_producto_id:p.id,p_compra_id:c?.id??null,
   p_detalles:ampFichaInputs.nombre.value.trim().toLocaleUpperCase('es'),
@@ -2333,7 +2055,7 @@ async function ampGuardarFichaCompleta(e){
   p_stock_minimo:n('minimo'),p_stock_ideal:n('ideal'),
   p_precio_venta:n('venta'),p_precio_compra:c?n('precioCompra'):null,
   p_unidades:c?n('cantidadCompra'):null,p_proveedor:ampFichaInputs.proveedor.value.trim(),
-  p_costo_unitario:costoCalculado,p_fecha_compra:c?ampFichaInputs.fechaCompra.value:null,
+  p_costo_unitario:n('costoActual'),p_fecha_compra:c?ampFichaInputs.fechaCompra.value:null,
   p_observaciones:c?ampFichaInputs.observaciones.value:null,p_esperado:original.esperado
  };
  ampFichaGuardando=true;boton.disabled=true;boton.textContent='Guardando todos los cambios…';
@@ -2384,8 +2106,8 @@ function ampEnfocarCampo(p,clave){
  const aviso=document.createElement('small');aviso.className='amp-edit-instruction';
  aviso.textContent=clave==='proveedor'
   ?'Editá el proveedor y tocá «Guardar cambios».'
-  :clave==='compra'?'Editá compra y unidades (admite 120/6, 15+5). Los totales se actualizan solos. Tocá «Guardar cambios».'
-  :'Editá el precio (admite 15+5, 120/6). Las utilidades se actualizan solas. Tocá «Guardar cambios».';
+  :clave==='compra'?'Podés editar compra y unidades. Después tocá «Guardar cambios».'
+  :'Editá el precio de venta y tocá «Guardar cambios».';
  input.parentElement.append(aviso);
  try{input.focus({preventScroll:true});input.select();}catch(e){input.focus();}
  input.addEventListener('input',()=>{input.classList.remove('amp-edit-destacado');aviso.remove()},{once:true});
@@ -2397,7 +2119,6 @@ for(const btn of document.querySelectorAll('#ampEditarMenu [data-editar-opcion]'
   cerrarMenuEdicion();
   if(opcion==='nombre'){abrirEditarNombre(p);return;}
   if(opcion==='existencias'){elegirEdicion(p);$('editorStock').focus();$('editorStock').select();return;}
-  if(opcion==='costo'){abrirEditorCostos(p,'actual');return;}
   if(opcion==='compra'){ampEnfocarCampo(p,'compra');return;}
   if(opcion==='precio'||opcion==='proveedor')ampEnfocarCampo(p,opcion==='precio'?'venta':'proveedor');
  };
@@ -2669,67 +2390,14 @@ document.addEventListener('scroll',e=>{
  if(ampHistorialCostosActivo&&!document.getElementById('ampHistorialCostos')?.contains(e.target))ampCerrarHistorialCostos();
 },true);
 
-/* Calculadora segura para los importes editables: + - * / y paréntesis.
-   No evalúa código y nunca escribe datos sin pulsar Guardar cambios. */
-function ampEvaluarOperacion(texto){
- const str=String(texto??'').trim().replace(/\s+/g,'').replace(/[×xX]/g,'*').replace(/÷/g,'/').replace(/[−–]/g,'-');
- if(!str||str.length>80||/[^0-9.,+*/()-]/.test(str))return NaN;
- let i=0,operaciones=0;
- const falla=()=>{throw Error('Expresión incompleta')};
- function factor(prof=0){
-  if(++operaciones>80||prof>20)falla();
-  if(str[i]==='+'||str[i]==='-'){
-   const signo=str[i++];const n=factor(prof+1);return signo==='-'?-n:n;
-  }
-  if(str[i]==='('){
-   i++;const n=suma(prof+1);if(str[i]!==')')falla();i++;return n;
-  }
-  const m=/^(?:\d+(?:[.,]\d*)?|[.,]\d+)/.exec(str.slice(i));
-  if(!m)falla();
-  i+=m[0].length;
-  const n=Number(m[0].replace(',','.'));
-  if(!Number.isFinite(n))falla();
-  return n;
- }
- function producto(prof=0){
-  let n=factor(prof);
-  while(str[i]==='*'||str[i]==='/'){
-   if(++operaciones>80)falla();
-   const op=str[i++],v=factor(prof);
-   if(op==='/'&&v===0)falla();
-   n=op==='*'?n*v:n/v;
-  }
-  return n;
- }
- function suma(prof=0){
-  let n=producto(prof);
-  while(str[i]==='+'||str[i]==='-'){
-   if(++operaciones>80)falla();
-   const op=str[i++],v=producto(prof);
-   n=op==='+'?n+v:n-v;
-  }
-  return n;
- }
- try{const n=suma();return i===str.length&&Number.isFinite(n)&&Math.abs(n)<=10000000000?n:NaN}
- catch(_){return NaN}
-}
-function ampValorOperacion(texto,decimales){
- const n=ampEvaluarOperacion(texto);if(!Number.isFinite(n))return NaN;
- const raw=String(texto);
- const esOperacion=/[+*/()×÷xX]/.test(raw)||(raw.trim().slice(1).includes('-'));
- if(!esOperacion)return n;
- const multi=10**decimales;
- return Math.round((n+Number.EPSILON)*multi)/multi;
-}
-
 function configurarEditorFila(p,compra,superficie,movil){
  const lista=[
-  ['venta','PRECIO DE VENTA'],
-  ['unidades',p.unidad_medida==='kg'?'UNIDADES (KG)':'UNIDADES'],
-  ['costo','COSTO UNITARIO'],
-  ['compra','PRECIO DE COMPRA'],
-  ['utilidad','UTILIDAD POR UNIDAD'],
+  ['compra','PRECIO DE COMPRA DEL PAQUETE'],
+  ['unidades',p.unidad_medida==='kg'?'KILOS POR PAQUETE O BOLSA':'UNIDADES POR PAQUETE O BOLSA'],
+  ['costo','COSTO UNITARIO DE UNIDADES O KILOS DEL PAQUETE'],
+  ['utilidad','UTILIDAD POR UNIDADES O KILOS'],
   ['total','UTILIDAD TOTAL'],
+  ['venta','PRECIO DE VENTA EN TIENDA'],
   ['proveedor','PROVEEDOR']
  ];
  const inputs={},derivados={};
@@ -2747,8 +2415,8 @@ function configurarEditorFila(p,compra,superficie,movil){
    input.setAttribute('aria-label',titulo+' de '+p.detalles);
    if(clave==='proveedor'){input.type='text';input.maxLength=180;input.value=compra.proveedor||'';}
    else{
-    input.type='text';input.inputMode='decimal';input.maxLength=70;
-    input.title='Se admiten sumas, restas, multiplicaciones y divisiones. Ejemplo: 120/6 o 15+5.';
+    input.type='number';input.inputMode='decimal';input.min=clave==='unidades'?(p.unidad_medida==='kg'?'0.001':'1'):'0';
+    input.step=clave==='unidades'?(p.unidad_medida==='kg'?'0.001':'1'):'0.01';
     input.value=clave==='compra'?original.compra.toFixed(2):clave==='venta'?original.venta.toFixed(2):String(original.unidades);
    }
    // COSTOS es de solo lectura hasta que se pulse el lapicito y se elija qué editar.
@@ -2796,8 +2464,7 @@ function configurarEditorFila(p,compra,superficie,movil){
   estadoFila();
  };
  function valor(clave){
-  const raw=inputs[clave].value.trim();
-  return raw===''?NaN:ampValorOperacion(raw,clave==='unidades'?(p.unidad_medida==='kg'?3:6):2);
+  const raw=inputs[clave].value.trim();return raw===''?NaN:Number(raw);
  }
  function estadoFila(){
   const comp=valor('compra'),unid=valor('unidades'),vent=valor('venta'),
@@ -2854,20 +2521,7 @@ function configurarEditorFila(p,compra,superficie,movil){
   if(!guardando&&!err.classList.contains('sheet-error'))err.textContent=!valid?'Ingresá precio de compra, unidades o kg, precio de venta y proveedor válidos.':dif?'Cambios sin guardar.':'';
   return {valid,dif,comp,unid,vent,prov};
  }
- Object.entries(inputs).forEach(([clave,input])=>{
-  for(const ev of ['input','change'])input.addEventListener(ev,()=>{err.classList.remove('sheet-error');estadoFila();});
-  if(clave!=='proveedor'){
-   input.addEventListener('blur',()=>{
-    if(input.readOnly)return;
-    const n=valor(clave);
-    if(Number.isFinite(n)){
-     input.value=clave==='unidades'?String(n):n.toFixed(2);
-     estadoFila();
-    }
-   });
-   input.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();input.blur();}});
-  }
- });
+ Object.values(inputs).forEach(input=>{for(const ev of ['input','change'])input.addEventListener(ev,()=>{err.classList.remove('sheet-error');estadoFila();});});
  save.onclick=async()=>{
   const valores=estadoFila();
   if(!valores.valid||!valores.dif||guardando||!edicionAutorizada)return;
@@ -2961,7 +2615,7 @@ function dibujar(){
   tr.dataset.indiceInicial=inicialNombreCostos(p.detalles);
   tdNombre.append(nombreFilaHoja(p));
   const existencia=document.createElement('small');existencia.className='sheet-stock-note';
-  existencia.textContent='Existencias: '+(d.sinMovimientosConCompra?'POR VERIFICAR (compra sin entrada de inventario)':conMedida(d.stock,p))+' · '+(p.codigo_barras?'Código: '+p.codigo_barras:'Sin código de barras');
+  existencia.textContent='Existencias: '+conMedida(d.stock,p)+' · '+(p.codigo_barras?'Código: '+p.codigo_barras:'Sin código de barras');
   tdNombre.append(existencia);tr.append(tdNombre);
   if(compra){configurarEditorFila(p,compra,tr,false);}
   else{
@@ -2978,7 +2632,7 @@ function dibujar(){
   if(!ampAnclasIndiceCostos.has(inicial))ampAnclasIndiceCostos.set(inicial,card);
   const h=document.createElement('h3');h.className='sheet-card-title';h.append(nombreFilaHoja(p));card.append(h);
   const dato=document.createElement('p');dato.className='sheet-card-details';
-  dato.textContent='Existencias: '+(d.sinMovimientosConCompra?'POR VERIFICAR (compra sin movimientos de inventario)':conMedida(d.stock,p))+(p.codigo_barras?' · Código: '+p.codigo_barras:'');
+  dato.textContent='Existencias: '+conMedida(d.stock,p)+(p.codigo_barras?' · Código: '+p.codigo_barras:'');
   if(recientes){
    const fechaRegistro=registroReciente.registros.get(Number(p.id))?.fecha;
    if(fechaRegistro){
@@ -2986,19 +2640,8 @@ function dibujar(){
     dato.textContent+=' · Ingresado: '+fecha.toLocaleDateString('es-BO')+' '+fecha.toLocaleTimeString('es-BO',{hour:'2-digit',minute:'2-digit'});
    }
   }
-  if(compra)dato.textContent+=' · Factura: '+ampFechaLegible(compra.fecha);
   card.append(dato);
-  if(compra){
-   const costoVigente=costos.find(c=>Number(c.producto_id)===Number(p.id));
-   const costoFactura=Number(compra.costo_unitario);
-   if(costoVigente&&Number.isFinite(costoFactura)&&Math.abs(Number(costoVigente.costo_unitario)-costoFactura)>0.01){
-    const nota=document.createElement('p');
-    nota.style.cssText='grid-column:1/-1;margin:0;padding:9px 12px;background:#fff4e2;border:1px solid #e4b375;border-radius:9px;font-size:12px;font-weight:700;color:#82430d';
-    nota.textContent='⚠️ COSTO VIGENTE '+bs(costoVigente.costo_unitario)+' ≠ COSTO DE ESTA FACTURA '+bs(costoFactura)+'. Las utilidades de esta ficha se calculan según la factura mostrada. No se cambió ningún costo.';
-    card.append(nota);
-   }
-   configurarEditorFila(p,compra,card,true);
-  }
+  if(compra)configurarEditorFila(p,compra,card,true);
   else{
    const note=document.createElement('p');note.className='muted';note.textContent='Sin compra registrada. Añadí una compra para habilitar esta fila.';
    const acciones=document.createElement('div');acciones.className='sheet-actions';
@@ -3826,26 +3469,6 @@ async function detenerLectorAsociar(){
  const lector=lectorAsociar;lectorAsociar=null;
  if(lector){try{await lector.stop()}catch(e){}try{lector.clear()}catch(e){}}
 }
-/* Enfoque continuo opcional para los dos lectores de COSTOS.
-   Sólo se solicita si la cámara anuncia compatibilidad. No altera formularios. */
-async function ampActivarEnfoqueContinuo(lector){
- try{
-  const capacidades=lector.getRunningTrackCapabilities?.();
-  const modos=capacidades?.focusMode;
-  if(!Array.isArray(modos)||!modos.includes('continuous'))return false;
-  if(lector.getRunningTrackSettings?.()?.focusMode==='continuous')return true;
-  await lector.applyVideoConstraints({
-   width:{ideal:3840},height:{ideal:2160},
-   advanced:[{focusMode:'continuous'}]
-  });
-  console.info('[AMPHX COSTOS] Enfoque continuo solicitado.');
-  return true;
- }catch(error){
-  // Mantener cámara y lectura aunque Chrome no deje controlar el enfoque.
-  console.info('[AMPHX COSTOS] Enfoque continuo no configurable:',String(error?.message||error));
-  return false;
- }
-}
 async function iniciarCamaraAsociar(){
  if(!productoCodigoEnEdicion||lectorAsociar||abriendoAsociar||guardandoAsociar)return;
  const p=productoCodigoEnEdicion;abriendoAsociar=true;
@@ -3854,18 +3477,12 @@ async function iniciarCamaraAsociar(){
  if(typeof Html5Qrcode==='undefined'){$('mensajeCodigoAsociar').textContent='El lector no terminó de cargar. Podés escribir el código manualmente.';abriendoAsociar=false;return;}
  try{
   const lector=new Html5Qrcode('lectorCodigoAsociar',{verbose:false});lectorAsociar=lector;
-  await lector.start({facingMode:'environment'},{
-   fps:10,
-   qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))}),
-   // 4K preferido; resolución inferior automática cuando no esté disponible.
-   videoConstraints:{facingMode:'environment',width:{ideal:3840},height:{ideal:2160}}
-  },async codigo=>{
+  await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},async codigo=>{
    if(lectorAsociar!==lector||guardandoAsociar||productoCodigoEnEdicion!==p)return;
    $('codigoAsociar').value=String(codigo).trim();
    await guardarAsociacionCodigo();
   },()=>{});
   if(productoCodigoEnEdicion!==p){await detenerLectorAsociar();return;}
-  void ampActivarEnfoqueContinuo(lector);
   $('mensajeCodigoAsociar').textContent='Apuntá al código de barras: al leerlo se guardará directamente en este producto.';
  }catch(err){
   $('mensajeCodigoAsociar').textContent='No se pudo abrir la cámara. Revisá el permiso o escribí el código. '+(err?.message||String(err));
@@ -3910,6 +3527,7 @@ async function eliminarProducto(p){if(!confirm('¿Retirar «'+p.detalles+'» del
 async function otraCompra(p){const cantidad=prompt((p.unidad_medida==='kg'?'Kilogramos comprados de ':'Unidades compradas de ')+p.detalles+':');if(cantidad===null)return;const precio=prompt('Precio TOTAL del paquete en Bs:');if(precio===null)return;const n=Number(cantidad),m=Number(precio);if(!Number.isFinite(n)||n<=0||!Number.isFinite(m)||m<0||cantidad.trim()===''||precio.trim()===''||(p.unidad_medida!=='kg'&&!Number.isInteger(n))||(p.unidad_medida==='kg'&&Math.abs(n*1000-Math.round(n*1000))>0.00001)){estado('Compra inválida.',true);return}const proveedor=prompt('Proveedor (opcional):','')||'';const {error}=await db.rpc('registrar_compra',{p_producto_id:p.id,p_fecha:new Date().toISOString().slice(0,10),p_precio_compra:m,p_unidades:n,p_proveedor:proveedor});if(error){estado('No se guardó la compra: '+error.message,true);return}await cargar();estado('Compra registrada y existencias actualizadas.')}
 $('productoForm').elements.fecha.value=new Date().toISOString().slice(0,10);
 $('loginForm').onsubmit=async e=>{e.preventDefault();const form=e.currentTarget,boton=form.querySelector('button[type="submit"],button:not([type])');if(boton.disabled)return;const f=new FormData(form);boton.disabled=true;estado('Verificando cuenta…');let aviso=setTimeout(()=>estado('La conexión está tardando demasiado. Comprueba internet y vuelve a intentar; no crees otra cuenta.',true),12000);try{const {error}=await db.auth.signInWithPassword({email:String(f.get('email')).trim(),password:String(f.get('password'))});if(error){estado('No se pudo iniciar sesión: '+error.message,true);return}estado('Sesión iniciada. Cargando productos…');await revisar()}catch(err){estado('Error de conexión al ingresar: '+(err?.message||String(err)),true)}finally{clearTimeout(aviso);boton.disabled=false}};
+$('recuperar').onclick=async()=>{const email=String(new FormData($('loginForm')).get('email')||'').trim();if(!email){estado('Primero escribe tu correo electrónico en el campo de arriba.',true);return}const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://aleximiox999.github.io/caja-tienda-ax/costos-real.html'});estado(error?'No se pudo enviar: '+error.message:'Si el correo está registrado, recibirás un enlace para cambiar la contraseña. Revisa también Spam.',!!error)};
 $('resetForm').onsubmit=async e=>{e.preventDefault();const pwd=String(new FormData(e.currentTarget).get('nueva'));const {error}=await db.auth.updateUser({password:pwd});if(error){estado('No se pudo cambiar: '+error.message,true);return}recuperando=false;$('restablecer').classList.add('hidden');await db.auth.signOut();mostrar(false);estado('Contraseña actualizada. Ahora ingresa con tu correo y tu nueva contraseña.')};
 db.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY'){recuperando=true;mostrar(false);$('restablecer').classList.remove('hidden');estado('Enlace de recuperación válido. Escribe tu nueva contraseña.')}});
 $('registro').onclick=async()=>{const f=new FormData($('loginForm'));const email=String(f.get('email')||''),password=String(f.get('password')||'');if(!email||password.length<6){estado('Introduce correo y contraseña de al menos 6 caracteres.',true);return}const {error}=await db.auth.signUp({email,password});estado(error?'No se pudo crear la cuenta: '+error.message:'Registro solicitado. Revisa tu correo para confirmar la cuenta y después solicita activar el permiso de administrador.',!!error)};
@@ -3968,15 +3586,10 @@ $('abrirEscaner').onclick=async()=>{
   if(sesion!==ampxEscanerSesion)return;
   $('mensajeEscaner').textContent='Solicitando permiso para usar la cámara…';
   const lector=new Html5Qrcode('lectorCodigo',{verbose:false});lectorActivo=lector;
-  await lector.start({facingMode:'environment'},{
-   fps:10,
-   qrbox:(w,h)=>({
-    width:Math.min(280,Math.floor(w*.8)),
-    height:Math.min(180,Math.floor(h*.7))
-   }),
-   // Misma configuración en el lector para registrar nuevos productos.
-   videoConstraints:{facingMode:'environment',width:{ideal:3840},height:{ideal:2160}}
-  },async codigo=>{
+  await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({
+   width:Math.min(280,Math.floor(w*.8)),
+   height:Math.min(180,Math.floor(h*.7))
+  })},async codigo=>{
    if(lectorActivo!==lector||sesion!==ampxEscanerSesion)return;
    const valor=String(codigo||'').trim();
    if(!valor)return;
@@ -3990,7 +3603,6 @@ $('abrirEscaner').onclick=async()=>{
    }
   },()=>{});
   if(sesion!==ampxEscanerSesion){await detenerLector();return}
-  void ampActivarEnfoqueContinuo(lector);
   $('mensajeEscaner').textContent='Apuntá la cámara al código de barras del producto.';
  }catch(e){
   if(sesion===ampxEscanerSesion){
@@ -4014,80 +3626,7 @@ $('abrirEscaner').onclick=async()=>{
 };
 $('cerrarEscaner').onclick=detenerLector;
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&(lectorActivo||abriendoLector))void detenerLector()});
-$('productoForm').onsubmit=async e=>{e.preventDefault();const formulario=e.currentTarget;const f=new FormData(formulario);const p={detalles:String(f.get('detalles')).trim().toLocaleUpperCase('es'),unidad_medida:String(f.get('unidad_medida'))==='kg'?'kg':'unidad',codigo_barras:String(f.get('codigo_barras')).trim()||null,categoria:String(f.get('categoria')).trim()||null,precio_venta:0,stock_minimo:Number(f.get('stock_minimo')||0),stock_ideal:Number(f.get('stock_ideal')||0)};const v=ampValoresRegistro();
-const unidades=v.cantidad;
-const compra=Math.round((v.costoPaquete+Number.EPSILON)*100)/100;
-const ventaIngresada=v.ventaUnidad;
-p.precio_venta=v.ventaUnidad;
-// Guardar en base de datos compra TOTAL y venta por UNIDAD.
-if(!v.valido||!Number.isFinite(compra)||compra<0||
- Math.abs(compra-v.costoPaquete)>0.005){
- estado('Revisá el precio de compra del paquete, la venta unitaria y la cantidad comprada. No se guardó nada.',true);
- return;
-}
-if(productos.some(x=>normalizarBusqueda(x.detalles)===normalizarBusqueda(p.detalles))){estado('Este producto ya está registrado. Seleccionalo en las sugerencias y usá «Registrar otra compra». No se creó ningún producto duplicado.',true);return;}if(!p.detalles||!Number.isFinite(unidades)||unidades<=0||!Number.isFinite(compra)||compra<0||Math.abs(compra*100-Math.round(compra*100))>0.00001||!Number.isFinite(ventaIngresada)||ventaIngresada<0||!Number.isFinite(p.precio_venta)||p.precio_venta<0||Math.abs(p.precio_venta*100-Math.round(p.precio_venta*100))>0.00001||(p.unidad_medida!=='kg'&&!Number.isInteger(unidades))||(p.unidad_medida==='kg'&&Math.abs(unidades*1000-Math.round(unidades*1000))>0.00001)){estado('Revisa los datos del producto.',true);return} $('guardar').disabled=true;estado('Guardando…');let avisoDemora=setTimeout(()=>estado('La operación está tardando más de 20 segundos. No vuelvas a guardar ni cierres esta página: estamos esperando confirmación de Supabase.'),20000);try{const {data,error}=await db.from('productos').insert(p).select('id').single();if(error){estado('No se guardó: '+error.message,true);$('guardar').disabled=false;return}const {error:ce}=await db.rpc('registrar_compra',{p_producto_id:data.id,p_fecha:String(f.get('fecha')),p_precio_compra:compra,p_unidades:unidades,p_proveedor:String(f.get('proveedor')||'')});$('guardar').disabled=false;if(ce){estado('Producto creado, pero la compra falló. No lo vuelvas a crear; registra la compra desde la lista. Detalle: '+ce.message,true);await cargar();return}formulario.reset();for(const campo of formulario.querySelectorAll('input[name]'))campo.value='';actualizarEtiquetasRegistro();productoSeleccionadoRegistro=null;$('avisoProductoExistente').textContent='';$('comprarProductoExistente').classList.add('hidden');mostrarSugerenciasRegistro();actualizarCostoPrevio();mostrarExitoProductoNuevo();await cargar();estado('Producto y compra guardados correctamente. Formulario limpio para registrar otro producto.')}catch(err){estado('No se pudo confirmar el registro: '+(err?.message||String(err))+'. Antes de intentar otra vez, pulsa Actualizar y comprueba si aparece el producto para evitar duplicados.',true)}finally{clearTimeout(avisoDemora);$('guardar').disabled=false}};
-
-const ampBucketComprobantes='comprobantes-costos-amphx';
-const ampSeleccionComprobantes=new Set();
-const ampDialogComprobantes=$('ampComprobantesDialog');
-const ampMensajeComprobantes=m=>{$('ampEstadoComprobantes').textContent=m;};
-function ampDibujarProductosComprobantes(){
- const q=$('ampBuscarComprobanteProducto').value.toLocaleUpperCase('es').trim();
- const cont=$('ampProductosComprobante');cont.replaceChildren();
- for(const p of productos.filter(p=>String(p.detalles||'').toLocaleUpperCase('es').includes(q)).sort((a,b)=>String(a.detalles).localeCompare(String(b.detalles),'es'))){
-  const label=document.createElement('label');label.style.display='block';
-  const input=document.createElement('input');input.type='checkbox';input.style.width='auto';input.checked=ampSeleccionComprobantes.has(p.id);
-  input.onchange=()=>{if(input.checked)ampSeleccionComprobantes.add(p.id);else ampSeleccionComprobantes.delete(p.id);$('ampVinculadosComprobante').textContent=ampSeleccionComprobantes.size+' productos seleccionados';};
-  label.append(input,document.createTextNode(' '+p.detalles));cont.append(label);
- }
- $('ampVinculadosComprobante').textContent=ampSeleccionComprobantes.size+' productos seleccionados';
-}
-async function ampListarComprobantes(){
- const cont=$('ampListaComprobantes');cont.textContent='Cargando…';
- const {data,error}=await db.from('comprobantes_costos').select('id,proveedor,numero,fecha,archivo_path,archivo_nombre,comprobantes_productos(producto_id)').order('fecha',{ascending:false}).order('id',{ascending:false}).limit(200);
- if(error){cont.textContent='Error: '+error.message;return;}
- cont.replaceChildren();if(!data.length){cont.textContent='Todavía no hay comprobantes.';return;}
- for(const c of data){
-  const item=document.createElement('div');item.style.padding='12px 0';item.style.borderBottom='1px solid #555';
-  const title=document.createElement('strong');title.textContent=c.fecha+' · '+c.proveedor+(c.numero?' · '+c.numero:'');
-  const details=document.createElement('p');details.textContent=(c.comprobantes_productos||[]).map(v=>productos.find(p=>String(p.id)===String(v.producto_id))?.detalles||('Producto '+v.producto_id)).join(', ')||'Sin productos vinculados';
-  const btn=document.createElement('button');btn.type='button';btn.className='alt';btn.textContent='Ver fotografía';
-  btn.onclick=async()=>{const {data,error}=await db.storage.from(ampBucketComprobantes).createSignedUrl(c.archivo_path,600);if(error){ampMensajeComprobantes(error.message);return;}const img=document.createElement('img');img.src=data.signedUrl;img.alt=c.archivo_nombre;img.style.cssText='display:block;max-width:100%;max-height:65vh;object-fit:contain;margin:10px auto';const old=item.querySelector('img');if(old)old.remove();else item.append(img);};
-  item.append(title,details,btn);cont.append(item);
- }
-}
-$('ampAbrirComprobantes').onclick=()=>{window.location.assign('./comprobantes-costos.html?v=2610837');};
-$('ampCerrarComprobantes').onclick=()=>ampDialogComprobantes.close();
-$('ampBuscarComprobanteProducto').oninput=ampDibujarProductosComprobantes;
-$('ampActualizarComprobantes').onclick=()=>void ampListarComprobantes();
-$('ampComprobantesForm').onsubmit=async e=>{
- e.preventDefault();const form=e.currentTarget,f=new FormData(form),button=$('ampGuardarComprobantes');
- const files=[...$('ampArchivosComprobantes').files,...$('ampCamaraComprobante').files];
- const proveedor=String(f.get('proveedor')||'').trim().toLocaleUpperCase('es'),fecha=String(f.get('fecha')||''),numero=String(f.get('numero')||'').trim()||null;
- if(!proveedor||!fecha||!files.length){ampMensajeComprobantes('Completa proveedor, fecha y selecciona al menos una fotografía.');return;}
- if(files.some(file=>!file.type.startsWith('image/')||file.size>20*1024*1024)){ampMensajeComprobantes('Solo imágenes de hasta 20 MB.');return;}
- button.disabled=true;let guardadas=0;
- try{
-  const ids=[...ampSeleccionComprobantes];
-  for(const file of files){
-   ampMensajeComprobantes('Guardando '+(guardadas+1)+' de '+files.length+'…');
-   const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').slice(0,8)||'jpg';
-   const ruta=fecha+'/'+crypto.randomUUID()+'.'+ext;
-   const upload=await db.storage.from(ampBucketComprobantes).upload(ruta,file,{contentType:file.type,upsert:false});
-   if(upload.error)throw upload.error;
-   const registro=await db.from('comprobantes_costos').insert({proveedor,fecha,numero,archivo_path:ruta,archivo_nombre:file.name,archivo_tipo:file.type}).select('id').single();
-   if(registro.error){throw new Error('No se confirmó el registro de la imagen: '+registro.error.message);}
-   guardadas++;
-   if(ids.length){
-    const vinculo=await db.from('comprobantes_productos').insert(ids.map(producto_id=>({comprobante_id:registro.data.id,producto_id})));
-    if(vinculo.error)throw new Error('Fotografía guardada, pero no se pudo vincular: '+vinculo.error.message);
-   }
-  }
-  form.reset();ampSeleccionComprobantes.clear();ampDibujarProductosComprobantes();ampMensajeComprobantes(guardadas+' comprobantes guardados correctamente.');
- }catch(err){ampMensajeComprobantes('Guardadas: '+guardadas+'. '+(err.message||err)+'. Revisa la lista antes de volver a subir para evitar duplicados.');}
- finally{button.disabled=false;void ampListarComprobantes();}
-};
-
+$('productoForm').onsubmit=async e=>{e.preventDefault();const formulario=e.currentTarget;const f=new FormData(formulario);const p={detalles:String(f.get('detalles')).trim().toLocaleUpperCase('es'),unidad_medida:String(f.get('unidad_medida')||'unidad'),codigo_barras:String(f.get('codigo_barras')).trim()||null,categoria:String(f.get('categoria')).trim()||null,precio_venta:Number(f.get('precio_venta')),stock_minimo:Number(f.get('stock_minimo')||0),stock_ideal:Number(f.get('stock_ideal')||0)};const unidades=Number(f.get('unidades')),compra=Number(f.get('precio_compra'));if(productos.some(x=>normalizarBusqueda(x.detalles)===normalizarBusqueda(p.detalles))){estado('Este producto ya está registrado. Seleccionalo en las sugerencias y usá «Registrar otra compra». No se creó ningún producto duplicado.',true);return;}if(!p.detalles||!Number.isFinite(unidades)||unidades<=0||!Number.isFinite(compra)||compra<0||!Number.isFinite(p.precio_venta)||p.precio_venta<0||(p.unidad_medida!=='kg'&&!Number.isInteger(unidades))||(p.unidad_medida==='kg'&&Math.abs(unidades*1000-Math.round(unidades*1000))>0.00001)){estado('Revisa los datos del producto.',true);return} $('guardar').disabled=true;estado('Guardando…');let avisoDemora=setTimeout(()=>estado('La operación está tardando más de 20 segundos. No vuelvas a guardar ni cierres esta página: estamos esperando confirmación de Supabase.'),20000);try{const {data,error}=await db.from('productos').insert(p).select('id').single();if(error){estado('No se guardó: '+error.message,true);$('guardar').disabled=false;return}const {error:ce}=await db.rpc('registrar_compra',{p_producto_id:data.id,p_fecha:String(f.get('fecha')),p_precio_compra:compra,p_unidades:unidades,p_proveedor:String(f.get('proveedor')||'')});$('guardar').disabled=false;if(ce){estado('Producto creado, pero la compra falló. No lo vuelvas a crear; registra la compra desde la lista. Detalle: '+ce.message,true);await cargar();return}formulario.reset();for(const campo of formulario.querySelectorAll('input[name]'))campo.value='';actualizarEtiquetasRegistro();productoSeleccionadoRegistro=null;$('avisoProductoExistente').textContent='';$('comprarProductoExistente').classList.add('hidden');mostrarSugerenciasRegistro();actualizarCostoPrevio();mostrarExitoProductoNuevo();await cargar();estado('Producto y compra guardados correctamente. Formulario limpio para registrar otro producto.')}catch(err){estado('No se pudo confirmar el registro: '+(err?.message||String(err))+'. Antes de intentar otra vez, pulsa Actualizar y comprueba si aparece el producto para evitar duplicados.',true)}finally{clearTimeout(avisoDemora);$('guardar').disabled=false}};
 prepararIndiceAlfabeticoCostos();
 $('ampVistaCostos').addEventListener('change',()=>{letraActivaCostos='';dibujar();});
 $('filtrarProveedorCostos').addEventListener('change',dibujar);

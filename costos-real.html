@@ -1327,6 +1327,11 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 <style id="amp-borrar-codigo-estilo">
 .amp-borrar-codigo{display:inline-flex;align-items:center;justify-content:center;margin-left:7px;padding:3px 7px;min-width:31px;min-height:31px;border:1px solid #bd8585;border-radius:7px;background:rgba(110,20,20,.15);color:#eac5c5;cursor:pointer;vertical-align:middle;font-size:17px}
 .amp-borrar-codigo:disabled{opacity:.45;cursor:wait}
+</style><style id="amp-codigo-ficha-visible">
+#ampEditorFichaCompleta .amp-fila-codigo-borrable{display:flex;align-items:stretch;gap:8px;width:100%}
+#ampEditorFichaCompleta .amp-fila-codigo-borrable input{flex:1;min-width:0;width:1px}
+#ampEditorFichaCompleta .amp-borrar-codigo-ficha{flex:none;min-width:49px;min-height:45px;font-size:22px;background:#b72f38;color:#fff;border:2px solid #8e1722;border-radius:9px}
+#ampEditorFichaCompleta .amp-borrar-codigo-ficha:disabled{opacity:.4}
 </style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><a href="./comparador-precios.html" style="display:inline-block;text-decoration:none;background:#29313b;color:#fff6de;border:1px solid #c0aa79;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
 <dialog id="configCuentaDialogAMPHX" style="border:1px solid #ccd8e0;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label>Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
 <section id="app" class="hidden"><h2>Registrar producto y compra</h2><p class="muted">La primera compra crea existencias. Si vuelves a comprar el mismo producto, utiliza su botón «Registrar otra compra».</p><form id="productoForm"><div class="fields"><div class="field wide"><label>Producto</label><div class="busqueda-wrap" style="width:100%;max-width:none"><input name="detalles" required placeholder="Ej. Pipoca" autocomplete="off" aria-controls="sugerenciasRegistro" aria-autocomplete="list" aria-expanded="false"><div id="sugerenciasRegistro" class="sugerencias hidden" role="listbox" aria-label="Productos ya registrados"></div></div><small id="avisoProductoExistente" class="muted" role="status"></small><button id="comprarProductoExistente" type="button" class="alt hidden">Registrar otra compra de este producto</button></div><div class="field"><label>Código de barras (opcional)</label><input name="codigo_barras" inputmode="numeric" autocomplete="off"><button type="button" id="abrirEscaner" class="alt" style="margin-top:8px;width:100%">📷 Escanear código</button><div id="zonaEscaner" class="hidden" style="margin-top:10px"><div id="lectorCodigo" style="width:100%;max-width:440px;margin:auto"></div><p id="mensajeEscaner" class="muted" role="status">Preparando cámara…</p><button type="button" id="cerrarEscaner" class="alt" style="width:100%">Cerrar cámara</button></div></div><div class="field"><label>Categoría</label><input name="categoria"></div><div class="field"><label for="unidadMedidaRegistro">¿CÓMO SE VENDE ESTE PRODUCTO?</label><select id="unidadMedidaRegistro" name="unidad_medida"><option value="unidad">UNIDADES</option><option value="kg">KILOGRAMOS (KG)</option></select></div><div class="field"><label id="labelPrecioVentaRegistro">Precio venta por unidad (Bs)</label><input name="precio_venta" type="number" min="0" step=".01" required></div><div class="field"><label>Precio compra del paquete (Bs)</label><input name="precio_compra" type="number" min="0" step=".01" required></div><div class="field"><label id="labelCantidadRegistro">Unidades compradas</label><input name="unidades" type="number" min="1" step="1" inputmode="numeric" required></div><div class="field"><label id="labelCostoUnitarioRegistro">Costo calculado por unidad</label><output id="costoUnitarioPrevio" class="calculo" aria-live="polite">Introduce el costo total y las unidades</output></div><div class="field"><label id="labelGananciaUnitarioRegistro">Ganancia estimada por unidad</label><output id="gananciaUnidadPrevia" class="calculo">—</output></div><div class="field"><label>Ganancia total estimada del paquete</label><output id="gananciaTotalPrevia" class="calculo">—</output></div><div class="field"><label>Proveedor</label><input name="proveedor"></div><div class="field"><label>Fecha de compra</label><input name="fecha" type="date" required></div><div class="field"><label>Stock mínimo</label><input name="stock_minimo" type="number" min="0" step="any" value="0"></div><div class="field"><label>Stock ideal</label><input name="stock_ideal" type="number" min="0" step="any" value="0"></div></div><div class="actions"><button type="submit" id="guardar">Guardar producto y compra</button></div></form></section>
@@ -1958,6 +1963,39 @@ function ampCrearEditorFicha(){
  }
  campo('nombre','Nombre del producto','text',true,grid);
  campo('codigo','Código de barras','text',false,grid);
+ const cajaCodigo=ampFichaInputs.codigo.parentElement;
+ const filaCodigo=document.createElement('div');filaCodigo.className='amp-fila-codigo-borrable';
+ ampFichaInputs.codigo.replaceWith(filaCodigo);
+ filaCodigo.append(ampFichaInputs.codigo);
+ const borrarCodigoFicha=document.createElement('button');
+ borrarCodigoFicha.type='button';borrarCodigoFicha.className='amp-borrar-codigo amp-borrar-codigo-ficha';
+ borrarCodigoFicha.textContent='🗑️';borrarCodigoFicha.title='Borrar solamente este código de barras';
+ borrarCodigoFicha.setAttribute('aria-label','Borrar código de barras de la ficha');
+ borrarCodigoFicha.onclick=async()=>{
+  const p=ampFichaProducto;
+  if(!p)return;
+  const codigoActual=String(p.codigo_barras||'').trim();
+  if(!codigoActual){
+   ampFichaInputs.codigo.value='';
+   borrarCodigoFicha.disabled=true;
+   return;
+  }
+  if(!confirm('¿Borrar el código '+codigoActual+' de '+p.detalles+'? El producto y sus precios permanecerán intactos.'))return;
+  borrarCodigoFicha.disabled=true;
+  try{
+   const {data,error}=await db.from('productos').update({codigo_barras:null}).eq('id',p.id).eq('codigo_barras',codigoActual).select('id,codigo_barras');
+   if(error)throw error;
+   if(!Array.isArray(data)||data.length!==1||data[0].codigo_barras!==null)throw Error('No se confirmó el borrado.');
+   ampFichaInputs.codigo.value='';
+   p.codigo_barras=null;
+   ampFichaOriginal.esperado.codigo_barras='';
+   await cargar();
+   estado('Código borrado correctamente. Producto y precios conservados.');
+  }catch(e){document.getElementById('ampFichaError').textContent='No se pudo borrar el código: '+String(e.message||e);}
+  finally{borrarCodigoFicha.disabled=false;}
+ };
+ ampFichaInputs.codigo.addEventListener('input',()=>{borrarCodigoFicha.disabled=!ampFichaInputs.codigo.value.trim();});
+ cajaCodigo.append();
  campo('categoria','Categoría','text',false,grid);
  campo('unidad','Cómo se vende','select',false,grid);
  campo('stock','Existencias actuales (valor manual)','number',false,grid);
@@ -2017,6 +2055,7 @@ function ampAbrirFichaCompleta(p){
  }};
  const poner=(id,val)=>{ampFichaInputs[id].value=val===undefined||val===null?'':String(val);};
  poner('nombre',p.detalles);poner('codigo',p.codigo_barras);poner('categoria',p.categoria);
+ d.querySelector('.amp-borrar-codigo-ficha').disabled=!String(p.codigo_barras||'').trim();
  poner('unidad',p.unidad_medida||'unidad');poner('stock',stock);
  poner('minimo',p.stock_minimo??0);poner('ideal',p.stock_ideal??0);
  poner('venta',p.precio_venta??0);poner('costoActual',cu);

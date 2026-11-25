@@ -1989,6 +1989,7 @@ function ampCrearEditorFicha(){
   const p=ampFichaProducto;
   if(!p)return;
   const codigoActual=String(p.codigo_barras||'').trim();
+  if(/^AMPHX[0-9]{6}$/.test(codigoActual)){document.getElementById('ampFichaError').textContent='El código AMPHX es permanente y no se puede borrar.';return;}
   if(!codigoActual){
    ampFichaInputs.codigo.value='';
    borrarCodigoFicha.disabled=true;
@@ -2072,7 +2073,8 @@ function ampAbrirFichaCompleta(p){
  }};
  const poner=(id,val)=>{ampFichaInputs[id].value=val===undefined||val===null?'':String(val);};
  poner('nombre',p.detalles);poner('codigo',p.codigo_barras);poner('categoria',p.categoria);
- d.querySelector('.amp-borrar-codigo-ficha').disabled=!String(p.codigo_barras||'').trim();
+ d.querySelector('.amp-borrar-codigo-ficha').disabled=!String(p.codigo_barras||'').trim()||/^AMPHX[0-9]{6}$/.test(String(p.codigo_barras));
+ ampFichaInputs.codigo.readOnly=/^AMPHX[0-9]{6}$/.test(String(p.codigo_barras));
  poner('unidad',p.unidad_medida||'unidad');poner('stock',stock);
  poner('minimo',p.stock_minimo??0);poner('ideal',p.stock_ideal??0);
  poner('venta',p.precio_venta??0);poner('costoActual',cu);
@@ -2676,7 +2678,7 @@ function dibujar(){
   tdNombre.append(nombreFilaHoja(p));
   const existencia=document.createElement('small');existencia.className='sheet-stock-note';
   existencia.textContent='Existencias: '+conMedida(d.stock,p)+' · '+(p.codigo_barras?'Código: '+p.codigo_barras:'Sin código de barras');
-  tdNombre.append(existencia);if(p.codigo_barras)tdNombre.append(ampBotonBasuraCodigo(p));tr.append(tdNombre);
+  tdNombre.append(existencia);if(p.codigo_barras&&!/^AMPHX[0-9]{6}$/.test(String(p.codigo_barras)))tdNombre.append(ampBotonBasuraCodigo(p));tr.append(tdNombre);
   if(compra){configurarEditorFila(p,compra,tr,false);}
   else{
    const empty=document.createElement('td');empty.colSpan=7;empty.textContent='Este producto no tiene una compra registrada. Registrá una para editar los costos de su paquete.';
@@ -2700,7 +2702,7 @@ function dibujar(){
     dato.textContent+=' · Ingresado: '+fecha.toLocaleDateString('es-BO')+' '+fecha.toLocaleTimeString('es-BO',{hour:'2-digit',minute:'2-digit'});
    }
   }
-  card.append(dato);if(p.codigo_barras)dato.append(' ',ampBotonBasuraCodigo(p));
+  card.append(dato);if(p.codigo_barras&&!/^AMPHX[0-9]{6}$/.test(String(p.codigo_barras)))dato.append(' ',ampBotonBasuraCodigo(p));
   if(compra)configurarEditorFila(p,compra,card,true);
   else{
    const note=document.createElement('p');note.className='muted';note.textContent='Sin compra registrada. Añadí una compra para habilitar esta fila.';

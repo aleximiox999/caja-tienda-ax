@@ -1515,8 +1515,9 @@ input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-forma
 (function(){
  let iniciado=false;
  const mostrarFallo=function(detalle){
-  if(iniciado)return;
   const e=document.getElementById('estado');
+  const esperando=!!e && /Conectando de forma segura|Comprobando sesión guardada|Abriendo fichas/i.test(e.textContent||'');
+  if(iniciado&&!esperando)return;
   const acceso=document.getElementById('accesoCargando');
   const reintentar=document.getElementById('reintentarAcceso');
   if(e){e.textContent='COSTOS no pudo completar el inicio. '+detalle+' Probá REINTENTAR ACCESO o recargá la página.';e.classList.add('error');}
@@ -1524,9 +1525,9 @@ input[type="search"],textarea,[contenteditable="true"]:not([data-conservar-forma
   if(reintentar){reintentar.classList.remove('hidden');reintentar.onclick=()=>{const u=new URL(location.href);u.searchParams.set('v',String(Date.now()));location.replace(u.href);};}
  };
  window.addEventListener('amphx-costos-ready',()=>{iniciado=true;});
- window.addEventListener('error',e=>{if(!iniciado)mostrarFallo('Error al iniciar: '+(e.message||'recurso no disponible')+'.');});
- window.addEventListener('unhandledrejection',e=>{if(!iniciado)mostrarFallo('No se pudo cargar una dependencia: '+String(e.reason?.message||e.reason||'error de conexión')+'.');});
- setTimeout(()=>{if(!iniciado)mostrarFallo('No se recibió respuesta del módulo de inicio; puede fallar la conexión con la biblioteca de Supabase.');},12000);
+ window.addEventListener('error',e=>{mostrarFallo('Error al iniciar: '+(e.message||'recurso no disponible')+'.');});
+ window.addEventListener('unhandledrejection',e=>{mostrarFallo('No se pudo cargar una dependencia: '+String(e.reason?.message||e.reason||'error de conexión')+'.');});
+ setTimeout(()=>{mostrarFallo('El inicio está tardando o quedó interrumpido.');},12000);
 })();
 </script>
 <script type="module">

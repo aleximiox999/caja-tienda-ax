@@ -1457,7 +1457,7 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 <div id="ampIconHelp" class="amp-icon-help" role="status" aria-live="polite"></div>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
-import {iniciarEtiquetasAmphx} from './amp-etiquetas-word.js?v=20261125-fichas-visibles';
+import {iniciarEtiquetasAmphx} from './amp-etiquetas-word.js?v=20261125-fila-etiquetas-3';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 window.dispatchEvent(new Event('amphx-costos-ready'));
 const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -2290,10 +2290,7 @@ function accionesFilaHoja(p){
   btn.onclick=()=>{ampOcultarVistaFotoTarjeta();accion();};
   tools.append(btn);
  }
- const accionesProducto=document.createDocumentFragment();
- // Primero la fila de etiquetas y después la fila original de iconos.
- accionesProducto.append(ampEtiquetasUI.botones(p),tools);
- return accionesProducto;
+ return tools;
 }
 
 /* Panel reutilizable: historial ordenado por FECHA DE FACTURA, no fecha de carga.
@@ -2542,7 +2539,7 @@ function configurarEditorFila(p,compra,superficie,movil){
  const tools=accionesFilaHoja(p);
  const statusRow=document.createElement('div');statusRow.className='amp-card-status-row';
  statusRow.append(save,ampCrearMarcasColor(p));
- action.append(statusRow,tools,err);superficie.append(action);
+ action.append(statusRow,ampEtiquetasUI.botones(p),tools,err);superficie.append(action);
  let guardando=false,edicionAutorizada=false;
  superficie.ampDesbloquearCostos=claves=>{
   edicionAutorizada=true;
@@ -2713,7 +2710,7 @@ function dibujar(){
    tr.append(empty);
    const action=document.createElement('td');
    const statusRow=document.createElement('div');statusRow.className='amp-card-status-row';statusRow.append(ampCrearMarcasColor(p));
-   action.append(statusRow,accionesFilaHoja(p));tr.append(action);
+   action.append(statusRow,ampEtiquetasUI.botones(p),accionesFilaHoja(p));tr.append(action);
   }
   $('filas').append(tr);
   const card=document.createElement('article');card.className='card sheet-card';card.dataset.productoId=String(p.id);
@@ -2738,7 +2735,7 @@ function dibujar(){
    const statusRow=document.createElement('div');statusRow.className='amp-card-status-row';
    const sinCompra=document.createElement('small');sinCompra.className='amp-sin-compra';sinCompra.textContent='Sin compra';
    statusRow.append(sinCompra,ampCrearMarcasColor(p));
-   acciones.append(statusRow,accionesFilaHoja(p));card.append(note,acciones);
+   acciones.append(statusRow,ampEtiquetasUI.botones(p),accionesFilaHoja(p));card.append(note,acciones);
   }
   $('tarjetas').append(card);
  }

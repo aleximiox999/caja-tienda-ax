@@ -196,6 +196,8 @@ export function iniciarEtiquetasAmphx({db,getProductos,recargar,estado,onCodigoG
    '.amp-botones-etiquetas .amp-etiqueta-generar{background:#0c7598!important;color:white!important}'+
    '.amp-botones-etiquetas .amp-etiqueta-word{background:#1b4b7a!important;color:white!important}'+
    '.amp-botones-etiquetas button:disabled{opacity:.36}'+
+   '#listado .sheet-card .sheet-actions>.sheet-tools>.amp-botones-etiquetas{grid-column:1/-1!important;grid-row:2!important;justify-self:stretch!important;display:flex!important;flex-flow:row wrap!important;gap:6px!important;width:100%!important;max-width:100%!important;min-width:0!important;padding:8px 0 2px!important;border-top:1px solid #d8e4ec!important;margin-top:3px!important}'+
+   '#listado .sheet-card .sheet-actions>.sheet-tools>.amp-botones-etiquetas>button{flex:1 1 115px!important;max-width:none!important;width:auto!important;height:auto!important;min-height:40px!important;aspect-ratio:auto!important;white-space:normal!important;padding:8px 6px!important;font-size:11px!important;line-height:1.2!important}'+
    '#ampFichaCodigoInternoControles{grid-column:1/-1}';
   document.head.append(css);
   const section=document.createElement('section');section.id='ampPanelEtiquetas';

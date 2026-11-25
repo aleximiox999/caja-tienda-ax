@@ -1431,7 +1431,7 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 <div id="ampIconHelp" class="amp-icon-help" role="status" aria-live="polite"></div>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
-import {iniciarEtiquetasAmphx} from './amp-etiquetas-word.js';
+import {iniciarEtiquetasAmphx} from './amp-etiquetas-word.js?v=20261125-fichas-visibles';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 window.dispatchEvent(new Event('amphx-costos-ready'));
 const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});

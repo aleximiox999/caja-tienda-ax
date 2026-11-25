@@ -2115,7 +2115,7 @@ function ampCrearEditorFicha(){
  let d=document.getElementById('ampEditorFichaCompleta');
  if(d)return d;
  const estilo=document.createElement('style');
- estilo.textContent='#ampEditorFichaCompleta{width:min(96vw,760px);max-width:96vw;max-height:92dvh;overflow:auto;border:1px solid #a4bac9;border-radius:17px;padding:22px;background:#f8fbfe;color:#192c41;box-shadow:0 18px 65px #02091495}#ampEditorFichaCompleta::backdrop{background:#071626bd}#ampEditorFichaCompleta .amp-ficha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#ampEditorFichaCompleta .amp-ficha-campo{display:block;min-width:0}#ampEditorFichaCompleta label{display:block;font-weight:750;margin-bottom:5px}#ampEditorFichaCompleta input,#ampEditorFichaCompleta select,#ampEditorFichaCompleta textarea{width:100%;padding:11px;border:1px solid #b9c9d4;border-radius:9px;background:white;color:#182d40;font:inherit}#ampEditorFichaCompleta .amp-ficha-ancho{grid-column:1/-1}#ampEditorFichaCompleta fieldset{min-width:0;margin:15px 0;padding:14px;border:1px solid #c5d4df;border-radius:12px}#ampEditorFichaCompleta legend{font-weight:800;padding:0 7px}#ampEditorFichaCompleta .amp-ficha-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}#ampEditorFichaCompleta .amp-ficha-error{color:#a22720;font-weight:750;white-space:pre-wrap}#ampEditorFichaCompleta .amp-ficha-aviso{color:#4f6275;font-size:13px;margin:8px 0}#ampEditorFichaCompleta .amp-ficha-preview{background:#eaf3ef;padding:12px;border-radius:10px;margin-top:12px;font-weight:700}@media(max-width:560px){#ampEditorFichaCompleta{padding:13px}#ampEditorFichaCompleta .amp-ficha-grid{grid-template-columns:1fr}}';
+ estilo.textContent='#ampEditorFichaCompleta{width:min(96vw,760px);max-width:96vw;max-height:92dvh;overflow:auto;border:1px solid #a4bac9;border-radius:17px;padding:22px;background:#f8fbfe;color:#192c41;box-shadow:0 18px 65px #02091495}#ampEditorFichaCompleta::backdrop{background:#071626bd}#ampEditorFichaCompleta .amp-ficha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#ampEditorFichaCompleta .amp-ficha-campo{display:block;min-width:0}#ampEditorFichaCompleta label{display:block;font-weight:750;margin-bottom:5px}#ampEditorFichaCompleta input,#ampEditorFichaCompleta select,#ampEditorFichaCompleta textarea{width:100%;padding:11px;border:1px solid #b9c9d4;border-radius:9px;background:white;color:#182d40;font:inherit}#ampEditorFichaCompleta .amp-ficha-ancho{grid-column:1/-1}#ampEditorFichaCompleta fieldset{min-width:0;margin:15px 0;padding:14px;border:1px solid #c5d4df;border-radius:12px}#ampEditorFichaCompleta legend{font-weight:800;padding:0 7px}#ampEditorFichaCompleta .amp-ficha-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}#ampEditorFichaCompleta .amp-ficha-error{color:#a22720;font-weight:750;white-space:pre-wrap}#ampEditorFichaCompleta .amp-ficha-aviso{color:#4f6275;font-size:13px;margin:8px 0}#ampEditorFichaCompleta .amp-ficha-preview{background:#eaf3ef;padding:12px;border-radius:10px;margin-top:12px;font-weight:700}#ampEditorFichaCompleta .amp-ficha-costo-resultado{display:block;min-height:45px;padding:12px;border:1px solid #8aa39e;border-radius:9px;background:linear-gradient(135deg,#354445 0%,#1a272a 50%,#344548 100%);color:#effdf7;font-weight:800;font-size:16px;box-shadow:inset 0 1px 1px #ffffff26;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#ampEditorFichaCompleta #ampFichaGrupoCompra{border-color:#94ada9;background:#e7f0ee}@media(max-width:560px){#ampEditorFichaCompleta{padding:13px}#ampEditorFichaCompleta .amp-ficha-grid{grid-template-columns:1fr}}';
  document.head.append(estilo);
  d=document.createElement('dialog');d.id='ampEditorFichaCompleta';
  const h=document.createElement('h2');h.textContent='EDITAR TODA LA FICHA';h.style.margin='0 0 6px';
@@ -2137,24 +2137,30 @@ function ampCrearEditorFicha(){
   caja.append(lab,ctl);contenedor.append(caja);ampFichaInputs[id]=ctl;
  }
  campo('nombre','Nombre del producto','text',true,grid);
- campo('codigo','Código de barras','text',false,grid);
- campo('categoria','Categoría','text',false,grid);
- campo('unidad','Cómo se vende','select',false,grid);
- campo('stock','Existencias actuales (valor manual)','number',false,grid);
- campo('minimo','Stock mínimo','number',false,grid);
- campo('ideal','Stock ideal','number',false,grid);
- campo('venta','Precio de venta (Bs)','number',false,grid);
- campo('costoActual','Costo unitario actual (Bs)','number',false,grid);
- campo('proveedor','Proveedor','text',true,grid);
  form.append(grid);
  const fact=document.createElement('fieldset');fact.id='ampFichaGrupoCompra';
  const leg=document.createElement('legend');leg.textContent='Última compra registrada';fact.append(leg);
  const compraGrid=document.createElement('div');compraGrid.className='amp-ficha-grid';
  campo('precioCompra','Precio total de compra (Bs)','number',false,compraGrid);
  campo('cantidadCompra','Cantidad comprada','number',false,compraGrid);
+ const costoCaja=document.createElement('div');costoCaja.className='amp-ficha-campo amp-ficha-ancho';
+ const costoLabel=document.createElement('label');costoLabel.htmlFor='ampFichaCostoCalculado';costoLabel.textContent='COSTO UNITARIO DE LA ÚLTIMA COMPRA';
+ const costoOutput=document.createElement('output');costoOutput.id='ampFichaCostoCalculado';costoOutput.className='amp-ficha-costo-resultado';
+ costoOutput.setAttribute('aria-live','polite');costoOutput.textContent='Ingresá importe y cantidad';
+ costoCaja.append(costoLabel,costoOutput);compraGrid.append(costoCaja);
+ campo('venta','Precio de venta en tienda (Bs por unidad o kg)','number',true,compraGrid);
  campo('fechaCompra','Fecha de compra','date',false,compraGrid);
  campo('observaciones','Observaciones de la compra','textarea',true,compraGrid);
  fact.append(compraGrid);form.append(fact);
+ const detallesGrid=document.createElement('div');detallesGrid.className='amp-ficha-grid';
+ campo('codigo','Código de barras','text',false,detallesGrid);
+ campo('categoria','Categoría (rellenar manualmente)','text',false,detallesGrid);
+ campo('unidad','Cómo se vende','select',false,detallesGrid);
+ campo('stock','Existencias actuales (valor manual)','number',false,detallesGrid);
+ campo('minimo','Stock mínimo','number',false,detallesGrid);
+ campo('ideal','Stock ideal','number',false,detallesGrid);
+ campo('proveedor','Proveedor','text',true,detallesGrid);
+ form.append(detallesGrid);
  const preview=document.createElement('div');preview.id='ampFichaVistaPrevia';preview.className='amp-ficha-preview';preview.setAttribute('aria-live','polite');form.append(preview);
  const error=document.createElement('p');error.id='ampFichaError';error.className='amp-ficha-error';error.setAttribute('role','alert');form.append(error);
  const acciones=document.createElement('div');acciones.className='amp-ficha-acciones';
@@ -2163,16 +2169,27 @@ function ampCrearEditorFicha(){
  acciones.append(guardar,cancelar);form.append(acciones);
  d.append(h,guia,form);document.body.append(d);
  const vista=()=>{
-  const venta=Number(ampFichaInputs.venta.value),costo=Number(ampFichaInputs.costoActual.value);
+  const venta=Number(ampFichaInputs.venta.value);
   const total=Number(ampFichaInputs.precioCompra.value),cantidad=Number(ampFichaInputs.cantidadCompra.value);
   const unidad=ampFichaInputs.unidad.value==='kg'?'kg':'unidad';
+  const hayCompra=!!ampFichaOriginal?.compra&&ampFichaInputs.precioCompra.value.trim()!==''&&ampFichaInputs.cantidadCompra.value.trim()!==''&&Number.isFinite(total)&&total>=0&&Number.isFinite(cantidad)&&cantidad>0;
+  const costoCompra=hayCompra?Number((total/cantidad).toFixed(4)):null;
+  const costo=hayCompra?costoCompra:Number(ampFichaOriginal?.esperado?.costo_unitario||0);
+  const salidaCosto=document.getElementById('ampFichaCostoCalculado');
+  if(salidaCosto)salidaCosto.textContent=hayCompra
+   ?bs(costoCompra)+' / '+unidad+'  ('+bs(total)+' ÷ '+cantidad.toLocaleString('es-BO')+')'
+   :'Ingresá un precio total y cantidad mayor que cero';
+  const hayPrecio=ampFichaInputs.venta.value.trim()!==''&&Number.isFinite(venta)&&venta>0;
   const partes=[];
-  if(!fact.disabled&&cantidad>0&&Number.isFinite(total))partes.push('Costo de la compra: '+bs(total/cantidad)+' / '+unidad);
-  if(Number.isFinite(venta)&&Number.isFinite(costo)){
-   partes.push('Utilidad por '+unidad+': '+bs(venta-costo));
-   partes.push('Margen: '+(venta>0?((venta-costo)/venta*100).toFixed(2)+' %':'pendiente'));
-  }
-  preview.textContent=partes.join('  ·  ')||'Introducí precios y cantidades para ver resultados.';
+  if(hayCompra)partes.push('Costo por '+unidad+' de la compra: '+bs(costoCompra));
+  else partes.push('Ingresá monto y cantidad para calcular el costo por '+unidad);
+  if(hayPrecio&&Number.isFinite(costo)&&costo>=0){
+   const utilidad=venta-costo;
+   partes.push('Ganancia por '+unidad+': '+bs(utilidad));
+   if(hayCompra)partes.push('Ganancia total del paquete: '+bs(utilidad*cantidad));
+   partes.push('Margen: '+((utilidad/venta)*100).toFixed(2)+' %');
+  }else partes.push('Ganancia pendiente: ingresá precio de venta válido');
+  preview.textContent=partes.join('  ·  ')+' · Los descuentos de proveedor se registran aparte.';
  };
  form.addEventListener('input',vista);form.addEventListener('change',vista);
  form.addEventListener('submit',ampGuardarFichaCompleta);
@@ -2196,15 +2213,17 @@ function ampAbrirFichaCompleta(p){
   observaciones:c?String(c.observaciones||''):null
  }};
  const poner=(id,val)=>{ampFichaInputs[id].value=val===undefined||val===null?'':String(val);};
- poner('nombre',p.detalles);poner('codigo',p.codigo_barras);poner('categoria',p.categoria);
+ poner('nombre',p.detalles);poner('codigo',p.codigo_barras);poner('categoria','');
  poner('unidad',p.unidad_medida||'unidad');poner('stock',stock);
  poner('minimo',p.stock_minimo??0);poner('ideal',p.stock_ideal??0);
- poner('venta',p.precio_venta??0);poner('costoActual',cu);
+ poner('venta',p.precio_venta??0);
  poner('proveedor',c?.proveedor??cost?.proveedor??'');
  poner('precioCompra',c?.precio_compra);poner('cantidadCompra',c?.unidades);
  poner('fechaCompra',c?.fecha?String(c.fecha).slice(0,10):'');
  poner('observaciones',c?.observaciones??'');
- const grupo=document.getElementById('ampFichaGrupoCompra');grupo.disabled=!c;
+ const grupo=document.getElementById('ampFichaGrupoCompra');
+ grupo.disabled=false;
+ for(const id of ['precioCompra','cantidadCompra','fechaCompra','observaciones'])ampFichaInputs[id].disabled=!c;
  grupo.querySelector('legend').textContent=c?'Última compra registrada #'+c.id:'Sin compra registrada (editá los datos del producto)';
  document.getElementById('ampFichaError').textContent='';
  document.getElementById('ampFichaGuardar').disabled=false;
@@ -2220,7 +2239,7 @@ async function ampGuardarFichaCompleta(e){
  err.textContent='';
  const p=ampFichaProducto,original=ampFichaOriginal,c=original.compra;
  const n=id=>{const val=ampFichaInputs[id].value.trim();return val===''?null:Number(val);};
- const enteros=['stock','minimo','ideal','venta','costoActual'];
+ const enteros=['stock','minimo','ideal','venta'];
  if(!form.reportValidity()||enteros.some(x=>!Number.isFinite(n(x))||n(x)<0)||
     (c&&(!Number.isFinite(n('cantidadCompra'))||n('cantidadCompra')<=0||!Number.isFinite(n('precioCompra'))||n('precioCompra')<0))){
   err.textContent='Revisá los campos marcados. La compra necesita cantidad mayor a cero; las existencias y precios no pueden ser negativos.';return;
@@ -2228,6 +2247,8 @@ async function ampGuardarFichaCompleta(e){
  if(!ampFichaInputs.nombre.value.trim()||ampFichaInputs.nombre.value.trim().length<2){
   err.textContent='Escribí un nombre de producto válido.';return;
  }
+ const costoCalculado=c?Math.round((n('precioCompra')/n('cantidadCompra'))*10000)/10000:Number(original.esperado.costo_unitario||0);
+ if(!Number.isFinite(costoCalculado)||costoCalculado<0){err.textContent='Revisá precio y cantidad de compra para calcular el costo unitario.';return;}
  const args={
   p_producto_id:p.id,p_compra_id:c?.id??null,
   p_detalles:ampFichaInputs.nombre.value.trim().toLocaleUpperCase('es'),
@@ -2238,7 +2259,7 @@ async function ampGuardarFichaCompleta(e){
   p_stock_minimo:n('minimo'),p_stock_ideal:n('ideal'),
   p_precio_venta:n('venta'),p_precio_compra:c?n('precioCompra'):null,
   p_unidades:c?n('cantidadCompra'):null,p_proveedor:ampFichaInputs.proveedor.value.trim(),
-  p_costo_unitario:n('costoActual'),p_fecha_compra:c?ampFichaInputs.fechaCompra.value:null,
+  p_costo_unitario:costoCalculado,p_fecha_compra:c?ampFichaInputs.fechaCompra.value:null,
   p_observaciones:c?ampFichaInputs.observaciones.value:null,p_esperado:original.esperado
  };
  ampFichaGuardando=true;boton.disabled=true;boton.textContent='Guardando todos los cambios…';

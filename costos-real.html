@@ -1429,8 +1429,35 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 })();
 </script>
 <div id="ampIconHelp" class="amp-icon-help" role="status" aria-live="polite"></div>
+<script id="ampInicioDiagnostico">
+(function(){
+ let iniciado=false;
+ const mostrarFallo=function(detalle){
+  if(iniciado)return;
+  const e=document.getElementById('estado');
+  const acceso=document.getElementById('accesoCargando');
+  const reintentar=document.getElementById('reintentarAcceso');
+  if(e){e.textContent='COSTOS no pudo completar el inicio. '+detalle+' Probá REINTENTAR ACCESO o recargá la página.';e.classList.add('error');}
+  if(acceso)acceso.classList.remove('hidden');
+  if(reintentar){reintentar.classList.remove('hidden');reintentar.onclick=()=>{const u=new URL(location.href);u.searchParams.set('v',String(Date.now()));location.replace(u.href);};}
+ };
+ window.addEventListener('amphx-costos-ready',()=>{iniciado=true;});
+ window.addEventListener('error',e=>{if(!iniciado)mostrarFallo('Error al iniciar: '+(e.message||'recurso no disponible')+'.');});
+ window.addEventListener('unhandledrejection',e=>{if(!iniciado)mostrarFallo('No se pudo cargar una dependencia: '+String(e.reason?.message||e.reason||'error de conexión')+'.');});
+ setTimeout(()=>{if(!iniciado)mostrarFallo('No se recibió respuesta del módulo de inicio; puede fallar la conexión con la biblioteca de Supabase.');},12000);
+})();
+</script>
 <script type="module">
-import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
+let createClient;
+try {
+ ({createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.0'));
+} catch (primaryError) {
+ try {
+  ({createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/+esm'));
+ } catch (backupError) {
+  throw new Error('No se pudo cargar Supabase desde los dos servidores. Revisá la conexión o bloqueadores de scripts. '+String(backupError?.message||backupError));
+ }
+}
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 window.dispatchEvent(new Event('amphx-costos-ready'));
 const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});

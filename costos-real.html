@@ -2011,16 +2011,23 @@ function ampCrearEditorFicha(){
  acciones.append(guardar,cancelar);form.append(acciones);
  d.append(h,guia,form);document.body.append(d);
  const vista=()=>{
-  const venta=Number(ampFichaInputs.venta.value),costo=Number(ampFichaInputs.costoActual.value);
+  const venta=Number(ampFichaInputs.venta.value),costoActual=Number(ampFichaInputs.costoActual.value);
   const total=Number(ampFichaInputs.precioCompra.value),cantidad=Number(ampFichaInputs.cantidadCompra.value);
   const unidad=ampFichaInputs.unidad.value==='kg'?'kg':'unidad';
+  const hayCompra=!fact.disabled&&ampFichaInputs.precioCompra.value.trim()!==''&&ampFichaInputs.cantidadCompra.value.trim()!==''&&Number.isFinite(total)&&total>=0&&Number.isFinite(cantidad)&&cantidad>0;
+  const costoCompra=hayCompra?Number((total/cantidad).toFixed(4)):null;
+  const costo=hayCompra?costoCompra:costoActual;
+  const hayPrecio=ampFichaInputs.venta.value.trim()!==''&&Number.isFinite(venta)&&venta>0;
   const partes=[];
-  if(!fact.disabled&&cantidad>0&&Number.isFinite(total))partes.push('Costo de la compra: '+bs(total/cantidad)+' / '+unidad);
-  if(Number.isFinite(venta)&&Number.isFinite(costo)){
-   partes.push('Utilidad por '+unidad+': '+bs(venta-costo));
-   partes.push('Margen: '+(venta>0?((venta-costo)/venta*100).toFixed(2)+' %':'pendiente'));
-  }
-  preview.textContent=partes.join('  ·  ')||'Introducí precios y cantidades para ver resultados.';
+  if(hayCompra)partes.push('Costo por '+unidad+' de la compra: '+bs(costoCompra));
+  else partes.push('Ingresá monto y cantidad para calcular el costo por '+unidad);
+  if(hayPrecio&&Number.isFinite(costo)&&costo>=0){
+   const utilidad=venta-costo;
+   partes.push('Ganancia por '+unidad+': '+bs(utilidad));
+   if(hayCompra)partes.push('Ganancia total del paquete: '+bs(utilidad*cantidad));
+   partes.push('Margen: '+((utilidad/venta)*100).toFixed(2)+' %');
+  }else partes.push('Ganancia pendiente: ingresá precio de venta válido');
+  preview.textContent=partes.join('  ·  ')+' · Los descuentos de proveedor se registran aparte.';
  };
  form.addEventListener('input',vista);form.addEventListener('change',vista);
  form.addEventListener('submit',ampGuardarFichaCompleta);
@@ -2478,13 +2485,16 @@ function configurarEditorFila(p,compra,superficie,movil){
   incluirCampo(clave,titulo);
   if(clave==='compra'){
    const normalizar=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+   // Los descuentos de factura se muestran por proveedor y fecha aunque no exista compra_id.
+   // NO se reparten entre productos ni se restan del precio de compra.
    const facturas=(window.ampDescuentosFacturas||[]).filter(d=>{
-    const prov=normalizar(compra.proveedor),registrado=normalizar(d.proveedor);
-    const proveedorCoincide=prov&&registrado&&(prov.includes(registrado)||registrado.includes(prov));
-    if(!proveedorCoincide)return false;
-    return (compras||[]).some(c=>Number(c.producto_id)===Number(p.id)&&
-      normalizar(c.proveedor)===prov&&String(c.fecha||'').slice(0,10)===String(d.fecha||'').slice(0,10)&&
-      (!d.numero_comprobante||String(c.observaciones||'').includes(String(d.numero_comprobante))));
+    const proveedorFactura=normalizar(d.proveedor),fechaFactura=String(d.fecha||'').slice(0,10);
+    if(!proveedorFactura||!fechaFactura)return false;
+    return (compras||[]).some(c=>{
+     if(Number(c.producto_id)!==Number(p.id)||String(c.fecha||'').slice(0,10)!==fechaFactura)return false;
+     const proveedorCompra=normalizar(c.proveedor);
+     return !!proveedorCompra&&(proveedorCompra.includes(proveedorFactura)||proveedorFactura.includes(proveedorCompra));
+    });
    }).sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))||Number(b.id)-Number(a.id));
    const cell=document.createElement(movil?'div':'td');
    cell.className=(movil?'sheet-mobile-row ':'')+'amp-descuento-ficha';
@@ -2494,7 +2504,7 @@ function configurarEditorFila(p,compra,superficie,movil){
    resumen.textContent=facturas.length?'ÚLTIMO: '+bs(Number(facturas[0].descuento||0))+' · '+String(facturas[0].fecha).slice(0,10):'SIN DESCUENTOS REGISTRADOS';
    detalles.append(resumen);
    if(facturas.length){
-    const nota=document.createElement('p');nota.textContent='BENEFICIO GENERAL DE LA TIENDA. NO SE RESTA DEL COSTO DE ESTE PRODUCTO.';detalles.append(nota);
+    const nota=document.createElement('p');nota.textContent='DESCUENTO DE FACTURA COMPLETA POR PROVEEDOR Y FECHA. NO SE RESTA DEL COSTO NI SE DISTRIBUYE ENTRE PRODUCTOS.';detalles.append(nota);
     for(const d of facturas){
      const item=document.createElement('p');
      item.textContent=String(d.fecha).slice(0,10)+' · FACTURA '+(d.numero_comprobante||'S/N')+' · DESCUENTO '+bs(Number(d.descuento||0))+' · TOTAL ORIGINAL '+bs(Number(d.monto_bruto||0));

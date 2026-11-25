@@ -1963,7 +1963,7 @@ function ampCrearEditorFicha(){
  let d=document.getElementById('ampEditorFichaCompleta');
  if(d)return d;
  const estilo=document.createElement('style');
- estilo.textContent='#ampEditorFichaCompleta{width:min(96vw,760px);max-width:96vw;max-height:92dvh;overflow:auto;border:1px solid #a4bac9;border-radius:17px;padding:22px;background:#f8fbfe;color:#192c41;box-shadow:0 18px 65px #02091495}#ampEditorFichaCompleta::backdrop{background:#071626bd}#ampEditorFichaCompleta .amp-ficha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#ampEditorFichaCompleta .amp-ficha-campo{display:block;min-width:0}#ampEditorFichaCompleta label{display:block;font-weight:750;margin-bottom:5px}#ampEditorFichaCompleta input,#ampEditorFichaCompleta select,#ampEditorFichaCompleta textarea{width:100%;padding:11px;border:1px solid #b9c9d4;border-radius:9px;background:white;color:#182d40;font:inherit}#ampEditorFichaCompleta .amp-ficha-ancho{grid-column:1/-1}#ampEditorFichaCompleta fieldset{min-width:0;margin:15px 0;padding:14px;border:1px solid #c5d4df;border-radius:12px}#ampEditorFichaCompleta legend{font-weight:800;padding:0 7px}#ampEditorFichaCompleta .amp-ficha-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}#ampEditorFichaCompleta .amp-ficha-error{color:#a22720;font-weight:750;white-space:pre-wrap}#ampEditorFichaCompleta .amp-ficha-aviso{color:#4f6275;font-size:13px;margin:8px 0}#ampEditorFichaCompleta .amp-ficha-preview{background:#eaf3ef;padding:12px;border-radius:10px;margin-top:12px;font-weight:700}#ampEditorFichaCompleta .amp-ficha-costo-resultado{display:block;min-height:45px;padding:12px;border:1px solid #8aa39e;border-radius:9px;background:linear-gradient(135deg,#354445 0%,#1a272a 50%,#344548 100%);color:#effdf7;font-weight:800;font-size:16px;box-shadow:inset 0 1px 1px #ffffff26;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#ampEditorFichaCompleta #ampFichaGrupoCompra{border-color:#94ada9;background:#e7f0ee}@media(max-width:560px){#ampEditorFichaCompleta{padding:13px}#ampEditorFichaCompleta .amp-ficha-grid{grid-template-columns:1fr}}';
+ estilo.textContent='#ampEditorFichaCompleta{width:min(96vw,760px);max-width:96vw;max-height:92dvh;overflow:auto;border:1px solid #a4bac9;border-radius:17px;padding:22px;background:#f8fbfe;color:#192c41;box-shadow:0 18px 65px #02091495}#ampEditorFichaCompleta::backdrop{background:#071626bd}#ampEditorFichaCompleta .amp-ficha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#ampEditorFichaCompleta .amp-ficha-campo{display:block;min-width:0}#ampEditorFichaCompleta label{display:block;font-weight:750;margin-bottom:5px}#ampEditorFichaCompleta input,#ampEditorFichaCompleta select,#ampEditorFichaCompleta textarea{width:100%;padding:11px;border:1px solid #b9c9d4;border-radius:9px;background:white;color:#182d40;font:inherit}#ampEditorFichaCompleta .amp-ficha-ancho{grid-column:1/-1}#ampEditorFichaCompleta fieldset{min-width:0;margin:15px 0;padding:14px;border:1px solid #c5d4df;border-radius:12px}#ampEditorFichaCompleta legend{font-weight:800;padding:0 7px}#ampEditorFichaCompleta .amp-ficha-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}#ampEditorFichaCompleta .amp-ficha-error{color:#a22720;font-weight:750;white-space:pre-wrap}#ampEditorFichaCompleta .amp-ficha-aviso{color:#4f6275;font-size:13px;margin:8px 0}#ampEditorFichaCompleta .amp-ficha-preview{background:#eaf3ef;padding:12px;border-radius:10px;margin-top:12px;font-weight:700}#ampEditorFichaCompleta .amp-ficha-costo-resultado{display:block;min-height:45px;padding:12px;border:1px solid #8aa39e;border-radius:9px;background:linear-gradient(135deg,#354445 0%,#1a272a 50%,#344548 100%);color:#effdf7;font-weight:800;font-size:16px;box-shadow:inset 0 1px 1px #ffffff26;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#ampEditorFichaCompleta .amp-ficha-resultado{display:block;min-height:45px;padding:12px;border:1px solid #8aa39e;border-radius:9px;background:#f3f8f6;color:#183d35;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}#ampEditorFichaCompleta #ampFichaGrupoCompra{border-color:#94ada9;background:#e7f0ee}@media(max-width:560px){#ampEditorFichaCompleta{padding:13px}#ampEditorFichaCompleta .amp-ficha-grid{grid-template-columns:1fr}}';
  document.head.append(estilo);
  d=document.createElement('dialog');d.id='ampEditorFichaCompleta';
  const h=document.createElement('h2');h.textContent='EDITAR TODA LA FICHA';h.style.margin='0 0 6px';
@@ -1997,6 +1997,12 @@ function ampCrearEditorFicha(){
  costoOutput.setAttribute('aria-live','polite');costoOutput.textContent='Ingresá importe y cantidad';
  costoCaja.append(costoLabel,costoOutput);compraGrid.append(costoCaja);
  campo('venta','Precio de venta en tienda (Bs por unidad o kg)','number',true,compraGrid);
+ for(const [id,titulo] of [['ampFichaUtilidadUnidad','UTILIDAD POR UNIDAD'],['ampFichaUtilidadTotal','UTILIDAD TOTAL DEL PAQUETE O CAJA']]){
+  const caja=document.createElement('div');caja.className='amp-ficha-campo';
+  const lab=document.createElement('label');lab.htmlFor=id;lab.textContent=titulo;
+  const output=document.createElement('output');output.id=id;output.className='amp-ficha-resultado';output.setAttribute('aria-live','polite');output.textContent='—';
+  caja.append(lab,output);compraGrid.append(caja);
+ }
  campo('fechaCompra','Fecha de compra','date',false,compraGrid);
  campo('observaciones','Observaciones de la compra','textarea',true,compraGrid);
  fact.append(compraGrid);form.append(fact);
@@ -2037,7 +2043,11 @@ function ampCrearEditorFicha(){
    if(hayCompra)partes.push('Ganancia total del paquete: '+bs(utilidad*cantidad));
    partes.push('Margen: '+((utilidad/venta)*100).toFixed(2)+' %');
   }else partes.push('Ganancia pendiente: ingresá precio de venta válido');
-  preview.textContent=partes.join('  ·  ')+' · Los descuentos de proveedor se registran aparte.';
+  const utilidadUnidad=document.getElementById('ampFichaUtilidadUnidad');
+  const utilidadTotal=document.getElementById('ampFichaUtilidadTotal');
+  if(utilidadUnidad)utilidadUnidad.textContent=hayCompra&&hayPrecio?bs(venta-costoCompra):'—';
+  if(utilidadTotal)utilidadTotal.textContent=hayCompra&&hayPrecio?bs((venta-costoCompra)*cantidad):'—';
+  preview.textContent='Costo = precio de compra ÷ cantidad comprada. Utilidad por unidad = precio de venta − costo unitario. Utilidad total = utilidad por unidad × cantidad. Los descuentos de proveedor se registran aparte.';
  };
  form.addEventListener('input',vista);form.addEventListener('change',vista);
  form.addEventListener('submit',ampGuardarFichaCompleta);

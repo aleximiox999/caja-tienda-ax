@@ -2160,6 +2160,42 @@ function ampCrearEditorFicha(){
  fact.append(compraGrid);form.append(fact);
  const detallesGrid=document.createElement('div');detallesGrid.className='amp-ficha-grid';
  campo('codigo','Código de barras','text',false,detallesGrid);
+ const codigoCaja=ampFichaInputs.codigo.parentElement;
+ const camaraCodigo=document.createElement('button');camaraCodigo.type='button';camaraCodigo.className='alt';camaraCodigo.id='ampFichaAbrirCamara';camaraCodigo.textContent='📷 ABRIR CÁMARA';camaraCodigo.title='Leer código de barras con la cámara';camaraCodigo.style.cssText='width:100%;margin-top:8px;min-height:44px;font-weight:800';
+ const zonaCamara=document.createElement('div');zonaCamara.id='ampFichaZonaCamara';zonaCamara.hidden=true;zonaCamara.style.cssText='margin-top:10px;max-width:100%;overflow:hidden';
+ const visorCamara=document.createElement('div');visorCamara.id='ampFichaLectorBarras';
+ const textoCamara=document.createElement('p');textoCamara.id='ampFichaEstadoCamara';textoCamara.setAttribute('role','status');
+ const cerrarCamara=document.createElement('button');cerrarCamara.type='button';cerrarCamara.className='alt';cerrarCamara.textContent='DETENER CÁMARA';cerrarCamara.style.width='100%';
+ zonaCamara.append(visorCamara,textoCamara,cerrarCamara);codigoCaja.append(camaraCodigo,zonaCamara);
+ let lectorFicha=null,abriendoFicha=false,sesionFicha=0;
+ const detenerCamaraFicha=async()=>{
+  ++sesionFicha;const lector=lectorFicha;lectorFicha=null;zonaCamara.hidden=true;abriendoFicha=false;camaraCodigo.disabled=false;
+  if(lector){try{await lector.stop();}catch(e){}try{lector.clear();}catch(e){}}
+ };
+ camaraCodigo.addEventListener('click',async()=>{
+  if(lectorFicha||abriendoFicha)return;
+  const sesion=++sesionFicha;abriendoFicha=true;camaraCodigo.disabled=true;zonaCamara.hidden=false;
+  textoCamara.textContent='Preparando cámara…';
+  try{
+   if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia)throw Error('La cámara requiere HTTPS y un navegador compatible.');
+   await prepararBibliotecaEscanerAMPHX();
+   if(sesion!==sesionFicha)return;
+   const lector=new Html5Qrcode('ampFichaLectorBarras',{verbose:false});lectorFicha=lector;
+   await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},codigo=>{
+    if(sesion!==sesionFicha)return;
+    ampFichaInputs.codigo.value=String(codigo).trim();
+    ampFichaInputs.codigo.dispatchEvent(new Event('input',{bubbles:true}));
+    textoCamara.textContent='Código leído. Guardá la ficha para registrar el cambio.';
+    void detenerCamaraFicha();
+   },()=>{});
+   if(sesion!==sesionFicha){await detenerCamaraFicha();return;}
+   textoCamara.textContent='Apuntá al código de barras del producto.';
+  }catch(e){
+   if(sesion===sesionFicha){textoCamara.textContent='No se pudo abrir la cámara: '+(e?.message||String(e));if(lectorFicha)await detenerCamaraFicha();}
+  }finally{if(sesion===sesionFicha){abriendoFicha=false;camaraCodigo.disabled=false;}}
+ });
+ cerrarCamara.addEventListener('click',()=>{void detenerCamaraFicha();});
+ d.addEventListener('close',()=>{void detenerCamaraFicha();});
  campo('categoria','Categoría (rellenar manualmente)','text',false,detallesGrid);
  campo('unidad','Cómo se vende','select',false,detallesGrid);
  campo('stock','Existencias actuales (valor manual)','number',false,detallesGrid);

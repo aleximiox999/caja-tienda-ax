@@ -200,10 +200,10 @@ export function iniciarEtiquetasAmphx({db,getProductos,recargar,estado,onCodigoG
    '#listado .sheet-card .sheet-actions>.sheet-tools>.amp-botones-etiquetas>button{flex:1 1 115px!important;max-width:none!important;width:auto!important;height:auto!important;min-height:40px!important;aspect-ratio:auto!important;white-space:normal!important;padding:8px 6px!important;font-size:11px!important;line-height:1.2!important}'+
    '#ampFichaCodigoInternoControles{grid-column:1/-1}';
   document.head.append(css);
-  const section=document.createElement('section');section.id='ampPanelEtiquetas';
+  const section=document.createElement('section');section.id='ampPanelEtiquetas';section.classList.add('hidden');
   section.innerHTML='<strong>▥ HOJA DE CÓDIGOS DE BARRAS PARA WORD</strong><p class="nota-etiqueta">Generá cada código desde su ficha: se agrega aquí, sin imprimir. Elegí copias y descargá el Word cuando quieras.</p><div class="barra-etiquetas"><strong id="ampEtiquetaCantidad">0 etiquetas en espera</strong><label for="ampEtiquetaTamano">Tamaño:</label><select id="ampEtiquetaTamano"><option value="30x15">Pequeña 30 × 15 mm</option><option value="40x20">Mediana 40 × 20 mm</option></select><button id="ampDescargarEtiquetasWord" type="button">DESCARGAR WORD (.DOCX)</button><button id="ampVistaEtiquetasImpresion" type="button">VER HOJA / IMPRIMIR</button><button id="ampVaciarEtiquetas" type="button">VACIAR</button></div><div id="ampEtiquetaLista"></div>';
-  const antes=document.querySelector('#listado .listado-con-indice-costos');
-  if(antes)antes.before(section);else document.getElementById('listado').append(section);
+  // La hoja de Word queda debajo de todo el formulario Registrar producto y compra.
+  document.getElementById('app').after(section);
   document.getElementById('ampDescargarEtiquetasWord').onclick=descargarWord;
   document.getElementById('ampVistaEtiquetasImpresion').onclick=vistaImpresion;
   document.getElementById('ampVaciarEtiquetas').onclick=()=>{

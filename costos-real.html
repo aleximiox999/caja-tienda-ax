@@ -4194,9 +4194,7 @@ $('productoForm').onsubmit=async e=>{e.preventDefault();const formulario=e.curre
 prepararIndiceAlfabeticoCostos();
 $('ampVistaCostos').addEventListener('change',()=>{letraActivaCostos='';dibujar();});
 $('filtrarProveedorCostos').addEventListener('change',dibujar);
-$('buscar').addEventListener('input',e=>{const campo=e.currentTarget;const inicio=campo.selectionStart,fin=campo.selectionEnd;campo.value=campo.value.toLocaleUpperCase('es');try{campo.setSelectionRange(inicio,fin)}catch(err){}dibujar()});$('recargar').onclick=cargar;if(location.hash.includes('type=recovery')){recuperando=true;mostrar(false);$('login').classList.add('hidden');$('restablecer').classList.remove('hidden');estado('Establece tu nueva contraseña.')}else{try{await revisar()}catch(err){mostrar(false);estado('No se pudo verificar el acceso. Revisá la conexión y volvé a intentar.',true)}}
-
-/* Administración de empleados reutilizando la misma función segura que VENTAS. */
+$('buscar').addEventListener('input',e=>{const campo=e.currentTarget;const inicio=campo.selectionStart,fin=campo.selectionEnd;campo.value=campo.value.toLocaleUpperCase('es');try{campo.setSelectionRange(inicio,fin)}catch(err){}dibujar()});$('recargar').onclick=cargar;/* Administración de empleados reutilizando la misma función segura que VENTAS. */
 let ampEmpleadoCredencialesEnMemoria=null;
 function ampEmpleadoEstado(m,fallo=false){
  const el=$('ampEmpleadoEstadoCostos');el.textContent=m;el.style.color=fallo?'#ffb6b6':'#d5efff';
@@ -4298,7 +4296,7 @@ $('ampAbrirEmpleadosCostos').onclick=()=>{
 };
 $('ampEmpleadoActualizarCostos').onclick=()=>void ampEmpleadoCargarLista();
 $('ampEmpleadoFormCostos').onsubmit=async ev=>{
- ev.preventDefault();const nombre=$('ampEmpleadoNombreCostos').value.trim().replace(/\\s+/g,' ');
+ ev.preventDefault();const nombre=$('ampEmpleadoNombreCostos').value.trim().replace(/\s+/g,' ');
  if(nombre.length<3||nombre.length>100){ampEmpleadoEstado('Ingresá un nombre de entre 3 y 100 caracteres.',true);return;}
  const btn=$('ampEmpleadoCrearCostos');btn.disabled=true;ampEmpleadoOcultarCredenciales();
  try{
@@ -4312,10 +4310,13 @@ $('ampEmpleadoFormCostos').onsubmit=async ev=>{
 $('ampEmpleadoCopiarCostos').onclick=async()=>{
  if(!ampEmpleadoCredencialesEnMemoria)return;
  const {nombre,codigo,contrasena}=ampEmpleadoCredencialesEnMemoria;
- const texto='TIENDA AMPHX · VENTAS\\nEMPLEADO: '+nombre+'\\nCÓDIGO: '+codigo+'\\nCONTRASEÑA: '+contrasena+'\\nINGRESAR: https://aleximiox999.github.io/caja-tienda-ax/caja-real.html?empleado=1';
+ const texto='TIENDA AMPHX · VENTAS\nEMPLEADO: '+nombre+'\nCÓDIGO: '+codigo+'\nCONTRASEÑA: '+contrasena+'\nINGRESAR: https://aleximiox999.github.io/caja-tienda-ax/caja-real.html?empleado=1';
  try{await navigator.clipboard.writeText(texto);ampEmpleadoEstado('Acceso copiado. Compartilo solo con el empleado.');}
  catch(_){ampEmpleadoEstado('No se pudo copiar automáticamente. Seleccioná el código y la contraseña.',true);}
 };
+
+
+if(location.hash.includes('type=recovery')){recuperando=true;mostrar(false);$('login').classList.add('hidden');$('restablecer').classList.remove('hidden');estado('Establece tu nueva contraseña.')}else{try{await revisar()}catch(err){mostrar(false);estado('No se pudo verificar el acceso. Revisá la conexión y volvé a intentar.',true)}}
 
 </script>
 <script>

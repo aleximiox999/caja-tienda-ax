@@ -3722,7 +3722,7 @@ async function prepararBibliotecaEscanerAMPHX(){
  finally{ampxLibreriaPendiente=null}
 }
 
-/* Control de calidad: validar dígito GTIN y confirmar dos lecturas antes de completar un código. */
+/* Control de calidad: aceptar la primera lectura válida, con validación GTIN y bloqueo de duplicados. */
 function ampGTINValido(valor){
  if(!/^\d+$/.test(valor)||valor.length<2)return false;
  let suma=0,peso=3;
@@ -3751,21 +3751,15 @@ function ampCodigoCamaraValido(valor,resultado){
  return true;
 }
 function ampConfirmarLectura(hacer,mensajeId){
- let candidato='',contador=0,marca=0,entregado=false;
+ let entregado=false;
  return async (texto,resultado)=>{
   if(entregado)return;
-  const valor=String(texto||'').trim(),ahora=Date.now();
+  const valor=String(texto||'').trim();
   if(!ampCodigoCamaraValido(valor,resultado)){
-   candidato='';contador=0;
    $(mensajeId).textContent='La cámara leyó un número inválido. Mantené el código enfocado y probá otra vez.';
    return;
   }
-  if(valor!==candidato||ahora-marca>2200){
-   candidato=valor;contador=1;marca=ahora;
-   $(mensajeId).textContent='Confirmando código '+valor+'… mantenelo enfocado.';
-   return;
-  }
-  if(++contador<2)return;
+  // Bloquear lecturas sucesivas en cuanto se recibe el primer código válido.
   entregado=true;
   await hacer(valor);
  };

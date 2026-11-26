@@ -1646,7 +1646,70 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .wrap>header .amp-cabecera-controles{justify-content:flex-start}
  .wrap>header .amp-enlaces-juntos,.wrap>header .amp-cuenta-junta{gap:5px!important}
 }
-</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles"><a class="amp-cabecera-control" href="./recibos-originales.html">RECIBOS ORIGINALES</a> <div class="amp-enlaces-juntos"><a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a><a class="amp-cabecera-control" href="./caja-real.html" title="Abrir caja y ventas de TIENDA AMPHX">VENTAS</a></div> <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span> <div class="amp-cuenta-junta"><button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control" aria-label="Configuración de cuenta">⚙ Configuración</button><button id="salir" class="alt hidden amp-cabecera-control">Salir</button></div></div>
+
+/* AMPHX: dos filas fijas de navegación; controles de sesión compactos. */
+.wrap>header .amp-cabecera-controles{
+ display:flex!important;flex-flow:column nowrap!important;align-items:flex-end!important;
+ justify-content:center!important;row-gap:6px!important;column-gap:0!important;
+ flex:0 1 auto!important;min-width:0!important;max-width:100%!important
+}
+.wrap>header .amp-cabecera-controles .amp-fila-cabecera{
+ display:flex!important;flex-flow:row nowrap!important;justify-content:flex-end!important;
+ align-items:center!important;column-gap:6px!important;row-gap:0!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;white-space:nowrap!important
+}
+.wrap>header .amp-fila-cabecera .amp-cabecera-control{
+ flex:0 0 auto!important;
+}
+.wrap>header .amp-fila-cabecera .amp-control-icono{
+ width:40px!important;min-width:40px!important;max-width:40px!important;
+ height:40px!important;min-height:40px!important;max-height:40px!important;
+ padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ font-size:24px!important;line-height:1!important;
+}
+.wrap>header .amp-fila-cabecera .amp-control-icono.hidden{display:none!important}
+.wrap>header .amp-fila-cabecera .amp-control-icono svg{width:22px;height:22px;display:block;stroke:currentColor;fill:none}
+@media(max-width:760px){
+ .wrap>header .amp-cabecera-controles{
+  flex:1 0 100%!important;width:100%!important;align-items:flex-start!important;gap:5px!important
+ }
+ .wrap>header .amp-cabecera-controles .amp-fila-cabecera{
+  justify-content:flex-start!important;gap:5px!important
+ }
+ .wrap>header .amp-fila-cabecera .amp-cabecera-control{
+  height:35px!important;min-height:35px!important;max-height:35px!important;
+  padding:0 7px!important;font-size:9px!important;letter-spacing:0!important
+ }
+ .wrap>header .amp-fila-cabecera .amp-control-icono{
+  width:35px!important;min-width:35px!important;max-width:35px!important;
+  height:35px!important;min-height:35px!important;max-height:35px!important;
+  padding:0!important;font-size:20px!important
+ }
+}
+@media(max-width:390px){
+ .wrap>header .amp-cabecera-controles .amp-fila-cabecera{gap:4px!important}
+ .wrap>header .amp-fila-inferior .amp-cabecera-control:not(.amp-control-icono){
+  padding:0 4px!important;font-size:8px!important;font-weight:800!important;letter-spacing:-.015em!important
+ }
+ .wrap>header .amp-fila-cabecera .amp-control-icono{
+  width:31px!important;min-width:31px!important;max-width:31px!important;
+  height:34px!important;min-height:34px!important;max-height:34px!important
+ }
+ .wrap>header .amp-fila-cabecera .amp-control-icono svg{width:19px!important;height:19px!important}
+}
+
+</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles">
+ <div class="amp-fila-cabecera amp-fila-superior">
+  <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a>
+  <a class="amp-cabecera-control" href="./caja-real.html" title="Abrir caja y ventas de TIENDA AMPHX">VENTAS</a>
+ </div>
+ <div class="amp-fila-cabecera amp-fila-inferior">
+  <a class="amp-cabecera-control" href="./recibos-originales.html">RECIBOS ORIGINALES</a>
+  <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span>
+  <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control amp-control-icono" aria-label="Configuración de cuenta" title="Configuración de cuenta">⚙</button>
+  <button id="salir" type="button" class="alt hidden amp-cabecera-control amp-control-icono" aria-label="Cerrar sesión y salir" title="Salir de COSTOS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2"/><path d="M3 12h12"/><path d="m11 8 4 4-4 4"/></svg></button>
+ </div>
+</div>
 <div id="ampMargenPromedioPanel" class="amp-promedio-margen hidden" role="status" aria-live="polite" aria-atomic="true"><div class="amp-promedio-margen-texto"><span class="amp-promedio-margen-titulo">MARGEN DE GANANCIA PROMEDIO GENERAL</span><span id="ampMargenPromedioDetalle" class="amp-promedio-margen-detalle">Calculando todas las fichas…</span><span id="ampMargenPromedioNota" class="amp-promedio-margen-nota">SIN DEPENDER DE LOS FILTROS · ÚLTIMA COMPRA</span></div><strong id="ampMargenPromedioValor" class="amp-promedio-margen-valor">— %</strong></div>
 </header>
 <dialog id="ampLogoDialog" aria-label="Logo ampliado de TIENDA AMPHX" aria-modal="true">

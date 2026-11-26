@@ -81,7 +81,7 @@ async function cargarScript(src,globalName){
   tag.onerror=()=>reject(Error('No se pudo descargar '+globalName+'. Revisá tu conexión.'));
   document.head.append(tag);
  }));
- return cargas.get(src);
+ return cargas.get(src).catch(err=>{cargas.delete(src);throw err});
 }
 async function crearOCR(onProgress){
  const t=await cargarScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js','Tesseract');

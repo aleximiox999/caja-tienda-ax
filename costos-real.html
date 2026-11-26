@@ -1327,6 +1327,43 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  #listado .cards article.sheet-card{padding:13px!important}
  #listado .sheet-card .sheet-actions>.amp-botones-etiquetas{gap:5px!important}
 }
+/* Un solo tamaño y acabado para Recibos, Comparador, Estado, Configuración y Salir. */
+.wrap>header .amp-cabecera-controles{
+ display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:100%;min-width:0;
+}
+.wrap>header .amp-cabecera-controles .amp-cabecera-control{
+ box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:auto!important;height:40px!important;min-height:40px!important;max-height:40px!important;
+ margin:0!important;padding:0 10px!important;
+ border:1px solid #6186a0!important;border-radius:9px!important;
+ background:linear-gradient(120deg,#03070e 0%,#16354e 38%,#070d15 72%,#1e3c52 100%)!important;
+ box-shadow:inset 0 1px #d3e9f45c,0 2px 7px #0005!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ font:800 11px/1.1 system-ui,Arial,sans-serif!important;letter-spacing:.015em!important;
+ text-decoration:none!important;text-align:center!important;white-space:nowrap!important;
+}
+.wrap>header .amp-cabecera-controles .amp-cabecera-control.hidden{display:none!important}
+.wrap>header .amp-cabecera-controles button.amp-cabecera-control{cursor:pointer!important}
+.wrap>header .amp-cabecera-controles .amp-cabecera-control:hover{
+ background:linear-gradient(125deg,#10253d,#23618e,#09121e)!important;
+}
+@media(max-width:760px){
+ .wrap>header .amp-cabecera-controles{gap:5px!important}
+ .wrap>header .amp-cabecera-controles .amp-cabecera-control{
+  height:38px!important;min-height:38px!important;max-height:38px!important;
+  padding:0 8px!important;font-size:10px!important;
+ }
+}
+/* Casita sobre A, lápiz bajo Z: mismo ancho de la barra, más visibles. */
+#listado .indice-alfabetico-costos button.amp-atajo-indice{
+ background:linear-gradient(120deg,#153c56,#071622)!important;color:#fff!important;
+ font-family:system-ui,"Segoe UI Emoji","Apple Color Emoji",sans-serif!important;
+ font-size:clamp(15px,2.1vh,19px)!important;flex:1.35 1 0!important;
+ box-shadow:inset 0 0 0 1px #74bddf!important;text-shadow:none!important;
+}
+#listado .indice-alfabetico-costos button.amp-atajo-indice:focus-visible{
+ outline:2px solid #b1e4ff!important;outline-offset:-2px!important;
+}
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
 <style id="amp-texto-mayusculas">
 input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }
@@ -1358,7 +1395,7 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 })();
 </script>
 <!-- AMPHX despliegue 2026-11-20: alertas y registro antes de fichas; sin acceso a comprobantes -->
-<style>.amp-recibo-link{display:inline-flex;align-items:center;justify-self:start;grid-column:1/-1;background:#daf0f8;color:#064d71!important;text-decoration:none;font-size:12px;font-weight:800;border:1px solid #75c7e2;border-radius:7px;padding:7px 11px;margin:0 0 6px}.amp-recibo-link:hover{background:#a6def0}</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><a href="./recibos-originales.html" style="display:inline-block;text-decoration:none;background:#087ca1;color:white;border:1px solid #75cde6;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">RECIBOS ORIGINALES</a> <a href="./comparador-precios.html" style="display:inline-block;text-decoration:none;background:#29313b;color:#fff6de;border:1px solid #c0aa79;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
+<style>.amp-recibo-link{display:inline-flex;align-items:center;justify-self:start;grid-column:1/-1;background:#daf0f8;color:#064d71!important;text-decoration:none;font-size:12px;font-weight:800;border:1px solid #75c7e2;border-radius:7px;padding:7px 11px;margin:0 0 6px}.amp-recibo-link:hover{background:#a6def0}</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles"><a class="amp-cabecera-control" href="./recibos-originales.html">RECIBOS ORIGINALES</a> <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden amp-cabecera-control">Salir</button></div></header>
 <dialog id="configCuentaDialogAMPHX" style="border:1px solid #ccd8e0;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label>Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
 
 <section id="accesoCargando" aria-live="polite"><p class="muted">Abriendo fichas de productos…</p><button id="reintentarAcceso" type="button" class="alt hidden">REINTENTAR ACCESO</button></section><section id="login" class="hidden"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
@@ -1748,6 +1785,19 @@ function actualizarFiltroProveedoresCostos(){
  const ninguno=document.createElement('option');ninguno.value='__SIN_PROVEEDOR__';ninguno.textContent='SIN PROVEEDOR';sel.append(ninguno);
  sel.value=[...sel.options].some(o=>o.value===anterior)?anterior:'';
 }
+/* Accesos A-Z: sólo cambian la vista, jamás inventario o compras. */
+function ampIrSeccionCostos(seccion){
+ if(seccion==='fichas'){
+  $('ampVistaCostos').value='fichas';
+  $('buscar').value='';
+  $('filtrarProveedorCostos').value='';
+  letraActivaCostos='';
+  dibujar();
+ }
+ const destino=seccion==='registro' ? $('app') : $('tituloListadoCostos');
+ if(destino&&!destino.classList.contains('hidden')&&!destino.closest('.hidden'))
+  destino.scrollIntoView({behavior:'smooth',block:'start',inline:'nearest'});
+}
 function prepararIndiceAlfabeticoCostos(){
  const nav=$('indiceAlfabeticoCostos');
  if(nav.childElementCount)return;
@@ -1769,40 +1819,38 @@ function prepararIndiceAlfabeticoCostos(){
  lupa.setAttribute('aria-hidden','true');
  document.body.append(lupa);
  const botones=[];
- for(const letra of ['TODAS',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ']){
+ for(const letra of ['FICHAS',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ','REGISTRO']){
   const btn=document.createElement('button');btn.type='button';
-  const valor=letra==='TODAS'?'':letra;
-  btn.textContent=letra==='TODAS'?'↺':letra;
-  btn.title=valor?'Ir a los productos de la letra '+valor:'Ir al inicio de las fichas';
+  const accion=letra==='FICHAS'?'fichas':letra==='REGISTRO'?'registro':'';
+  const valor=accion?'':letra;
+  btn.textContent=accion==='fichas'?'🏠':accion==='registro'?'✏️':letra;
+  if(accion){btn.classList.add('amp-atajo-indice');btn.dataset.accion=accion;}
+  btn.title=accion==='fichas'?'Ir al inicio de COSTOS y fichas de productos':accion==='registro'?'Ir a Registrar producto y compra':'Ir a los productos de la letra '+valor;
   btn.setAttribute('aria-label',btn.title);
-  btn.dataset.letra=valor;
-  btn.setAttribute('aria-pressed',String(!valor));
+  if(!accion){btn.dataset.letra=valor;btn.setAttribute('aria-pressed','false');}
   btn.addEventListener('click',e=>{
    // El gesto táctil ya cambió la letra: evitar que el click la desactive.
    if(e.detail!==0&&Date.now()-ultimoGesto<700)return;
+   if(accion){ampIrSeccionCostos(accion);return;}
    elegir(valor,true);
   });
   nav.append(btn);botones.push(btn);
  }
- // Ocultar el flotante cuando la sección de fichas no esté visible.
- if('IntersectionObserver' in window){
-  const io=new IntersectionObserver(entradas=>{
-   nav.classList.toggle('amp-indice-activo',entradas.some(e=>e.isIntersecting));
-  },{threshold:0});
-  io.observe($('listado'));
- }else nav.classList.add('amp-indice-activo');
- let activo=null,frame=0,pendienteY=0;
+ // Mantener los atajos disponibles al desplazarse hasta el formulario.
+ nav.classList.add('amp-indice-activo');
+ let activo=null,frame=0,pendienteY=0,accionInicio='',inicioY=0;
+ const botonEnY=y=>{const r=nav.getBoundingClientRect();if(!r.height)return null;return botones[Math.max(0,Math.min(botones.length-1,Math.floor((y-r.top)/r.height*botones.length)))];};
  const ocultarLupa=()=>lupa.classList.remove('amp-lupa-activa');
  const aplicarY=y=>{
   const r=nav.getBoundingClientRect();
   if(!r.height)return;
   const fraccion=Math.max(0,Math.min(.99999,(y-r.top)/r.height));
   const posicion=Math.floor(fraccion*botones.length);
-  const letra=botones[posicion].dataset.letra;
-  elegir(letra);
+  const elegido=botones[posicion],letra=elegido.dataset.letra;
+  if(letra)elegir(letra);
   // La burbuja sigue la posición de la letra, sin interceptar el dedo.
   const centro=r.top+(posicion+.5)*r.height/botones.length;
-  lupa.textContent=letra||'↺';
+  lupa.textContent=elegido.textContent;
   lupa.style.left=Math.max(6,r.left-84)+'px';
   lupa.style.top=Math.max(44,Math.min(window.innerHeight-44,centro))+'px';
   lupa.classList.add('amp-lupa-activa');
@@ -1813,7 +1861,7 @@ function prepararIndiceAlfabeticoCostos(){
   // Al iniciar un gesto en PC, quitar un filtro anterior y mantener todo el catálogo visible.
   if(!modoTactil()&&letraActivaCostos){letraActivaCostos='';dibujar();}
   navegacionPorGestoIndice=true;
-  activo=e.pointerId;ultimoGesto=Date.now();
+  activo=e.pointerId;ultimoGesto=Date.now();inicioY=e.clientY;accionInicio=botonEnY(e.clientY)?.dataset.accion||'';
   try{nav.setPointerCapture(activo)}catch(_){}
   e.preventDefault();aplicarY(e.clientY);
  });
@@ -1827,8 +1875,14 @@ function prepararIndiceAlfabeticoCostos(){
  const terminar=e=>{
   if(activo!==e.pointerId)return;
   if(frame){cancelAnimationFrame(frame);frame=0}
-  if(e.type==='pointerup')aplicarY(e.clientY);
-  activo=null;
+  if(e.type==='pointerup'){
+   const destino=botonEnY(e.clientY);
+   // Activar el acceso sólo con toque corto sobre el mismo icono, nunca al deslizar.
+   if(accionInicio&&destino?.dataset.accion===accionInicio&&Math.abs(e.clientY-inicioY)<14)
+    ampIrSeccionCostos(accionInicio);
+   else if(destino?.dataset.letra)aplicarY(e.clientY);
+  }
+  activo=null;accionInicio='';
   navegacionPorGestoIndice=false;
   // El dedo no debe dejar aplicado un filtro alfabético en computadoras híbridas.
   if(!modoTactil()){
@@ -2618,7 +2672,7 @@ function dibujar(){
  const vistaCostos=$('ampVistaCostos').value;
  const recientes=vistaCostos==='recientes';
  $('tituloListadoCostos').textContent=recientes?'COSTOS · Recién ingresados':vistaCostos==='alfabetico'?'COSTOS · Orden alfabético (A–Z)':'COSTOS · Fichas de productos';
- $('indiceAlfabeticoCostos').hidden=recientes;
+ $('indiceAlfabeticoCostos').hidden=false; // Atajos siempre visibles, incluso en recién ingresados.
  const registroReciente=recientes?ampRecientesCostos(30):null;
  const idsRecientes=registroReciente?new Set(registroReciente.lista.map(p=>Number(p.id))):null;
  const campo=$('buscar').value.trim(),q=normalizarBusqueda(campo),proveedorFiltro=$('filtrarProveedorCostos').value;

@@ -1633,7 +1633,20 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  padding:0!important;border-radius:6px!important;font-size:20px!important;
  background:#111b27!important;color:#fff!important;border:1px solid #93a2b2!important
 }
-</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles"><a class="amp-cabecera-control" href="./recibos-originales.html">RECIBOS ORIGINALES</a> <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a> <a class="amp-cabecera-control" href="./caja-real.html" title="Abrir caja y ventas de TIENDA AMPHX">VENTAS</a> <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden amp-cabecera-control">Salir</button></div>
+
+/* AMPHX: VENTAS y COMPARADOR siempre juntos; CONFIGURACIÓN y SALIR juntos.
+   Los pares se trasladan completos a la siguiente línea en móviles. */
+.wrap>header .amp-cabecera-controles{justify-content:flex-end;align-content:center;row-gap:7px!important}
+.wrap>header .amp-enlaces-juntos,.wrap>header .amp-cuenta-junta{
+ display:inline-flex!important;align-items:center!important;flex-flow:row nowrap!important;
+ gap:6px!important;flex:0 0 auto;white-space:nowrap;min-width:0;
+}
+.wrap>header .amp-enlaces-juntos .amp-cabecera-control,.wrap>header .amp-cuenta-junta .amp-cabecera-control{flex:0 0 auto!important}
+@media(max-width:760px){
+ .wrap>header .amp-cabecera-controles{justify-content:flex-start}
+ .wrap>header .amp-enlaces-juntos,.wrap>header .amp-cuenta-junta{gap:5px!important}
+}
+</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles"><a class="amp-cabecera-control" href="./recibos-originales.html">RECIBOS ORIGINALES</a> <div class="amp-enlaces-juntos"><a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a><a class="amp-cabecera-control" href="./caja-real.html" title="Abrir caja y ventas de TIENDA AMPHX">VENTAS</a></div> <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span> <div class="amp-cuenta-junta"><button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control" aria-label="Configuración de cuenta">⚙ Configuración</button><button id="salir" class="alt hidden amp-cabecera-control">Salir</button></div></div>
 <div id="ampMargenPromedioPanel" class="amp-promedio-margen hidden" role="status" aria-live="polite" aria-atomic="true"><div class="amp-promedio-margen-texto"><span class="amp-promedio-margen-titulo">MARGEN DE GANANCIA PROMEDIO GENERAL</span><span id="ampMargenPromedioDetalle" class="amp-promedio-margen-detalle">Calculando todas las fichas…</span><span id="ampMargenPromedioNota" class="amp-promedio-margen-nota">SIN DEPENDER DE LOS FILTROS · ÚLTIMA COMPRA</span></div><strong id="ampMargenPromedioValor" class="amp-promedio-margen-valor">— %</strong></div>
 </header>
 <dialog id="ampLogoDialog" aria-label="Logo ampliado de TIENDA AMPHX" aria-modal="true">

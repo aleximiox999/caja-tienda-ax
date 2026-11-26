@@ -1818,7 +1818,7 @@ function prepararIndiceAlfabeticoCostos(){
  for(const item of ['FICHAS',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ','REGISTRO']){
   const btn=document.createElement('button');btn.type='button';
   const accion=item==='FICHAS'?'fichas':item==='REGISTRO'?'registro':'';
-  btn.textContent=accion==='fichas'?'📋':accion==='registro'?'✏️':item;
+  btn.textContent=accion==='fichas'?'🏠':accion==='registro'?'✏️':item;
   if(accion)btn.classList.add('amp-atajo-indice');
   btn.title=accion==='fichas'?'Ir a COSTOS y fichas de productos':accion==='registro'?'Ir a Registrar producto y compra':'Filtrar por la letra '+item;
   btn.setAttribute('aria-label',btn.title);

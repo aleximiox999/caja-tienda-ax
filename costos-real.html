@@ -1594,9 +1594,59 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  border-top-color:#ffb4c2!important;
  box-shadow:inset 0 1px 0 #ffe4e944,0 5px 17px #21081099!important;
 }
-</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles"><a class="amp-cabecera-control" href="./recibos-originales.html">RECIBOS ORIGINALES</a> <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden amp-cabecera-control">Salir</button></div>
+
+/* Logo personal de AMPHX: mantener presionado 1 segundo para ampliarlo.
+   Zoom táctil y con ratón; el fondo de la pantalla cierra el visor. */
+.wrap>header .amp-marca-icono{cursor:zoom-in;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.wrap>header .amp-marca-icono:focus-visible{outline:2px solid #fff!important;outline-offset:3px}
+#ampLogoDialog{
+ box-sizing:border-box!important;position:fixed!important;inset:0!important;
+ width:min(92vw,670px)!important;max-width:92vw!important;height:min(70dvh,590px)!important;
+ max-height:86dvh!important;margin:auto!important;padding:14px!important;
+ background:linear-gradient(135deg,#030608,#222b35 45%,#05070a)!important;
+ border:1px solid #9aabba!important;border-radius:12px!important;
+ color:#fff!important;box-shadow:0 15px 60px #000d!important;overflow:hidden!important
+}
+#ampLogoDialog::backdrop{background:rgba(0,0,0,.78);backdrop-filter:blur(3px)}
+#ampLogoDialog .amp-logo-panel{width:100%;height:100%;display:flex;flex-direction:column;position:relative;gap:8px}
+#ampLogoDialog .amp-logo-escena{
+ display:flex;flex:1;min-height:0;align-items:center;justify-content:center;
+ overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;
+ background:linear-gradient(118deg,#030608,#161d26 50%,#030608);border:1px solid #75889b;
+ cursor:zoom-in
+}
+#ampLogoDialog #ampLogoImagen{
+ display:block;max-width:76%;max-height:76%;width:auto;height:auto;
+ object-fit:contain;transform-origin:center center;touch-action:none;
+ user-select:none;-webkit-user-drag:none;filter:none!important;will-change:transform;
+ cursor:grab
+}
+#ampLogoDialog .amp-logo-cerrar{
+ position:absolute!important;right:2px;top:2px;z-index:3;width:40px!important;height:40px!important;
+ min-width:40px!important;min-height:40px!important;padding:0!important;border-radius:8px!important;
+ font-size:27px!important;background:#10161ee6!important;color:#fff!important;border:1px solid #a9bbc7!important
+}
+#ampLogoDialog .amp-logo-pie{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#fff;font-size:11px;font-weight:700}
+#ampLogoDialog .amp-logo-botones{display:inline-flex;gap:5px}
+#ampLogoDialog .amp-logo-botones button{
+ width:36px!important;min-width:36px!important;height:33px!important;min-height:33px!important;
+ padding:0!important;border-radius:6px!important;font-size:20px!important;
+ background:#111b27!important;color:#fff!important;border:1px solid #93a2b2!important
+}
+</style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles"><a class="amp-cabecera-control" href="./recibos-originales.html">RECIBOS ORIGINALES</a> <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a> <a class="amp-cabecera-control" href="./caja-real.html" title="Abrir caja y ventas de TIENDA AMPHX">VENTAS</a> <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden amp-cabecera-control">Salir</button></div>
 <div id="ampMargenPromedioPanel" class="amp-promedio-margen hidden" role="status" aria-live="polite" aria-atomic="true"><div class="amp-promedio-margen-texto"><span class="amp-promedio-margen-titulo">MARGEN DE GANANCIA PROMEDIO GENERAL</span><span id="ampMargenPromedioDetalle" class="amp-promedio-margen-detalle">Calculando todas las fichas…</span><span id="ampMargenPromedioNota" class="amp-promedio-margen-nota">SIN DEPENDER DE LOS FILTROS · ÚLTIMA COMPRA</span></div><strong id="ampMargenPromedioValor" class="amp-promedio-margen-valor">— %</strong></div>
 </header>
+<dialog id="ampLogoDialog" aria-label="Logo ampliado de TIENDA AMPHX" aria-modal="true">
+ <div class="amp-logo-panel">
+  <button type="button" id="ampLogoCerrar" class="amp-logo-cerrar" aria-label="Cerrar logo">×</button>
+  <div id="ampLogoEscena" class="amp-logo-escena" aria-label="Logo ampliable con dos dedos; toca fuera de la imagen para cerrar">
+   <img id="ampLogoImagen" alt="Logo original de TIENDA AMPHX" draggable="false">
+  </div>
+  <div class="amp-logo-pie">Separá dos dedos para ampliar · Tocá fuera del logo para cerrar
+   <span class="amp-logo-botones"><button type="button" id="ampLogoMenos" aria-label="Alejar logo">−</button><button type="button" id="ampLogoMas" aria-label="Acercar logo">+</button></span>
+  </div>
+ </div>
+</dialog>
 
 <dialog id="configCuentaDialogAMPHX" style="border:1px solid #ccd8e0;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label>Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
 
@@ -1761,7 +1811,7 @@ function mostrarExitoProductoNuevo(){
  tiempoAvisoExitoProducto=setTimeout(()=>aviso.classList.add('hidden'),3600);
 }
 function estado(m,error=false){$('estado').textContent=m;$('estado').classList.toggle('error',error)}
-let recuperando=false;function mostrar(ok){$('ampMargenPromedioPanel').classList.toggle('hidden',!ok);document.querySelector('.wrap>header')?.classList.toggle('amp-con-margen',ok);$('accesoCargando').classList.add('hidden');if(!ok)$('alertasInventario').classList.add('hidden');$('login').classList.toggle('hidden',ok);$('app').classList.toggle('hidden',!ok);$('listado').classList.toggle('hidden',!ok);$('salir').classList.toggle('hidden',!ok);$('estadoRolAMPHX').classList.toggle('hidden',!ok);$('configCuentaAMPHX').classList.toggle('hidden',!ok);if(!ok)$('configCuentaDialogAMPHX').close()}
+let recuperando=false;function mostrar(ok){document.getElementById('ampPanelEtiquetas')?.classList.toggle('hidden',!ok);$('ampMargenPromedioPanel').classList.toggle('hidden',!ok);document.querySelector('.wrap>header')?.classList.toggle('amp-con-margen',ok);$('accesoCargando').classList.add('hidden');if(!ok)$('alertasInventario').classList.add('hidden');$('login').classList.toggle('hidden',ok);$('app').classList.toggle('hidden',!ok);$('listado').classList.toggle('hidden',!ok);$('salir').classList.toggle('hidden',!ok);$('estadoRolAMPHX').classList.toggle('hidden',!ok);$('configCuentaAMPHX').classList.toggle('hidden',!ok);if(!ok)$('configCuentaDialogAMPHX').close()}
 let ampVerificandoAcceso=false;
 function ampErrorAcceso(mensaje){
  $('accesoCargando').classList.remove('hidden');
@@ -4003,4 +4053,68 @@ prepararIndiceAlfabeticoCostos();
 $('ampVistaCostos').addEventListener('change',()=>{letraActivaCostos='';dibujar();});
 $('filtrarProveedorCostos').addEventListener('change',dibujar);
 $('buscar').addEventListener('input',e=>{const campo=e.currentTarget;const inicio=campo.selectionStart,fin=campo.selectionEnd;campo.value=campo.value.toLocaleUpperCase('es');try{campo.setSelectionRange(inicio,fin)}catch(err){}dibujar()});$('recargar').onclick=cargar;if(location.hash.includes('type=recovery')){recuperando=true;mostrar(false);$('login').classList.add('hidden');$('restablecer').classList.remove('hidden');estado('Establece tu nueva contraseña.')}else{try{await revisar()}catch(err){mostrar(false);estado('No se pudo verificar el acceso. Revisá la conexión y volvé a intentar.',true)}}
+</script>
+<script>
+/* AMPHX: vista ampliada del emblema original, sin subir ni modificar archivos. */
+(()=>{
+ const emblema=document.querySelector('.wrap>header .amp-marca-icono');
+ const dialog=document.getElementById('ampLogoDialog');
+ const imagen=document.getElementById('ampLogoImagen');
+ const escena=document.getElementById('ampLogoEscena');
+ if(!emblema||!dialog||!imagen||!escena)return;
+ let pressTimer=null,pressStart=null,openedFromPress=false;
+ let zoom=1,offsetX=0,offsetY=0,gesture=null;
+ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+ function pintar(){imagen.style.transform='translate('+offsetX+'px,'+offsetY+'px) scale('+zoom+')';escena.style.cursor=zoom>1?'grab':'zoom-in'}
+ function reset(){zoom=1;offsetX=0;offsetY=0;gesture=null;pintar()}
+ function abrir(){
+  if(dialog.open)return;
+  const bg=getComputedStyle(emblema).backgroundImage;
+  const match=bg.match(/url\(["']?(data:image\/[^"')]+)["']?\)/i);
+  if(!match)return;
+  imagen.src=match[1];
+  reset();dialog.showModal();openedFromPress=true;
+ }
+ function cancelarPress(){if(pressTimer!==null)clearTimeout(pressTimer);pressTimer=null;pressStart=null}
+ emblema.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  cancelarPress();openedFromPress=false;
+  pressStart={x:e.clientX,y:e.clientY};
+  pressTimer=setTimeout(()=>{pressTimer=null;pressStart=null;abrir()},1000);
+ });
+ emblema.addEventListener('pointermove',e=>{
+  if(pressStart&&Math.hypot(e.clientX-pressStart.x,e.clientY-pressStart.y)>12)cancelarPress();
+ });
+ ['pointerup','pointercancel','pointerleave'].forEach(event=>emblema.addEventListener(event,cancelarPress));
+ emblema.addEventListener('contextmenu',e=>e.preventDefault());
+ emblema.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();abrir()}});
+ function cerrar(){if(dialog.open)dialog.close();reset()}
+ document.getElementById('ampLogoCerrar').addEventListener('click',cerrar);
+ document.getElementById('ampLogoMas').addEventListener('click',()=>{zoom=clamp(zoom*1.35,1,7);pintar()});
+ document.getElementById('ampLogoMenos').addEventListener('click',()=>{zoom=clamp(zoom/1.35,1,7);if(zoom===1){offsetX=0;offsetY=0}pintar()});
+ dialog.addEventListener('click',e=>{if(e.target===dialog)cerrar()});
+ escena.addEventListener('click',e=>{if(e.target===escena)cerrar()});
+ imagen.addEventListener('dblclick',e=>{e.preventDefault();zoom=zoom>1?1:2;if(zoom===1){offsetX=0;offsetY=0}pintar()});
+ escena.addEventListener('wheel',e=>{e.preventDefault();zoom=clamp(zoom*(e.deltaY<0?1.18:1/1.18),1,7);if(zoom===1){offsetX=0;offsetY=0}pintar()},{passive:false});
+ const distancia=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+ escena.addEventListener('touchstart',e=>{
+  if(e.touches.length===2){gesture={type:'pinch',dist:distancia(e.touches[0],e.touches[1]),zoom};}
+  else if(e.touches.length===1){gesture={type:'pan',x:e.touches[0].clientX,y:e.touches[0].clientY,ox:offsetX,oy:offsetY};}
+ },{passive:false});
+ escena.addEventListener('touchmove',e=>{
+  if(!gesture)return;
+  e.preventDefault();
+  if(e.touches.length===2){
+   if(gesture.type!=='pinch')gesture={type:'pinch',dist:distancia(e.touches[0],e.touches[1]),zoom};
+   zoom=clamp(gesture.zoom*distancia(e.touches[0],e.touches[1])/Math.max(1,gesture.dist),1,7);
+   if(zoom===1){offsetX=0;offsetY=0}pintar();
+  }else if(e.touches.length===1&&zoom>1){
+   if(gesture.type!=='pan')gesture={type:'pan',x:e.touches[0].clientX,y:e.touches[0].clientY,ox:offsetX,oy:offsetY};
+   offsetX=gesture.ox+e.touches[0].clientX-gesture.x;
+   offsetY=gesture.oy+e.touches[0].clientY-gesture.y;pintar();
+  }
+ },{passive:false});
+ escena.addEventListener('touchend',()=>{gesture=null},{passive:false});
+ dialog.addEventListener('close',()=>{imagen.removeAttribute('src');reset();openedFromPress=false});
+})();
 </script></body></html>

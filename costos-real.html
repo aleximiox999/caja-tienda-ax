@@ -1405,6 +1405,169 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 .wrap>header #ampMargenPromedioPanel .amp-promedio-margen-valor{flex:none;font-size:19px;font-weight:900;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums;color:#fff}
 @media(max-width:760px){.wrap>header.amp-con-margen{padding-bottom:15px;row-gap:10px}}
 @media(max-width:580px){.wrap>header #ampMargenPromedioPanel{gap:6px;min-height:34px;padding:7px 9px}.wrap>header #ampMargenPromedioPanel .amp-promedio-margen-titulo{font-size:10px;letter-spacing:0}.wrap>header #ampMargenPromedioPanel .amp-promedio-margen-detalle{display:none}.wrap>header #ampMargenPromedioPanel .amp-promedio-margen-valor{font-size:18px}}
+
+/* AMPHX 2026-11-26 · TEMA COSTOS: NEGRO METALIZADO BRILLANTE EN TODA LA VISTA.
+   Solo presentación: mantiene inventario, márgenes, permisos, fotografía y controles. */
+:root{
+ --amp-negro-total:linear-gradient(118deg,#030406 0%,#111720 24%,#343b44 43%,#121923 56%,#06090e 100%);
+ --amp-negro-celda:linear-gradient(120deg,#03060a 0%,#101923 32%,#252e38 52%,#0b131d 73%,#03070a 100%);
+ --amp-reflejo-total:linear-gradient(114deg,transparent 9%,rgba(255,255,255,.105) 31%,transparent 44%,rgba(244,250,255,.045) 64%,transparent 80%);
+ --amp-borde-total:#7e8c9c;
+ --amp-texto-total:#fff;
+ color-scheme:dark;
+}
+body{background:var(--amp-reflejo-total),linear-gradient(145deg,#020406,#10161e 46%,#030406)!important;color:#fff!important;background-attachment:fixed!important}
+.wrap, .wrap main, .wrap section, .wrap dialog{color:#fff}
+.wrap>header{background:var(--amp-reflejo-total),var(--amp-negro-total)!important;border-radius:0!important;border-bottom:2px solid #9099a6!important;color:#fff!important}
+.wrap>header.amp-con-margen{padding-bottom:19px!important;border-radius:0!important}
+.wrap>header #ampMargenPromedioPanel{
+ background:var(--amp-reflejo-total),var(--amp-negro-celda)!important;
+ border:1px solid #909daa!important;border-radius:0!important;
+ margin:1px 0 0!important;padding:7px 32px 7px 12px!important;
+ max-width:100%!important;min-width:0!important;overflow:visible!important;
+ box-shadow:inset 0 1px 0 #ffffff4d,0 2px 9px #0009!important;color:#fff!important;
+}
+.wrap>header #ampMargenPromedioPanel .amp-promedio-margen-valor{
+ color:#fff!important;font-size:19px!important;white-space:nowrap!important;
+ margin-right:7px!important;padding-right:2px!important;flex-shrink:0!important;
+ overflow:visible!important;
+}
+.wrap>header #ampMargenPromedioPanel .amp-promedio-margen-titulo,
+.wrap>header #ampMargenPromedioPanel .amp-promedio-margen-detalle{color:#fff!important}
+.wrap>header .amp-cabecera-controles .amp-cabecera-control{
+ background:var(--amp-reflejo-total),var(--amp-negro-celda)!important;
+ border-color:#8e9aaa!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+/* Superficies de todas las secciones: listado, alertas, acceso y registro de producto. */
+.wrap section, .wrap #listado, .wrap #app, .wrap #alertasInventario, 
+.wrap #login, .wrap #restablecer, .wrap #accesoCargando{
+ background:var(--amp-reflejo-total),var(--amp-negro-total)!important;
+ background-color:#070b10!important;color:#fff!important;
+ border-color:var(--amp-borde-total)!important;
+ box-shadow:inset 0 1px 0 #ffffff35,0 5px 18px #0008!important;
+}
+.wrap section h2,.wrap section h3,.wrap section p,.wrap section .muted,
+.wrap section label,.wrap section legend,.wrap section strong,
+.wrap section .sheet-stock-note,.wrap section .sheet-card-details,
+.wrap section .sheet-card-title,.wrap section .sheet-card-title button{
+ color:#fff!important;-webkit-text-fill-color:#fff;
+}
+#listado>.actions,#listado .listado-con-indice-costos,
+#listado .listado-contenido-costos,#listado .scroll{
+ background:transparent!important;color:#fff!important;
+}
+/* Las fichas nunca vuelven a blanco, incluso si tienen marca verde/amarilla/roja. */
+#listado .cards article.sheet-card,
+#listado .cards article.sheet-card:is(.amp-card-verde,.amp-card-amarillo,.amp-card-rojo),
+#listado .sheet-card{
+ background-image:var(--amp-reflejo-total),var(--amp-negro-total)!important;
+ background-color:#070b11!important;
+ border:1px solid #8795a4!important;border-top:3px solid #b8c4d1!important;
+ box-shadow:inset 0 1px 0 #ffffff33,0 4px 14px #0009!important;
+ color:#fff!important;
+}
+#listado .sheet-card :is(.sheet-card-title,.sheet-card-details,.sheet-stock-note,.sheet-mobile-row label,.sheet-mobile-row .sheet-result,small,strong){
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+#listado .sheet-card .sheet-mobile-row,#listado .sheet-card .sheet-actions,
+#listado .sheet-card .sheet-actions .sheet-tools,
+#listado .sheet-card .sheet-actions .amp-card-status-row,
+#listado .sheet-card .sheet-actions>.amp-botones-etiquetas,
+#listado td,#listado th,#listado td:first-child,#listado th:first-child{
+ background-image:var(--amp-reflejo-total),var(--amp-negro-celda)!important;
+ background-color:#080c12!important;color:#fff!important;
+ border-color:#697888!important;
+}
+#listado .sheet-card .sheet-mobile-row:has(> .sheet-result),
+#listado .sheet-card .sheet-mobile-row.amp-campo-titanio,
+#listado td.sheet-derived,#listado td.amp-campo-titanio{
+ background-image:var(--amp-reflejo-total),var(--amp-negro-celda)!important;
+ background-color:#080c12!important;color:#fff!important;border-color:#8797a7!important;
+}
+#listado .sheet-card .sheet-mobile-row .sheet-result,
+#listado td.sheet-derived .sheet-result,
+#listado .amp-margen-porcentaje,
+#listado .sheet-card .amp-utilidad-celda .amp-margen-porcentaje{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+#listado .sheet-negative,#listado .sheet-card .sheet-negative,
+#listado .amp-margen-porcentaje.sheet-negative{color:#ffc1ca!important;-webkit-text-fill-color:#ffc1ca!important}
+#listado table,#listado tbody,#listado thead,#listado tr{background:#080c12!important;color:#fff!important}
+#listado .sheet-card .sheet-actions button.sheet-save,
+#listado .sheet-card .sheet-actions button.sheet-save:not(:disabled),
+#listado #recargar,#listado .sheet-card .sheet-actions>.amp-botones-etiquetas>button,
+#ampFichaCodigoInternoControles .amp-botones-etiquetas>button,
+#listado .sheet-card .sheet-actions>.sheet-tools>button,
+#listado .sheet-card .sheet-actions .sheet-tools button[data-accion],
+#listado .indice-alfabetico-costos button.amp-atajo-indice,
+.wrap button:not(.amp-marca-btn), .wrap button.alt,
+.wrap button.convert-kg, .wrap button.barcode-product, .wrap button.delete-product{
+ background:var(--amp-reflejo-total),var(--amp-negro-celda)!important;
+ border:1px solid #8b99a9!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ box-shadow:inset 0 1px 0 #ffffff37,0 2px 7px #0008!important;
+}
+/* Mantener los tres indicadores verde, amarillo y rojo: su color indica el estado. */
+#listado .amp-marcas-color button.amp-marca-verde{background:linear-gradient(130deg,#176941,#4fbd7c,#174f35)!important}
+#listado .amp-marcas-color button.amp-marca-amarillo{background:linear-gradient(130deg,#b47f15,#f3d35d,#97721e)!important}
+#listado .amp-marcas-color button.amp-marca-rojo{background:linear-gradient(130deg,#9f1c2c,#e15a62,#79232c)!important}
+/* Campo Buscar, proveedores, filtros, números y editores: negro y letras blancas. */
+body input:not([type="checkbox"]):not([type="radio"]),body select,body textarea,
+#listado #buscar,#listado .filtro-proveedor-costos select,
+#listado .amp-filtro-vista-costos select,
+#listado .sheet-card .sheet-mobile-row .sheet-input,
+#listado .sugerencias,#listado .sugerencia,
+#sugerenciasRegistro,#sugerenciasRegistro .sugerencia{
+ background:var(--amp-reflejo-total),var(--amp-negro-celda)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;caret-color:#fff!important;
+ border-color:#899bad!important;box-shadow:inset 0 1px 0 #ffffff2b!important;
+ color-scheme:dark!important;
+}
+body input::placeholder,body textarea::placeholder,#listado #buscar::placeholder{
+ color:#d0d7e0!important;-webkit-text-fill-color:#d0d7e0!important;opacity:1!important;
+}
+body select option{background:#101720!important;color:#fff!important}
+#listado .amp-campo-titanio input.sheet-input,
+#listado .sheet-card .sheet-provider-row input.sheet-input{
+ background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+#listado .sugerencia:hover,#listado .sugerencia:focus,
+#sugerenciasRegistro .sugerencia:hover{background:#303945!important;color:#fff!important}
+/* Editor de fichas, diálogos de compras, foto, códigos y confirmaciones. */
+dialog,dialog[open],#ampEditarMenu.amp-edit-menu,
+#fotoProductoDialog,#editorCostosDialog,#editorNombreProducto,
+#editorExistencias,#vincularCodigo,#seleccionarKgDialog,
+#convertirKgDialog,#abrirBolsaDialog,#configCuentaDialogAMPHX{
+ background:var(--amp-reflejo-total),var(--amp-negro-total)!important;
+ background-color:#090d12!important;color:#fff!important;
+ border:1px solid #8c99a8!important;box-shadow:inset 0 1px 0 #ffffff38,0 15px 46px #000c!important;
+ color-scheme:dark!important;
+}
+dialog :is(h1,h2,h3,h4,label,legend,small,p,span,strong,.muted,.field,.amp-edit-subtitle),
+#ampEditarMenu h2,#editorCostosDialog .aviso-costo,
+#fotoProductoDialog .foto-vacia,#fotoProductoDialog .foto-estatus{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+dialog :is(.field,fieldset,.aviso-kg,.aviso-costo,.amp-ficha-preview,.amp-ficha-grid,.amp-edit-opciones,.foto-vacia),
+#app .calculo,#app #productoForm .field,#app #productoForm input,#app #productoForm select,
+.alerta-item,#listado .sugerencias{
+ background:var(--amp-reflejo-total),var(--amp-negro-celda)!important;
+ background-color:#08111b!important;color:#fff!important;
+ border-color:#8294a7!important;
+}
+#app #productoForm .field>label{color:#fff!important;-webkit-text-fill-color:#fff!important}
+.alerta-item strong{color:#fff!important}
+.alerta-item small{color:#fff!important}
+/* Solo el texto de advertencias o pérdidas conserva énfasis, sin fondos claros. */
+.error,.error-costo,#convertirKgError,#abrirBolsaError,#editorError,#codigoError,#nombreProductoError{color:#ffbbc4!important;background:#240f15!important}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #e4edf7!important;outline-offset:2px}
+@media(max-width:580px){
+ .wrap>header #ampMargenPromedioPanel{padding-right:24px!important}
+ .wrap>header #ampMargenPromedioPanel .amp-promedio-margen-valor{font-size:18px!important;margin-right:4px!important}
+}
+/* Conservar gráficos, fotos, códigos de barras y cámara sin filtro de color. */
+#fotoProductoDialog img,#listado img,dialog img,canvas,video{filter:none!important}
+
 </style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles"><a class="amp-cabecera-control" href="./recibos-originales.html">RECIBOS ORIGINALES</a> <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden amp-cabecera-control">Salir</button></div>
 <div id="ampMargenPromedioPanel" class="amp-promedio-margen hidden" role="status" aria-live="polite" aria-atomic="true"><div class="amp-promedio-margen-texto"><span class="amp-promedio-margen-titulo">MARGEN DE GANANCIA PROMEDIO GENERAL</span><span id="ampMargenPromedioDetalle" class="amp-promedio-margen-detalle">Calculando todas las fichas…</span><span id="ampMargenPromedioNota" class="amp-promedio-margen-nota">SIN DEPENDER DE LOS FILTROS · ÚLTIMA COMPRA</span></div><strong id="ampMargenPromedioValor" class="amp-promedio-margen-valor">— %</strong></div>
 </header>

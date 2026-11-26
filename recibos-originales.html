@@ -56,7 +56,7 @@ async function analizarArchivo(){
  const version=++ocrVersion,file=$('archivo').files?.[0];
  for(const id of autoSeleccion)seleccion.delete(id);autoSeleccion.clear();pintarProductos();
  $('ocrResultados').replaceChildren();$('ocrTexto').value='';
- if(!file){$('ocrProgreso').textContent='Elegí una foto o PDF para iniciar la búsqueda automática.';return}
+ if(!file){ocrActivo=false;$('guardar').disabled=false;$('ocrProgreso').textContent='Elegí una foto o PDF para iniciar la búsqueda automática.';return}
  ocrActivo=true;$('guardar').disabled=true;
  $('ocrProgreso').textContent='Preparando lectura del recibo original…';
  try{

@@ -1005,14 +1005,16 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  font-size:clamp(12px,1.6vh,15px)!important;
  color:#c7e7ff!important;
 }
-/* Dos atajos nítidos y reconocibles, del mismo ancho que las letras, visibles en móvil. */
+/* Los dos atajos se distinguen visualmente de las letras y no se recortan. */
 #listado .indice-alfabetico-costos button.amp-atajo-indice{
- font-family:system-ui,"Segoe UI Symbol",sans-serif!important;
- font-size:clamp(15px,2.1vh,19px)!important;
+ font-family:system-ui,"Segoe UI Emoji","Apple Color Emoji",sans-serif!important;
+ flex:1.4 1 0!important;
+ font-size:clamp(15px,2.2vh,20px)!important;
  font-weight:900!important;
- color:#9cddff!important;
- background:linear-gradient(90deg,#19496a99,#0a2337aa)!important;
- text-shadow:0 0 4px #051522;
+ color:#fff!important;
+ background:linear-gradient(120deg,#126494,#09304c)!important;
+ box-shadow:inset 0 0 0 1px #6cbef4!important;
+ text-shadow:none!important;
 }
 #listado .indice-alfabetico-costos button.amp-atajo-indice:focus-visible{
  outline:2px solid #9cddff!important;outline-offset:-2px!important;
@@ -1340,6 +1342,9 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
 /* AMPHX controles metalizados */
 #configCuentaAMPHX,#salir{background:linear-gradient(125deg,#050b14,#19466c 48%,#060b13)!important;color:#fff!important;border:1px solid #547fa0!important;box-shadow:inset 0 1px 0 #ffffff45,0 3px 10px #0005!important;border-radius:10px!important}
 #configCuentaAMPHX:hover,#salir:hover{background:linear-gradient(125deg,#10253d,#23618e,#09121e)!important}
+#configCuentaAMPHX,#salir{font-size:12px!important;padding:7px 9px!important;min-height:34px!important;line-height:1.15!important}
+@media(max-width:760px){#configCuentaAMPHX,#salir{font-size:11px!important;padding:6px 8px!important;min-height:32px!important}}
+
 </style><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script><!-- TIENDA AMPHX: ingreso en mayusculas para campos de texto, sin modificar claves ni codigos de barras. -->
 <style id="amp-texto-mayusculas">
 input:not([type]),input[type="text"],input[type="search"],textarea { text-transform:uppercase; }
@@ -1767,17 +1772,21 @@ function actualizarFiltroProveedoresCostos(){
  const ninguno=document.createElement('option');ninguno.value='__SIN_PROVEEDOR__';ninguno.textContent='SIN PROVEEDOR';sel.append(ninguno);
  sel.value=[...sel.options].some(o=>o.value===anterior)?anterior:'';
 }
-/* Atajos del mismo índice A–Z: sólo navegación visual, sin escritura en Supabase. */
+/* Atajos A–Z: nunca crean ni modifican productos; navegación visual exclusivamente. */
 function ampIrSeccionCostos(seccion){
- if(letraActivaCostos){
+ if(seccion==='fichas'){
+  // Volver al listado COMPLETO, no a la última letra ni al último filtro.
+  $('ampVistaCostos').value='fichas';
+  $('buscar').value='';
+  $('filtrarProveedorCostos').value='';
   letraActivaCostos='';
   dibujar();
  }
  const nav=$('indiceAlfabeticoCostos');
  for(const b of nav.querySelectorAll('button[data-letra]'))
   b.setAttribute('aria-pressed','false');
- const destino=seccion==='registro' ? $('app') : $('listado');
- if(destino&&!destino.classList.contains('hidden'))
+ const destino=seccion==='registro' ? $('app') : $('tituloListadoCostos');
+ if(destino&&!destino.classList.contains('hidden')&&!destino.closest('.hidden'))
   destino.scrollIntoView({behavior:'smooth',block:'start',inline:'nearest'});
 }
 function prepararIndiceAlfabeticoCostos(){
@@ -1804,11 +1813,12 @@ function prepararIndiceAlfabeticoCostos(){
  lupa.setAttribute('aria-hidden','true');
  document.body.append(lupa);
  const botones=[];
+ // Acceso superior e inferior claramente visibles, sin necesidad de buscar otra página.
  // Los dos íconos ocupan la misma columna: arriba de A y debajo de Z.
  for(const item of ['FICHAS',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ','REGISTRO']){
   const btn=document.createElement('button');btn.type='button';
   const accion=item==='FICHAS'?'fichas':item==='REGISTRO'?'registro':'';
-  btn.textContent=accion==='fichas'?'▤':accion==='registro'?'✎':item;
+  btn.textContent=accion==='fichas'?'📋':accion==='registro'?'✏️':item;
   if(accion)btn.classList.add('amp-atajo-indice');
   btn.title=accion==='fichas'?'Ir a COSTOS y fichas de productos':accion==='registro'?'Ir a Registrar producto y compra':'Filtrar por la letra '+item;
   btn.setAttribute('aria-label',btn.title);
@@ -2698,7 +2708,7 @@ function dibujar(){
  const vistaCostos=$('ampVistaCostos').value;
  const recientes=vistaCostos==='recientes';
  $('tituloListadoCostos').textContent=recientes?'COSTOS · Recién ingresados':vistaCostos==='alfabetico'?'COSTOS · Orden alfabético (A–Z)':'COSTOS · Fichas de productos';
- $('indiceAlfabeticoCostos').hidden=recientes;
+ $('indiceAlfabeticoCostos').hidden=false; // Los accesos a fichas y registro siempre permanecen disponibles.
  const registroReciente=recientes?ampRecientesCostos(30):null;
  const idsRecientes=registroReciente?new Set(registroReciente.lista.map(p=>Number(p.id))):null;
  const campo=$('buscar').value.trim(),q=normalizarBusqueda(campo),proveedorFiltro=$('filtrarProveedorCostos').value;

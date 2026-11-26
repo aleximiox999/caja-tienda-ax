@@ -3584,13 +3584,14 @@ async function iniciarCamaraAsociar(){
  if(typeof Html5Qrcode==='undefined'){$('mensajeCodigoAsociar').textContent='El lector no terminó de cargar. Podés escribir el código manualmente.';abriendoAsociar=false;return;}
  try{
   const lector=new Html5Qrcode('lectorCodigoAsociar',{verbose:false});lectorAsociar=lector;
-  await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(280,Math.floor(w*.8)),height:Math.min(180,Math.floor(h*.7))})},async codigo=>{
+  await lector.start({facingMode:'environment'},{fps:15,videoConstraints:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080},frameRate:{ideal:30}},qrbox:(w,h)=>({width:Math.min(350,Math.floor(w*.86)),height:Math.min(160,Math.floor(h*.55))})},ampConfirmarLectura(async codigo=>{
    if(lectorAsociar!==lector||guardandoAsociar||productoCodigoEnEdicion!==p)return;
-   $('codigoAsociar').value=String(codigo).trim();
-   await guardarAsociacionCodigo();
-  },()=>{});
+   $('codigoAsociar').value=codigo;
+   $('mensajeCodigoAsociar').textContent='Código confirmado: '+codigo+'. Verificá los dígitos y tocá GUARDAR para asociarlo a este producto.';
+   await detenerLectorAsociar();
+  },'mensajeCodigoAsociar'),()=>{});
   if(productoCodigoEnEdicion!==p){await detenerLectorAsociar();return;}
-  $('mensajeCodigoAsociar').textContent='Apuntá al código de barras: al leerlo se guardará directamente en este producto.';
+  $('mensajeCodigoAsociar').textContent='Apuntá al código de barras. El sistema lo leerá dos veces y podrás revisar el número antes de guardarlo.';
  }catch(err){
   $('mensajeCodigoAsociar').textContent='No se pudo abrir la cámara. Revisá el permiso o escribí el código. '+(err?.message||String(err));
   await detenerLectorAsociar();
@@ -3672,6 +3673,55 @@ async function prepararBibliotecaEscanerAMPHX(){
  try{return await ampxLibreriaPendiente}
  finally{ampxLibreriaPendiente=null}
 }
+
+/* Control de calidad: validar dígito GTIN y confirmar dos lecturas antes de completar un código. */
+function ampGTINValido(valor){
+ if(!/^\d+$/.test(valor)||valor.length<2)return false;
+ let suma=0,peso=3;
+ for(let i=valor.length-2;i>=0;i--){suma+=Number(valor[i])*peso;peso=peso===3?1:3}
+ return (10-suma%10)%10===Number(valor.at(-1));
+}
+function ampExpandirUPCE(valor){
+ if(!/^[01]\d{7}$/.test(valor))return '';
+ const n=valor[0],d=valor.slice(1,7),c=valor[7],u=d[5];
+ if('012'.includes(u))return n+d.slice(0,2)+u+'0000'+d.slice(2,5)+c;
+ if(u==='3')return n+d.slice(0,3)+'00000'+d.slice(3,5)+c;
+ if(u==='4')return n+d.slice(0,4)+'00000'+d[4]+c;
+ return n+d.slice(0,5)+'0000'+u+c;
+}
+function ampCodigoCamaraValido(valor,resultado){
+ const f=String(resultado?.result?.format?.formatName||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+ if(!valor||valor.length>90||/[\r\n]/.test(valor))return false;
+ if(f==='ean13')return /^\d{13}$/.test(valor)&&ampGTINValido(valor);
+ if(f==='ean8')return /^\d{8}$/.test(valor)&&ampGTINValido(valor);
+ if(f==='upca')return /^\d{12}$/.test(valor)&&ampGTINValido(valor);
+ if(f==='upce')return /^\d{8}$/.test(valor)&&ampGTINValido(ampExpandirUPCE(valor));
+ if(f==='itf'&&/^\d{14}$/.test(valor))return ampGTINValido(valor);
+ if(f)return true; // CODE-128 y CODE-39 pueden ser códigos internos.
+ if(/^\d{8}$/.test(valor))return ampGTINValido(valor)||ampGTINValido(ampExpandirUPCE(valor));
+ if(/^\d{12,14}$/.test(valor))return ampGTINValido(valor);
+ return true;
+}
+function ampConfirmarLectura(hacer,mensajeId){
+ let candidato='',contador=0,marca=0,entregado=false;
+ return async (texto,resultado)=>{
+  if(entregado)return;
+  const valor=String(texto||'').trim(),ahora=Date.now();
+  if(!ampCodigoCamaraValido(valor,resultado)){
+   candidato='';contador=0;
+   $(mensajeId).textContent='La cámara leyó un número inválido. Mantené el código enfocado y probá otra vez.';
+   return;
+  }
+  if(valor!==candidato||ahora-marca>2200){
+   candidato=valor;contador=1;marca=ahora;
+   $(mensajeId).textContent='Confirmando código '+valor+'… mantenelo enfocado.';
+   return;
+  }
+  if(++contador<2)return;
+  entregado=true;
+  await hacer(valor);
+ };
+}
 async function detenerLector(){
  const sesion=++ampxEscanerSesion;
  const lector=lectorActivo;lectorActivo=null;
@@ -3693,10 +3743,7 @@ $('abrirEscaner').onclick=async()=>{
   if(sesion!==ampxEscanerSesion)return;
   $('mensajeEscaner').textContent='Solicitando permiso para usar la cámara…';
   const lector=new Html5Qrcode('lectorCodigo',{verbose:false});lectorActivo=lector;
-  await lector.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({
-   width:Math.min(280,Math.floor(w*.8)),
-   height:Math.min(180,Math.floor(h*.7))
-  })},async codigo=>{
+  await lector.start({facingMode:'environment'},{fps:15,videoConstraints:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080},frameRate:{ideal:30}},qrbox:(w,h)=>({width:Math.min(350,Math.floor(w*.86)),height:Math.min(160,Math.floor(h*.55))})},ampConfirmarLectura(async codigo=>{
    if(lectorActivo!==lector||sesion!==ampxEscanerSesion)return;
    const valor=String(codigo||'').trim();
    if(!valor)return;
@@ -3704,11 +3751,11 @@ $('abrirEscaner').onclick=async()=>{
    await detenerLector();
    const existe=productos.find(p=>String(p.codigo_barras||'').trim()===valor);
    if(existe){
-    estado('Código leído: '+valor+'. Ya corresponde a «'+existe.detalles+'». No lo registres en otro producto; usá su ficha de COSTOS.',true);
+    estado('Código verificado: '+valor+'. Ya corresponde a «'+existe.detalles+'». No lo registres en otro producto; usá su ficha de COSTOS.',true);
    }else{
-    estado('Código leído: '+valor+'. Ya está colocado en el formulario. Podés completar el producto.');
+    estado('Código verificado: '+valor+'. Ya está colocado en el formulario. Revisalo antes de guardar el producto.');
    }
-  },()=>{});
+  },'mensajeEscaner'),()=>{});
   if(sesion!==ampxEscanerSesion){await detenerLector();return}
   $('mensajeEscaner').textContent='Apuntá la cámara al código de barras del producto.';
  }catch(e){

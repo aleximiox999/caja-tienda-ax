@@ -1568,6 +1568,32 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 /* Conservar gráficos, fotos, códigos de barras y cámara sin filtro de color. */
 #fotoProductoDialog img,#listado img,dialog img,canvas,video{filter:none!important}
 
+
+/* AMPHX: restaurar las marcas seleccionables por ficha.
+   Las fichas nuevas siguen con el fondo metalizado azul-negro predeterminado.
+   ÚNICAMENTE el exterior cambia a verde, amarillo o rojo al pulsar su botón;
+   los controles y campos internos conservan el tema negro con letras blancas. */
+#listado .cards article.sheet-card.amp-card-verde{
+ background-image:var(--amp-reflejo-total),linear-gradient(126deg,#071913 0%,#123627 28%,#27513a 49%,#153b2a 73%,#091e17 100%)!important;
+ background-color:#102d23!important;
+ border-color:#69a182!important;
+ border-top-color:#a6e6c0!important;
+ box-shadow:inset 0 1px 0 #e7fff244,0 5px 17px #04120d99!important;
+}
+#listado .cards article.sheet-card.amp-card-amarillo{
+ background-image:var(--amp-reflejo-total),linear-gradient(126deg,#211908 0%,#533f17 28%,#81692a 49%,#5b461b 73%,#261e0b 100%)!important;
+ background-color:#493a17!important;
+ border-color:#c2a85a!important;
+ border-top-color:#ffe49a!important;
+ box-shadow:inset 0 1px 0 #ffefb84c,0 5px 17px #24180699!important;
+}
+#listado .cards article.sheet-card.amp-card-rojo{
+ background-image:var(--amp-reflejo-total),linear-gradient(126deg,#1d090e 0%,#501823 28%,#79303e 49%,#4b1a26 73%,#240c13 100%)!important;
+ background-color:#3b151d!important;
+ border-color:#c27b87!important;
+ border-top-color:#ffb4c2!important;
+ box-shadow:inset 0 1px 0 #ffe4e944,0 5px 17px #21081099!important;
+}
 </style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles"><a class="amp-cabecera-control" href="./recibos-originales.html">RECIBOS ORIGINALES</a> <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a> <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden amp-cabecera-control">Salir</button></div>
 <div id="ampMargenPromedioPanel" class="amp-promedio-margen hidden" role="status" aria-live="polite" aria-atomic="true"><div class="amp-promedio-margen-texto"><span class="amp-promedio-margen-titulo">MARGEN DE GANANCIA PROMEDIO GENERAL</span><span id="ampMargenPromedioDetalle" class="amp-promedio-margen-detalle">Calculando todas las fichas…</span><span id="ampMargenPromedioNota" class="amp-promedio-margen-nota">SIN DEPENDER DE LOS FILTROS · ÚLTIMA COMPRA</span></div><strong id="ampMargenPromedioValor" class="amp-promedio-margen-valor">— %</strong></div>
 </header>

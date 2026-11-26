@@ -1005,6 +1005,18 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  font-size:clamp(12px,1.6vh,15px)!important;
  color:#c7e7ff!important;
 }
+/* Dos atajos nítidos y reconocibles, del mismo ancho que las letras, visibles en móvil. */
+#listado .indice-alfabetico-costos button.amp-atajo-indice{
+ font-family:system-ui,"Segoe UI Symbol",sans-serif!important;
+ font-size:clamp(15px,2.1vh,19px)!important;
+ font-weight:900!important;
+ color:#9cddff!important;
+ background:linear-gradient(90deg,#19496a99,#0a2337aa)!important;
+ text-shadow:0 0 4px #051522;
+}
+#listado .indice-alfabetico-costos button.amp-atajo-indice:focus-visible{
+ outline:2px solid #9cddff!important;outline-offset:-2px!important;
+}
 /* Lupa de letra durante el deslizamiento táctil del índice A–Z. */
 #ampLupaIndiceCostos{
  position:fixed;z-index:1102;
@@ -1796,7 +1808,8 @@ function prepararIndiceAlfabeticoCostos(){
  for(const item of ['FICHAS',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ','REGISTRO']){
   const btn=document.createElement('button');btn.type='button';
   const accion=item==='FICHAS'?'fichas':item==='REGISTRO'?'registro':'';
-  btn.textContent=accion==='fichas'?'📋':accion==='registro'?'✏️':item;
+  btn.textContent=accion==='fichas'?'▤':accion==='registro'?'✎':item;
+  if(accion)btn.classList.add('amp-atajo-indice');
   btn.title=accion==='fichas'?'Ir a COSTOS y fichas de productos':accion==='registro'?'Ir a Registrar producto y compra':'Filtrar por la letra '+item;
   btn.setAttribute('aria-label',btn.title);
   if(accion)btn.dataset.accion=accion;

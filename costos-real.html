@@ -1000,6 +1000,11 @@ body{background:#f4f6f9;color:#142231;font-family:system-ui,-apple-system,"Segoe
  }
 }
 
+/* Íconos de navegación: mismo tamaño de casilla que las letras. */
+#listado .indice-alfabetico-costos button[data-accion]{
+ font-size:clamp(12px,1.6vh,15px)!important;
+ color:#c7e7ff!important;
+}
 /* Lupa de letra durante el deslizamiento táctil del índice A–Z. */
 #ampLupaIndiceCostos{
  position:fixed;z-index:1102;
@@ -1750,6 +1755,19 @@ function actualizarFiltroProveedoresCostos(){
  const ninguno=document.createElement('option');ninguno.value='__SIN_PROVEEDOR__';ninguno.textContent='SIN PROVEEDOR';sel.append(ninguno);
  sel.value=[...sel.options].some(o=>o.value===anterior)?anterior:'';
 }
+/* Atajos del mismo índice A–Z: sólo navegación visual, sin escritura en Supabase. */
+function ampIrSeccionCostos(seccion){
+ if(letraActivaCostos){
+  letraActivaCostos='';
+  dibujar();
+ }
+ const nav=$('indiceAlfabeticoCostos');
+ for(const b of nav.querySelectorAll('button[data-letra]'))
+  b.setAttribute('aria-pressed','false');
+ const destino=seccion==='registro' ? $('app') : $('listado');
+ if(destino&&!destino.classList.contains('hidden'))
+  destino.scrollIntoView({behavior:'smooth',block:'start',inline:'nearest'});
+}
 function prepararIndiceAlfabeticoCostos(){
  const nav=$('indiceAlfabeticoCostos');
  if(nav.childElementCount)return;
@@ -1760,9 +1778,8 @@ function prepararIndiceAlfabeticoCostos(){
   if(letraActivaCostos===nueva)return;
   letraActivaCostos=nueva;
   if(modoTactil()||navegacionPorGestoIndice){
-   // En celular se navega por las fichas ya dibujadas: no llamar a dibujar()
-   // por cada milímetro del dedo (causaba cuelgues y pérdidas del listado).
-   for(const b of nav.querySelectorAll('button'))
+   // Navegar por anclas, sin redibujar cientos de productos al deslizar.
+   for(const b of nav.querySelectorAll('button[data-letra]'))
     b.setAttribute('aria-pressed',String(b.dataset.letra===nueva));
    ampMoverIndiceCostos(nueva);
    return;
@@ -1775,51 +1792,55 @@ function prepararIndiceAlfabeticoCostos(){
  lupa.setAttribute('aria-hidden','true');
  document.body.append(lupa);
  const botones=[];
- for(const letra of ['TODAS',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ']){
+ // Los dos íconos ocupan la misma columna: arriba de A y debajo de Z.
+ for(const item of ['FICHAS',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ','REGISTRO']){
   const btn=document.createElement('button');btn.type='button';
-  const valor=letra==='TODAS'?'':letra;
-  btn.textContent=letra==='TODAS'?'↺':letra;
-  btn.title=valor?'Filtrar por la letra '+valor:'Mostrar todas las letras';
+  const accion=item==='FICHAS'?'fichas':item==='REGISTRO'?'registro':'';
+  btn.textContent=accion==='fichas'?'📋':accion==='registro'?'✏️':item;
+  btn.title=accion==='fichas'?'Ir a COSTOS y fichas de productos':accion==='registro'?'Ir a Registrar producto y compra':'Filtrar por la letra '+item;
   btn.setAttribute('aria-label',btn.title);
-  btn.dataset.letra=valor;
-  btn.setAttribute('aria-pressed',String(!valor));
+  if(accion)btn.dataset.accion=accion;
+  else{
+   btn.dataset.letra=item;
+   btn.setAttribute('aria-pressed','false');
+  }
   btn.addEventListener('click',e=>{
-   // El gesto táctil ya cambió la letra: evitar que el click la desactive.
+   // El gesto táctil se gestiona en pointerup para no abrir formularios al deslizar.
    if(e.detail!==0&&Date.now()-ultimoGesto<700)return;
-   elegir(valor,true);
+   if(accion){ampIrSeccionCostos(accion);return;}
+   elegir(item,true);
   });
   nav.append(btn);botones.push(btn);
  }
- // Ocultar el flotante cuando la sección de fichas no esté visible.
- if('IntersectionObserver' in window){
-  const io=new IntersectionObserver(entradas=>{
-   nav.classList.toggle('amp-indice-activo',entradas.some(e=>e.isIntersecting));
-  },{threshold:0});
-  io.observe($('listado'));
- }else nav.classList.add('amp-indice-activo');
- let activo=null,frame=0,pendienteY=0;
+ // El índice permanece visible al llegar al formulario; la sección oculta por login lo oculta.
+ nav.classList.add('amp-indice-activo');
+ let activo=null,frame=0,pendienteY=0,accionInicio='',inicioY=0;
  const ocultarLupa=()=>lupa.classList.remove('amp-lupa-activa');
+ const botonEnY=y=>{
+  const r=nav.getBoundingClientRect();
+  if(!r.height)return null;
+  const fraccion=Math.max(0,Math.min(.99999,(y-r.top)/r.height));
+  return botones[Math.floor(fraccion*botones.length)];
+ };
  const aplicarY=y=>{
   const r=nav.getBoundingClientRect();
-  if(!r.height)return;
-  const fraccion=Math.max(0,Math.min(.99999,(y-r.top)/r.height));
-  const posicion=Math.floor(fraccion*botones.length);
-  const letra=botones[posicion].dataset.letra;
-  elegir(letra);
-  // La burbuja sigue la posición de la letra, sin interceptar el dedo.
+  const btn=botonEnY(y);
+  if(!btn)return;
+  if(!btn.dataset.accion)elegir(btn.dataset.letra);
+  const posicion=botones.indexOf(btn);
   const centro=r.top+(posicion+.5)*r.height/botones.length;
-  lupa.textContent=letra||'↺';
+  lupa.textContent=btn.textContent;
   lupa.style.left=Math.max(6,r.left-84)+'px';
   lupa.style.top=Math.max(44,Math.min(window.innerHeight-44,centro))+'px';
   lupa.classList.add('amp-lupa-activa');
  };
  nav.addEventListener('pointerdown',e=>{
-  // En portátiles Windows con pantalla táctil, el puntero puede ser táctil aunque haya ratón.
   if(!e.isPrimary||(e.pointerType!=='touch'&&e.pointerType!=='pen'))return;
-  // Al iniciar un gesto en PC, quitar un filtro anterior y mantener todo el catálogo visible.
   if(!modoTactil()&&letraActivaCostos){letraActivaCostos='';dibujar();}
   navegacionPorGestoIndice=true;
   activo=e.pointerId;ultimoGesto=Date.now();
+  accionInicio=botonEnY(e.clientY)?.dataset.accion||'';
+  inicioY=e.clientY;
   try{nav.setPointerCapture(activo)}catch(_){}
   e.preventDefault();aplicarY(e.clientY);
  });
@@ -1833,13 +1854,17 @@ function prepararIndiceAlfabeticoCostos(){
  const terminar=e=>{
   if(activo!==e.pointerId)return;
   if(frame){cancelAnimationFrame(frame);frame=0}
-  if(e.type==='pointerup')aplicarY(e.clientY);
-  activo=null;
-  navegacionPorGestoIndice=false;
-  // El dedo no debe dejar aplicado un filtro alfabético en computadoras híbridas.
+  if(e.type==='pointerup'){
+   const destino=botonEnY(e.clientY);
+   // Sólo se abre un atajo si el dedo empezó y terminó en ese mismo botón.
+   if(accionInicio&&destino?.dataset.accion===accionInicio&&Math.abs(e.clientY-inicioY)<14)
+    ampIrSeccionCostos(accionInicio);
+   else aplicarY(e.clientY);
+  }
+  activo=null;accionInicio='';navegacionPorGestoIndice=false;
   if(!modoTactil()){
    letraActivaCostos='';
-   for(const b of nav.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b.dataset.letra===''));
+   for(const b of nav.querySelectorAll('button[data-letra]'))b.setAttribute('aria-pressed','false');
   }
   ocultarLupa();
   try{nav.releasePointerCapture(e.pointerId)}catch(_){}

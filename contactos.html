@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b10">
+<title>CONTACTOS | TIENDA AMPHX</title>
+<style>
+:root{color-scheme:dark;--bg:#080b10;--panel:#141a22;--line:#3d556f;--blue:#44b8ff;--text:#f7fbff;--sub:#b8c9d8}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;color:var(--text);font:15px/1.45 system-ui,Segoe UI,Arial,sans-serif;background:radial-gradient(ellipse at 70% -15%,#23415e55,transparent 55%),linear-gradient(115deg,#06080c,#111923 58%,#05080d)}
+header{position:sticky;top:0;z-index:5;background:linear-gradient(110deg,#06090ef5,#202c3af7 50%,#070b12f7);border-bottom:1px solid #6486a9;box-shadow:0 3px 14px #0009}
+.top{max-width:1300px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 15px}
+h1{margin:0;font-size:20px;letter-spacing:.055em;text-shadow:0 2px 9px #2992d344}h2{margin:0 0 14px;font-size:19px}
+nav{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+nav a{color:#eff8ff;border:1px solid #486381;background:#1a2634;text-decoration:none;padding:8px 11px;border-radius:9px;font-size:12px;font-weight:800}
+nav a.actual{border-color:#4ebfff;color:#8bd9ff}
+main{max-width:1300px;margin:auto;padding:14px}
+.panel,.ficha{background:linear-gradient(145deg,#202b39 0%,#10151e 43%,#192432 75%,#0b1119);border:1px solid #46627e;border-radius:13px;box-shadow:inset 0 1px 0 #b5ddff27,0 8px 18px #0005}
+.panel{padding:16px;margin:12px auto;max-width:850px}
+.ficha{padding:15px;margin:0 0 12px}
+.hidden{display:none!important}
+button,input,select{font:inherit}
+button{cursor:pointer;border:1px solid #3575a4;border-radius:9px;padding:10px 13px;background:linear-gradient(120deg,#175585,#147eb7,#17466b);color:white;font-weight:800}
+button.sec{background:linear-gradient(120deg,#222e3d,#101824);border-color:#526e8a}
+button:disabled{opacity:.52;cursor:default}
+input,select{background:#080e17;color:#f8fbff;border:1px solid #667b94;border-radius:9px;padding:11px;width:100%;min-height:43px}
+input:focus,select:focus{outline:2px solid #53b9f7;outline-offset:1px}
+label{display:block;font-weight:750;margin:8px 0 5px;color:#d8eaff;font-size:13px}
+.muted{color:var(--sub);font-size:13px}
+#estado{min-height:1.4em;font-size:13px;color:#bde8ff}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
+.toolbar input{flex:1;min-width:175px}
+.lista-indice{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:6px;margin-top:15px;max-width:850px;margin-inline:auto}
+.indice{position:sticky;top:110px;align-self:start;display:flex;flex-direction:column;gap:1px;max-height:calc(100dvh - 130px);overflow:auto;scrollbar-width:none}
+.indice button{border:0;background:#1a2b3d;color:#d6ebff;font-size:11px;line-height:1;padding:5px 0;min-height:20px}
+.indice button.activo{background:#0786cc;color:#fff}
+.ficha h3{font-size:17px;line-height:1.2;margin:0 0 5px;color:#fff}
+.empresa{font-size:13px;color:#8ed6ff;font-weight:800;margin-bottom:11px;overflow-wrap:anywhere}
+.tel{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:6px 0;border-top:1px solid #3b4b5d}
+.tel span{font-size:12px;color:#b9cbdd}
+.tel strong{font-size:15px;letter-spacing:.02em}
+.wa{margin-left:auto;text-decoration:none;background:#075e44;border:1px solid #3bae88;color:#fff;border-radius:8px;padding:6px 10px;font-weight:800;font-size:12px}
+.foto-scroll{display:flex;gap:9px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;margin:11px 0 2px;max-width:460px}
+.foto-marco{flex:0 0 100%;min-width:0;scroll-snap-align:start;border-radius:11px;border:1px solid #5e7893;background:#060a10;overflow:hidden}
+.foto-marco img{display:block;width:100%;height:220px;object-fit:contain;object-position:center;background:#080e15}
+.foto-marco figcaption{color:#aac9df;text-align:center;font-size:11px;padding:4px;background:#152231}
+.sin-foto{display:grid;place-items:center;min-height:85px;color:#96aac0;border:1px dashed #46617c;border-radius:9px;margin:10px 0;max-width:460px;font-size:12px}
+.acciones{display:flex;gap:7px;margin-top:11px}
+.acciones button{padding:8px 11px;font-size:12px}
+dialog{width:min(94vw,610px);max-height:92dvh;overflow:auto;background:linear-gradient(130deg,#172432,#080c12);color:#fff;border:1px solid #5f8aab;border-radius:15px;padding:19px;box-shadow:0 18px 70px #000b}
+dialog::backdrop{background:#020712cf}
+.grupo-tel{display:grid;grid-template-columns:115px minmax(0,1fr) 38px;gap:6px;align-items:end;margin:6px 0}
+.grupo-tel button{padding:8px 0;min-height:43px}
+.cargar-fotos{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.cargar-fotos label{flex:1;min-width:140px;border:1px solid #426d91;background:#183048;border-radius:9px;padding:10px;cursor:pointer;text-align:center}
+.cargar-fotos input{position:absolute;width:1px;height:1px;opacity:0}
+.foto-pendiente{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #43566b;margin-top:7px;padding:8px;border-radius:8px;font-size:12px}
+.foto-pendiente button{padding:5px 9px}
+.modal-botones{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.modal-botones button{flex:1}
+#login{max-width:420px}
+#login .alerta{color:#ffb7b7;font-size:13px}
+@media(max-width:580px){h1{font-size:16px}.top{padding:10px}main{padding:8px}.panel{padding:13px}.ficha{padding:12px}.lista-indice{grid-template-columns:minmax(0,1fr) 28px}.indice{top:125px}.indice button{padding:4px 0;font-size:10px}.foto-marco img{height:210px}.grupo-tel{grid-template-columns:98px minmax(0,1fr) 32px}nav a{font-size:11px;padding:7px}}
+</style>
+</head>
+<body>
+<header><div class="top"><h1>TIENDA AMPHX · CONTACTOS</h1><nav aria-label="Módulos"><a href="./costos-real.html">COSTOS</a><a href="./comparador-precios.html">COMPARADOR DE PRECIOS</a><a class="actual" href="./contactos.html" aria-current="page">CONTACTOS</a><button type="button" class="sec hidden" id="salir">Salir</button></nav></div></header>
+<main>
+<section id="login" class="panel hidden"><h2>Acceso de administrador</h2><p class="muted">Tus contactos y tarjetas están protegidos con tu cuenta de Tienda AMPHX.</p><form id="formLogin"><label for="correo">Correo electrónico</label><input id="correo" type="email" autocomplete="username" required><label for="clave">Contraseña</label><input id="clave" type="password" autocomplete="current-password" required><div class="modal-botones"><button type="submit">INGRESAR</button></div></form><p id="errorLogin" class="alerta"></p></section>
+<section id="app" class="hidden">
+<div class="panel"><div class="toolbar"><input id="buscar" type="search" placeholder="BUSCAR NOMBRE, EMPRESA O TELÉFONO" aria-label="Buscar contactos"><button id="nuevo" type="button">+ NUEVO CONTACTO</button></div><p class="muted" style="margin:9px 0 0">Orden alfabético · varios números por persona · WhatsApp directo · fotos completas sin recorte</p><p id="estado" role="status" aria-live="polite"></p></div>
+<div class="lista-indice"><div id="fichas"></div><aside id="indice" class="indice" aria-label="Filtrar contactos por letra"></aside></div>
+</section>
+<dialog id="editor"><form id="formContacto"><h2 id="tituloEditor">NUEVO CONTACTO</h2><label for="nombre">NOMBRE DE LA PERSONA</label><input id="nombre" maxlength="180" autocomplete="name" required><label for="empresa">EMPRESA</label><input id="empresa" maxlength="180" autocomplete="organization">
+<label>NÚMEROS DE TELÉFONO</label><div id="telefonos"></div><button type="button" id="masTelefono" class="sec" style="width:100%;margin:7px 0">＋ AÑADIR OTRO NÚMERO</button><small class="muted">Para Bolivia podés escribir los 8 dígitos. Para otros países, agregá el código internacional.</small>
+<label style="margin-top:17px">FOTOS DE TARJETAS</label><small class="muted">La imagen se mostrará completa, sin zoom automático ni recorte, en una franja de unos 210 píxeles de alto en el celular.</small>
+<div id="fotosExistentes"></div><div class="cargar-fotos"><label>📷 TOMAR FOTO<input id="tomarFoto" type="file" accept="image/*" capture="environment"></label><label>▣ ELEGIR FOTOS<input id="elegirFotos" type="file" accept="image/jpeg,image/png,image/webp" multiple></label></div><div id="fotosNuevas"></div>
+<div class="modal-botones"><button type="button" class="sec" id="cancelar">CANCELAR</button><button type="submit" id="guardar">GUARDAR CONTACTO</button></div><p id="errorEditor" role="status"></p></form></dialog>
+</main>
+<script type="module">
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
+const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh');
+const B='tarjetas-contactos-amphx', T='contactos_amphx', $=id=>document.getElementById(id);
+const letras='ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('');
+let contactos=[],letra='',edicion=null,fotosActuales=[],fotosRetiradas=[],archivos=[],cargando=false;
+const cacheFirmas=new Map();
+function visible(id,ver){$(id).classList.toggle('hidden',!ver)}
+function mensaje(txt,error=false){$('estado').textContent=txt;$('estado').style.color=error?'#ffc2c2':'#bde8ff'}
+function canon(s){return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()}
+function telefWa(num){let n=(num||'').replace(/\D/g,'');if(n.startsWith('00'))n=n.slice(2);if(n.length===8)n='591'+n;return n.length>=10?n:''}
+function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e}
+async function sesion(){
+ const {data:{user}}=await db.auth.getUser();
+ if(!user){visible('login',true);visible('app',false);visible('salir',false);return}
+ const {data:emp,error}=await db.from('empleados').select('rol,activo').eq('auth_user_id',user.id).maybeSingle();
+ if(error||!emp||emp.rol!=='administrador'||!emp.activo){
+   visible('login',true);visible('app',false);visible('salir',true);
+   $('errorLogin').textContent='Acceso reservado al administrador de Tienda AMPHX.';return
+ }
+ $('errorLogin').textContent='';visible('login',false);visible('app',true);visible('salir',true);
+ await cargar()
+}
+$('formLogin').addEventListener('submit',async e=>{
+ e.preventDefault();$('errorLogin').textContent='Ingresando…';
+ const {error}=await db.auth.signInWithPassword({email:$('correo').value.trim(),password:$('clave').value});
+ $('clave').value='';
+ if(error){$('errorLogin').textContent=error.message;return}
+ await sesion()
+});
+$('salir').onclick=async()=>{await db.auth.signOut();contactos=[];cacheFirmas.clear();await sesion()};
+async function cargar(){
+ if(cargando)return;cargando=true;mensaje('Cargando contactos…');
+ try{
+   let todos=[],offset=0;
+   while(true){
+     const {data,error}=await db.from(T).select('*').order('nombre',{ascending:true}).range(offset,offset+499);
+     if(error)throw error;
+     todos=todos.concat(data||[]);
+     if(!data||data.length<500)break;
+     offset+=500
+   }
+   contactos=todos;dibujar();mensaje(todos.length+' contacto'+(todos.length===1?'':'s')+' registrado'+(todos.length===1?'':'s'))
+ }catch(e){mensaje('No se pudieron cargar los contactos: '+e.message,true)}
+ finally{cargando=false}
+}
+async function firma(path){
+ if(cacheFirmas.has(path))return cacheFirmas.get(path);
+ const {data,error}=await db.storage.from(B).createSignedUrl(path,3600);
+ if(error)throw error;
+ cacheFirmas.set(path,data.signedUrl);
+ return data.signedUrl
+}
+function fotosDe(c,ficha){
+ const paths=Array.isArray(c.fotos)?c.fotos:[];
+ if(!paths.length){ficha.appendChild(el('div','sin-foto','SIN TARJETA FOTOGRÁFICA'));return}
+ const carrusel=el('div','foto-scroll');carrusel.setAttribute('aria-label','Fotografías: deslizá para ver más');
+ paths.forEach((path,i)=>{
+   const fig=el('figure','foto-marco');fig.style.margin='0';
+   const img=el('img');img.alt='Tarjeta de '+c.nombre+', fotografía '+(i+1);img.loading='lazy';
+   const caption=el('figcaption','','FOTO '+(i+1)+' DE '+paths.length);
+   fig.append(img,caption);carrusel.appendChild(fig);
+   firma(path).then(url=>{if(img.isConnected)img.src=url}).catch(()=>{caption.textContent='NO SE PUDO ABRIR LA FOTO'})
+ });
+ ficha.appendChild(carrusel)
+}
+function dibujar(){
+ const q=canon($('buscar').value.trim());
+ const elems=contactos.filter(c=>(!letra||canon(c.nombre).startsWith(canon(letra)))&&(!q||canon(c.nombre+' '+c.empresa+' '+JSON.stringify(c.telefonos)).includes(q)));
+ const raiz=$('fichas');raiz.replaceChildren();
+ if(!elems.length){const vacio=el('div','ficha',contactos.length?'NO SE ENCONTRARON CONTACTOS':'TODAVÍA NO HAY CONTACTOS. PULSÁ «+ NUEVO CONTACTO».');raiz.appendChild(vacio)}
+ elems.forEach(c=>{
+   const card=el('article','ficha');const h=el('h3','',c.nombre);card.appendChild(h);
+   if(c.empresa)card.appendChild(el('div','empresa',c.empresa));
+   (Array.isArray(c.telefonos)?c.telefonos:[]).forEach(t=>{
+     if(!t.numero)return;
+     const fila=el('div','tel'),lab=el('span','',t.etiqueta||'CELULAR'),num=el('strong','',t.numero);
+     fila.append(lab,num);
+     const wa=telefWa(t.numero);
+     if(wa){const a=el('a','wa','WhatsApp');a.href='https://wa.me/'+wa;a.target='_blank';a.rel='noopener noreferrer';a.setAttribute('aria-label','Abrir WhatsApp del número '+t.numero);fila.appendChild(a)}
+     card.appendChild(fila)
+   });
+   fotosDe(c,card);
+   const actions=el('div','acciones');
+   const editar=el('button','sec','✎ EDITAR'),borrar=el('button','sec','🗑 ELIMINAR');
+   editar.onclick=()=>abrir(c);borrar.onclick=()=>eliminar(c);
+   actions.append(editar,borrar);card.appendChild(actions);raiz.appendChild(card)
+ });
+}
+function dibujarIndice(){
+ const cont=$('indice');cont.replaceChildren();
+ ['TODAS',...letras].forEach(l=>{
+   const b=el('button',l===letra||(!letra&&l==='TODAS')?'activo':'',l==='TODAS'?'•':l);
+   b.type='button';b.title=l;b.setAttribute('aria-label','Filtrar '+l);
+   b.onclick=()=>{letra=l==='TODAS'?'':l;dibujarIndice();dibujar();window.scrollTo({top:0,behavior:'smooth'})};
+   cont.appendChild(b)
+ });
+}
+$('buscar').addEventListener('input',dibujar);
+function agregarTelefono(t={etiqueta:'CELULAR',numero:''}){
+ const fila=el('div','grupo-tel');
+ const tipo=el('input');tipo.placeholder='TIPO';tipo.maxLength=30;tipo.value=t.etiqueta||'CELULAR';tipo.setAttribute('aria-label','Tipo de teléfono');
+ const num=el('input');num.type='tel';num.inputMode='tel';num.placeholder='NÚMERO DE CELULAR';num.value=t.numero||'';num.maxLength=30;num.setAttribute('aria-label','Número de celular');
+ const quitar=el('button','sec','×');quitar.type='button';quitar.setAttribute('aria-label','Quitar número');quitar.onclick=()=>fila.remove();
+ fila.append(tipo,num,quitar);$('telefonos').appendChild(fila)
+}
+function mostrarFotosEditor(){
+ const destino=$('fotosExistentes');destino.replaceChildren();
+ fotosActuales.forEach((path,i)=>{
+   const item=el('div','foto-pendiente');item.appendChild(el('span','', 'FOTO '+(i+1)));
+   const btn=el('button','sec','QUITAR');btn.type='button';btn.onclick=()=>{fotosRetiradas.push(path);fotosActuales=fotosActuales.filter(p=>p!==path);mostrarFotosEditor()};
+   item.appendChild(btn);destino.appendChild(item)
+ });
+ const nuevos=$('fotosNuevas');nuevos.replaceChildren();
+ archivos.forEach((file,i)=>{
+   const row=el('div','foto-pendiente');row.appendChild(el('span','',file.name+' ('+Math.round(file.size/1024)+' KB)'));
+   const btn=el('button','sec','×');btn.type='button';btn.onclick=()=>{archivos.splice(i,1);mostrarFotosEditor()};
+   row.appendChild(btn);nuevos.appendChild(row)
+ })
+}
+function abrir(c=null){
+ edicion=c;fotosActuales=c&&Array.isArray(c.fotos)?[...c.fotos]:[];fotosRetiradas=[];archivos=[];
+ $('nombre').value=c?.nombre||'';$('empresa').value=c?.empresa||'';
+ $('telefonos').replaceChildren();
+ const nums=c&&Array.isArray(c.telefonos)&&c.telefonos.length?c.telefonos:[{etiqueta:'CELULAR',numero:''}];
+ nums.forEach(agregarTelefono);
+ $('tituloEditor').textContent=c?'EDITAR CONTACTO':'NUEVO CONTACTO';
+ $('errorEditor').textContent='';$('tomarFoto').value='';$('elegirFotos').value='';
+ mostrarFotosEditor();$('editor').showModal()
+}
+$('nuevo').onclick=()=>abrir();
+$('cancelar').onclick=()=>$('editor').close();
+$('masTelefono').onclick=()=>agregarTelefono();
+function añadirArchivos(files){
+ for(const file of files){
+   if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>8388608){
+     $('errorEditor').textContent='Solo fotos JPG, PNG o WEBP de hasta 8 MB.';continue
+   }
+   archivos.push(file)
+ }
+ mostrarFotosEditor()
+}
+$('tomarFoto').onchange=e=>{añadirArchivos(e.target.files);e.target.value=''};
+$('elegirFotos').onchange=e=>{añadirArchivos(e.target.files);e.target.value=''};
+$('nombre').addEventListener('input',e=>{const p=e.target.selectionStart;e.target.value=e.target.value.toLocaleUpperCase('es-BO');e.target.setSelectionRange(p,p)});
+$('empresa').addEventListener('input',e=>{const p=e.target.selectionStart;e.target.value=e.target.value.toLocaleUpperCase('es-BO');e.target.setSelectionRange(p,p)});
+$('formContacto').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const nombre=$('nombre').value.trim().toLocaleUpperCase('es-BO'),empresa=$('empresa').value.trim().toLocaleUpperCase('es-BO');
+ if(!nombre){$('errorEditor').textContent='Escribí el nombre.';return}
+ const telefonos=[...$('telefonos').querySelectorAll('.grupo-tel')].map(row=>({etiqueta:row.children[0].value.trim().toLocaleUpperCase('es-BO')||'CELULAR',numero:row.children[1].value.trim()})).filter(t=>t.numero);
+ if(telefonos.some(t=>t.numero.replace(/\D/g,'').length<7)){$('errorEditor').textContent='Revisá los números de teléfono: deben tener al menos 7 dígitos.';return}
+ $('guardar').disabled=true;$('errorEditor').textContent='Guardando contacto y fotografías…';
+ const id=edicion?.id||crypto.randomUUID(), fotosSubidas=[];
+ try{
+   if(edicion){
+     const {error}=await db.from(T).update({nombre,empresa,telefonos,fotos:fotosActuales,actualizado_en:new Date().toISOString()}).eq('id',id);if(error)throw error
+   }else{
+     const {error}=await db.from(T).insert({id,nombre,empresa,telefonos,fotos:[]});if(error)throw error
+   }
+   for(const f of archivos){
+     const ext=f.type==='image/png'?'png':f.type==='image/webp'?'webp':'jpg';
+     const ruta=id+'/'+crypto.randomUUID()+'.'+ext;
+     const {error}=await db.storage.from(B).upload(ruta,f,{contentType:f.type,upsert:false});if(error)throw error;
+     fotosSubidas.push(ruta)
+   }
+   if(fotosSubidas.length){
+     const {error}=await db.from(T).update({fotos:[...fotosActuales,...fotosSubidas],actualizado_en:new Date().toISOString()}).eq('id',id);if(error)throw error
+   }
+   if(fotosRetiradas.length){await db.storage.from(B).remove(fotosRetiradas);fotosRetiradas.forEach(p=>cacheFirmas.delete(p))}
+   $('editor').close();letra='';$('buscar').value='';dibujarIndice();await cargar()
+ }catch(err){
+   $('errorEditor').textContent='Error: '+err.message+'. Podés volver a guardar; revisá si ya se creó el contacto.';
+   await cargar()
+ }finally{$('guardar').disabled=false}
+});
+async function eliminar(c){
+ if(!confirm('¿Eliminar a '+c.nombre+' y sus fotos de contacto?'))return;
+ const {error}=await db.from(T).delete().eq('id',c.id);
+ if(error){mensaje('No se pudo eliminar: '+error.message,true);return}
+ if(Array.isArray(c.fotos)&&c.fotos.length){await db.storage.from(B).remove(c.fotos);c.fotos.forEach(p=>cacheFirmas.delete(p))}
+ await cargar()
+}
+dibujarIndice();
+sesion().catch(e=>{visible('login',true);$('errorLogin').textContent='No se pudo comprobar el acceso: '+e.message});
+</script>
+</body>
+</html>

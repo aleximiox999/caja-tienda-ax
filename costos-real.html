@@ -1717,19 +1717,39 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 
 /* AMPHX: gestión de empleados exclusiva para administración, integrada en COSTOS. */
-/* Empleados junto a navegación de administrador, debajo de Estado y encima del margen. */
-.wrap>header .amp-empleados-cabecera{flex:1 0 100%;width:100%;display:flex;justify-content:flex-end;align-items:center;box-sizing:border-box;margin:0}
+/* Empleados debajo de Estado y encima del margen, con recuadro del mismo ancho y alto.
+   Reservar 34px a la derecha en móvil para que el índice A-Z no tape el borde. */
+.wrap>header .amp-empleados-cabecera{
+ flex:1 0 100%;width:100%;max-width:100%;min-width:0;display:flex;
+ align-items:center;justify-content:stretch;box-sizing:border-box;margin:0
+}
 .wrap>header .amp-empleados-cabecera.hidden{display:none!important}
 .wrap>header #ampAbrirEmpleadosCostos{
- box-sizing:border-box!important;display:inline-flex;align-items:center;justify-content:center;
- min-height:40px!important;height:40px!important;padding:0 13px!important;margin:0!important;
- border:1px solid #8e9aaa!important;border-radius:9px!important;
+ box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;
+ flex:1 1 auto!important;width:100%!important;min-width:0!important;
+ min-height:44px!important;height:44px!important;padding:7px 12px!important;margin:0!important;
+ border:2px solid #afbdcc!important;border-radius:9px!important;
  background:var(--amp-reflejo-total),var(--amp-negro-celda)!important;
  color:#fff!important;-webkit-text-fill-color:#fff!important;
- font:800 11px/1.1 system-ui,Arial,sans-serif!important;
- box-shadow:inset 0 1px 0 #ffffff50,0 2px 7px #0008!important;white-space:nowrap!important
+ font:800 12px/1.1 system-ui,Arial,sans-serif!important;
+ box-shadow:inset 0 1px 0 #ffffff55,0 2px 9px #0009!important;
+ white-space:nowrap!important
 }
-@media(max-width:760px){.wrap>header .amp-empleados-cabecera{justify-content:flex-start}.wrap>header #ampAbrirEmpleadosCostos{min-height:35px!important;height:35px!important;font-size:10px!important}}
+/* Ambos recuadros comparten una altura mínima, sin recortar el porcentaje. */
+.wrap>header #ampMargenPromedioPanel{min-height:44px!important}
+@media(max-width:760px), (hover:none) and (pointer:coarse){
+ .wrap>header .amp-empleados-cabecera{
+  flex:0 1 auto!important;
+  width:calc(100% - 34px)!important;
+  max-width:calc(100% - 34px)!important;
+  min-width:0!important;
+  margin-right:34px!important;
+ }
+ .wrap>header #ampAbrirEmpleadosCostos{
+  border:2px solid #afbdcc!important;
+  min-height:44px!important;height:44px!important;
+ }
+}
 #ampPersonalCostos{color:#fff!important}
 #ampPersonalCostos h2,#ampPersonalCostos h3,#ampPersonalCostos label,#ampPersonalCostos p{color:#fff!important}
 #ampPersonalCostos .amp-personal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}

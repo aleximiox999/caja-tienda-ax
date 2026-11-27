@@ -207,7 +207,7 @@ header,.wrap>header{background:linear-gradient(115deg,#090909,#303030 48%,#08080
 <button class="btn hidden" data-tab="entradas" id="tabEntradas">Ingresar mercadería</button>
 <button class="btn hidden" data-tab="empleados" id="tabEmpleados">Empleados</button>
 <button class="btn hidden" data-tab="reporte" id="tabReporte">Ventas</button>
-<button class="btn" data-tab="historial" id="tabHistorial" style="color:#fff;background:linear-gradient(145deg,#115993,#0a223c);border:1px solid #36a1f0">Historial de ventas</button>
+<button class="btn" data-tab="historial" id="tabHistorial" style="color:#ffffff;background:linear-gradient(145deg,#171717,#0e0e0e);border:1px solid #4b4b4b">Historial de ventas</button>
 </div>
 <div id="lectorPanel" class="scanner hidden"><div class="scanner-title"><strong>Cámara dentro de la aplicación</strong><button class="btn" id="cerrarCamara">Cerrar cámara</button></div><div id="camara"></div><p class="muted mini" id="camaraInfo">Apunta al código de barras.</p></div>
 <section id="panelVenta">
@@ -232,7 +232,7 @@ header,.wrap>header{background:linear-gradient(115deg,#090909,#303030 48%,#08080
 <div class="actions"><button class="btn primary" type="button" id="escanearEntrada">Escanear código</button><button class="btn" type="button" id="recargarEntrada">Actualizar catálogo</button></div>
 <div class="field"><label for="buscarEntrada">Nombre o código del producto</label><input id="buscarEntrada" autocomplete="off" placeholder="Busca producto o escanea el código" spellcheck="false"></div>
 <div id="resultadosEntrada" class="productResults"></div><div class="note" id="entradaSeleccion">Selecciona el producto para añadir unidades.</div>
-<p class="mini muted">Para un producto nuevo, primero usa <a href="./costos-real.html" style="color:#304f73">COSTOS · Registrar producto y compra</a>.</p>
+<p class="mini muted">Para un producto nuevo, primero usa <a href="./costos-real.html" style="color:#d5d5d5">COSTOS · Registrar producto y compra</a>.</p>
 </div><div class="card"><h2>Registrar compra</h2><form id="formEntrada">
 <input type="hidden" id="entradaProductoId">
 <div class="field"><label for="entradaFecha">Fecha de compra</label><input id="entradaFecha" type="date" required></div>
@@ -243,7 +243,7 @@ header,.wrap>header{background:linear-gradient(115deg,#090909,#303030 48%,#08080
 <button class="btn primary" id="guardarEntrada" type="submit" style="width:100%">GUARDAR COMPRA Y SUMAR INVENTARIO</button>
 </form><p class="mini muted">Requiere internet. Si una operación no confirma, comprueba el inventario antes de intentar otra vez.</p></div></div></section>
 <section id="panelEmpleados" class="hidden"><div class="grid"><div class="card"><h2>Agregar empleado</h2><p class="lead">El empleado primero crea su cuenta con su correo desde la pantalla de acceso. Después tú lo habilitas aquí.</p><form id="formEmpleado"><div class="field"><label>Nombre del empleado</label><input id="nombreNuevo" maxlength="100" required></div><div class="field"><label>Correo de su cuenta</label><input id="correoNuevo" type="email" maxlength="320" required></div><button class="btn primary" type="submit">Autorizar empleado</button></form><div class="note">El empleado podrá vender y consultar precios, sin acceso a costos ni ganancias.</div></div><div class="card"><h2>Personal registrado</h2><div id="listaEmpleados"></div></div></div></section>
-<section id="panelHistorial" class="hidden" style="background:linear-gradient(140deg,#080b10,#172333);border:1px solid #327eb8;border-radius:14px;padding:5px"><iframe id="histFrame" src="./historial-ventas.html" loading="lazy" title="Historial de ventas" style="width:100%;min-height:640px;height:750px;border:none;border-radius:10px;background:#080c13" referrerpolicy="same-origin"></iframe></section>
+<section id="panelHistorial" class="hidden" style="background:linear-gradient(140deg,#0b0b0b,#0f0f0f);border:1px solid #454545;border-radius:14px;padding:5px"><iframe id="histFrame" src="./historial-ventas.html" loading="lazy" title="Historial de ventas" style="width:100%;min-height:640px;height:750px;border:none;border-radius:10px;background:#0b0b0b" referrerpolicy="same-origin"></iframe></section>
 <section id="panelReporte" class="hidden"><div class="card"><h2>Ventas registradas</h2><p class="lead">Las ventas quedan asociadas al empleado. Montos en efectivo y QR separados.</p><div id="reporteResumen"></div><div class="tablewrap"><table><thead><tr><th>FECHA</th><th>EMPLEADO</th><th>EFECTIVO</th><th>QR</th><th>TOTAL</th><th>ESTADO</th></tr></thead><tbody id="tablaVentas"></tbody></table></div></div></section>
 </section>
 <footer class="muted mini" style="margin-top:25px;text-align:center">TIENDA AMPHX · Caja de ventas y entradas de mercadería con inventario real.</footer>
@@ -314,7 +314,7 @@ function pintarColaOffline(){
  if(!colaOffline.length)return;
  const errores=colaOffline.filter(x=>x.error).length;
  box.innerHTML='<strong>VENTAS LOCALES SIN CONFIRMAR: '+colaOffline.length+'</strong>'
-  +(errores?'<p class="mini" style="color:#ffc2c2">'+errores+' operación(es) requieren revisión del inventario o acceso.</p>':'')
+  +(errores?'<p class="mini" style="color:#f4f4f4">'+errores+' operación(es) requieren revisión del inventario o acceso.</p>':'')
   +'<p class="mini">Todavía NO están descontadas en Supabase. Cada venta conserva su clave única para evitar duplicaciones.</p>'
   +colaOffline.map(v=>'<div class="item"><div><strong>'+safe(new Date(v.fecha).toLocaleString('es-BO'))+'</strong><p>'+safe(v.pago)+' · '+(v.items||[]).length+' producto(s)'+(v.error?' · ERROR: '+safe(v.error):' · Pendiente de sincronizar')+'</p></div><div class="right"><b>'+moneda(v.total)+'</b></div></div>').join('')
   +'<button class="btn primary" id="sincronizarCola" style="width:100%" '+(!online()||sincronizando||offlineMode?'disabled':'')+'>SINCRONIZAR VENTAS PENDIENTES</button>';

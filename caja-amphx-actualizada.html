@@ -200,7 +200,7 @@ header,.wrap>header{background:linear-gradient(115deg,#090909,#303030 48%,#08080
 <div class="actions"><button class="btn primary" type="button" id="escanearEntrada">Escanear código</button><button class="btn" type="button" id="recargarEntrada">Actualizar catálogo</button></div>
 <div class="field"><label for="buscarEntrada">Nombre o código del producto</label><input id="buscarEntrada" autocomplete="off" placeholder="Busca producto o escanea el código" spellcheck="false"></div>
 <div id="resultadosEntrada" class="productResults"></div><div class="note" id="entradaSeleccion">Selecciona el producto para añadir unidades.</div>
-<p class="mini muted">Para un producto nuevo, primero usa <a href="./costos-real.html" style="color:#304f73">COSTOS · Registrar producto y compra</a>.</p>
+<p class="mini muted">Para un producto nuevo, primero usa <a href="./costos-real.html" style="color:#d5d5d5">COSTOS · Registrar producto y compra</a>.</p>
 </div><div class="card"><h2>Registrar compra</h2><form id="formEntrada">
 <input type="hidden" id="entradaProductoId">
 <div class="field"><label for="entradaFecha">Fecha de compra</label><input id="entradaFecha" type="date" required></div>
@@ -281,7 +281,7 @@ function pintarColaOffline(){
  if(!colaOffline.length)return;
  const errores=colaOffline.filter(x=>x.error).length;
  box.innerHTML='<strong>VENTAS LOCALES SIN CONFIRMAR: '+colaOffline.length+'</strong>'
-  +(errores?'<p class="mini" style="color:#ffc2c2">'+errores+' operación(es) requieren revisión del inventario o acceso.</p>':'')
+  +(errores?'<p class="mini" style="color:#f4f4f4">'+errores+' operación(es) requieren revisión del inventario o acceso.</p>':'')
   +'<p class="mini">Todavía NO están descontadas en Supabase. Cada venta conserva su clave única para evitar duplicaciones.</p>'
   +colaOffline.map(v=>'<div class="item"><div><strong>'+safe(new Date(v.fecha).toLocaleString('es-BO'))+'</strong><p>'+safe(v.pago)+' · '+(v.items||[]).length+' producto(s)'+(v.error?' · ERROR: '+safe(v.error):' · Pendiente de sincronizar')+'</p></div><div class="right"><b>'+moneda(v.total)+'</b></div></div>').join('')
   +'<button class="btn primary" id="sincronizarCola" style="width:100%" '+(!online()||sincronizando||offlineMode?'disabled':'')+'>SINCRONIZAR VENTAS PENDIENTES</button>';

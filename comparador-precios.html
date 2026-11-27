@@ -1,56 +1,56 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Comparador de precios | Tienda AMPHX</title>
-<meta name="theme-color" content="#101318">
+<meta name="theme-color" content="#090909">
 <style>
-:root{color-scheme:dark;--bg:#101318;--surface:#1b2028;--surface2:#252b35;--border:#434c58;--text:#f7f7f7;--muted:#d0d3da;--accent:#e6c48c;--good:#aee3bd}
+:root{color-scheme:dark;--bg:#0c0c0c;--surface:#0f0f0f;--surface2:#101010;--border:#3c3c3c;--text:#fdfdfd;--muted:#f5f5f5;--accent:#2c2c2c;--good:#aee3bd}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,Segoe UI,Arial,sans-serif}
-header{border-bottom:1px solid var(--border);background:#171b21;position:sticky;top:0;z-index:5}
+header{border-bottom:1px solid var(--border);background:#0e0e0e;position:sticky;top:0;z-index:5}
 .top{max-width:1500px;margin:auto;padding:13px 19px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 h1{font-size:22px;line-height:1.25;margin:0}h2{font-size:19px;margin:0 0 8px}h3{font-size:16px;margin:0 0 10px}
-small,.muted{color:var(--muted)}a{color:#ffdfa7}a:hover{text-decoration:underline}
+small,.muted{color:var(--muted)}a{color:#f8f8f8}a:hover{text-decoration:underline}
 .top nav{display:flex;gap:14px;flex-wrap:wrap}.top nav a{font-weight:650}
 main{max-width:1500px;margin:auto;padding:19px 16px 40px}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:17px;margin:0 0 17px}
 .hidden{display:none!important}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.space{justify-content:space-between}
-input,select{background:#11151b;color:#fff;border:1px solid #6c7581;border-radius:9px;padding:11px 12px;min-height:44px;font:inherit}
+input,select{background:#0d0d0d;color:#ffffff;border:1px solid #454545;border-radius:9px;padding:11px 12px;min-height:44px;font:inherit}
 input{width:100%}label{display:block;font-weight:650;font-size:13px;margin-bottom:5px}
-button{background:var(--accent);color:#171308;font:inherit;font-weight:750;padding:10px 15px;min-height:43px;border:0;border-radius:9px;cursor:pointer}
-button.secondary{border:1px solid #8b8f99;color:white;background:var(--surface2)}button:disabled{opacity:.5;cursor:default}
+button{background:var(--accent);color:#c7c7c7;font:inherit;font-weight:750;padding:10px 15px;min-height:43px;border:0;border-radius:9px;cursor:pointer}
+button.secondary{border:1px solid #4b4b4b;color:white;background:var(--surface2)}button:disabled{opacity:.5;cursor:default}
 .controls{display:grid;grid-template-columns:minmax(200px,2fr) repeat(2,minmax(155px,1fr)) auto;align-items:end;gap:12px;margin:12px 0}
-.pill{display:inline-block;background:#39372f;color:#ffe3b1;border:1px solid #81704b;border-radius:100px;padding:5px 11px;font-size:12px;font-weight:750}
-.stats{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}.stat{padding:8px 11px;background:#272c35;border:1px solid #444b58;border-radius:10px;font-weight:650}
-.tabbar{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}.tabbar button.active{background:var(--accent);color:#171308}
-.notice{padding:11px 13px;border-radius:9px;border:1px solid #5b5343;background:#27251f;color:#f7e9ca;margin:9px 0;font-size:13px}
-.notice.error{border-color:#9f5454;background:#382025;color:#ffd6d6}.notice.success{border-color:#547967;background:#1c352c;color:#c4f2d1}
-.tablewrap{max-height:72vh;overflow:auto;border:1px solid #515763;border-radius:10px}
+.pill{display:inline-block;background:#131313;color:#f9f9f9;border:1px solid #444444;border-radius:100px;padding:5px 11px;font-size:12px;font-weight:750}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}.stat{padding:8px 11px;background:#111111;border:1px solid #3c3c3c;border-radius:10px;font-weight:650}
+.tabbar{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}.tabbar button.active{background:var(--accent);color:#c7c7c7}
+.notice{padding:11px 13px;border-radius:9px;border:1px solid #3e3e3e;background:#101010;color:#fafafa;margin:9px 0;font-size:13px}
+.notice.error{border-color:#424242;background:#101010;color:#f7f7f7}.notice.success{border-color:#444444;background:#111111;color:#f9f9f9}
+.tablewrap{max-height:72vh;overflow:auto;border:1px solid #3f3f3f;border-radius:10px}
 table{width:100%;min-width:1220px;border-collapse:separate;border-spacing:0}
-th,td{border-bottom:1px solid #454b56;padding:12px 10px;text-align:left;vertical-align:top}
-th{position:sticky;top:0;background:#2b303a;color:#f9dfa9;z-index:2;white-space:nowrap;font-size:12px}
-td:first-child,th:first-child{position:sticky;left:0;z-index:1;background:#1c222b;min-width:210px;max-width:310px}
-th:first-child{z-index:3;background:#2b303a}
-tr:nth-child(even) td:not(:first-child){background:#20252d}
-.product{font-weight:750;font-size:13px}.state{display:block;font-size:11px;color:#b7c6d0;margin-top:3px}
-.state.off{color:#edc393}.price{font-weight:750;color:var(--good);white-space:nowrap}
+th,td{border-bottom:1px solid #3c3c3c;padding:12px 10px;text-align:left;vertical-align:top}
+th{position:sticky;top:0;background:#111111;color:#f8f8f8;z-index:2;white-space:nowrap;font-size:12px}
+td:first-child,th:first-child{position:sticky;left:0;z-index:1;background:#0f0f0f;min-width:210px;max-width:310px}
+th:first-child{z-index:3;background:#111111}
+tr:nth-child(even) td:not(:first-child){background:#0f0f0f}
+.product{font-weight:750;font-size:13px}.state{display:block;font-size:11px;color:#f1f1f1;margin-top:3px}
+.state.off{color:#f2f2f2}.price{font-weight:750;color:var(--good);white-space:nowrap}
 .competitor-cell{white-space:nowrap}.competitor-cell a{font-size:12px;margin-left:7px;white-space:nowrap}
-.empty-price{color:#aeb5bf;font-size:12px}.stock-status{display:block;color:#c9ccd2;font-size:11px;margin-top:3px}
+.empty-price{color:#ededed;font-size:12px}.stock-status{display:block;color:#f3f3f3;font-size:11px;margin-top:3px}
 .new-form{display:grid;grid-template-columns:minmax(220px,1fr) auto;align-items:end;gap:12px;max-width:850px}
 .form-note{font-size:13px;color:var(--muted);margin:8px 0}
-.mobile-cards{display:none}.mcard{background:#222833;border:1px solid #505966;border-radius:12px;padding:13px;margin-bottom:11px}
-.mcard .company{display:grid;grid-template-columns:40% 60%;gap:5px;border-top:1px solid #414a55;padding:8px 0;font-size:13px}
-.mcard .company strong{font-size:12px;color:#ebd2aa}.mcard .competitor-cell{white-space:normal}
+.mobile-cards{display:none}.mcard{background:#101010;border:1px solid #3f3f3f;border-radius:12px;padding:13px;margin-bottom:11px}
+.mcard .company{display:grid;grid-template-columns:40% 60%;gap:5px;border-top:1px solid #3c3c3c;padding:8px 0;font-size:13px}
+.mcard .company strong{font-size:12px;color:#f5f5f5}.mcard .competitor-cell{white-space:normal}
 .mcard .competitor-cell a{display:inline-block}
 @media(max-width:800px){.controls{grid-template-columns:1fr 1fr}.controls button{grid-column:1/-1}.tablewrap{display:none}.mobile-cards{display:block}.top{padding:11px}.new-form{grid-template-columns:1fr}.stats{gap:7px}main{padding:14px 10px}}
 @media(max-width:480px){.controls{grid-template-columns:1fr}.top nav{gap:9px}h1{font-size:19px}.panel{padding:12px}}
 .alphabet{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 14px;max-width:100%}
-.alphabet button{background:var(--surface2);color:#f7f0e5;border:1px solid #626a76;border-radius:7px;min-width:34px;min-height:35px;padding:5px 8px;font-size:12px}
-.alphabet button:focus-visible,.alphabet button:hover{background:var(--accent);color:#16130d}
+.alphabet button{background:var(--surface2);color:#fcfcfc;border:1px solid #434343;border-radius:7px;min-width:34px;min-height:35px;padding:5px 8px;font-size:12px}
+.alphabet button:focus-visible,.alphabet button:hover{background:var(--accent);color:#c8c8c8}
 .comp-layout{display:flex;align-items:center;gap:9px;min-width:0}
 .comp-img-link{flex:0 0 62px;display:block;text-decoration:none!important}
-.comp-img{display:block;width:62px;height:70px;border:1px solid #686e78;background:#fff;border-radius:8px;object-fit:contain;cursor:zoom-in}
+.comp-img{display:block;width:62px;height:70px;border:1px solid #444444;background:#363636;border-radius:8px;object-fit:contain;cursor:zoom-in}
 .comp-details{min-width:0;white-space:normal}.comp-details a{margin-left:4px}
-.comp-no-img{display:block;font-size:11px;color:#b0bac7;max-width:86px;white-space:normal}
-.comp-nota{display:block;color:#c7cbd2;font-size:11px;margin-top:4px;line-height:1.3}
+.comp-no-img{display:block;font-size:11px;color:#eeeeee;max-width:86px;white-space:normal}
+.comp-nota{display:block;color:#f3f3f3;font-size:11px;margin-top:4px;line-height:1.3}
 .mcard,.tablewrap tr{scroll-margin-top:100px}
 @media(max-width:800px){.alphabet{flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}.alphabet button{flex:0 0 auto}
 .mcard .company{grid-template-columns:33% minmax(0,67%)}.comp-img{width:55px;height:62px}.comp-img-link{flex-basis:55px}.comp-layout{gap:7px}.comp-no-img{max-width:70px}}
@@ -84,6 +84,22 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
   document.addEventListener('compositionend',convertir,true);
 })();
 </script>
+
+<style id="amp-tema-negro-metalizado">
+/* Tema único de Tienda AMPHX: negro metalizado brillante y texto blanco.
+   Conservar imágenes, datos, lectores y lógica comercial sin alterarlos. */
+:root{color-scheme:dark!important;--bg:#090909;--surface:#191919;--surface2:#252525;--panel:#191919;--border:#555555;--line:#555555;--accent:#323232;--metal:#323232;--gold:#323232;--gold2:#f0f0f0;--text:#ffffff;--muted:#c9c9c9;--sub:#c9c9c9}
+html{background:#070707!important;color-scheme:dark!important}
+body{background:radial-gradient(ellipse at 28% -12%,#2b2b2b 0,transparent 43%),linear-gradient(145deg,#070707,#181818 55%,#050505)!important;color:#f7f7f7!important}
+header,.wrap>header{background:linear-gradient(115deg,#090909,#303030 48%,#080808)!important;border-color:#5a5a5a!important;box-shadow:inset 0 1px #85858577,0 3px 12px #0009!important;color:#ffffff!important}
+:where(.panel,.ficha,.card,.metric,.sale,.editor,.mcard,.sheet-card,section){background:linear-gradient(145deg,#262626 0%,#111111 42%,#222222 78%,#0e0e0e)!important;border-color:#515151!important;box-shadow:inset 0 1px #77777744,0 8px 20px #0007!important}
+:where(button,.btn){background:linear-gradient(128deg,#2c2c2c,#111111 52%,#343434)!important;color:#f7f7f7!important;border-color:#666666!important}
+:where(button,.btn):focus-visible{outline:2px solid #c3c3c3!important;outline-offset:2px}
+:where(input,textarea,select){background:#141414!important;color:#f7f7f7!important;border-color:#5c5c5c!important;color-scheme:dark!important}
+:where(input,textarea)::placeholder{color:#b8b8b8!important}
+:where(th,thead){background:#282828!important;color:#f4f4f4!important}
+:where(a){color:#ececec}
+</style>
 </head>
 <body>
 <header><div class="top"><h1>TIENDA AMPHX · COMPARADOR DE PRECIOS</h1>

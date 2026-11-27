@@ -3179,7 +3179,7 @@ function dibujar(){
   for(const color of ['verde','rojo','amarillo'])card.classList.toggle('amp-card-'+color,p.marca_color_costos===color);
   const inicial=inicialNombreCostos(p.detalles);
   if(!ampAnclasIndiceCostos.has(inicial))ampAnclasIndiceCostos.set(inicial,card);
-  const h=document.createElement('h3');h.className='sheet-card-title';h.append(nombreFilaHoja(p));card.append(h); const enlaceRecibo=document.createElement('a');enlaceRecibo.href='./recibos-originales.html?producto='+encodeURIComponent(p.id);enlaceRecibo.textContent='📄 VER RECIBO ORIGINAL';enlaceRecibo.className='amp-recibo-link';card.append(enlaceRecibo);
+  const h=document.createElement('h3');h.className='sheet-card-title';h.append(nombreFilaHoja(p));card.append(h);
   const dato=document.createElement('p');dato.className='sheet-card-details';
   dato.textContent='Existencias: '+conMedida(d.stock,p)+(p.codigo_barras?' · Código: '+p.codigo_barras:'');
   if(recientes){

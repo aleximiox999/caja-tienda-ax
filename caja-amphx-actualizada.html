@@ -2,41 +2,41 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Caja real · TIENDA AMPHX</title>
 <link rel="manifest" href="./manifest-amphx.webmanifest">
-<meta name="theme-color" content="#f5f6f8">
+<meta name="theme-color" content="#090909">
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
-:root{color-scheme:dark;--bg:#0d0f12;--surface:#171a20;--surface2:#1d2228;--line:#393832;--gold:#d6b87e;--gold2:#edddb6;--text:#f6f3eb;--muted:#b5aca0;--red:#ff8892;--green:#a4e2bc}
-*{box-sizing:border-box}body{margin:0;color:var(--text);background:radial-gradient(circle at 95% 10%,#27221b 0,transparent 42%),#0d0f12;font:15px/1.5 system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}
+:root{color-scheme:dark;--bg:#0c0c0c;--surface:#0e0e0e;--surface2:#0f0f0f;--line:#383838;--gold:#2a2a2a;--gold2:#f7f7f7;--text:#fcfcfc;--muted:#ececec;--red:#ff8892;--green:#a4e2bc}
+*{box-sizing:border-box}body{margin:0;color:var(--text);background:radial-gradient(circle at 95% 10%,#0f0f0f 0,transparent 42%),#0c0c0c;font:15px/1.5 system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}
 button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-header{border-bottom:1px solid #4c3d2d;background:#111318eb;position:sticky;top:0;z-index:8;backdrop-filter:blur(12px)}
+header{border-bottom:1px solid #3a3a3a;background:#0c0c0ceb;position:sticky;top:0;z-index:8;backdrop-filter:blur(12px)}
 .hrow{max-width:1320px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;gap:12px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px}.mark{display:grid;place-items:center;width:40px;height:40px;border:1px solid #b99860;border-radius:50%;color:#e8c88e;font-size:24px;font-family:Georgia,serif}.brand b{display:block;color:var(--gold2);letter-spacing:2px;font-size:16px}.brand small{display:block;font-size:10px;letter-spacing:1px;color:#a99c87}
-.headerTools{display:flex;gap:8px;align-items:center}.who{color:#c6b79d;font-size:12px}
+.brand{display:flex;align-items:center;gap:10px}.mark{display:grid;place-items:center;width:40px;height:40px;border:1px solid #4d4d4d;border-radius:50%;color:#f3f3f3;font-size:24px;font-family:Georgia,serif}.brand b{display:block;color:var(--gold2);letter-spacing:2px;font-size:16px}.brand small{display:block;font-size:10px;letter-spacing:1px;color:#e8e8e8}
+.headerTools{display:flex;gap:8px;align-items:center}.who{color:#eeeeee;font-size:12px}
 main{position:relative;max-width:1320px;padding:22px 18px 60px;margin:auto}
 .bgmark{pointer-events:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(70vw,500px);height:min(70vw,500px);opacity:.045;z-index:0}
 main>*{position:relative;z-index:1}h1{font-size:28px;line-height:1.2;margin:0 0 8px;font-weight:690;letter-spacing:-.4px}h2{font-size:19px;line-height:1.2;margin:0 0 15px;color:var(--gold2)}h3{font-size:16px;color:var(--gold2);margin:4px 0 12px}
-p{margin:8px 0}.lead{color:var(--muted);font-size:13px;margin-bottom:18px}.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid #5d512f;border-radius:30px;color:#ebcd90;font-size:11px;letter-spacing:.5px}
-.note{background:#211e1a;border:1px solid #665234;color:#eed7a2;padding:12px 14px;border-radius:9px;font-size:13px;line-height:1.5;margin:12px 0}.note.red{background:#331a20;border-color:#8a464c;color:#ffb9bf}.note.ok{background:#1a3228;border-color:#3f7858;color:#b3f3cc}
-.grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.85fr);gap:16px}.card{border:1px solid #494039;border-radius:12px;background:#171a20e8;padding:20px;min-width:0;box-shadow:0 16px 40px #0002}.card+ .card{margin-top:0}
-label{display:block;color:#d4c4a9;font-weight:600;font-size:12px;margin-bottom:7px}
-input,select{background:#0e1116;border:1px solid #615746;color:white;border-radius:8px;padding:13px 12px;width:100%;min-height:47px;font-size:16px}input::placeholder{color:#9a948b}
+p{margin:8px 0}.lead{color:var(--muted);font-size:13px;margin-bottom:18px}.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid #3d3d3d;border-radius:30px;color:#f4f4f4;font-size:11px;letter-spacing:.5px}
+.note{background:#0e0e0e;border:1px solid #3e3e3e;color:#f6f6f6;padding:12px 14px;border-radius:9px;font-size:13px;line-height:1.5;margin:12px 0}.note.red{background:#0f0f0f;border-color:#3e3e3e;color:#f2f2f2}.note.ok{background:#111111;border-color:#434343;color:#f8f8f8}
+.grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.85fr);gap:16px}.card{border:1px solid #3a3a3a;border-radius:12px;background:#0e0e0ee8;padding:20px;min-width:0;box-shadow:0 16px 40px #2c2c2c22}.card+ .card{margin-top:0}
+label{display:block;color:#f1f1f1;font-weight:600;font-size:12px;margin-bottom:7px}
+input,select{background:#0c0c0c;border:1px solid #3f3f3f;color:white;border-radius:8px;padding:13px 12px;width:100%;min-height:47px;font-size:16px}input::placeholder{color:#e6e6e6}
 input[type="number"]{min-width:0}input[type="checkbox"]{width:auto;min-height:0}
 .field{margin:0 0 14px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.btn{border:1px solid #6a5940;border-radius:9px;padding:12px 16px;min-height:46px;background:#25231f;color:#f4dfb9;font-size:14px;font-weight:650;text-align:center}
-.btn.primary{background:var(--gold);color:#1a140d;border-color:#dfca9b}.btn:hover:not(:disabled){filter:brightness(1.1)}.btn.outline{background:transparent;color:#ddd5c6}
-.btn.danger{border-color:#8b444b;background:#4b222a;color:#ffbfc4}
+.btn{border:1px solid #404040;border-radius:9px;padding:12px 16px;min-height:46px;background:#0f0f0f;color:#f8f8f8;font-size:14px;font-weight:650;text-align:center}
+.btn.primary{background:var(--gold);color:#c8c8c8;border-color:#585858}.btn:hover:not(:disabled){filter:brightness(1.1)}.btn.outline{background:transparent;color:#f5f5f5}
+.btn.danger{border-color:#3e3e3e;background:#111111;color:#f3f3f3}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0}.actions .btn{flex:1}
-.tabs{display:flex;gap:7px;overflow:auto;padding:0 0 12px;margin:0 0 10px}.tabs .btn{white-space:nowrap}.tabs .btn.active{background:var(--gold);color:#17110d;border-color:var(--gold)}
+.tabs{display:flex;gap:7px;overflow:auto;padding:0 0 12px;margin:0 0 10px}.tabs .btn{white-space:nowrap}.tabs .btn.active{background:var(--gold);color:#c7c7c7;border-color:var(--gold)}
 .hidden{display:none!important}.muted{color:var(--muted)}.mini{font-size:12px}
-#status{min-height:22px;line-height:1.5;font-size:13px;color:#d4c39e;margin:9px 0 18px}#status.error{color:var(--red)}#status.success{color:var(--green)}
-#camara{width:100%;max-width:540px;margin:auto;background:#08090b;border-radius:9px;overflow:hidden}#camara video{max-width:100%;border-radius:7px}
-.scanner{border:1px solid #554836;background:#101215;padding:14px;border-radius:10px;margin:11px 0}.scanner-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 9px}
-.bigprice{font-size:35px;color:#f4d59f;font-weight:700;margin:6px 0}.result{border:1px solid #574a34;background:#222019;border-radius:10px;padding:18px;margin:14px 0}.result strong{font-size:19px}
-.stock{font-size:12px;padding:4px 9px;border-radius:30px;display:inline-block;background:#24362d;color:#ade9c5}.stock.low{background:#4c232b;color:#ffbcc3}
-.item{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #393733}.item:last-child{border-bottom:0}.item strong{font-size:13px}.item p{font-size:12px;color:#afa89c;margin:3px 0}.item .right{text-align:right}.item .right b{color:#ead2a7}
-.tablewrap{overflow:auto;border:1px solid #3e3c34;border-radius:9px}table{width:100%;border-collapse:collapse;min-width:570px;font-size:13px}thead{background:#242420}th{text-align:left;color:#edcf95;letter-spacing:.3px;font-size:11px}th,td{padding:12px;border-bottom:1px solid #373733}tbody tr:last-child td{border:0}td{color:#e6e3d9}.qty{width:85px!important;padding:7px 9px!important;min-height:36px!important;font-size:14px!important}.total{font-size:30px;color:#f7d89c;font-weight:720;text-align:right;margin:12px 0}.itemcode{font-size:11px;color:#aa9d8b}
-.productResults{max-height:290px;overflow:auto;padding:2px 0}.flat{background:transparent;border:0;color:#f4d8a9;text-decoration:underline;padding:7px}.inline{display:inline-block}details{border-top:1px solid #4b4135;padding-top:12px;margin-top:20px}summary{cursor:pointer;color:#e3c690;font-weight:650}
-#authCard{max-width:530px;margin:30px auto}.empty{color:#a7a39a;text-align:center;padding:22px 0}
+#status{min-height:22px;line-height:1.5;font-size:13px;color:#f1f1f1;margin:9px 0 18px}#status.error{color:var(--red)}#status.success{color:var(--green)}
+#camara{width:100%;max-width:540px;margin:auto;background:#0b0b0b;border-radius:9px;overflow:hidden}#camara video{max-width:100%;border-radius:7px}
+.scanner{border:1px solid #3c3c3c;background:#0c0c0c;padding:14px;border-radius:10px;margin:11px 0}.scanner-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 9px}
+.bigprice{font-size:35px;color:#f6f6f6;font-weight:700;margin:6px 0}.result{border:1px solid #3c3c3c;background:#0f0f0f;border-radius:10px;padding:18px;margin:14px 0}.result strong{font-size:19px}
+.stock{font-size:12px;padding:4px 9px;border-radius:30px;display:inline-block;background:#121212;color:#f6f6f6}.stock.low{background:#111111;color:#f3f3f3}
+.item{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #383838}.item:last-child{border-bottom:0}.item strong{font-size:13px}.item p{font-size:12px;color:#ebebeb;margin:3px 0}.item .right{text-align:right}.item .right b{color:#f5f5f5}
+.tablewrap{overflow:auto;border:1px solid #393939;border-radius:9px}table{width:100%;border-collapse;min-width:570px;font-size:13px}thead{background:#0f0f0f}th{text-align:left;color:#f4f4f4;letter-spacing:.3px;font-size:11px}th,td{padding:12px;border-bottom:1px solid #383838}tbody tr:last-child td{border:0}td{color:#f8f8f8}.qty{width:85px!important;padding:7px 9px!important;min-height:36px!important;font-size:14px!important}.total{font-size:30px;color:#f6f6f6;font-weight:720;text-align:right;margin:12px 0}.itemcode{font-size:11px;color:#e8e8e8}
+.productResults{max-height:290px;overflow:auto;padding:2px 0}.flat{background:transparent;border:0;color:#f6f6f6;text-decoration:underline;padding:7px}.inline{display:inline-block}details{border-top:1px solid #3a3a3a;padding-top:12px;margin-top:20px}summary{cursor:pointer;color:#f2f2f2;font-weight:650}
+#authCard{max-width:530px;margin:30px auto}.empty{color:#e9e9e9;text-align:center;padding:22px 0}
 @media(max-width:850px){main{padding:16px 12px 40px}.grid{grid-template-columns:1fr}.card{padding:16px}.fields{gap:9px}h1{font-size:25px}.who{display:none}.tabs .btn{padding:10px 13px}.bgmark{opacity:.025}}
 @media(max-width:440px){.fields{grid-template-columns:1fr}.card{padding:15px}.hrow{padding:10px 12px}.brand b{font-size:14px}.actions{flex-direction:column}.actions .btn{width:100%}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
@@ -44,37 +44,37 @@ input[type="number"]{min-width:0}input[type="checkbox"]{width:auto;min-height:0}
 /* AMPHX — ajuste de legibilidad solicitado: fondo negro intacto.
    El cambio afecta únicamente tipografía, contraste y controles. */
 :root {
-  --text:#FFFFFF;
-  --muted:#D8D7D3;
-  --gold2:#F6E0B1;
+  --text:#ffffff;
+  --muted:#f6f6f6;
+  --gold2:#f8f8f8;
 }
 body { color:var(--text); font-size:16px; line-height:1.55; }
-.lead, .muted {color:#E0DEDA; font-size:14px; line-height:1.58;}
+.lead, .muted {color:#f7f7f7; font-size:14px; line-height:1.58;}
 .mini {font-size:13px;}
-h1 {color:#FFFFFF; font-weight:720;}
-h2,h3 {color:#F6E0B1;}
-label {color:#F5F2EC; font-size:14px; font-weight:650;}
-input,select {color:#FFFFFF; border-color:#8E8475;}
-input::placeholder {color:#C8C5C0; opacity:1;}
-input:focus,select:focus {border-color:#EAC78E;}
-.item strong,.result strong,.scanner-title strong {color:#FFFFFF; font-size:15px;}
-.item p {color:#DEDBD5; font-size:13px;}
-.itemcode {color:#D6D2CA; font-size:12px;}
-.item .right b {color:#FFE0A3;}
-.btn {color:#FAF4E8; font-size:15px; border-color:#89785C;}
-.btn.outline {color:#F6F4F0;}
-.btn.primary,.tabs .btn.active {color:#14110C; font-weight:750;}
-.brand small {color:#E1D3BD; font-size:11px;}
-.who {color:#E7D8C2; font-size:13px;}
+h1 {color:#ffffff; font-weight:720;}
+h2,h3 {color:#f8f8f8;}
+label {color:#fcfcfc; font-size:14px; font-weight:650;}
+input,select {color:#ffffff; border-color:#494949;}
+input::placeholder {color:#f1f1f1; opacity:1;}
+input:focus,select:focus {border-color:#585858;}
+.item strong,.result strong,.scanner-title strong {color:#ffffff; font-size:15px;}
+.item p {color:#f7f7f7; font-size:13px;}
+.itemcode {color:#f4f4f4; font-size:12px;}
+.item .right b {color:#f8f8f8;}
+.btn {color:#fdfdfd; font-size:15px; border-color:#464646;}
+.btn.outline {color:#fcfcfc;}
+.btn.primary,.tabs .btn.active {color:#c7c7c7; font-weight:750;}
+.brand small {color:#f5f5f5; font-size:11px;}
+.who {color:#f6f6f6; font-size:13px;}
 table {font-size:14px;}
-td {color:#FFFFFF;}
-th {color:#FFE3B2; font-size:12px;}
-.badge {color:#F7E4BA; font-size:12px;}
-.note {color:#F5E8CE; font-size:14px;}
-.empty {color:#DBD8D2;}
-#status {color:#EACF9E; font-size:14px;}
+td {color:#ffffff;}
+th {color:#f9f9f9; font-size:12px;}
+.badge {color:#f9f9f9; font-size:12px;}
+.note {color:#fafafa; font-size:14px;}
+.empty {color:#f6f6f6;}
+#status {color:#f4f4f4; font-size:14px;}
 .stock {font-size:13px; font-weight:650;}
-.flat,summary {color:#FFE1AD;}
+.flat,summary {color:#f9f9f9;}
 @media(max-width:850px) {
   body {font-size:16px;}
   .lead,.muted {font-size:14px;}
@@ -86,60 +86,76 @@ th {color:#FFE3B2; font-size:12px;}
 /* Acabado plateado adiamantado de los sigilos del fondo. No afecta la caja. */
 .bgmark{
  opacity:.23;
- filter:drop-shadow(0 0 5px rgba(229,237,247,.7));
+ filter:drop-shadow(0 0 5px rgba(46,46,46,.7));
 }
 @media(max-width:850px){.bgmark{opacity:.15}}
 /* TIENDA AMPHX: tema minimalista claro para escritorio y celular */
-:root{color-scheme:light;--bg:#f5f6f8;--surface:#fff;--surface2:#f0f2f5;--line:#d7dde4;--gold:#344456;--gold2:#273240;--text:#202936;--muted:#596675;--red:#aa2932;--green:#176545}
-html{background:#f5f6f8}
-body{background:#f5f6f8;color:var(--text);font-size:16px;line-height:1.55}
-header{background:#fff;border-bottom:1px solid #d8dee5;box-shadow:0 2px 10px rgba(17,24,39,.04)}
-.brand .mark{background:#e8ecf1;color:#344456;border:1px solid #cfd6df;border-radius:11px;font-family:system-ui;font-size:22px;font-weight:800}
-.brand b{color:#202936;letter-spacing:.5px}
-.brand small,.who{color:#5b6472}
+:root{color-scheme:dark;--bg:#343434;--surface:#363636;--surface2:#343434;--line:#5c5c5c;--gold:#151515;--gold2:#cecece;--text:#cccccc;--muted:#dbdbdb;--red:#aa2932;--green:#176545}
+html{background:#343434}
+body{background:#343434;color:var(--text);font-size:16px;line-height:1.55}
+header{background:#363636;border-bottom:1px solid #5c5c5c;box-shadow:0 2px 10px rgba(49,49,49,.04)}
+.brand .mark{background:#333333;color:#d3d3d3;border:1px solid #5a5a5a;border-radius:11px;font-family:system-ui;font-size:22px;font-weight:800}
+.brand b{color:#cccccc;letter-spacing:.5px}
+.brand small,.who{color:#dadada}
 .bgmark{display:none!important}
-h1,h2,h3{color:#202936}
-h2,h3{color:#273240}
-.lead,.muted,.item p,.itemcode,.empty{color:#596675}
-.card{background:#fff;border:1px solid #d9dfe6;border-radius:14px;box-shadow:0 5px 22px rgba(38,51,69,.055)}
-label{color:#334155;font-size:14px;font-weight:700}
-input,select{background:#fff;border:1px solid #b8c2cc;color:#202936;border-radius:9px;min-height:48px}
-input::placeholder{color:#667485;opacity:1}
-input:focus,select:focus{border-color:#344456;outline:2px solid #bbc8d6;outline-offset:1px}
-input[type=checkbox]{accent-color:#344456}
-.btn{background:#eef1f4;border:1px solid #c7d0db;color:#273240;border-radius:9px;min-height:46px;font-size:15px;font-weight:700}
-.btn.primary,.tabs .btn.active{background:#344456;color:#fff;border-color:#344456;font-weight:750}
-.btn.outline{background:#fff;color:#344456;border-color:#c7d0db}
-.btn.danger{background:#fff2f2;border-color:#e4a5aa;color:#9b2632}
+h1,h2,h3{color:#cccccc}
+h2,h3{color:#cecece}
+.lead,.muted,.item p,.itemcode,.empty{color:#dbdbdb}
+.card{background:#363636;border:1px solid #5c5c5c;border-radius:14px;box-shadow:0 5px 22px rgba(55,55,55,.055)}
+label{color:#d2d2d2;font-size:14px;font-weight:700}
+input,select{background:#363636;border:1px solid #565656;color:#cccccc;border-radius:9px;min-height:48px}
+input::placeholder{color:#dedede;opacity:1}
+input:focus,select:focus{border-color:#3a3a3a;outline:2px solid #575757;outline-offset:1px}
+input[type=checkbox]{accent-color:#1a1a1a}
+.btn{background:#333333;border:1px solid #595959;color:#cecece;border-radius:9px;min-height:46px;font-size:15px;font-weight:700}
+.btn.primary,.tabs .btn.active{background:#151515;color:#ffffff;border-color:#3a3a3a;font-weight:750}
+.btn.outline{background:#363636;color:#d3d3d3;border-color:#595959}
+.btn.danger{background:#343434;border-color:#535353;color:#d2d2d2}
 .btn:hover:not(:disabled){filter:brightness(.96)}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8ea4bc;outline-offset:2px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #4f4f4f;outline-offset:2px}
 .tabs{gap:9px}
 .tabs .btn{white-space:nowrap}
-.badge{background:#f0f2f5;border:1px solid #d5dce4;color:#465463;font-size:12px}
-.note{background:#f2f5f8;border:1px solid #d6dfe7;color:#384758;font-size:14px}
-.note.red{background:#fff1f1;border-color:#efc0c4;color:#922734}
-.note.ok{background:#eff9f3;border-color:#addbc0;color:#165c3b}
-#status{color:#465463;font-size:14px}
-#status.error{color:#a32b36}
-#status.success{color:#166441}
-.scanner{background:#f5f7f9;border:1px solid #d9dfe6}
-#camara{background:#111827}
-.bigprice,.total{color:#243347}
-.result{background:#f8fafb;border:1px solid #d5dde5;color:#202936}
-.item{border-bottom:1px solid #e1e6eb}
-.item strong,.result strong,.scanner-title strong{color:#202936;font-size:15px}
-.item .right b{color:#273240}
-.stock{background:#e8f5ed;color:#165d3c;font-size:13px;font-weight:700}
-.stock.low{background:#fff0ef;color:#a22d36}
-.tablewrap{border:1px solid #d9dfe6}
-thead{background:#f0f3f6}
-th{color:#38495b;font-size:12px}
-td{color:#202936}
-th,td{border-bottom:1px solid #e1e6eb}
-.flat,summary,a{color:#304f73}
-details{border-top:1px solid #d7dfe7}
-@media(max-width:850px){body{font-size:16px}.lead,.muted{font-size:14px}.item strong{font-size:15px}.btn{font-size:16px}.card{box-shadow:0 3px 14px rgba(38,51,69,.055)}}
+.badge{background:#343434;border:1px solid #5b5b5b;color:#d6d6d6;font-size:12px}
+.note{background:#343434;border:1px solid #5c5c5c;color:#d3d3d3;font-size:14px}
+.note.red{background:#343434;border-color:#585858;color:#d2d2d2}
+.note.ok{background:#343434;border-color:#595959;color:#d5d5d5}
+#status{color:#d6d6d6;font-size:14px}
+#status.error{color:#d3d3d3}
+#status.success{color:#d6d6d6}
+.scanner{background:#353535;border:1px solid #5c5c5c}
+#camara{background:#0d0d0d}
+.bigprice,.total{color:#cfcfcf}
+.result{background:#353535;border:1px solid #5b5b5b;color:#cccccc}
+.item{border-bottom:1px solid #5d5d5d}
+.item strong,.result strong,.scanner-title strong{color:#cccccc;font-size:15px}
+.item .right b{color:#cecece}
+.stock{background:#343434;color:#d5d5d5;font-size:13px;font-weight:700}
+.stock.low{background:#343434;color:#d4d4d4}
+.tablewrap{border:1px solid #5c5c5c}
+thead{background:#343434}
+th{color:#d4d4d4;font-size:12px}
+td{color:#cccccc}
+th,td{border-bottom:1px solid #5d5d5d}
+.flat,summary,a{color:#d5d5d5}
+details{border-top:1px solid #5c5c5c}
+@media(max-width:850px){body{font-size:16px}.lead,.muted{font-size:14px}.item strong{font-size:15px}.btn{font-size:16px}.card{box-shadow:0 3px 14px rgba(55,55,55,.055)}}
 @media(max-width:440px){.hrow{padding:12px}.card{padding:16px}.actions .btn{width:100%}}
+</style>
+
+<style id="amp-tema-negro-metalizado">
+/* Tema único de Tienda AMPHX: negro metalizado brillante y texto blanco.
+   Conservar imágenes, datos, lectores y lógica comercial sin alterarlos. */
+:root{color-scheme:dark!important;--bg:#090909;--surface:#191919;--surface2:#252525;--panel:#191919;--border:#555555;--line:#555555;--accent:#323232;--metal:#323232;--gold:#323232;--gold2:#f0f0f0;--text:#ffffff;--muted:#c9c9c9;--sub:#c9c9c9}
+html{background:#070707!important;color-scheme:dark!important}
+body{background:radial-gradient(ellipse at 28% -12%,#2b2b2b 0,transparent 43%),linear-gradient(145deg,#070707,#181818 55%,#050505)!important;color:#f7f7f7!important}
+header,.wrap>header{background:linear-gradient(115deg,#090909,#303030 48%,#080808)!important;border-color:#5a5a5a!important;box-shadow:inset 0 1px #85858577,0 3px 12px #0009!important;color:#ffffff!important}
+:where(.panel,.ficha,.card,.metric,.sale,.editor,.mcard,.sheet-card,section){background:linear-gradient(145deg,#262626 0%,#111111 42%,#222222 78%,#0e0e0e)!important;border-color:#515151!important;box-shadow:inset 0 1px #77777744,0 8px 20px #0007!important}
+:where(button,.btn){background:linear-gradient(128deg,#2c2c2c,#111111 52%,#343434)!important;color:#f7f7f7!important;border-color:#666666!important}
+:where(button,.btn):focus-visible{outline:2px solid #c3c3c3!important;outline-offset:2px}
+:where(input,textarea,select){background:#141414!important;color:#f7f7f7!important;border-color:#5c5c5c!important;color-scheme:dark!important}
+:where(input,textarea)::placeholder{color:#b8b8b8!important}
+:where(th,thead){background:#282828!important;color:#f4f4f4!important}
+:where(a){color:#ececec}
 </style>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark">A</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>

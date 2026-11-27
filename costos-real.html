@@ -1769,6 +1769,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 #ampPersonalCostos .amp-cred-valor{overflow-wrap:anywhere;user-select:all;font:800 16px/1.5 ui-monospace,monospace;background:#132535;border:1px solid #8cadbd;padding:8px;border-radius:6px;color:#fff}
 #ampPersonalCostos #ampEmpleadoEstadoCostos{min-height:20px;font-size:13px;font-weight:700}
 @media(max-width:760px){#ampPersonalCostos .amp-personal-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Accesos visibles en la cabecera de COSTOS: negro metalizado sin azul. */
+.wrap>header .amp-cabecera-controles .amp-fila-modulos{justify-content:flex-start!important;flex-wrap:wrap!important;gap:6px!important}
+.wrap>header .amp-fila-modulos .amp-modulo-nuevo{
+ background:linear-gradient(125deg,#282828,#090909 49%,#242424)!important;
+ border:1px solid #777!important;color:#fff!important;
+ box-shadow:inset 0 1px #a0a0a055,0 2px 8px #0009!important;
+ text-decoration:none!important;white-space:nowrap!important;
+}
+@media(max-width:760px){
+ .wrap>header .amp-cabecera-controles .amp-fila-modulos{gap:5px!important}
+ .wrap>header .amp-fila-modulos .amp-modulo-nuevo{font-size:10px!important;min-height:35px!important;padding:0 9px!important}
+}
 </style></head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles">
  <div class="amp-fila-cabecera amp-fila-superior">
   <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a>
@@ -1779,6 +1792,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span>
   <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control amp-control-icono" aria-label="Configuración de cuenta" title="Configuración de cuenta">⚙</button>
   <button id="salir" type="button" class="alt hidden amp-cabecera-control amp-control-icono" aria-label="Cerrar sesión y salir" title="Salir de COSTOS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2"/><path d="M3 12h12"/><path d="m11 8 4 4-4 4"/></svg></button>
+ </div>
+ <div class="amp-fila-cabecera amp-fila-modulos" role="navigation" aria-label="Contactos e historial de ventas">
+  <a class="amp-cabecera-control amp-modulo-nuevo" href="./contactos.html">CONTACTOS</a>
+  <a class="amp-cabecera-control amp-modulo-nuevo" href="./historial-ventas.html">HISTORIAL DE VENTAS</a>
  </div>
 </div>
 <div id="ampEmpleadosCabecera" class="amp-empleados-cabecera hidden"><button type="button" class="alt" id="ampAbrirEmpleadosCostos" title="Crear y administrar los accesos de los empleados de la tienda">👥 EMPLEADOS</button></div>

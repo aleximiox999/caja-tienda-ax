@@ -2038,20 +2038,75 @@ body #listado .amp-marcas-color button.amp-marca-rojo{
  background:linear-gradient(130deg,#9f1c2c,#e15a62,#79232c)!important;
 }
 </style>
-</head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles">
+
+<style id="ampx-cabecera-ancho-completo-20261127">
+/* Cabecera adaptable: aprovecha toda la anchura, con metal negro y sin azules. */
+body .wrap>header .amp-cabecera-controles{
+ display:flex!important;flex-flow:column nowrap!important;
+ flex:1 1 560px!important;width:auto!important;max-width:none!important;
+ min-width:0!important;align-items:stretch!important;justify-content:center!important;
+ gap:7px!important;
+}
+body .wrap>header .amp-cabecera-controles .amp-fila-cabecera{
+ display:flex!important;flex-flow:row nowrap!important;
+ justify-content:stretch!important;align-items:stretch!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ gap:7px!important;white-space:normal!important;
+}
+body .wrap>header .amp-fila-cabecera .amp-cabecera-control:not(.hidden):not(.amp-control-icono){
+ display:inline-flex!important;flex:1 1 0!important;min-width:0!important;
+ width:auto!important;max-width:none!important;height:auto!important;
+ min-height:42px!important;max-height:none!important;
+ align-items:center!important;justify-content:center!important;text-align:center!important;
+ padding:9px 8px!important;font-size:clamp(10px,1.15vw,12px)!important;
+ line-height:1.25!important;white-space:normal!important;overflow-wrap:normal!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #828282!important;border-radius:9px!important;
+ background:linear-gradient(125deg,#282828 0%,#080808 47%,#222222 100%)!important;
+ box-shadow:inset 0 1px 0 #ffffff36,0 2px 8px #0009!important;
+}
+body .wrap>header .amp-fila-cabecera .amp-control-icono:not(.hidden){
+ display:inline-flex!important;flex:0 0 78px!important;
+ min-width:0!important;width:auto!important;max-width:none!important;
+ height:auto!important;min-height:42px!important;max-height:none!important;
+ align-items:center!important;justify-content:center!important;gap:6px!important;
+ padding:5px 7px!important;
+ background:linear-gradient(125deg,#252525,#090909 55%,#202020)!important;
+ color:#fff!important;border:1px solid #828282!important;
+}
+body .wrap>header .amp-fila-cabecera .amp-control-icono .amp-salir-etiqueta{
+ display:inline!important;font-size:10px!important;font-weight:800!important;line-height:1!important;
+}
+body .wrap>header .amp-fila-cabecera .hidden{display:none!important}
+@media(max-width:760px){
+ body .wrap>header .amp-cabecera-controles{
+  flex:1 0 100%!important;width:100%!important;max-width:100%!important;
+ }
+ body .wrap>header .amp-cabecera-controles .amp-fila-cabecera{
+  flex-wrap:wrap!important;gap:6px!important;
+ }
+ body .wrap>header .amp-fila-superior .amp-cabecera-control:not(.hidden),
+ body .wrap>header .amp-fila-inferior .amp-cabecera-control:not(.hidden):not(.amp-control-icono),
+ body .wrap>header .amp-fila-inferior .amp-control-icono:not(.hidden){
+  flex:1 1 calc(50% - 6px)!important;min-width:0!important;max-width:none!important;
+  min-height:39px!important;font-size:10px!important;padding:7px 6px!important;
+ }
+ body .wrap>header .amp-fila-inferior .amp-control-icono .amp-salir-etiqueta{
+  font-size:10px!important;
+ }
+}
+</style>
+</head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
  <div class="amp-fila-cabecera amp-fila-superior">
   <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a>
-  
+  <a class="amp-cabecera-control amp-modulo-nuevo" href="./historial-ventas.html">HISTORIAL DE VENTAS</a>
  </div>
  <div class="amp-fila-cabecera amp-fila-inferior">
   <a class="amp-cabecera-control" href="./caja-real.html" title="Abrir caja y ventas de TIENDA AMPHX">VENTAS</a>
   <span id="estadoRolAMPHX" class="pill hidden amp-cabecera-control">ESTADO: ADMINISTRADOR</span>
-  <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control amp-control-icono" aria-label="Configuración de cuenta" title="Configuración de cuenta">⚙</button>
-  <button id="salir" type="button" class="alt hidden amp-cabecera-control amp-control-icono" aria-label="Cerrar sesión y salir" title="Salir de COSTOS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2"/><path d="M3 12h12"/><path d="m11 8 4 4-4 4"/></svg></button>
- </div>
- <div class="amp-fila-cabecera amp-fila-modulos" role="navigation" aria-label="Contactos e historial de ventas">
   <a class="amp-cabecera-control amp-modulo-nuevo" href="./contactos.html">CONTACTOS</a>
-  <a class="amp-cabecera-control amp-modulo-nuevo" href="./historial-ventas.html">HISTORIAL DE VENTAS</a>
+  <button id="configCuentaAMPHX" type="button" class="alt hidden amp-cabecera-control amp-control-icono" aria-label="Configuración de cuenta" title="Configuración de cuenta">⚙</button>
+  <button id="salir" type="button" class="alt hidden amp-cabecera-control amp-control-icono" aria-label="Cerrar sesión y salir" title="Salir de COSTOS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2"/><path d="M3 12h12"/><path d="m11 8 4 4-4 4"/></svg><span class="amp-salir-etiqueta">SALIR</span></button>
  </div>
 </div>
 <div id="ampEmpleadosCabecera" class="amp-empleados-cabecera hidden"><button type="button" class="alt" id="ampAbrirEmpleadosCostos" title="Crear y administrar los accesos de los empleados de la tienda">EMPLEADOS</button></div>

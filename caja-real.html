@@ -188,6 +188,105 @@ header,.wrap>header{background:linear-gradient(115deg,#090909,#303030 48%,#08080
 :where(th,thead){background:#282828!important;color:#f4f4f4!important}
 :where(a){color:#ececec}
 </style>
+<style id="amp-tema-ventas-negro-metalizado-unificado-20261127">
+/* AMPHX VENTAS: negro metalizado brillante, detalles plata y letras blancas.
+   Solo presentación visual. No altera lector, pagos, datos ni autorizaciones. */
+:root{
+ color-scheme:dark!important;
+ --bg:#060606;--surface:#121212;--surface2:#232323;
+ --line:#747474;--border:#747474;--accent:#303030;
+ --gold:#303030;--gold2:#fff;--text:#fff;--muted:#fff;--sub:#fff;
+ --red:#fff;--green:#fff;
+ --amp-venta-fondo:linear-gradient(114deg,#040404 0%,#111111 26%,#2c2c2c 48%,#111111 69%,#050505 100%);
+ --amp-venta-tarjeta:linear-gradient(135deg,#080808 0%,#202020 39%,#0b0b0b 67%,#262626 100%);
+ --amp-venta-boton:linear-gradient(118deg,#272727 0%,#070707 42%,#303030 72%,#101010 100%);
+ --amp-venta-borde:#858585;
+}
+html{background:#050505!important;color-scheme:dark!important}
+body{
+ background:radial-gradient(ellipse at 72% -10%,#323232 0%,transparent 43%),var(--amp-venta-fondo)!important;
+ background-attachment:fixed!important;color:#fff!important;
+}
+header{
+ background:var(--amp-venta-fondo)!important;
+ border-bottom:2px solid #898989!important;
+ box-shadow:inset 0 1px 0 #ffffff42,0 5px 19px #000a!important;
+ color:#fff!important;
+}
+header .brand .mark{border-color:#a0a0a0!important;box-shadow:inset 0 1px 0 #ffffff58,0 3px 12px #0009!important}
+main,header,footer,main :is(h1,h2,h3,p,span,label,strong,small,td,th,summary),
+header :is(b,small,.who),main :is(.lead,.muted,.mini,.itemcode,.empty,.bigprice,.total,.resumen-total,.resumen-conteo,.resumen-etiqueta,.resumen-ultimo,.empleado-codigo),
+main .item .right b,main .card .scanner-title strong{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+main .card,main .scanner,main .result,main .tablewrap,
+main .resumen-escaneo,main .credenciales-acceso,
+main .foto-consulta-precio,#fotoVistaCaja,.amp-caja-tip{
+ background:var(--amp-venta-tarjeta)!important;
+ background-color:#121212!important;
+ border:1px solid var(--amp-venta-borde)!important;
+ border-top-color:#b5b5b5!important;
+ box-shadow:inset 0 1px 0 #ffffff35,0 5px 18px #0009!important;
+ color:#fff!important;
+}
+main .card{border-top-width:2px!important}
+main .result strong,main .item strong,main .scanner-title strong,
+main .credenciales-acceso :is(h3,label),main .foto-vista-vacia{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+main .btn,main button.btn,main .tabs .btn,header .btn,
+main .card .actions .btn,main #escanearVenta,main #escanearPrecio,
+main #escanearEntrada,main #actualizarCatalogo,main #actualizarPrecio,
+main #actualizarInventario,main #recargarEntrada,main #guardarEntrada,
+main #btnVender,main #repetirUltimoEscaneo,main #copiarAcceso{
+ background:var(--amp-venta-boton)!important;
+ background-color:#151515!important;
+ border:1px solid #999!important;
+ border-top-color:#c0c0c0!important;
+ box-shadow:inset 0 1px 0 #ffffff4d,0 3px 11px #000b!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ text-shadow:none!important;
+}
+main .tabs .btn.active,main .btn.primary,main #btnVender{
+ background:linear-gradient(115deg,#393939,#0b0b0b 40%,#343434 76%,#0a0a0a)!important;
+ border:2px solid #d0d0d0!important;
+ box-shadow:inset 0 1px 0 #ffffff60,0 4px 12px #000d!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+main .tabs .btn svg{stroke:#fff!important}
+main :is(input,select,textarea),main .credencial-valor{
+ background:#101010!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #898989!important;
+ box-shadow:inset 0 1px 2px #0008!important;
+ color-scheme:dark!important;
+}
+main :is(input,textarea)::placeholder{color:#e5e5e5!important;-webkit-text-fill-color:#e5e5e5!important;opacity:1!important}
+main input[type="checkbox"]{accent-color:#777!important}
+main :is(input,select,textarea,button):focus-visible,main .tabs .btn:focus-visible{
+ outline:2px solid #f0f0f0!important;outline-offset:2px!important;
+}
+main .badge,main .note,main .note.red,main .note.ok,
+main .stock,main .stock.low,main .foto-vista-vacia{
+ background:linear-gradient(135deg,#1d1d1d,#080808 60%,#292929)!important;
+ border:1px solid #858585!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+main #status,main #status.error,main #status.success{color:#fff!important;-webkit-text-fill-color:#fff!important}
+main .scanner #camara,main #camara{background:#050505!important;border-color:#777!important}
+main thead,main th{background:#212121!important;color:#fff!important}
+main td{background:transparent!important;color:#fff!important}
+main th,main td,main .item,main details{border-color:#666!important}
+main .flat,main a,main summary{color:#fff!important;-webkit-text-fill-color:#fff!important}
+main button.foto-nombre{background:transparent!important;color:#fff!important;-webkit-text-fill-color:#fff!important;text-decoration-color:#bcbcbc!important}
+main button.foto-nombre:hover{color:#fff!important}
+main #fotoVistaCaja .foto-vista-vacia{background:var(--amp-venta-tarjeta)!important}
+main #fotoVistaCaja .foto-vista-img{background:#101010!important}
+main .itemcode{color:#fff!important}
+@media(forced-colors:active){
+ main button,main .btn,main :is(input,select,textarea){background:ButtonFace!important;color:ButtonText!important;border-color:ButtonText!important}
+}
+</style>
 </head><body>
 <header><div class="hrow"><div class="brand"><div class="mark">A</div><div><b>TIENDA AMPHX</b><small>CAJA · SISTEMA REAL</small></div></div><div class="headerTools"><span class="who" id="who"></span><button id="btnSalir" class="btn outline hidden">Salir</button></div></div></header>
 <main>

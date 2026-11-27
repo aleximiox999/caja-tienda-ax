@@ -2096,6 +2096,46 @@ body .wrap>header .amp-fila-cabecera .hidden{display:none!important}
  }
 }
 </style>
+<style id="ampx-cabecera-movil-alineada-20261127">
+/* COSTOS: bordes derechos de navegación, empleados y margen alineados.
+   Solo teléfonos: reservar idéntico espacio para el índice A-Z fijo. */
+@media (max-width:760px){
+ body .wrap>header .amp-cabecera-controles,
+ body .wrap>header .amp-empleados-cabecera,
+ body .wrap>header #ampMargenPromedioPanel{
+  box-sizing:border-box!important;
+  flex:0 0 calc(100% - 34px)!important;
+  width:calc(100% - 34px)!important;
+  max-width:calc(100% - 34px)!important;
+  min-width:0!important;
+  margin-left:0!important;
+  margin-right:34px!important;
+  align-self:flex-start!important;
+ }
+ body .wrap>header .amp-cabecera-controles .amp-fila-cabecera{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  flex-wrap:wrap!important;
+  justify-content:flex-start!important;
+ }
+ body .wrap>header .amp-cabecera-controles .amp-fila-cabecera>.amp-cabecera-control:not(.hidden){
+  box-sizing:border-box!important;
+  min-width:0!important;
+  border:2px solid #868686!important;
+  border-radius:9px!important;
+  box-shadow:inset 0 1px 0 #ffffff42,0 3px 9px #000a!important;
+ }
+ body .wrap>header .amp-empleados-cabecera{padding:0!important}
+ body .wrap>header #ampAbrirEmpleadosCostos,
+ body .wrap>header #ampMargenPromedioPanel{
+  box-sizing:border-box!important;
+  border:2px solid #868686!important;
+  border-radius:9px!important;
+ }
+}
+</style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
  <div class="amp-fila-cabecera amp-fila-superior">
   <a class="amp-cabecera-control" href="./comparador-precios.html">COMPARADOR DE PRECIOS</a>

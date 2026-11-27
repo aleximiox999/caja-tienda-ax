@@ -191,6 +191,7 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 <button class="btn hidden" data-tab="entradas" id="tabEntradas">Ingresar mercadería</button>
 <button class="btn hidden" data-tab="empleados" id="tabEmpleados">Empleados</button>
 <button class="btn hidden" data-tab="reporte" id="tabReporte">Ventas</button>
+<button class="btn" data-tab="historial" id="tabHistorial" style="color:#fff;background:linear-gradient(145deg,#115993,#0a223c);border:1px solid #36a1f0">Historial de ventas</button>
 </div>
 <div id="lectorPanel" class="scanner hidden"><div class="scanner-title"><strong>Cámara dentro de la aplicación</strong><button class="btn" id="cerrarCamara">Cerrar cámara</button></div><div id="camara"></div><p class="muted mini" id="camaraInfo">Apunta al código de barras.</p></div>
 <section id="panelVenta">
@@ -226,6 +227,7 @@ input[name="codigo_barras"],#codigoAsociar { text-transform:none; }
 <button class="btn primary" id="guardarEntrada" type="submit" style="width:100%">GUARDAR COMPRA Y SUMAR INVENTARIO</button>
 </form><p class="mini muted">Requiere internet. Si una operación no confirma, comprueba el inventario antes de intentar otra vez.</p></div></div></section>
 <section id="panelEmpleados" class="hidden"><div class="grid"><div class="card"><h2>Agregar empleado</h2><p class="lead">El empleado primero crea su cuenta con su correo desde la pantalla de acceso. Después tú lo habilitas aquí.</p><form id="formEmpleado"><div class="field"><label>Nombre del empleado</label><input id="nombreNuevo" maxlength="100" required></div><div class="field"><label>Correo de su cuenta</label><input id="correoNuevo" type="email" maxlength="320" required></div><button class="btn primary" type="submit">Autorizar empleado</button></form><div class="note">El empleado podrá vender y consultar precios, sin acceso a costos ni ganancias.</div></div><div class="card"><h2>Personal registrado</h2><div id="listaEmpleados"></div></div></div></section>
+<section id="panelHistorial" class="hidden" style="background:linear-gradient(140deg,#080b10,#172333);border:1px solid #327eb8;border-radius:14px;padding:5px"><iframe id="histFrame" src="./historial-ventas.html" loading="lazy" title="Historial de ventas" style="width:100%;min-height:640px;height:750px;border:none;border-radius:10px;background:#080c13" referrerpolicy="same-origin"></iframe></section>
 <section id="panelReporte" class="hidden"><div class="card"><h2>Ventas registradas</h2><p class="lead">Las ventas quedan asociadas al empleado. Montos en efectivo y QR separados.</p><div id="reporteResumen"></div><div class="tablewrap"><table><thead><tr><th>FECHA</th><th>EMPLEADO</th><th>EFECTIVO</th><th>QR</th><th>TOTAL</th><th>ESTADO</th></tr></thead><tbody id="tablaVentas"></tbody></table></div></div></section>
 </section>
 <footer class="muted mini" style="margin-top:25px;text-align:center">TIENDA AMPHX · Caja de ventas y entradas de mercadería con inventario real.</footer>
@@ -321,7 +323,7 @@ async function modoSinInternet(user){
  $('who').textContent=perfil.nombre+' · sin internet';
  $('roleDesc').textContent='Modo sin internet: los cobros quedan pendientes hasta sincronizar';
  show('btnSalir',true);
- show('tabEmpleados',false);show('tabReporte',false);show('tabEntradas',false);
+ show('tabEmpleados',false);show('tabReporte',false);show('tabEntradas',false);show('tabHistorial',false);
  mostrarPantalla('app');selectTab('venta');
  await cargarColaOffline();await cargarCatalogoLocal();pendingView();
 }
@@ -426,7 +428,7 @@ async function boot(){
  await cargarColaOffline();
  $('who').textContent=rol.nombre+' · '+rol.rol;
  $('roleDesc').textContent=rol.rol==='administrador'?'Administrador · Ventas, inventario, personal y reportes':'Empleado · Ventas, consultas e inventario';
- show('btnSalir',true);show('tabEmpleados',rol.rol==='administrador');show('tabReporte',rol.rol==='administrador');show('tabEntradas',rol.rol==='administrador');
+ show('btnSalir',true);show('tabEmpleados',rol.rol==='administrador');show('tabReporte',rol.rol==='administrador');show('tabEntradas',rol.rol==='administrador');show('tabHistorial',true);
  if(rol.rol!=='administrador'&&['entradas','empleados','reporte'].includes(tab))tab='venta';
  mostrarPantalla('app');selectTab(tab);await cargarCatalogo();pendingView();
  if(rol.rol==='administrador')await cargarEmpleados();
@@ -506,8 +508,9 @@ function renderInventario(){
 }
 function selectTab(t){
  if(['entradas','empleados','reporte'].includes(t)&&(cuenta?.rol!=='administrador'||offlineMode))return;
+  if(t==='historial'&&(!cuenta||offlineMode))return;
  tab=t;document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
- ['venta','precio','inventario','entradas','empleados','reporte'].forEach(x=>show('panel'+x[0].toUpperCase()+x.slice(1),x===t));
+ ['venta','precio','inventario','entradas','empleados','reporte','historial'].forEach(x=>show('panel'+x[0].toUpperCase()+x.slice(1),x===t));
  // Entregar la promesa de cierre evita iniciar otra cámara antes de liberar la anterior.
  const cierreCamara=detenerLector();
  if(t==='precio')renderPrecio();if(t==='inventario')renderInventario();if(t==='entradas')renderEntradas();if(t==='empleados')void cargarEmpleados();
@@ -658,13 +661,14 @@ $('cerrarCamara').onclick=detenerLector;
 $('tipoPago').onchange=()=>show('mixto',$('tipoPago').value==='mixto');
 $('btnVender').onclick=cobrar;
 $('actualizarCatalogo').onclick=cargarCatalogo;$('actualizarPrecio').onclick=cargarCatalogo;$('actualizarInventario').onclick=cargarCatalogo;
-window.addEventListener('online',()=>{
+window.addEventListener('message',ev=>{if(ev.origin!==location.origin||ev.data?.tipo!=='amp-historial-altura')return;const h=Number(ev.data.alto);if(h>400&&h<100000)$('histFrame').style.height=Math.ceil(h+24)+'px';});
+ window.addEventListener('online',()=>{
  estado('Conexión recuperada. Comprobando la cuenta y las ventas locales…');
  void boot();
 });
 window.addEventListener('offline',()=>{
  offlineMode=true;
- show('tabEmpleados',false);show('tabReporte',false);show('tabEntradas',false);
+ show('tabEmpleados',false);show('tabReporte',false);show('tabEntradas',false);show('tabHistorial',false);
  pendingView();pintarColaOffline();
  estado('SIN INTERNET · Las ventas nuevas se guardarán en el celular y se sincronizarán después.','error');
 });

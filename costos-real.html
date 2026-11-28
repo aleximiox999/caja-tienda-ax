@@ -2656,6 +2656,73 @@ html body main.wrap section#listado .amp-margen-porcentaje.sheet-negative>.amp-m
  html body main.wrap section#listado .amp-margen-porcentaje>.amp-margen-valor{font-size:clamp(13px,3.5vw,16px)!important}
  html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.amp-margen-porcentaje{gap:3px!important}
 }
+
+/* AMPHX: corregir la moneda que quedo afuera de los marcos en compra/venta. */
+html body main.wrap section#listado #tarjetas article.sheet-card
+ .sheet-mobile-row[data-amp-campo="compra"] .amp-monto-campo,
+html body main.wrap section#listado #tarjetas article.sheet-card
+ .sheet-mobile-row[data-amp-campo="venta"] .amp-monto-campo,
+html body main.wrap section#listado td.amp-campo-titanio .amp-monto-campo{
+ box-sizing:border-box!important;display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-start!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ min-height:54px!important;gap:4px!important;padding:7px 10px!important;
+ border:1px solid #a9a095!important;border-radius:12px!important;
+ background:linear-gradient(125deg,#fffefa,#e9e3da 58%,#f9f6f0)!important;
+ box-shadow:inset 0 1px 1px #fff,0 1px 4px #82776b1c!important;
+ overflow:hidden!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card
+ .sheet-mobile-row[data-amp-campo="compra"] .amp-monto-campo>input.sheet-input,
+html body main.wrap section#listado #tarjetas article.sheet-card
+ .sheet-mobile-row[data-amp-campo="venta"] .amp-monto-campo>input.sheet-input,
+html body main.wrap section#listado td.amp-campo-titanio .amp-monto-campo>input.sheet-input{
+ box-sizing:content-box!important;display:inline-block!important;
+ flex:0 1 auto!important;width:var(--amp-monto-ancho,8ch)!important;
+ min-width:0!important;max-width:calc(100% - 27px)!important;
+ min-height:32px!important;height:32px!important;
+ margin:0!important;padding:0!important;border:0!important;
+ border-radius:0!important;box-shadow:none!important;outline:0!important;
+ background:transparent!important;background-image:none!important;
+ color:#171717!important;-webkit-text-fill-color:#171717!important;
+ text-align:left!important;font-variant-numeric:tabular-nums!important;
+}
+html body main.wrap section#listado .amp-monto-campo>.amp-monto-sufijo{
+ display:inline-block!important;position:static!important;flex:0 0 auto!important;
+ margin:0!important;padding:0!important;font-size:clamp(14px,4vw,18px)!important;
+ font-weight:850!important;line-height:1.1!important;white-space:nowrap!important;
+ color:#171717!important;-webkit-text-fill-color:#171717!important;
+}
+/* Porcentaje del mismo tamaño visual que la cifra de utilidad; MARGEN pequeño debajo. */
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.sheet-result,
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro .amp-margen-porcentaje>.amp-margen-valor{
+ font-size:clamp(18px,5.3vw,23px)!important;
+ font-weight:900!important;letter-spacing:-.2px!important;
+ font-variant-numeric:tabular-nums!important;line-height:1.2!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.amp-margen-porcentaje{
+ display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;justify-content:flex-start!important;
+ gap:3px!important;width:100%!important;min-width:0!important;
+ margin-top:8px!important;padding:0!important;border:0!important;
+ white-space:normal!important;overflow:visible!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card
+ .amp-utilidad-recuadro .amp-margen-porcentaje>.amp-margen-etiqueta{
+ order:2!important;display:block!important;flex:0 0 auto!important;
+ font-size:10px!important;font-weight:800!important;line-height:1.1!important;
+ color:#38342f!important;-webkit-text-fill-color:#38342f!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card
+ .amp-utilidad-recuadro .amp-margen-porcentaje>.amp-margen-valor{
+ order:1!important;display:block!important;flex:0 1 auto!important;
+ min-width:0!important;max-width:100%!important;
+ white-space:nowrap!important;overflow:visible!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card
+ .amp-utilidad-recuadro .amp-margen-porcentaje.sheet-negative>.amp-margen-valor{
+ color:#98232d!important;-webkit-text-fill-color:#98232d!important;
+}
 </style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
  <div class="amp-fila-cabecera amp-fila-superior">
@@ -3888,6 +3955,13 @@ function configurarEditorFila(p,compra,superficie,movil){
     const monto=document.createElement('span');monto.className='amp-monto-campo';
     const sufijo=document.createElement('span');sufijo.className='amp-monto-sufijo';
     sufijo.textContent='Bs';sufijo.setAttribute('aria-hidden','true');
+    const ajustarAnchoMonto=()=>{
+     const longitud=(input.value||'').length;
+     monto.style.setProperty('--amp-monto-ancho',Math.max(3,Math.min(14,longitud+0.45))+'ch');
+    };
+    ajustarAnchoMonto();
+    input.addEventListener('input',ajustarAnchoMonto);
+    input.addEventListener('change',ajustarAnchoMonto);
     monto.append(input,sufijo);cell.append(monto);
    }else cell.append(input);
   }else{
@@ -3909,7 +3983,7 @@ function configurarEditorFila(p,compra,superficie,movil){
     etiquetaMargen.className='amp-margen-etiqueta';etiquetaMargen.textContent='MARGEN';
     const cifraMargen=document.createElement('strong');
     cifraMargen.className='amp-margen-valor';
-    margen.append(etiquetaMargen,cifraMargen);
+    margen.append(cifraMargen,etiquetaMargen);
     derivados.margen=margen;
     derivados.margenValor=cifraMargen;
     if(movil){

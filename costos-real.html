@@ -2693,10 +2693,9 @@ html body main.wrap section#listado .amp-monto-campo>.amp-monto-sufijo{
  font-weight:850!important;line-height:1.1!important;white-space:nowrap!important;
  color:#171717!important;-webkit-text-fill-color:#171717!important;
 }
-/* Porcentaje del mismo tamaño visual que la cifra de utilidad; MARGEN pequeño debajo. */
+/* El importe de utilidad tiene el mismo tamaño que los demás valores; MARGEN permanece debajo. */
 html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.sheet-result{
- font-size:clamp(18px,5.3vw,23px)!important;
- font-weight:900!important;letter-spacing:-.2px!important;
+ font-size:17px!important;font-weight:850!important;letter-spacing:0!important;
  font-variant-numeric:tabular-nums!important;line-height:1.2!important;
 }
 /* Porcentaje de MARGEN del mismo tamaño que los valores de los otros recuadros:
@@ -2730,6 +2729,20 @@ html body main.wrap section#listado #tarjetas article.sheet-card
 html body main.wrap section#listado #tarjetas article.sheet-card
  .amp-utilidad-recuadro .amp-margen-porcentaje.sheet-negative>.amp-margen-valor{
  color:#98232d!important;-webkit-text-fill-color:#98232d!important;
+}
+/* AMPHX COSTOS: todas las cifras de las fichas con tamaño parejo.
+   Los porcentajes de margen ya usan 17 px escritorio y 15 px móvil. */
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row input.sheet-input[type="number"],
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row strong.sheet-result,
+html body main.wrap section#listado td.sheet-derived strong,
+html body main.wrap section#listado td.amp-campo-titanio input.sheet-input[type="number"]{
+ font-size:17px!important;font-variant-numeric:tabular-nums!important;
+}
+@media(max-width:760px){
+ html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row input.sheet-input[type="number"],
+ html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row strong.sheet-result{
+  font-size:15px!important;
+ }
 }
 </style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
@@ -4002,7 +4015,6 @@ function configurarEditorFila(p,compra,superficie,movil){
      margen.style.cssText='display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:3px!important;flex-wrap:nowrap!important;width:100%!important;min-width:0!important;max-width:100%!important;margin-top:8px!important;padding:0!important;border:0!important;white-space:normal!important;overflow:visible!important';
      cifraMargen.style.cssText='display:block!important;order:1!important;font-weight:850!important;line-height:1.2!important;white-space:nowrap!important;color:#171717!important;-webkit-text-fill-color:#171717!important';
      etiquetaMargen.style.cssText='display:block!important;order:2!important;font-size:10px!important;font-weight:800!important;line-height:1.1!important;white-space:nowrap!important;color:#38342f!important;-webkit-text-fill-color:#38342f!important';
-     output.style.setProperty('font-size','clamp(18px,5.3vw,23px)','important');
     }
     derivados.margen=margen;
     derivados.margenValor=cifraMargen;

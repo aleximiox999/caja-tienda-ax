@@ -1695,6 +1695,19 @@ body #listado .amp-marcas-color button.amp-marca-rojo{background:linear-gradient
 </style>
 
 <style id="ampx-historial-compras-click-20261128">
+#ampHistorialCostos.amp-hist-dialog{
+ display:block!important;position:fixed!important;inset:0!important;margin:auto!important;
+ width:min(760px,calc(100vw - 24px))!important;max-width:none!important;
+ max-height:86vh!important;overflow:auto!important;overscroll-behavior:contain!important;
+ pointer-events:auto!important;touch-action:pan-y!important;z-index:2147483647!important;
+ background:linear-gradient(125deg,#080808,#252525 48%,#101010)!important;
+ color:#fff!important;border:1px solid #777!important;border-radius:16px!important;
+ padding:18px!important;box-shadow:0 22px 70px #000d,inset 0 1px #ffffff44!important;
+}
+#ampHistorialCostos.amp-hist-dialog::backdrop{background:#0009!important}
+#ampHistorialCostos.amp-hist-dialog *{pointer-events:auto!important}
+#ampHistorialCostos.amp-hist-dialog .amp-hist-tabla{max-height:32vh!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+
 #ampHistorialCostos[hidden]{display:none!important}
 #ampHistorialCostos{
  pointer-events:auto!important;position:fixed!important;z-index:12000!important;
@@ -2777,7 +2790,7 @@ function ampPorcentaje(n){
 function ampHistorialPanel(){
  let panel=document.getElementById('ampHistorialCostos');
  if(!panel){
-  panel=document.createElement('section');panel.id='ampHistorialCostos';panel.hidden=true;
+  panel=document.createElement('dialog');panel.id='ampHistorialCostos';panel.className='amp-hist-dialog';
   panel.setAttribute('aria-label','Historial de precios de compra');
   panel.innerHTML='<div class="amp-hist-head"><strong>HISTORIAL DE COSTOS UNITARIOS</strong><button type="button" class="amp-hist-close" aria-label="Cerrar historial">Cerrar ×</button></div><div id="ampHistorialCostosDetalle"></div>';
   document.body.append(panel);
@@ -2792,7 +2805,7 @@ function ampLineaHistorial(destino,titulo,valor,clase=''){
  fila.append(etiqueta,dato);destino.append(fila);
 }
 function ampCerrarHistorialCostos(){
- const panel=document.getElementById('ampHistorialCostos');if(panel)panel.hidden=true;
+ const panel=document.getElementById('ampHistorialCostos');if(panel?.open)panel.close();
  if(ampHistorialCostosActivo?.boton?.isConnected)ampHistorialCostosActivo.boton.setAttribute('aria-expanded','false');
  ampHistorialCostosActivo=null;
 }
@@ -2843,9 +2856,8 @@ function ampAbrirHistorialCostos(p,boton,tactil){
  nota.textContent='Cada compra conserva su fecha y costo. Consultar este historial no modifica compras, existencias ni precios.';
  detalle.append(nota);
  ampHistorialCostosActivo={boton,tactil:false};boton.setAttribute('aria-expanded','true');
- panel.hidden=false;panel.classList.add('amp-hist-touch');panel.setAttribute('role','dialog');
- panel.style.position='fixed';panel.style.top='50%';panel.style.left='50%';panel.style.right='auto';panel.style.bottom='auto';panel.style.transform='translate(-50%,-50%)';
- panel.setAttribute('aria-modal','true');
+ panel.classList.add('amp-hist-touch');
+ if(!panel.open)panel.showModal();
 }
 function ampReferenciaFactura(c){
  const obs=String(c?.observaciones||'');
@@ -2898,8 +2910,8 @@ function ampMostrarDetalleFactura(p,compra,boton){
  const nota=document.createElement('p');nota.className='amp-hist-nota';
  nota.textContent='El detalle reúne las compras vinculadas por referencia de comprobante o por el mismo registro de carga. Los datos se muestran tal como están guardados; no se recalculan ni se alteran.';
  detalle.append(nota);
- panel.hidden=false;panel.classList.add('amp-hist-touch');panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');
- panel.style.position='fixed';panel.style.top='50%';panel.style.left='50%';panel.style.right='auto';panel.style.bottom='auto';panel.style.transform='translate(-50%,-50%)';
+ panel.classList.add('amp-hist-touch');
+ if(!panel.open)panel.showModal();
 }
 function ampVincularHistorialCostos(boton,p){
  boton.tabIndex=0;boton.setAttribute('role','button');

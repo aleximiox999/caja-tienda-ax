@@ -2491,6 +2491,52 @@ html body main.wrap section#listado #tarjetas article.sheet-card .amp-historial-
  outline:2px solid #73695e!important;outline-offset:2px!important;
 }
 
+
+/* AMPHX fichas · marcos redondeados sin subrayados · 2026-11-27 */
+/* Todas las fichas: títulos limpios, sin subrayados ni divisores debajo del encabezado. */
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-card-title,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-card-title *,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row label,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-card-details{
+ text-decoration:none!important;text-decoration-line:none!important;
+ text-decoration-color:transparent!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-card-title button.nombre-con-foto,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-card-title button.nombre-con-foto:is(:hover,:focus,:active){
+ text-decoration:none!important;text-decoration-line:none!important;
+ border-bottom:0!important;box-shadow:none!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-card-details{
+ border-bottom:0!important;padding-bottom:4px!important;
+}
+/* Marco suave y redondeado para cifras, unidades y porcentajes; mantiene la rejilla a dos columnas. */
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row .amp-historial-trigger,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row .amp-utilidad-recuadro,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row:not(.amp-historial-celda):not(.amp-utilidad-celda)>strong.sheet-result{
+ border-radius:12px!important;
+ border:1px solid #a9a095!important;
+ background:linear-gradient(125deg,#fffefa,#e9e3da 58%,#f9f6f0)!important;
+ box-shadow:inset 0 1px 1px #fff,0 1px 4px #82776b1c!important;
+ padding:10px!important;overflow-wrap:anywhere!important;
+}
+/* Campos editables, incluidos compra, unidades y venta: esquinas curvas en lugar de cuadradas. */
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row.amp-campo-titanio:not(.sheet-provider-row) input.sheet-input,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row:not(.sheet-provider-row) input.sheet-input{
+ border:1px solid #a9a095!important;border-radius:12px!important;
+ padding:9px 10px!important;min-height:54px!important;
+ background:linear-gradient(125deg,#fffefa,#e9e3da 58%,#f9f6f0)!important;
+ color:#171717!important;-webkit-text-fill-color:#171717!important;
+ box-shadow:inset 0 1px 1px #fff,0 1px 4px #82776b1c!important;
+}
+/* Proveedor: marco exterior redondeado y ancho completo; sin alterar la alineación compacta. */
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row.sheet-provider-row{
+ border-radius:12px!important;
+}
+/* El margen continúa debajo de la utilidad, dentro del mismo recuadro redondeado. */
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.amp-margen-porcentaje{
+ border-top:0!important;margin-top:7px!important;padding-top:2px!important;
+}
+
 </style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
  <div class="amp-fila-cabecera amp-fila-superior">

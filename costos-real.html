@@ -2550,6 +2550,42 @@ html body main.wrap section#listado #tarjetas article.sheet-card
  box-sizing:border-box!important;
 }
 
+
+/* AMPHX · borde completo del título de producto · 2026-11-27 */
+/* El marco visible pertenece al título completo, no al subrayado del texto. */
+html body main.wrap section#listado #tarjetas article.sheet-card h3.sheet-card-title{
+ display:block!important;grid-column:1/-1!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ margin:0!important;padding:7px 11px!important;
+ box-sizing:border-box!important;border:2px solid #a99e92!important;
+ border-top:2px solid #a99e92!important;border-right:2px solid #a99e92!important;
+ border-bottom:2px solid #a99e92!important;border-left:2px solid #a99e92!important;
+ border-radius:14px!important;
+ background:linear-gradient(125deg,#fffefa 0%,#ebe4db 53%,#fcf9f4 100%)!important;
+ background-color:#f8f4ed!important;
+ box-shadow:inset 0 1px 0 #ffffff,0 2px 6px #5b50452c!important;
+ overflow:hidden!important;
+ color:#171717!important;-webkit-text-fill-color:#171717!important;
+ text-decoration:none!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card h3.sheet-card-title button.nombre-con-foto{
+ display:block!important;width:100%!important;max-width:100%!important;
+ margin:0!important;padding:2px 0!important;
+ box-sizing:border-box!important;
+ border:0!important;border-bottom:0!important;
+ background:none!important;background-image:none!important;
+ box-shadow:none!important;
+ color:#171717!important;-webkit-text-fill-color:#171717!important;
+ text-decoration:none!important;text-decoration-line:none!important;
+ text-decoration-color:transparent!important;text-shadow:none!important;
+ font:inherit!important;font-weight:850!important;
+ text-align:left!important;white-space:normal!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card h3.sheet-card-title button.nombre-con-foto:is(:hover,:focus-visible,:active){
+ text-decoration:none!important;text-decoration-line:none!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+}
+
 </style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
  <div class="amp-fila-cabecera amp-fila-superior">
@@ -2702,7 +2738,7 @@ import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
 import {iniciarEtiquetasAmphx} from './amp-etiquetas-word.js?v=20261125-publicado-dev-1';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 window.dispatchEvent(new Event('amphx-costos-ready'));
-const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
+const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2})+' Bs';
 let productos=[],compras=[],costos=[],movimientos=[];
 /* Promedio global seguro: calculado en Supabase sin límite de 1000 filas, con RLS de administrador.
    Cada ficha pesa una vez; se usa la última compra y el margen sobre precio de venta. */
@@ -3591,7 +3627,7 @@ function ampResumenFacturas(p){
  return{historial,reciente,anterior,nuevo,viejo,delta,porcentaje};
 }
 function ampMontoUnit(n){
- return 'Bs '+Number(n).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:4});
+ return Number(n).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:4})+' Bs';
 }
 function ampPorcentaje(n){
  return Number(n).toLocaleString('es-BO',{minimumFractionDigits:1,maximumFractionDigits:2})+' %';

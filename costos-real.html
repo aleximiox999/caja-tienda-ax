@@ -706,12 +706,12 @@ body{background:#343434;color:#cbcbcb;font-family:system-ui,-apple-system,"Segoe
 #ampHistorialCostos[hidden]{display:none!important}
 #ampHistorialCostos{pointer-events:auto!important;}
 #ampHistorialCostos{
- position:fixed;z-index:12000;display:block;width:min(440px,calc(100vw - 20px));
+ position:fixed;z-index:12000;width:min(440px,calc(100vw - 20px));
  max-height:75vh;overflow:auto;padding:15px 16px;
  background:var(--amp-metal-reflejo),var(--amp-titanio);background-color:#0c0c0c;
  color:#fefefe;border:1px solid #535353;border-top-color:#5e5e5e;
  border-radius:12px;box-shadow:0 15px 45px #303030aa,inset 0 1px #6363633b;
- font:13px/1.5 system-ui,Arial;pointer-events:none;overflow-wrap:anywhere
+ font:13px/1.5 system-ui,Arial;pointer-events:auto;overflow-wrap:anywhere
 }
 #ampHistorialCostos .amp-hist-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;border-bottom:1px solid #474747;padding-bottom:9px}
 #ampHistorialCostos .amp-hist-head strong{min-width:0;font-size:14px;color:#fefefe;line-height:1.3;word-break:normal;overflow-wrap:normal}
@@ -1695,6 +1695,8 @@ body #listado .amp-marcas-color button.amp-marca-rojo{background:linear-gradient
 </style>
 
 <style id="ampx-historial-compras-click-20261128">
+#ampHistorialCostos.amp-hist-dialog:not([open]){display:none!important}
+#ampHistorialCostos.amp-hist-dialog[open]{display:block!important}
 #ampHistorialCostos.amp-hist-dialog{
  position:fixed!important;inset:0!important;margin:auto!important;
  width:min(760px,calc(100vw - 24px))!important;max-width:none!important;

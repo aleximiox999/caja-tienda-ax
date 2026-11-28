@@ -1692,6 +1692,48 @@ body #listado .amp-marcas-color button.amp-marca-rojo{background:linear-gradient
 #listado .sheet-card .amp-monto-sufijo{font-size:15px}
 @media(max-width:350px){#listado .sheet-card .amp-monto-sufijo{font-size:13px}}
 </style>
+
+<style id="ampx-historial-compras-click-20261128">
+#ampHistorialCostos[hidden]{display:none!important}
+#ampHistorialCostos{
+ pointer-events:auto!important;position:fixed!important;z-index:12000!important;
+ top:50%!important;left:50%!important;right:auto!important;bottom:auto!important;
+ transform:translate(-50%,-50%)!important;width:min(760px,calc(100vw - 24px))!important;
+ max-height:86vh!important;overflow:auto!important;padding:18px!important;
+ background:linear-gradient(125deg,#080808,#252525 48%,#101010)!important;
+ color:#fff!important;border:1px solid #777!important;border-radius:16px!important;
+ box-shadow:0 22px 70px #000d,inset 0 1px #ffffff44!important;
+}
+#ampHistorialCostos .amp-hist-head{position:sticky;top:-18px;z-index:2;background:#171717;padding:8px 0 12px}
+#ampHistorialCostos .amp-hist-head strong,#ampHistorialCostos .amp-hist-producto,
+#ampHistorialCostos .amp-hist-line span,#ampHistorialCostos .amp-hist-line strong,
+#ampHistorialCostos .amp-hist-nota{color:#fff!important}
+#ampHistorialCostos .amp-hist-close,#ampHistorialCostos .amp-hist-volver{
+ pointer-events:auto!important;background:linear-gradient(130deg,#333,#090909,#292929)!important;
+ color:#fff!important;border:1px solid #777!important;border-radius:9px!important;padding:9px 12px!important;
+}
+#ampHistorialCostos .amp-hist-tabla{display:grid;gap:7px;margin:10px 0 14px}
+#ampHistorialCostos .amp-hist-item-click{
+ display:flex;justify-content:space-between;gap:12px;align-items:center;width:100%;
+ padding:11px 12px;background:linear-gradient(125deg,#292929,#111)!important;
+ border:1px solid #5b5b5b;border-radius:10px;color:#fff!important;text-align:left;
+ cursor:pointer;pointer-events:auto!important;
+}
+#ampHistorialCostos .amp-hist-item-click span{color:#fff!important}
+#ampHistorialCostos .amp-hist-item-click:hover{border-color:#aaa;filter:brightness(1.12)}
+#ampHistorialCostos .amp-hist-factura-lineas{display:grid;gap:10px;margin:12px 0}
+#ampHistorialCostos .amp-hist-factura-articulo{
+ padding:13px;background:linear-gradient(130deg,#292929,#111);
+ border:1px solid #626262;border-radius:12px;color:#fff;
+}
+#ampHistorialCostos .amp-hist-factura-articulo>strong{display:block;color:#fff;margin-bottom:8px}
+#ampHistorialCostos .amp-hist-factura-articulo .amp-hist-line{border-bottom:1px solid #555}
+#ampHistorialCostos .amp-hist-factura-articulo .amp-hist-line span{color:#ddd!important}
+@media(max-width:560px){
+ #ampHistorialCostos{width:calc(100vw - 16px)!important;max-height:90dvh!important;padding:13px!important}
+ #ampHistorialCostos .amp-hist-item-click{align-items:flex-start;flex-direction:column;gap:4px}
+}
+</style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><a href="./comparador-precios.html" style="display:inline-block;text-decoration:none;background:#111111;color:#fdfdfd;border:1px solid #515151;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">COMPARADOR DE PRECIOS</a> <a href="./contactos.html" style="display:inline-block;text-decoration:none;background:linear-gradient(110deg,#0c0c0c,#121212);color:#fcfcfc;border:1px solid #505050;padding:10px 12px;border-radius:9px;font-weight:800;margin:5px 9px 5px 0">CONTACTOS</a> <span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
 <dialog id="configCuentaDialogAMPHX" style="border:1px solid #5a5a5a;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label>Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
 <section id="accesoCargando" aria-live="polite"><p class="muted">Abriendo fichas de productos…</p><button id="reintentarAcceso" type="button" class="alt hidden">REINTENTAR ACCESO</button></section><section id="login" class="hidden"><h2>Acceso de administrador</h2><p class="muted">Inicia sesión con tu cuenta de TIENDA AMPHX. Esta no es la contraseña de GitHub.</p><form id="loginForm"><div class="field"><label>Correo electrónico</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>Contraseña</label><input name="password" type="password" autocomplete="current-password" required minlength="6"></div><button>Ingresar</button></form><div class="actions"><button id="registro" class="alt">Crear mi cuenta</button><button id="recuperar" type="button" class="alt">Olvidé mi contraseña</button></div><p class="muted">Después del registro, tu cuenta debe ser autorizada como administrador para acceder a COSTOS.</p></section>
@@ -2762,100 +2804,111 @@ function ampAbrirHistorialCostos(p,boton,tactil){
  const titulo=document.createElement('div');titulo.className='amp-hist-producto';titulo.textContent=String(p.detalles||'').toLocaleUpperCase('es');
  detalle.append(titulo);
  ampLineaHistorial(detalle,'Costo unitario vigente',ampMontoUnit(actual)+' / '+unidadCorta(p));
- if(resumen.reciente){
-  ampLineaHistorial(detalle,'Última factura ('+ampFechaLegible(ampFechaFactura(resumen.reciente))+')',ampMontoUnit(resumen.nuevo));
- }
+ if(resumen.reciente)ampLineaHistorial(detalle,'Última factura ('+ampFechaLegible(ampFechaFactura(resumen.reciente))+')',ampMontoUnit(resumen.nuevo));
  if(resumen.anterior){
   ampLineaHistorial(detalle,'Factura anterior ('+ampFechaLegible(ampFechaFactura(resumen.anterior))+')',ampMontoUnit(resumen.viejo));
-  // Tercera fila: último cambio del costo UNITARIO de este producto, no del total facturado.
-  const indiceCambio=resumen.historial.findIndex((compra,i,lista)=>
-   i+1<lista.length&&Math.abs(ampCostoFactura(compra)-ampCostoFactura(lista[i+1]))>=.00005);
-  if(indiceCambio>=0){
-   const cambio=resumen.historial[indiceCambio],previaCambio=resumen.historial[indiceCambio+1];
-   const costoAntes=ampCostoFactura(previaCambio),costoDespues=ampCostoFactura(cambio);
-   const diferenciaCambio=costoDespues-costoAntes;
-   const porcentajeCambio=costoAntes>0?Math.abs(diferenciaCambio)/costoAntes*100:null;
-   const descripcionCambio=ampMontoUnit(costoAntes)+' → '+ampMontoUnit(costoDespues)+' / '+unidadCorta(p)+
-    ' · '+(diferenciaCambio>0?'Subió ':'Bajó ')+ampMontoUnit(Math.abs(diferenciaCambio))+
-    (porcentajeCambio===null?'':' ('+ampPorcentaje(porcentajeCambio)+')');
-   ampLineaHistorial(detalle,'Último cambio de precio ('+ampFechaLegible(ampFechaFactura(cambio))+')',
-    descripcionCambio,diferenciaCambio>0?'amp-hist-alza':'amp-hist-baja');
-  }else{
-   ampLineaHistorial(detalle,'Último cambio de precio','Aún no hay cambios de costo registrados para este producto.');
-  }
   const delta=resumen.delta,pct=resumen.porcentaje;
-  const estadoCambio=Math.abs(delta)<.00005?'Sin cambio':
-    delta>0?'Subió '+ampMontoUnit(delta):'Bajó '+ampMontoUnit(Math.abs(delta));
-  ampLineaHistorial(detalle,'Cambio entre facturas',estadoCambio+(pct===null?'':' · '+(pct>0?'+':'')+ampPorcentaje(pct)),
-    delta>0?'amp-hist-alza':delta<0?'amp-hist-baja':'');
+  const estadoCambio=Math.abs(delta)<.00005?'Sin cambio':delta>0?'Subió '+ampMontoUnit(delta):'Bajó '+ampMontoUnit(Math.abs(delta));
+  ampLineaHistorial(detalle,'Cambio entre facturas',estadoCambio+(pct===null?'':' · '+(pct>0?'+':'')+ampPorcentaje(pct)));
   if(venta>0){
-   const gananciaAnterior=venta-resumen.viejo,gananciaNueva=venta-resumen.nuevo;
-   ampLineaHistorial(detalle,'Ganancia anterior (precio venta actual)',ampMontoUnit(gananciaAnterior));
-   ampLineaHistorial(detalle,'Ganancia con nuevo costo',ampMontoUnit(gananciaNueva));
-   const impacto=-delta,impactoPct=gananciaAnterior>0?impacto/gananciaAnterior*100:null;
-   const texto=(impacto>0?'+':'')+ampMontoUnit(impacto)+(impactoPct===null?'':' ('+(impactoPct>0?'+':'')+ampPorcentaje(impactoPct)+' de la ganancia anterior)');
-   ampLineaHistorial(detalle,'Impacto en ganancia / '+unidadCorta(p),texto,
-    impacto<0?'amp-hist-alza':impacto>0?'amp-hist-baja':'');
-  }else ampLineaHistorial(detalle,'Impacto en ganancia','Definí precio de venta para calcularlo');
+   ampLineaHistorial(detalle,'Ganancia anterior (precio venta actual)',ampMontoUnit(venta-resumen.viejo));
+   ampLineaHistorial(detalle,'Ganancia con nuevo costo',ampMontoUnit(venta-resumen.nuevo));
+  }
  }else{
   const sinDatos=document.createElement('p');sinDatos.className='amp-hist-nota';
   sinDatos.textContent=resumen.reciente?'Solo hay una compra registrada; todavía no existe otra factura para comparar.':'No hay compras registradas para este producto.';
   detalle.append(sinDatos);
-  ampLineaHistorial(detalle,'Último cambio de precio','Sin factura anterior para comparar.');
  }
  if(resumen.reciente&&Math.abs(actual-resumen.nuevo)>0.00011){
   const alerta=document.createElement('p');alerta.className='amp-hist-alerta';
-  alerta.textContent='Atención: el costo vigente no coincide con el de la factura más reciente. Puede haber un ajuste manual o una compra cargada fuera de orden. Revisalo antes de actualizar precios.';
+  alerta.textContent='El costo vigente no coincide con la factura más reciente. El historial no modifica ninguno de los dos valores.';
   detalle.append(alerta);
  }
  if(resumen.historial.length){
-  const subtitulo=document.createElement('strong');subtitulo.textContent='Facturas anteriores (más reciente primero)';
+  const subtitulo=document.createElement('strong');subtitulo.textContent='COMPRAS REGISTRADAS · TOCÁ UNA PARA VER SU FACTURA';
   const tabla=document.createElement('div');tabla.className='amp-hist-tabla';
   for(const factura of resumen.historial){
-   const fila=document.createElement('div');fila.className='amp-hist-item';
-   const fecha=document.createElement('span');fecha.textContent=ampFechaLegible(ampFechaFactura(factura));
+   const fila=document.createElement('button');fila.type='button';fila.className='amp-hist-item amp-hist-item-click';
+   fila.setAttribute('aria-label','Abrir detalle de compra del '+ampFechaLegible(ampFechaFactura(factura)));
+   const fecha=document.createElement('span');fecha.textContent=ampFechaLegible(ampFechaFactura(factura))+' · '+String(factura.proveedor||'SIN PROVEEDOR').toLocaleUpperCase('es');
    const valor=document.createElement('span');valor.textContent=ampMontoUnit(ampCostoFactura(factura))+' / '+unidadCorta(p);
-   fila.append(fecha,valor);tabla.append(fila);
+   fila.append(fecha,valor);
+   fila.addEventListener('click',e=>{e.stopPropagation();ampMostrarDetalleFactura(p,factura,boton);});
+   tabla.append(fila);
   }
   detalle.append(subtitulo,tabla);
  }
  const nota=document.createElement('p');nota.className='amp-hist-nota';
- nota.textContent='La variación de ganancia supone que el precio de venta no cambia. Consultar este historial no modifica compras, existencias ni precios.';
+ nota.textContent='Cada compra conserva su fecha y costo. Consultar este historial no modifica compras, existencias ni precios.';
  detalle.append(nota);
- ampHistorialCostosActivo={boton,tactil};boton.setAttribute('aria-expanded','true');
- panel.hidden=false;panel.classList.toggle('amp-hist-touch',!!tactil);
- panel.setAttribute('role',tactil?'dialog':'tooltip');
- if(tactil){
-  panel.style.top='';panel.style.left='';panel.style.transform='';
- }else{
-  panel.style.transform='none';
-  const r=boton.getBoundingClientRect(),w=panel.offsetWidth,h=panel.offsetHeight;
-  const left=Math.max(10,Math.min(window.innerWidth-w-10,r.left+r.width/2-w/2));
-  const top=r.bottom+h+9<window.innerHeight? r.bottom+8: Math.max(8,r.top-h-8);
-  panel.style.left=left+'px';panel.style.top=top+'px';
+ ampHistorialCostosActivo={boton,tactil:true};boton.setAttribute('aria-expanded','true');
+ panel.hidden=false;panel.classList.add('amp-hist-touch');panel.setAttribute('role','dialog');
+ panel.style.position='fixed';panel.style.top='50%';panel.style.left='50%';panel.style.right='auto';panel.style.bottom='auto';panel.style.transform='translate(-50%,-50%)';
+ panel.setAttribute('aria-modal','true');
+}
+function ampReferenciaFactura(c){
+ const obs=String(c?.observaciones||'');
+ const m=obs.match(/\\b(?:COMPROBANTE|FACTURA|NOTA(?:\\s+DE\\s+(?:REMISI[ÓO]N|ENTREGA))?)\\s*(?:N[°º.]?\\s*)?[:#-]?\\s*([A-Z0-9-]{4,})/i);
+ return m?m[1].toUpperCase():'';
+}
+function ampGrupoFactura(compra){
+ const proveedor=String(compra?.proveedor||'').trim().toLocaleUpperCase('es');
+ const referencia=ampReferenciaFactura(compra);
+ return compras.filter(c=>{
+  if(String(c.proveedor||'').trim().toLocaleUpperCase('es')!==proveedor)return false;
+  const otra=ampReferenciaFactura(c);
+  if(referencia&&otra)return otra===referencia;
+  return !!compra.fecha_registro&&String(c.fecha_registro||'')===String(compra.fecha_registro);
+ }).sort((a,b)=>Number(a.id)-Number(b.id));
+}
+function ampMostrarDetalleFactura(p,compra,boton){
+ const panel=ampHistorialPanel(),detalle=document.getElementById('ampHistorialCostosDetalle');
+ const lineas=ampGrupoFactura(compra);
+ const referencia=ampReferenciaFactura(compra);
+ detalle.replaceChildren();
+ const encabezado=document.createElement('div');encabezado.className='amp-hist-producto';
+ encabezado.textContent='DETALLE DE FACTURA · '+String(compra.proveedor||'SIN PROVEEDOR').toLocaleUpperCase('es');
+ detalle.append(encabezado);
+ const volver=document.createElement('button');volver.type='button';volver.className='amp-hist-volver';volver.textContent='← VOLVER AL HISTORIAL DEL PRODUCTO';
+ volver.addEventListener('click',()=>ampAbrirHistorialCostos(p,boton,true));detalle.append(volver);
+ ampLineaHistorial(detalle,'Fecha de factura',ampFechaLegible(ampFechaFactura(compra)));
+ ampLineaHistorial(detalle,'Proveedor',String(compra.proveedor||'Sin proveedor'));
+ if(referencia)ampLineaHistorial(detalle,'Número / referencia',referencia);
+ ampLineaHistorial(detalle,'Productos asociados a esta factura',String(lineas.length));
+ const tabla=document.createElement('div');tabla.className='amp-hist-factura-lineas';
+ let total=0;
+ for(const c of lineas){
+  total+=Number(c.precio_compra||0);
+  const articulo=document.createElement('article');articulo.className='amp-hist-factura-articulo';
+  const nombre=document.createElement('strong');nombre.textContent=String(c.detalles||'PRODUCTO SIN NOMBRE');
+  articulo.append(nombre);
+  const datos=[
+   ['Precio de compra registrado',ampMontoUnit(Number(c.precio_compra||0))],
+   ['Unidades registradas',Number(c.unidades||0).toLocaleString('es-BO',{maximumFractionDigits:3})],
+   ['Costo por unidad',ampMontoUnit(ampCostoFactura(c))],
+   ['Precio de venta guardado en esa compra',ampMontoUnit(Number(c.precio_venta||0))]
+  ];
+  for(const [k,v] of datos){const fila=document.createElement('div');fila.className='amp-hist-line';const a=document.createElement('span');a.textContent=k;const b=document.createElement('strong');b.textContent=v;fila.append(a,b);articulo.append(fila);}
+  if(c.observaciones){const obs=document.createElement('p');obs.className='amp-hist-nota';obs.textContent='Observaciones: '+String(c.observaciones);articulo.append(obs);}
+  tabla.append(articulo);
  }
+ detalle.append(tabla);
+ ampLineaHistorial(detalle,'Total de importes de compra registrados',ampMontoUnit(total));
+ const nota=document.createElement('p');nota.className='amp-hist-nota';
+ nota.textContent='El detalle reúne las compras vinculadas por referencia de comprobante o por el mismo registro de carga. Los datos se muestran tal como están guardados; no se recalculan ni se alteran.';
+ detalle.append(nota);
+ panel.hidden=false;panel.classList.add('amp-hist-touch');panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');
+ panel.style.position='fixed';panel.style.top='50%';panel.style.left='50%';panel.style.right='auto';panel.style.bottom='auto';panel.style.transform='translate(-50%,-50%)';
 }
 function ampVincularHistorialCostos(boton,p){
  boton.tabIndex=0;boton.setAttribute('role','button');
- boton.title='Pasá el cursor por todo este recuadro para consultar el historial de costos.';
- boton.setAttribute('aria-label','Ver historial de costos de '+p.detalles);
+ boton.title='Hacé clic para consultar el historial de compras y abrir el detalle de cada factura.';
+ boton.setAttribute('aria-label','Ver historial de compras de '+p.detalles);
  boton.setAttribute('aria-controls','ampHistorialCostos');boton.setAttribute('aria-expanded','false');
  const tactil=()=>matchMedia('(hover:none), (pointer:coarse)').matches;
- boton.addEventListener('mouseenter',()=>{
-  if(!tactil())ampAbrirHistorialCostos(p,boton,false);
- });
- boton.addEventListener('mouseleave',()=>{
-  if(ampHistorialCostosActivo?.boton===boton&&!ampHistorialCostosActivo.tactil)ampCerrarHistorialCostos();
- });
- boton.addEventListener('focus',()=>{
-  if(!tactil())ampAbrirHistorialCostos(p,boton,false);
- });
- boton.addEventListener('blur',()=>{
-  if(ampHistorialCostosActivo?.boton===boton&&!ampHistorialCostosActivo.tactil)ampCerrarHistorialCostos();
- });
  boton.addEventListener('click',e=>{
   e.stopPropagation();
-  if(ampHistorialCostosActivo?.boton===boton&&ampHistorialCostosActivo.tactil){ampCerrarHistorialCostos();return;}
+  if(ampHistorialCostosActivo?.boton===boton){ampCerrarHistorialCostos();return;}
   ampAbrirHistorialCostos(p,boton,tactil());
  });
  boton.addEventListener('keydown',e=>{

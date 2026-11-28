@@ -2841,7 +2841,7 @@ function ampAbrirHistorialCostos(p,boton,tactil){
  const nota=document.createElement('p');nota.className='amp-hist-nota';
  nota.textContent='Cada compra conserva su fecha y costo. Consultar este historial no modifica compras, existencias ni precios.';
  detalle.append(nota);
- ampHistorialCostosActivo={boton,tactil:true};boton.setAttribute('aria-expanded','true');
+ ampHistorialCostosActivo={boton,tactil:!!tactil};boton.setAttribute('aria-expanded','true');
  panel.hidden=false;panel.classList.add('amp-hist-touch');panel.setAttribute('role','dialog');
  panel.style.position='fixed';panel.style.top='50%';panel.style.left='50%';panel.style.right='auto';panel.style.bottom='auto';panel.style.transform='translate(-50%,-50%)';
  panel.setAttribute('aria-modal','true');
@@ -2930,7 +2930,9 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{if(e.key==='Escape')ampCerrarHistorialCostos();});
 window.addEventListener('resize',ampCerrarHistorialCostos);
 document.addEventListener('scroll',e=>{
- if(ampHistorialCostosActivo&&!document.getElementById('ampHistorialCostos')?.contains(e.target))ampCerrarHistorialCostos();
+ // En PC el historial permanece fijo aunque la página se desplace.
+ // En pantallas táctiles se conserva el cierre al cambiar de zona.
+ if(ampHistorialCostosActivo?.tactil&&!document.getElementById('ampHistorialCostos')?.contains(e.target))ampCerrarHistorialCostos();
 },true);
 
 function configurarEditorFila(p,compra,superficie,movil){

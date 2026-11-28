@@ -2624,6 +2624,38 @@ html body .wrap>header #ampMargenPromedioPanel .amp-promedio-margen-valor{
  -webkit-text-fill-color:#171717!important;font-size:13px;font-weight:850;line-height:1.3;pointer-events:none}
 #listado .sheet-card .amp-monto-sufijo{font-size:15px}
 @media(max-width:350px){#listado .sheet-card .amp-monto-sufijo{font-size:13px}}
+
+/* COSTOS: MARGEN pequeno, porcentaje mas grande, una sola fila. Solo aspecto visual. */
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.amp-margen-porcentaje,
+html body main.wrap section#listado td.amp-utilidad-celda>.amp-margen-porcentaje{
+ display:flex!important;flex-direction:row!important;align-items:baseline!important;
+ justify-content:flex-start!important;flex-wrap:nowrap!important;
+ gap:5px!important;max-width:100%!important;width:100%!important;
+ white-space:nowrap!important;overflow:visible!important;min-width:0!important;
+ border-top:0!important;margin-top:7px!important;padding:0!important;
+ line-height:1.2!important;letter-spacing:0!important;
+}
+html body main.wrap section#listado .amp-margen-porcentaje>.amp-margen-etiqueta{
+ display:inline-block!important;flex:0 0 auto!important;
+ font-size:9px!important;font-weight:750!important;line-height:1.2!important;
+ color:#38342f!important;-webkit-text-fill-color:#38342f!important;
+ white-space:nowrap!important;letter-spacing:0!important;
+}
+html body main.wrap section#listado .amp-margen-porcentaje>.amp-margen-valor{
+ display:inline-block!important;flex:0 1 auto!important;min-width:0!important;
+ font-size:clamp(15px,3.8vw,21px)!important;font-weight:900!important;
+ line-height:1.12!important;font-variant-numeric:tabular-nums!important;
+ white-space:nowrap!important;letter-spacing:-.35px!important;
+ color:#171717!important;-webkit-text-fill-color:#171717!important;
+}
+html body main.wrap section#listado .amp-margen-porcentaje.sheet-negative>.amp-margen-valor{
+ color:#98232d!important;-webkit-text-fill-color:#98232d!important;
+}
+@media(max-width:380px){
+ html body main.wrap section#listado .amp-margen-porcentaje>.amp-margen-etiqueta{font-size:8px!important}
+ html body main.wrap section#listado .amp-margen-porcentaje>.amp-margen-valor{font-size:clamp(13px,3.5vw,16px)!important}
+ html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.amp-margen-porcentaje{gap:3px!important}
+}
 </style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
  <div class="amp-fila-cabecera amp-fila-superior">
@@ -3873,7 +3905,13 @@ function configurarEditorFila(p,compra,superficie,movil){
     const margen=document.createElement('span');
     margen.className='amp-margen-porcentaje';
     margen.setAttribute('aria-label','Margen de ganancia sobre el precio de venta');
+    const etiquetaMargen=document.createElement('small');
+    etiquetaMargen.className='amp-margen-etiqueta';etiquetaMargen.textContent='MARGEN';
+    const cifraMargen=document.createElement('strong');
+    cifraMargen.className='amp-margen-valor';
+    margen.append(etiquetaMargen,cifraMargen);
     derivados.margen=margen;
+    derivados.margenValor=cifraMargen;
     if(movil){
      const recuadro=document.createElement('div');recuadro.className='amp-utilidad-recuadro';
      recuadro.append(output,margen);cell.append(recuadro);
@@ -3925,7 +3963,7 @@ function configurarEditorFila(p,compra,superficie,movil){
    derivados.costo.textContent=costo.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:4})+' Bs / '+unidadCorta(p);
    if(vent===0){
     derivados.utilidad.textContent='Precio pendiente';
-    derivados.margen.textContent='MARGEN: Pendiente';
+    derivados.margenValor.textContent='Pendiente';
     derivados.margen.classList.remove('sheet-negative');
     derivados.margen.title='Necesitás definir un precio de venta mayor a cero para calcular el margen.';
     derivados.total.textContent='Precio pendiente';
@@ -3938,7 +3976,7 @@ function configurarEditorFila(p,compra,superficie,movil){
     const total=Number((utilidad*unid).toFixed(2));
     derivados.utilidad.textContent=bs(utilidad);
     const margen=Number(((vent-costo)/vent*100).toFixed(2));
-    derivados.margen.textContent='MARGEN: '+margen.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2})+' %';
+    derivados.margenValor.textContent=margen.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2})+' %';
     derivados.margen.classList.toggle('sheet-negative',margen<0);
     derivados.margen.title='Margen = (precio de venta − costo unitario) / precio de venta × 100';
     derivados.total.textContent=bs(total);
@@ -3952,7 +3990,7 @@ function configurarEditorFila(p,compra,superficie,movil){
     derivados[key].textContent='Revisá datos';
     derivados[key].classList.remove('sheet-negative');
    }
-   derivados.margen.textContent='MARGEN: Revisá datos';
+   derivados.margenValor.textContent='Revisá datos';
    derivados.margen.classList.remove('sheet-negative');
   }
   save.disabled=guardando||!valid||!dif||!edicionAutorizada;

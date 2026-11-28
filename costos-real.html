@@ -2694,11 +2694,19 @@ html body main.wrap section#listado .amp-monto-campo>.amp-monto-sufijo{
  color:#171717!important;-webkit-text-fill-color:#171717!important;
 }
 /* Porcentaje del mismo tamaño visual que la cifra de utilidad; MARGEN pequeño debajo. */
-html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.sheet-result,
-html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro .amp-margen-porcentaje>.amp-margen-valor{
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.sheet-result{
  font-size:clamp(18px,5.3vw,23px)!important;
  font-weight:900!important;letter-spacing:-.2px!important;
  font-variant-numeric:tabular-nums!important;line-height:1.2!important;
+}
+/* Porcentaje de MARGEN del mismo tamaño que los valores de los otros recuadros:
+   17 px en escritorio y 15 px en teléfono, sin modificar el rótulo de abajo. */
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro .amp-margen-porcentaje>.amp-margen-valor{
+ font-size:17px!important;font-weight:850!important;letter-spacing:0!important;
+ font-variant-numeric:tabular-nums!important;line-height:1.2!important;
+}
+@media(max-width:760px){
+ html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro .amp-margen-porcentaje>.amp-margen-valor{font-size:15px!important}
 }
 html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.amp-margen-porcentaje{
  display:flex!important;flex-direction:column!important;
@@ -3992,7 +4000,7 @@ function configurarEditorFila(p,compra,superficie,movil){
     margen.append(cifraMargen,etiquetaMargen);
     if(movil){
      margen.style.cssText='display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:3px!important;flex-wrap:nowrap!important;width:100%!important;min-width:0!important;max-width:100%!important;margin-top:8px!important;padding:0!important;border:0!important;white-space:normal!important;overflow:visible!important';
-     cifraMargen.style.cssText='display:block!important;order:1!important;font-size:clamp(18px,5.3vw,23px)!important;font-weight:900!important;line-height:1.2!important;white-space:nowrap!important;color:#171717!important;-webkit-text-fill-color:#171717!important';
+     cifraMargen.style.cssText='display:block!important;order:1!important;font-weight:850!important;line-height:1.2!important;white-space:nowrap!important;color:#171717!important;-webkit-text-fill-color:#171717!important';
      etiquetaMargen.style.cssText='display:block!important;order:2!important;font-size:10px!important;font-weight:800!important;line-height:1.1!important;white-space:nowrap!important;color:#38342f!important;-webkit-text-fill-color:#38342f!important';
      output.style.setProperty('font-size','clamp(18px,5.3vw,23px)','important');
     }

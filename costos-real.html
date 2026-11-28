@@ -2616,6 +2616,14 @@ html body .wrap>header #ampMargenPromedioPanel .amp-promedio-margen-valor{
  color:#171717!important;-webkit-text-fill-color:#171717!important;
 }
 
+
+/* COSTOS · precios con Bs a la derecha; las cantidades no incluyen moneda. */
+#listado .amp-monto-campo{display:flex;align-items:center;gap:8px;width:100%;min-width:0}
+#listado .amp-monto-campo>input.sheet-input{flex:1 1 auto;min-width:0!important;max-width:100%;width:100%;text-align:left}
+#listado .amp-monto-sufijo{display:inline-block;flex:0 0 auto;white-space:nowrap;color:#171717!important;
+ -webkit-text-fill-color:#171717!important;font-size:13px;font-weight:850;line-height:1.3;pointer-events:none}
+#listado .sheet-card .amp-monto-sufijo{font-size:15px}
+@media(max-width:350px){#listado .sheet-card .amp-monto-sufijo{font-size:13px}}
 </style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
  <div class="amp-fila-cabecera amp-fila-superior">
@@ -3842,7 +3850,14 @@ function configurarEditorFila(p,compra,superficie,movil){
    }
    // COSTOS es de solo lectura hasta que se pulse el lapicito y se elija qué editar.
    input.readOnly=true;input.tabIndex=-1;input.setAttribute('aria-readonly','true');
-   input.dataset.ampCampo=clave;inputs[clave]=input;cell.append(input);
+   input.dataset.ampCampo=clave;inputs[clave]=input;
+   // La moneda se presenta a la derecha sin afectar valores numericos ni guardado.
+   if(clave==='compra'||clave==='venta'){
+    const monto=document.createElement('span');monto.className='amp-monto-campo';
+    const sufijo=document.createElement('span');sufijo.className='amp-monto-sufijo';
+    sufijo.textContent='Bs';sufijo.setAttribute('aria-hidden','true');
+    monto.append(input,sufijo);cell.append(monto);
+   }else cell.append(input);
   }else{
    if(!movil)cell.className='sheet-derived';
    const output=document.createElement('strong');output.className=movil?'sheet-result':'';

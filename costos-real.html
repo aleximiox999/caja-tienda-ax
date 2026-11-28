@@ -1683,6 +1683,14 @@ body a{color:#252525!important}body ::selection{background:#d1c9be!important;col
 body #listado .amp-marcas-color button.amp-marca-verde{background:linear-gradient(130deg,#176941,#4fbd7c,#174f35)!important}
 body #listado .amp-marcas-color button.amp-marca-amarillo{background:linear-gradient(130deg,#b47f15,#f3d35d,#97721e)!important}
 body #listado .amp-marcas-color button.amp-marca-rojo{background:linear-gradient(130deg,#9f1c2c,#e15a62,#79232c)!important}
+
+/* COSTOS · unidad monetaria a la derecha; los inputs siguen siendo numericos. */
+#listado .amp-monto-campo{display:flex;align-items:center;gap:8px;width:100%;min-width:0}
+#listado .amp-monto-campo>input.sheet-input{flex:1 1 auto;min-width:0!important;max-width:100%;width:100%;text-align:left}
+#listado .amp-monto-sufijo{display:inline-block;flex:0 0 auto;white-space:nowrap;color:inherit!important;
+ -webkit-text-fill-color:currentColor!important;font-size:13px;font-weight:850;line-height:1.3;pointer-events:none}
+#listado .sheet-card .amp-monto-sufijo{font-size:15px}
+@media(max-width:350px){#listado .sheet-card .amp-monto-sufijo{font-size:13px}}
 </style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div><a href="./comparador-precios.html" style="display:inline-block;text-decoration:none;background:#111111;color:#fdfdfd;border:1px solid #515151;padding:10px 12px;border-radius:9px;font-weight:750;margin:5px 9px 5px 0">COMPARADOR DE PRECIOS</a> <a href="./contactos.html" style="display:inline-block;text-decoration:none;background:linear-gradient(110deg,#0c0c0c,#121212);color:#fcfcfc;border:1px solid #505050;padding:10px 12px;border-radius:9px;font-weight:800;margin:5px 9px 5px 0">CONTACTOS</a> <span id="estadoRolAMPHX" class="pill hidden">ESTADO: ADMINISTRADOR</span> <button id="configCuentaAMPHX" type="button" class="alt hidden" aria-label="Configuración de cuenta">⚙ Configuración</button> <button id="salir" class="alt hidden">Salir</button></div></header>
 <dialog id="configCuentaDialogAMPHX" style="border:1px solid #5a5a5a;border-radius:14px;padding:22px;width:min(92vw,440px);max-width:92vw"><h2>⚙ Configuración de acceso</h2><p><strong>Estado:</strong> Administrador</p><label>Correo de ingreso</label><input id="correoCuentaAMPHX" readonly autocomplete="off"><p class="muted">Por seguridad, la contraseña actual no se puede consultar ni mostrar. Podés cambiarla desde tu cuenta.</p><button id="cambiarClaveAMPHX" type="button">Enviar enlace para cambiar contraseña</button><p id="mensajeConfigAMPHX" class="muted" role="status"></p><button id="cerrarConfigAMPHX" type="button" class="alt">Cerrar</button></dialog>
@@ -1782,7 +1790,7 @@ import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.57.0';
 import {iniciarEtiquetasAmphx} from './amp-etiquetas-word.js?v=20261125-fila-etiquetas-3';
 const db=createClient('https://tdentkkksydawctcezrs.supabase.co','sb_publishable_WJJH9gIvf7vb-fMrVtz5Cw_MzHGK4wh',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'sb-tdentkkksydawctcezrs-auth-token'}});
 window.dispatchEvent(new Event('amphx-costos-ready'));
-const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
+const $=id=>document.getElementById(id),nombreMedida=p=>p?.unidad_medida==='kg'?'kg':'unidades',unidadCorta=p=>p?.unidad_medida==='kg'?'kg':'unidad',conMedida=(n,p)=>Number(n||0).toLocaleString('es-BO',{maximumFractionDigits:3})+' '+nombreMedida(p),bs=n=>Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2})+' Bs';
 let productos=[],compras=[],costos=[],movimientos=[];
 
 /* Promedio global seguro: calculado en Supabase sin límite de 1000 filas, con RLS de administrador.
@@ -2718,7 +2726,7 @@ function ampResumenFacturas(p){
  return{historial,reciente,anterior,nuevo,viejo,delta,porcentaje};
 }
 function ampMontoUnit(n){
- return 'Bs '+Number(n).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:4});
+ return Number(n).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:4})+' Bs';
 }
 function ampPorcentaje(n){
  return Number(n).toLocaleString('es-BO',{minimumFractionDigits:1,maximumFractionDigits:2})+' %';
@@ -2903,7 +2911,14 @@ function configurarEditorFila(p,compra,superficie,movil){
    }
    // COSTOS es de solo lectura hasta que se pulse el lapicito y se elija qué editar.
    input.readOnly=true;input.tabIndex=-1;input.setAttribute('aria-readonly','true');
-   input.dataset.ampCampo=clave;inputs[clave]=input;cell.append(input);
+   input.dataset.ampCampo=clave;inputs[clave]=input;
+   // Moneda visible al final del valor, sin alterar el dato numérico editable.
+   if(clave==='compra'||clave==='venta'){
+    const monto=document.createElement('span');monto.className='amp-monto-campo';
+    const sufijo=document.createElement('span');sufijo.className='amp-monto-sufijo';
+    sufijo.textContent='Bs';sufijo.setAttribute('aria-hidden','true');
+    monto.append(input,sufijo);cell.append(monto);
+   }else cell.append(input);
   }else{
    if(!movil)cell.className='sheet-derived';
    const output=document.createElement('strong');output.className=movil?'sheet-result':'';

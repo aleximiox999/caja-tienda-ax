@@ -2443,6 +2443,54 @@ html body main.wrap section#listado #tarjetas article.sheet-card .amp-marcas-col
  -webkit-text-fill-color:initial!important;
 }
 
+
+/* COSTOS · fichas perla uniformes y nombre sin subrayado · 2026-11-27 */
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-card-title button.nombre-con-foto,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-card-title button{
+ text-decoration:none!important;text-decoration-line:none!important;
+ border-bottom:0!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-card-title button:is(:hover,:focus-visible){
+ text-decoration:none!important;text-decoration-line:none!important;
+}
+/* Recuadro interior igual que los valores de compra y unidades. */
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row .amp-historial-trigger,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row .amp-utilidad-recuadro,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row:not(.amp-historial-celda):not(.amp-utilidad-celda)>strong.sheet-result{
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ justify-content:center!important;
+ width:100%!important;min-width:0!important;box-sizing:border-box!important;
+ min-height:80px!important;margin:0!important;padding:9px 7px!important;
+ border:1px solid #a69c90!important;border-radius:2px!important;
+ background:linear-gradient(125deg,#fffdfa,#ece6de 60%,#f7f3ed)!important;
+ background-color:#fbf8f3!important;
+ color:#171717!important;-webkit-text-fill-color:#171717!important;
+ box-shadow:inset 0 1px 2px #6b62581c!important;
+ text-shadow:none!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row .amp-historial-trigger>*,
+html body main.wrap section#listado #tarjetas article.sheet-card .sheet-mobile-row .amp-utilidad-recuadro>*{
+ color:#171717!important;-webkit-text-fill-color:#171717!important;text-shadow:none!important;
+}
+/* La utilidad y su margen permanecen juntos, dentro del mismo marco. */
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.sheet-result{
+ display:block!important;margin:0!important;padding:0!important;border:0!important;
+ min-height:0!important;background:none!important;box-shadow:none!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.amp-margen-porcentaje{
+ display:block!important;width:100%!important;min-height:0!important;
+ margin-top:7px!important;padding-top:6px!important;
+ border-top:1px solid #c9c0b3!important;
+ color:#171717!important;-webkit-text-fill-color:#171717!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.sheet-negative,
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-recuadro>.amp-margen-porcentaje.sheet-negative{
+ color:#98232d!important;-webkit-text-fill-color:#98232d!important;
+}
+html body main.wrap section#listado #tarjetas article.sheet-card .amp-historial-trigger:focus-within{
+ outline:2px solid #73695e!important;outline-offset:2px!important;
+}
+
 </style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
  <div class="amp-fila-cabecera amp-fila-superior">
@@ -3686,7 +3734,10 @@ function configurarEditorFila(p,compra,superficie,movil){
     margen.className='amp-margen-porcentaje';
     margen.setAttribute('aria-label','Margen de ganancia sobre el precio de venta');
     derivados.margen=margen;
-    cell.append(output,margen);
+    if(movil){
+     const recuadro=document.createElement('div');recuadro.className='amp-utilidad-recuadro';
+     recuadro.append(output,margen);cell.append(recuadro);
+    }else cell.append(output,margen);
    }else cell.append(output);
   }
   superficie.append(cell);

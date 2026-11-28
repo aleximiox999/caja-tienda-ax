@@ -87,8 +87,12 @@ export function iniciarEtiquetasAmphx({db,getProductos,recargar,estado,onCodigoG
   estado('Etiqueta '+codigo+' agregada a Word. No se imprimió nada.');
  }
  async function generar(p,btn){
-  if(String(p.codigo_barras||'').trim()){
-   estado('Este producto ya tiene un código. Podés añadirlo a la hoja Word.',true);return;
+  const codigoExistente=String(p.codigo_barras||'').trim();
+  if(codigoExistente){
+   const usar=confirm('ESTE PRODUCTO YA TIENE UN CÓDIGO DE BARRAS:\n\n'+codigoExistente+'\n\nNo se generará otro código ni se reemplazará el existente.\n\n¿Querés añadir este código a Word para imprimir etiquetas?');
+   if(usar)agregar(p);
+   else estado('Código ya registrado: '+codigoExistente+'. No se modificó el producto.');
+   return;
   }
   if(btn)btn.disabled=true;
   try{
@@ -101,13 +105,13 @@ export function iniciarEtiquetasAmphx({db,getProductos,recargar,estado,onCodigoG
    await recargar();
    estado('Código '+data+' registrado, agregado a Word y pendiente de imprimir.');
   }catch(e){estado('No se pudo generar el código: '+String(e?.message||e),true);}
-  finally{if(btn&&btn.isConnected)btn.disabled=!!String(p.codigo_barras||'').trim();}
+  finally{if(btn&&btn.isConnected)btn.disabled=false;}
  }
  function botones(p){
   const row=document.createElement('div');row.className='amp-botones-etiquetas';
   const gen=document.createElement('button');gen.type='button';gen.className='alt amp-etiqueta-generar';
   gen.textContent='▥ GENERAR CÓDIGO';gen.title='Crear código AMPHX permanente para este producto';
-  gen.disabled=!!String(p.codigo_barras||'').trim();gen.onclick=()=>generar(p,gen);
+  gen.disabled=false;gen.onclick=()=>generar(p,gen);
   const anadir=document.createElement('button');anadir.type='button';anadir.className='alt amp-etiqueta-word';
   anadir.textContent='▤ AÑADIR A WORD';anadir.title='Añadir etiqueta a la hoja Word sin imprimir';
   anadir.disabled=!String(p.codigo_barras||'').trim();anadir.onclick=()=>agregar(p);

@@ -2537,6 +2537,19 @@ html body main.wrap section#listado #tarjetas article.sheet-card .amp-utilidad-r
  border-top:0!important;margin-top:7px!important;padding-top:2px!important;
 }
 
+
+/* AMPHX 2026-11-27 · margen interior de precios, 20 como referencia */
+/* Unidades (como 20) conservan su posición. Despegar del borde los importes
+   de compra y venta; solo presentación y sin afectar edición ni cálculos. */
+html body main.wrap section#listado #tarjetas article.sheet-card
+ .sheet-mobile-row[data-amp-campo="compra"]>input.sheet-input,
+html body main.wrap section#listado #tarjetas article.sheet-card
+ .sheet-mobile-row[data-amp-campo="venta"]>input.sheet-input{
+ padding-left:18px!important;
+ padding-inline-start:18px!important;
+ box-sizing:border-box!important;
+}
+
 </style>
 </head><body><main class="wrap"><header><div class="amp-marca"><span class="amp-marca-icono" role="button" tabindex="0" aria-label="Mantener presionado un segundo para ampliar el logo de TIENDA AMPHX" title="Mantén presionado un segundo para ampliar el logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11H3zM5 9V4h14v5M9 20v-7h6v7M3 9l3 3 3-3 3 3 3-3 3 3 3-3"/></svg></span><div><div class="muted">SISTEMA DE INVENTARIO</div><h1>TIENDA AMPHX · COSTOS</h1></div></div><div class="amp-cabecera-controles" role="navigation" aria-label="Accesos de Tienda AMPHX">
  <div class="amp-fila-cabecera amp-fila-superior">

@@ -704,6 +704,7 @@ body{background:#343434;color:#cbcbcb;font-family:system-ui,-apple-system,"Segoe
 #listado .amp-historial-badge.amp-baja{color:#fdfdfd;background:#171717;border-color:#525252}
 #listado .amp-historial-badge[hidden]{display:none}
 #ampHistorialCostos[hidden]{display:none!important}
+#ampHistorialCostos{pointer-events:auto!important;}
 #ampHistorialCostos{
  position:fixed;z-index:12000;display:block;width:min(440px,calc(100vw - 20px));
  max-height:75vh;overflow:auto;padding:15px 16px;
@@ -2841,7 +2842,7 @@ function ampAbrirHistorialCostos(p,boton,tactil){
  const nota=document.createElement('p');nota.className='amp-hist-nota';
  nota.textContent='Cada compra conserva su fecha y costo. Consultar este historial no modifica compras, existencias ni precios.';
  detalle.append(nota);
- ampHistorialCostosActivo={boton,tactil:!!tactil};boton.setAttribute('aria-expanded','true');
+ ampHistorialCostosActivo={boton,tactil:false};boton.setAttribute('aria-expanded','true');
  panel.hidden=false;panel.classList.add('amp-hist-touch');panel.setAttribute('role','dialog');
  panel.style.position='fixed';panel.style.top='50%';panel.style.left='50%';panel.style.right='auto';panel.style.bottom='auto';panel.style.transform='translate(-50%,-50%)';
  panel.setAttribute('aria-modal','true');
@@ -2923,17 +2924,10 @@ function ampAvisoPrecioHistorico(insignia,p){
   (r.porcentaje===null?'':' · '+ampPorcentaje(Math.abs(r.porcentaje)));
  insignia.title='Cambio entre las dos últimas facturas por fecha, sin alterar el precio de venta';
 }
-document.addEventListener('click',e=>{
- if(ampHistorialCostosActivo?.tactil&&!document.getElementById('ampHistorialCostos')?.contains(e.target)&&
-  !ampHistorialCostosActivo.boton.contains(e.target))ampCerrarHistorialCostos();
-});
+// El historial permanece abierto; solo se cierra desde su botón, Escape o el mismo costo.
 document.addEventListener('keydown',e=>{if(e.key==='Escape')ampCerrarHistorialCostos();});
 window.addEventListener('resize',ampCerrarHistorialCostos);
-document.addEventListener('scroll',e=>{
- // En PC el historial permanece fijo aunque la página se desplace.
- // En pantallas táctiles se conserva el cierre al cambiar de zona.
- if(ampHistorialCostosActivo?.tactil&&!document.getElementById('ampHistorialCostos')?.contains(e.target))ampCerrarHistorialCostos();
-},true);
+// No cerrar el historial por desplazamiento: el panel es fijo y permite recorrer sus facturas.
 
 function configurarEditorFila(p,compra,superficie,movil){
  const lista=[
